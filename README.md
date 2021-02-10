@@ -1,1 +1,3 @@
-This is a starter template for [Learn Next.js](https://nextjs.org/learn).
+# Atomic
+
+Atomic is a note-taking tool that helps you form connections between ideas and become a better thinker.
