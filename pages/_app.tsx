@@ -7,7 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 export default function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <div>
+    <>
       <Head>
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -17,6 +17,6 @@ export default function MyApp({ Component, pageProps }: AppProps) {
         hideProgressBar
         newestOnTop={true}
       />
-    </div>
+    </>
   );
 }

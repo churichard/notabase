@@ -8,6 +8,7 @@ module.exports = {
     'eslint:recommended',
     'plugin:react/recommended',
     'plugin:@typescript-eslint/recommended',
+    'plugin:react-hooks/recommended',
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
@@ -18,5 +19,7 @@ module.exports = {
     sourceType: 'module',
   },
   plugins: ['react', '@typescript-eslint'],
-  rules: { '@typescript-eslint/explicit-module-boundary-types': 'off' },
+  rules: {
+    '@typescript-eslint/explicit-module-boundary-types': 'off',
+  },
 };
