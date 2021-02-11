@@ -6,7 +6,7 @@ export default function Home() {
     <div>
       <Head>
         <title>
-          Atomic | A note-taking app that helps you become a better thinker
+          Atomic | A personal knowledge base for non-linear thinking.
         </title>
       </Head>
       <div>
