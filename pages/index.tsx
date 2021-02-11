@@ -5,12 +5,13 @@ export default function Home() {
   return (
     <div>
       <Head>
-        <title>Atomic</title>
-        <link rel="icon" href="/favicon.ico" />
+        <title>
+          Atomic | A note-taking app that helps you become a better thinker
+        </title>
       </Head>
-      <main>
+      <div>
         <h1>Atomic</h1>
-      </main>
+      </div>
     </div>
   );
 }

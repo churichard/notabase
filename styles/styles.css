@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .btn {
+    @apply px-5 py-3 text-white transition duration-200 ease-in-out bg-blue-500 rounded-md hover:bg-blue-600 active:bg-blue-700;
+  }
+
+  .card {
+    @apply max-w-md p-8 overflow-hidden bg-white rounded shadow-md;
+  }
+
+  .input {
+    @apply block border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500;
+  }
+}
