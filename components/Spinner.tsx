@@ -1,4 +1,5 @@
 import React from 'react';
+// @ts-expect-error Tailwind types should be coming soon: https://github.com/DefinitelyTyped/DefinitelyTyped/pull/50921
 import colors from 'tailwindcss/colors';
 
 export default function Spinner() {

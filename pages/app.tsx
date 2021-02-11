@@ -1,24 +1,10 @@
 import React from 'react';
+import { GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
-import useRequireAuth from 'auth/useRequireAuth';
-import Spinner from 'components/Spinner';
+import Editor from 'components/Editor';
+import supabase from 'lib/supabase';
 
 export default function App() {
-  const user = useRequireAuth();
-
-  if (!user) {
-    return (
-      <>
-        <Head>
-          <title>Redirecting... | Atomic</title>
-        </Head>
-        <div className="flex items-center justify-center w-screen h-screen">
-          <Spinner />
-        </div>
-      </>
-    );
-  }
-
   return (
     <>
       <Head>
@@ -26,7 +12,16 @@ export default function App() {
       </Head>
       <div>
         <h1>Atomic App</h1>
+        <Editor />
       </div>
     </>
   );
+}
+
+export async function getServerSideProps({ req }: GetServerSidePropsContext) {
+  const { user } = await supabase.auth.api.getUserByCookie(req);
+  if (!user) {
+    return { props: {}, redirect: { destination: '/login', permanent: false } };
+  }
+  return { props: { user } };
 }
