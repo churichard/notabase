@@ -7,15 +7,15 @@ import supabase from 'lib/supabase';
 
 export default function Signup() {
   const router = useRouter();
-  const [isSigningUp, setIsSigningUp] = useState(false);
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const onSignup = async (event) => {
+  const onLogin = async (event) => {
     event.preventDefault();
-    setIsSigningUp(true);
+    setIsLoggingIn(true);
 
-    const { user, error } = await supabase.auth.signUp({
+    const { user, error } = await supabase.auth.signIn({
       email,
       password,
     });
@@ -24,23 +24,21 @@ export default function Signup() {
       router.push('/app');
     } else if (error) {
       toast.error(error.message);
-      setIsSigningUp(false);
+      setIsLoggingIn(false);
     }
   };
 
   return (
     <div>
       <Head>
-        <title>Sign up | Atomic</title>
+        <title>Log in | Atomic</title>
       </Head>
       <div>
         <div className="min-h-screen bg-blue-50">
           <div className="container p-8 md:p-24">
             <div className="mx-auto card md:p-12">
-              <p className="pb-6 -mt-2 text-xl text-center">
-                Sign up for Atomic
-              </p>
-              <form onSubmit={onSignup}>
+              <p className="pb-6 -mt-2 text-xl text-center">Log in to Atomic</p>
+              <form onSubmit={onLogin}>
                 <div>
                   <label htmlFor="email" className="block text-gray-700">
                     Email
@@ -72,18 +70,18 @@ export default function Signup() {
                 </div>
                 <button
                   className={`w-full mt-6 btn ${
-                    isSigningUp && 'opacity-50 cursor-wait'
+                    isLoggingIn && 'opacity-50 cursor-wait'
                   }`}
-                  disabled={isSigningUp}
+                  disabled={isLoggingIn}
                 >
-                  Sign up
+                  Log in
                 </button>
               </form>
             </div>
             <p className="mt-4 text-sm text-center text-gray-700">
-              Have an account?{' '}
-              <Link href="/login">
-                <a className="text-blue-600 hover:text-blue-700">Log in</a>
+              Don&apos;t have an account?{' '}
+              <Link href="/signup">
+                <a className="text-blue-600 hover:text-blue-700">Sign up</a>
               </Link>
             </p>
           </div>
