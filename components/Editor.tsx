@@ -7,17 +7,13 @@ export default function Editor() {
   const [value, setValue] = useState<Array<Node>>([
     {
       type: 'paragraph',
-      children: [{ text: 'A line of text in a paragraph.' }],
+      children: [{ text: 'Start typing here...' }],
     },
   ]);
 
   return (
-    <Slate
-      editor={editor}
-      value={value}
-      onChange={(newValue) => setValue(newValue)}
-    >
-      <Editable />
+    <Slate editor={editor} value={value} onChange={(value) => setValue(value)}>
+      <Editable className="w-full h-screen p-8" />
     </Slate>
   );
 }
