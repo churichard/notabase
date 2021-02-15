@@ -1,9 +1,9 @@
 import React, { useEffect, useMemo, useRef } from 'react';
 import { useSlate, ReactEditor } from 'slate-react';
 import { Editor, Range } from 'slate';
-import { toggleMark, isMarkActive } from './Editor';
 import { Bold, Italic, Underline, Code } from 'react-feather';
 import Portal from 'components/Portal';
+import { toggleMark, isMarkActive } from './Editor';
 
 export default function HoveringToolbar() {
   const ref = useRef<HTMLDivElement | null>(null);

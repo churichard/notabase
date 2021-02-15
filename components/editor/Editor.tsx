@@ -8,7 +8,7 @@ import {
   withReact,
 } from 'slate-react';
 import { withHistory } from 'slate-history';
-import isHotkey from 'is-hotkey';
+import { isHotkey } from 'is-hotkey';
 import HoveringToolbar from './HoveringToolbar';
 
 const HOTKEYS: Record<string, string> = {
