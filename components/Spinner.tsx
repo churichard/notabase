@@ -8,8 +8,8 @@ export default function Spinner() {
       <div className="w-8 h-8 ease-linear border-4 border-t-4 border-gray-100 rounded-full loader animate-spin"></div>
       <style jsx>{`
         .loader {
-          border-top-color: ${colors.blue[500]};
-          border-right-color: ${colors.blue[500]};
+          border-top-color: ${colors.primary[500]};
+          border-right-color: ${colors.primary[500]};
         }
       `}</style>
     </>

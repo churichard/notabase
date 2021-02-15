@@ -88,7 +88,7 @@ const FormatButton = ({ format }: FormatButtonProps) => {
       }}
     >
       <Icon
-        className={`${isActive ? 'text-blue-500' : 'text-gray-700'}`}
+        className={`${isActive ? 'text-primary-500' : 'text-gray-700'}`}
         size={18}
       />
     </span>

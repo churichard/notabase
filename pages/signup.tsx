@@ -9,7 +9,7 @@ export default function Signup() {
       <Head>
         <title>Sign up | Atomic</title>
       </Head>
-      <div className="min-h-screen bg-blue-50">
+      <div className="min-h-screen bg-gray-50">
         <div className="container p-8 md:p-24">
           <div className="mx-auto card md:p-12">
             <p className="pb-6 -mt-2 text-xl text-center">Sign up for Atomic</p>
@@ -18,7 +18,7 @@ export default function Signup() {
           <p className="mt-4 text-sm text-center text-gray-700">
             Have an account?{' '}
             <Link href="/login">
-              <a className="text-blue-600 hover:text-blue-700">Log in</a>
+              <a className="text-primary-600 hover:text-primary-700">Log in</a>
             </Link>
           </p>
         </div>

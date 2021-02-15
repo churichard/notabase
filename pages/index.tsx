@@ -9,7 +9,7 @@ export default function Home() {
           Atomic | A personal knowledge base for non-linear thinking.
         </title>
       </Head>
-      <div className="flex items-center h-screen bg-blue-50">
+      <div className="flex items-center h-screen bg-gray-50">
         <div className="container px-4 py-8">
           <div className="max-w-7xl">
             <h1 className="text-4xl font-medium md:text-6xl">
