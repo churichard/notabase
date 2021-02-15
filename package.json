@@ -16,6 +16,7 @@
     "postcss": "^8.2.6",
     "react": "17.0.1",
     "react-dom": "17.0.1",
+    "react-feather": "^2.0.9",
     "react-toastify": "^7.0.3",
     "slate": "^0.59.0",
     "slate-history": "^0.59.0",
@@ -25,6 +26,7 @@
   "devDependencies": {
     "@types/node": "^14.14.25",
     "@types/react": "^17.0.1",
+    "@types/react-dom": "^17.0.1",
     "@typescript-eslint/eslint-plugin": "^4.15.0",
     "@typescript-eslint/parser": "^4.15.0",
     "eslint": "^7.19.0",

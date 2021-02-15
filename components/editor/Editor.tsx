@@ -9,6 +9,7 @@ import {
 } from 'slate-react';
 import { withHistory } from 'slate-history';
 import isHotkey from 'is-hotkey';
+import HoveringToolbar from './HoveringToolbar';
 
 const HOTKEYS: Record<string, string> = {
   'mod+b': 'bold',
@@ -30,6 +31,9 @@ export default function Editor() {
 
   return (
     <Slate editor={editor} value={value} onChange={(value) => setValue(value)}>
+      <div id="hovering-toolbar">
+        <HoveringToolbar />
+      </div>
       <Editable
         className="w-full h-screen p-8"
         renderElement={renderElement}
@@ -52,12 +56,12 @@ export default function Editor() {
   );
 }
 
-const isMarkActive = (editor: SlateEditor, format: string) => {
+export const isMarkActive = (editor: SlateEditor, format: string) => {
   const marks = SlateEditor.marks(editor);
   return marks ? marks[format] === true : false;
 };
 
-const toggleMark = (editor: SlateEditor, format: string) => {
+export const toggleMark = (editor: SlateEditor, format: string) => {
   const isActive = isMarkActive(editor, format);
 
   if (isActive) {

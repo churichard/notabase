@@ -1,7 +1,7 @@
 import React from 'react';
 import { GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
-import Editor from 'components/Editor';
+import Editor from 'components/editor/Editor';
 import supabase from 'lib/supabase';
 import Sidebar from 'components/Sidebar';
 
