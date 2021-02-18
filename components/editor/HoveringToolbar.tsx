@@ -24,6 +24,7 @@ export default function HoveringToolbar() {
       Editor.string(editor, selection) === ''
     ) {
       el.style.opacity = '0';
+      el.style.visibility = 'hidden';
       return;
     }
 
@@ -35,6 +36,7 @@ export default function HoveringToolbar() {
     const rect = domRange.getBoundingClientRect();
 
     el.style.opacity = '1';
+    el.style.visibility = 'visible';
     el.style.top = `${rect.top + window.pageYOffset - el.offsetHeight}px`;
     el.style.left = `${rect.left + window.pageXOffset}px`;
   });
@@ -43,7 +45,7 @@ export default function HoveringToolbar() {
     <Portal selector="#hovering-toolbar">
       <div
         ref={ref}
-        className="absolute z-10 flex items-center -mt-2 overflow-hidden transition-opacity bg-white border rounded-md opacity-0 toolbar -top-16 -left-16"
+        className="absolute z-10 flex items-center invisible -mt-2 overflow-hidden transition-opacity bg-white border rounded-md opacity-0 toolbar"
       >
         <FormatButton format="bold" />
         <FormatButton format="italic" />
