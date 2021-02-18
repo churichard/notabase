@@ -18,7 +18,12 @@ const HOTKEYS: Record<string, string> = {
   'mod+`': 'code',
 };
 
-export default function Editor() {
+type Props = {
+  className?: string;
+};
+
+export default function Editor(props: Props) {
+  const { className } = props;
   const editor = useMemo(() => withHistory(withReact(createEditor())), []);
   const renderElement = useCallback((props) => <Element {...props} />, []);
   const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
@@ -35,7 +40,7 @@ export default function Editor() {
         <HoveringToolbar />
       </div>
       <Editable
-        className="w-full h-screen p-8"
+        className={`placeholder-gray-300 ${className}`}
         renderElement={renderElement}
         renderLeaf={renderLeaf}
         placeholder="Start typing here…"

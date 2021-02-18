@@ -8,7 +8,11 @@ module.exports = {
     container: {
       center: true,
     },
-    extend: {},
+    extend: {
+      width: {
+        176: '44rem',
+      },
+    },
     colors: {
       ...colors,
       primary: colors.teal,
