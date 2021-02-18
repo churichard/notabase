@@ -36,21 +36,25 @@ export default function HoveringToolbar() {
 
     el.style.opacity = '1';
     el.style.top = `${rect.top + window.pageYOffset - el.offsetHeight}px`;
-    el.style.left = `${
-      rect.left + window.pageXOffset - el.offsetWidth / 2 + rect.width / 2
-    }px`;
+    el.style.left = `${rect.left + window.pageXOffset}px`;
   });
 
   return (
     <Portal selector="#hovering-toolbar">
       <div
         ref={ref}
-        className="absolute z-10 flex items-center -mt-1 transition-opacity bg-white border rounded-md shadow-md opacity-0 -top-16 -left-16"
+        className="absolute z-10 flex items-center -mt-2 overflow-hidden transition-opacity bg-white border rounded-md opacity-0 toolbar -top-16 -left-16"
       >
         <FormatButton format="bold" />
         <FormatButton format="italic" />
         <FormatButton format="underline" />
         <FormatButton format="code" />
+        <style jsx>{`
+          .toolbar {
+            box-shadow: rgb(15 15 15 / 10%) 0px 3px 6px,
+              rgb(15 15 15 / 20%) 0px 9px 24px;
+          }
+        `}</style>
       </div>
     </Portal>
   );
@@ -83,8 +87,10 @@ const FormatButton = ({ format }: FormatButtonProps) => {
       className="px-1 py-2 cursor-pointer hover:bg-gray-100"
       onMouseDown={(event) => event.preventDefault()}
       onMouseUp={(event) => {
-        event.preventDefault();
-        toggleMark(editor, format);
+        if (event.button === 0) {
+          event.preventDefault();
+          toggleMark(editor, format);
+        }
       }}
     >
       <Icon
