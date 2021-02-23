@@ -13,10 +13,18 @@ export default function AuthForm(props: Props) {
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [
+    showEmailConfirmationMessage,
+    setShowEmailConfirmationMessage,
+  ] = useState(false);
 
   useEffect(() => {
     const { data: authListener } = supabase.auth.onAuthStateChange(
       async (event, session) => {
+        if (!session) {
+          return;
+        }
+
         // Set auth cookie
         const res = await fetch('/api/auth', {
           method: 'POST',
@@ -58,6 +66,9 @@ export default function AuthForm(props: Props) {
 
       if (error) {
         toast.error(error.message);
+        setIsLoading(false);
+      } else if (signup) {
+        setShowEmailConfirmationMessage(true);
         setIsLoading(false);
       }
     },
@@ -101,6 +112,12 @@ export default function AuthForm(props: Props) {
       >
         {signup ? 'Sign up' : 'Log in'}
       </button>
+      {signup && showEmailConfirmationMessage ? (
+        <div className="mt-4 text-primary-500">
+          We just sent you a confirmation email. Please check your inbox and
+          confirm your email address.
+        </div>
+      ) : null}
     </form>
   );
 }
