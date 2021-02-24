@@ -1,15 +1,41 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { User } from '@supabase/supabase-js';
 import { Note } from 'types/supabase';
+import supabase from 'lib/supabase';
+import { DEFAULT_NOTE_CONTENT } from 'constants/note';
 
 type Props = {
   user: User;
-  notes: Note[];
+  notes: Array<Note>;
 };
 
-const Sidebar = (props: Props) => {
+export default function Sidebar(props: Props) {
   const { user, notes } = props;
+  const router = useRouter();
+  const [inputText, setInputText] = useState('');
+
+  const onInputSubmit = async () => {
+    const { data } = await supabase
+      .from<Note>('notes')
+      .insert([
+        {
+          user_id: user.id,
+          title: inputText,
+          content: JSON.stringify(DEFAULT_NOTE_CONTENT),
+        },
+      ])
+      .single();
+
+    if (!data) {
+      return;
+    }
+
+    setInputText('');
+    router.push(`/app/note/${data.id}`);
+  };
+
   return (
     <div className="flex flex-col flex-none w-64 h-full border-r border-gray-100 bg-gray-50">
       <Link href="/app">
@@ -18,15 +44,27 @@ const Sidebar = (props: Props) => {
           <div className="text-sm">{user.email}</div>
         </a>
       </Link>
-      {notes.map((note) => (
-        <Link key={note.id} href={`/note/${note.id}`}>
-          <a className="w-full px-8 py-1 mt-2 text-gray-800 hover:bg-gray-200 active:bg-gray-300">
-            {note.title}
-          </a>
-        </Link>
-      ))}
+      <input
+        type="text"
+        className="py-1 mx-4 mt-2 input"
+        placeholder="Create note"
+        value={inputText}
+        onChange={(e) => setInputText(e.target.value)}
+        onKeyPress={(event) => {
+          if (event.key === 'Enter') {
+            onInputSubmit();
+          }
+        }}
+      />
+      <div className="flex flex-col mt-2">
+        {notes.map((note) => (
+          <Link key={note.id} href={`/app/note/${note.id}`}>
+            <a className="w-full px-8 py-1 text-gray-800 hover:bg-gray-200 active:bg-gray-300">
+              {note.title}
+            </a>
+          </Link>
+        ))}
+      </div>
     </div>
   );
-};
-
-export default Sidebar;
+}

@@ -1,15 +1,25 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 
 type Props = {
   className?: string;
+  initialValue?: string;
 };
 
 export default function Title(props: Props) {
-  const { className } = props;
+  const { className, initialValue = '' } = props;
+  const titleRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!titleRef.current) {
+      return;
+    }
+    titleRef.current.textContent = initialValue;
+  }, [initialValue]);
 
   return (
     <>
       <div
+        ref={titleRef}
         className={`title text-3xl font-semibold border-none focus:outline-none p-0 leading-10 cursor-text ${className}`}
         role="textbox"
         placeholder="Untitled"

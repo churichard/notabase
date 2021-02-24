@@ -9,6 +9,7 @@ import {
 } from 'slate-react';
 import { withHistory } from 'slate-history';
 import { isHotkey } from 'is-hotkey';
+import { DEFAULT_NOTE_CONTENT } from 'constants/note';
 import HoveringToolbar from './HoveringToolbar';
 
 const HOTKEYS: Record<string, string> = {
@@ -20,19 +21,15 @@ const HOTKEYS: Record<string, string> = {
 
 type Props = {
   className?: string;
+  initialValue?: Array<Node>;
 };
 
 export default function Editor(props: Props) {
-  const { className } = props;
+  const { className, initialValue = DEFAULT_NOTE_CONTENT } = props;
   const editor = useMemo(() => withHistory(withReact(createEditor())), []);
   const renderElement = useCallback((props) => <Element {...props} />, []);
   const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
-  const [value, setValue] = useState<Array<Node>>([
-    {
-      type: 'paragraph',
-      children: [{ text: '' }],
-    },
-  ]);
+  const [value, setValue] = useState<Array<Node>>(initialValue);
 
   return (
     <Slate editor={editor} value={value} onChange={(value) => setValue(value)}>
