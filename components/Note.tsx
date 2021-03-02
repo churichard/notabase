@@ -1,7 +1,11 @@
-import React from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
+import { Node } from 'slate';
+import { User } from '@supabase/supabase-js';
 import Title from 'components/editor/Title';
 import { Note as NoteType } from 'types/supabase';
+import useDebounce from 'hooks/useDebounce';
+import supabase from 'lib/supabase';
 
 // Workaround for Slate bug when hot reloading: https://github.com/ianstormtaylor/slate/issues/3621
 const Editor = dynamic(() => import('components/editor/Editor'), {
@@ -9,15 +13,62 @@ const Editor = dynamic(() => import('components/editor/Editor'), {
 });
 
 type Props = {
+  user: User;
   note: NoteType;
 };
 
 export default function Note(props: Props) {
-  const { note } = props;
+  const { user, note } = props;
+
+  const initialNote = useMemo(
+    () => ({
+      id: note.id,
+      title: note.title,
+      content: JSON.parse(note.content),
+    }),
+    [note]
+  );
+  const [currentNote, setCurrentNote] = useState<{
+    id: string;
+    title: string;
+    content: Array<Node>;
+  }>(initialNote);
+  const [debouncedNote, setDebouncedNote] = useDebounce(currentNote, 500);
+
+  const saveNote = useCallback(
+    async (id: string, title: string, content: string) => {
+      await supabase
+        .from<NoteType>('notes')
+        .update({ title, content })
+        .eq('user_id', user.id)
+        .eq('id', id);
+    },
+    [user.id]
+  );
+
+  // Save the updated note in the database if it changes
+  useEffect(() => {
+    const { id, title, content } = debouncedNote;
+    saveNote(id, title, JSON.stringify(content));
+    if (initialNote.id !== id) {
+      // Reset the note contents if the note id has changed
+      setCurrentNote(initialNote);
+      setDebouncedNote(initialNote);
+    }
+  }, [initialNote, debouncedNote, saveNote, setDebouncedNote]);
+
   return (
     <div className="flex flex-col p-12 overflow-y-auto w-176">
-      <Title className="mb-6" initialValue={note.title} />
-      <Editor className="flex-1" initialValue={JSON.parse(note.content)} />
+      <Title
+        className="mb-6"
+        value={currentNote.title}
+        onChange={(title) => setCurrentNote((note) => ({ ...note, title }))}
+      />
+      <Editor
+        className="flex-1"
+        value={currentNote.content}
+        setValue={(content) => setCurrentNote((note) => ({ ...note, content }))}
+      />
     </div>
   );
 }

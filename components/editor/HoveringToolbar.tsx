@@ -68,7 +68,10 @@ type FormatButtonProps = {
 
 const FormatButton = ({ format }: FormatButtonProps) => {
   const editor = useSlate();
-  const isActive = isMarkActive(editor, format);
+  const isActive = useMemo(() => isMarkActive(editor, format), [
+    editor,
+    format,
+  ]);
 
   const Icon = useMemo(() => {
     if (format === 'bold') {

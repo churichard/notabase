@@ -42,7 +42,7 @@ export default function NotePage(props: Props) {
       </Head>
       <div className="flex h-screen">
         <Sidebar user={user} notes={notes} />
-        <Note note={note} />
+        <Note user={user} note={note} />
       </div>
     </>
   );
@@ -62,7 +62,8 @@ export async function getServerSideProps({
   const { data: notes } = await supabase
     .from<NoteType>('notes')
     .select('id, title')
-    .eq('user_id', user.id);
+    .eq('user_id', user.id)
+    .order('title');
 
   // Validate query param
   const noteId = query.id;

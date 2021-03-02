@@ -1,20 +1,34 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 type Props = {
   className?: string;
-  initialValue?: string;
+  value: string;
+  onChange: (value: string) => void;
 };
 
 export default function Title(props: Props) {
-  const { className, initialValue = '' } = props;
+  const { className, value, onChange } = props;
   const titleRef = useRef<HTMLDivElement | null>(null);
+  const [prevTitle, setPrevTitle] = useState<string | null>(null);
 
+  const emitChange = () => {
+    if (!titleRef.current) {
+      return;
+    }
+    const title = titleRef.current.textContent ?? '';
+    if (onChange && title !== prevTitle) {
+      onChange(title);
+    }
+    setPrevTitle(title);
+  };
+
+  // Set the initial title
   useEffect(() => {
     if (!titleRef.current) {
       return;
     }
-    titleRef.current.textContent = initialValue;
-  }, [initialValue]);
+    titleRef.current.textContent = value;
+  }, [value]);
 
   return (
     <>
@@ -37,6 +51,8 @@ export default function Title(props: Props) {
           text = text.replace(/\r?\n|\r/g, ' ');
           document.execCommand('insertText', false, text);
         }}
+        onInput={emitChange}
+        onBlur={emitChange}
         contentEditable
       />
       <style jsx>{`
