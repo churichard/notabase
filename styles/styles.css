@@ -15,3 +15,7 @@
     @apply block border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500;
   }
 }
+
+:root {
+  --color-primary-500: #14b8a6;
+}
