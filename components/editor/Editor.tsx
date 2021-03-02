@@ -58,8 +58,11 @@ export default function Editor(props: Props) {
 }
 
 export const isMarkActive = (editor: SlateEditor, format: string) => {
-  const marks = SlateEditor.marks(editor);
-  return marks ? marks[format] === true : false;
+  const [match] = SlateEditor.nodes(editor, {
+    match: (n) => n[format] === true,
+    mode: 'all',
+  });
+  return !!match;
 };
 
 export const toggleMark = (editor: SlateEditor, format: string) => {
