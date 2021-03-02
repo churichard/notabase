@@ -74,25 +74,25 @@ const Element = ({ attributes, children, element }: RenderElementProps) => {
       );
     case 'list-item':
       return (
-        <li className="ml-4" {...attributes}>
+        <li className="pl-1" {...attributes}>
           {children}
         </li>
       );
     case 'bulleted-list':
       return (
-        <ul className="list-disc list-inside" {...attributes}>
+        <ul className="ml-8 list-disc" {...attributes}>
           {children}
         </ul>
       );
     case 'numbered-list':
       return (
-        <ol className="list-decimal list-inside" {...attributes}>
+        <ol className="ml-8 list-decimal" {...attributes}>
           {children}
         </ol>
       );
     case 'block-quote':
       return (
-        <blockquote className="pl-4 border-l-4" {...attributes}>
+        <blockquote className="pl-4 my-4 border-l-4" {...attributes}>
           {children}
         </blockquote>
       );
