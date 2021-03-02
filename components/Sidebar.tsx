@@ -9,10 +9,11 @@ import { DEFAULT_NOTE_CONTENT } from 'constants/note';
 type Props = {
   user: User;
   notes: Array<Note>;
+  currentNoteId?: string;
 };
 
 export default function Sidebar(props: Props) {
-  const { user, notes } = props;
+  const { user, notes, currentNoteId } = props;
   const router = useRouter();
   const [inputText, setInputText] = useState('');
 
@@ -58,13 +59,29 @@ export default function Sidebar(props: Props) {
       />
       <div className="flex flex-col mt-2">
         {notes.map((note) => (
-          <Link key={note.id} href={`/app/note/${note.id}`}>
-            <a className="w-full px-8 py-1 text-gray-800 hover:bg-gray-200 active:bg-gray-300">
-              {note.title}
-            </a>
-          </Link>
+          <NoteLink key={note.id} note={note} currentNoteId={currentNoteId} />
         ))}
       </div>
     </div>
+  );
+}
+
+type NoteLinkProps = {
+  note: Note;
+  currentNoteId?: string;
+};
+
+function NoteLink(props: NoteLinkProps) {
+  const { note, currentNoteId } = props;
+  return (
+    <Link href={`/app/note/${note.id}`}>
+      <a
+        className={`w-full px-8 py-1 text-gray-800 hover:bg-gray-200 active:bg-gray-300 ${
+          currentNoteId === note.id ? 'bg-gray-200' : 'bg-gray-50'
+        }`}
+      >
+        {note.title}
+      </a>
+    </Link>
   );
 }

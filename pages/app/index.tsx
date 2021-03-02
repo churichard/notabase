@@ -42,7 +42,8 @@ export async function getServerSideProps({ req }: GetServerSidePropsContext) {
   const { data: notes } = await supabase
     .from<Note>('notes')
     .select('id, title')
-    .eq('user_id', user.id);
+    .eq('user_id', user.id)
+    .order('title');
 
   // Redirect to first note if one exists
   if (notes && notes.length > 0) {

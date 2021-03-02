@@ -41,7 +41,7 @@ export default function NotePage(props: Props) {
         <title>{note.title}</title>
       </Head>
       <div className="flex h-screen">
-        <Sidebar user={user} notes={notes} />
+        <Sidebar user={user} notes={notes} currentNoteId={note.id} />
         <Note user={user} note={note} />
       </div>
     </>
