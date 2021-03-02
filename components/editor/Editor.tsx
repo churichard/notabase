@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
-import { createEditor, Editor as SlateEditor, Node } from 'slate';
+import { createEditor, Node } from 'slate';
 import {
   Editable,
   RenderElementProps,
@@ -9,6 +9,7 @@ import {
 } from 'slate-react';
 import { withHistory } from 'slate-history';
 import { isHotkey } from 'is-hotkey';
+import { toggleMark } from 'helper/editor';
 import HoveringToolbar from './HoveringToolbar';
 
 const HOTKEYS: Record<string, string> = {
@@ -57,24 +58,6 @@ export default function Editor(props: Props) {
   );
 }
 
-export const isMarkActive = (editor: SlateEditor, format: string) => {
-  const [match] = SlateEditor.nodes(editor, {
-    match: (n) => n[format] === true,
-    mode: 'all',
-  });
-  return !!match;
-};
-
-export const toggleMark = (editor: SlateEditor, format: string) => {
-  const isActive = isMarkActive(editor, format);
-
-  if (isActive) {
-    SlateEditor.removeMark(editor, format);
-  } else {
-    SlateEditor.addMark(editor, format, true);
-  }
-};
-
 const Element = ({ attributes, children, element }: RenderElementProps) => {
   switch (element.type) {
     case 'block-quote':
@@ -82,9 +65,17 @@ const Element = ({ attributes, children, element }: RenderElementProps) => {
     case 'bulleted-list':
       return <ul {...attributes}>{children}</ul>;
     case 'heading-one':
-      return <h1 {...attributes}>{children}</h1>;
+      return (
+        <h1 className="mb-2 text-2xl" {...attributes}>
+          {children}
+        </h1>
+      );
     case 'heading-two':
-      return <h2 {...attributes}>{children}</h2>;
+      return (
+        <h2 className="mb-2 text-xl" {...attributes}>
+          {children}
+        </h2>
+      );
     case 'list-item':
       return <li {...attributes}>{children}</li>;
     case 'numbered-list':

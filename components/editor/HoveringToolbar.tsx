@@ -1,9 +1,24 @@
 import React, { useEffect, useMemo, useRef } from 'react';
 import { useSlate, ReactEditor } from 'slate-react';
 import { Editor, Range } from 'slate';
-import { Bold, Italic, Underline, Code } from 'react-feather';
+import {
+  BoldIcon,
+  ItalicIcon,
+  UnderlineIcon,
+  CodeIcon,
+  Header1Icon,
+  Header2Icon,
+  RightDoubleQuoteIcon,
+  BulletedListIcon,
+  NumberedListIcon,
+} from '@fluentui/react-icons';
 import Portal from 'components/Portal';
-import { toggleMark, isMarkActive } from './Editor';
+import {
+  toggleMark,
+  isMarkActive,
+  toggleBlock,
+  isBlockActive,
+} from 'helper/editor';
 
 export default function HoveringToolbar() {
   const ref = useRef<HTMLDivElement | null>(null);
@@ -51,6 +66,11 @@ export default function HoveringToolbar() {
         <FormatButton format="italic" />
         <FormatButton format="underline" />
         <FormatButton format="code" />
+        <BlockButton format="heading-one" />
+        <BlockButton format="heading-two" />
+        <BlockButton format="bulleted-list" />
+        <BlockButton format="numbered-list" />
+        <BlockButton format="block-quote" />
         <style jsx>{`
           .toolbar {
             box-shadow: rgb(15 15 15 / 10%) 0px 3px 6px,
@@ -62,6 +82,64 @@ export default function HoveringToolbar() {
   );
 }
 
+type ToolbarButtonProps = {
+  format:
+    | 'bold'
+    | 'italic'
+    | 'underline'
+    | 'code'
+    | 'heading-one'
+    | 'heading-two'
+    | 'block-quote'
+    | 'bulleted-list'
+    | 'numbered-list';
+  onClick: () => void;
+  isActive?: boolean;
+};
+
+const ToolbarButton = (props: ToolbarButtonProps) => {
+  const { format, onClick, isActive = false } = props;
+
+  const Icon = useMemo(() => {
+    if (format === 'bold') {
+      return BoldIcon;
+    } else if (format === 'italic') {
+      return ItalicIcon;
+    } else if (format === 'underline') {
+      return UnderlineIcon;
+    } else if (format === 'code') {
+      return CodeIcon;
+    } else if (format === 'heading-one') {
+      return Header1Icon;
+    } else if (format === 'heading-two') {
+      return Header2Icon;
+    } else if (format === 'bulleted-list') {
+      return BulletedListIcon;
+    } else if (format === 'numbered-list') {
+      return NumberedListIcon;
+    } else if (format === 'block-quote') {
+      return RightDoubleQuoteIcon;
+    } else {
+      throw new Error(`Format ${format} is not a valid format`);
+    }
+  }, [format]);
+
+  return (
+    <span
+      className="px-2 py-2 cursor-pointer hover:bg-gray-100"
+      onMouseDown={(event) => event.preventDefault()}
+      onMouseUp={(event) => {
+        if (event.button === 0) {
+          event.preventDefault();
+          onClick();
+        }
+      }}
+    >
+      <Icon className={`${isActive ? 'text-primary-500' : 'text-gray-700'}`} />
+    </span>
+  );
+};
+
 type FormatButtonProps = {
   format: 'bold' | 'italic' | 'underline' | 'code';
 };
@@ -70,35 +148,33 @@ const FormatButton = ({ format }: FormatButtonProps) => {
   const editor = useSlate();
   const isActive = isMarkActive(editor, format);
 
-  const Icon = useMemo(() => {
-    if (format === 'bold') {
-      return Bold;
-    } else if (format === 'italic') {
-      return Italic;
-    } else if (format === 'underline') {
-      return Underline;
-    } else if (format === 'code') {
-      return Code;
-    } else {
-      throw new Error(`Format ${format} is not a valid format`);
-    }
-  }, [format]);
+  return (
+    <ToolbarButton
+      format={format}
+      onClick={() => toggleMark(editor, format)}
+      isActive={isActive}
+    />
+  );
+};
+
+type BlockButtonProps = {
+  format:
+    | 'heading-one'
+    | 'heading-two'
+    | 'bulleted-list'
+    | 'numbered-list'
+    | 'block-quote';
+};
+
+const BlockButton = ({ format }: BlockButtonProps) => {
+  const editor = useSlate();
+  const isActive = isBlockActive(editor, format);
 
   return (
-    <span
-      className="px-1 py-2 cursor-pointer hover:bg-gray-100"
-      onMouseDown={(event) => event.preventDefault()}
-      onMouseUp={(event) => {
-        if (event.button === 0) {
-          event.preventDefault();
-          toggleMark(editor, format);
-        }
-      }}
-    >
-      <Icon
-        className={`${isActive ? 'text-primary-500' : 'text-gray-700'}`}
-        size={18}
-      />
-    </span>
+    <ToolbarButton
+      format={format}
+      onClick={() => toggleBlock(editor, format)}
+      isActive={isActive}
+    />
   );
 };
