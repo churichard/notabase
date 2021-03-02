@@ -60,10 +60,6 @@ export default function Editor(props: Props) {
 
 const Element = ({ attributes, children, element }: RenderElementProps) => {
   switch (element.type) {
-    case 'block-quote':
-      return <blockquote {...attributes}>{children}</blockquote>;
-    case 'bulleted-list':
-      return <ul {...attributes}>{children}</ul>;
     case 'heading-one':
       return (
         <h1 className="mb-2 text-2xl" {...attributes}>
@@ -77,9 +73,29 @@ const Element = ({ attributes, children, element }: RenderElementProps) => {
         </h2>
       );
     case 'list-item':
-      return <li {...attributes}>{children}</li>;
+      return (
+        <li className="ml-4" {...attributes}>
+          {children}
+        </li>
+      );
+    case 'bulleted-list':
+      return (
+        <ul className="list-disc list-inside" {...attributes}>
+          {children}
+        </ul>
+      );
     case 'numbered-list':
-      return <ol {...attributes}>{children}</ol>;
+      return (
+        <ol className="list-decimal list-inside" {...attributes}>
+          {children}
+        </ol>
+      );
+    case 'block-quote':
+      return (
+        <blockquote className="pl-4 border-l-4" {...attributes}>
+          {children}
+        </blockquote>
+      );
     default:
       return <p {...attributes}>{children}</p>;
   }

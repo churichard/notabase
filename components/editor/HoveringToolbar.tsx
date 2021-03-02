@@ -60,7 +60,7 @@ export default function HoveringToolbar() {
     <Portal selector="#hovering-toolbar">
       <div
         ref={ref}
-        className="absolute z-10 flex items-center invisible -mt-2 overflow-hidden transition-opacity bg-white border rounded-md opacity-0 toolbar"
+        className="absolute z-10 flex items-center invisible -mt-2 overflow-hidden transition-opacity bg-white border rounded-md opacity-0"
       >
         <FormatButton format="bold" />
         <FormatButton format="italic" />
@@ -72,7 +72,7 @@ export default function HoveringToolbar() {
         <BlockButton format="numbered-list" />
         <BlockButton format="block-quote" />
         <style jsx>{`
-          .toolbar {
+          & {
             box-shadow: rgb(15 15 15 / 10%) 0px 3px 6px,
               rgb(15 15 15 / 20%) 0px 9px 24px;
           }
@@ -90,9 +90,9 @@ type ToolbarButtonProps = {
     | 'code'
     | 'heading-one'
     | 'heading-two'
-    | 'block-quote'
     | 'bulleted-list'
-    | 'numbered-list';
+    | 'numbered-list'
+    | 'block-quote';
   onClick: () => void;
   isActive?: boolean;
 };
@@ -101,26 +101,27 @@ const ToolbarButton = (props: ToolbarButtonProps) => {
   const { format, onClick, isActive = false } = props;
 
   const Icon = useMemo(() => {
-    if (format === 'bold') {
-      return BoldIcon;
-    } else if (format === 'italic') {
-      return ItalicIcon;
-    } else if (format === 'underline') {
-      return UnderlineIcon;
-    } else if (format === 'code') {
-      return CodeIcon;
-    } else if (format === 'heading-one') {
-      return Header1Icon;
-    } else if (format === 'heading-two') {
-      return Header2Icon;
-    } else if (format === 'bulleted-list') {
-      return BulletedListIcon;
-    } else if (format === 'numbered-list') {
-      return NumberedListIcon;
-    } else if (format === 'block-quote') {
-      return RightDoubleQuoteIcon;
-    } else {
-      throw new Error(`Format ${format} is not a valid format`);
+    switch (format) {
+      case 'bold':
+        return BoldIcon;
+      case 'italic':
+        return ItalicIcon;
+      case 'underline':
+        return UnderlineIcon;
+      case 'code':
+        return CodeIcon;
+      case 'heading-one':
+        return Header1Icon;
+      case 'heading-two':
+        return Header2Icon;
+      case 'bulleted-list':
+        return BulletedListIcon;
+      case 'numbered-list':
+        return NumberedListIcon;
+      case 'block-quote':
+        return RightDoubleQuoteIcon;
+      default:
+        throw new Error(`Format ${format} is not a valid format`);
     }
   }, [format]);
 
