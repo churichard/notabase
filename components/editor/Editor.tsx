@@ -1,10 +1,5 @@
 import React, { KeyboardEvent, useCallback } from 'react';
-import {
-  Node,
-  Transforms,
-  Element as SlateElement,
-  Editor as SlateEditor,
-} from 'slate';
+import { Node } from 'slate';
 import {
   Editable,
   ReactEditor,
@@ -13,7 +8,7 @@ import {
   Slate,
 } from 'slate-react';
 import { isHotkey } from 'is-hotkey';
-import { toggleMark, LIST_TYPES } from 'editor/formatting';
+import { toggleMark } from 'editor/formatting';
 import HoveringToolbar from './HoveringToolbar';
 
 const HOTKEYS: Record<string, string> = {
@@ -44,79 +39,6 @@ export default function Editor(props: Props) {
           event.preventDefault();
           const mark = HOTKEYS[hotkey];
           toggleMark(editor, mark);
-        }
-      }
-
-      // Handle breaking out of the current block element when the enter key is pressed
-      if (event.key === 'Enter' && !event.shiftKey && editor.selection) {
-        const breakoutElements = [
-          'heading-one',
-          'heading-two',
-          'heading-three',
-          'heading-four',
-          'heading-five',
-          'heading-six',
-          'block-quote',
-          'list-item',
-        ];
-        const selectedElement = Node.descendant(
-          editor,
-          editor.selection.anchor.path.slice(0, -1)
-        );
-        const selectedElementType = selectedElement.type as string;
-
-        if (breakoutElements.includes(selectedElementType)) {
-          const selectedLeaf = Node.descendant(
-            editor,
-            editor.selection.anchor.path
-          );
-          const selectedLeafText = selectedLeaf.text as string;
-
-          // The element is a list item
-          if (selectedElementType === 'list-item') {
-            // We only want to insert a paragraph if there is no text content in the current bullet point
-            if (selectedLeafText.length === 0) {
-              event.preventDefault();
-              const newProperties: Partial<SlateElement> = {
-                type: 'paragraph',
-              };
-              Transforms.setNodes(editor, newProperties);
-
-              Transforms.unwrapNodes(editor, {
-                match: (n) =>
-                  !SlateEditor.isEditor(n) &&
-                  SlateElement.isElement(n) &&
-                  LIST_TYPES.includes(n.type as string),
-                split: true,
-              });
-            }
-          }
-          // The cursor is at the end of the text
-          else if (editor.selection.anchor.offset === selectedLeafText.length) {
-            event.preventDefault();
-            // We insert a paragraph after the current node
-            Transforms.insertNodes(editor, {
-              type: 'paragraph',
-              children: [{ text: '', marks: [] }],
-            });
-          }
-          // The cursor is at the beginning of the text
-          else if (editor.selection.anchor.offset === 0) {
-            event.preventDefault();
-            // We insert a paragraph before the current node
-            Transforms.insertNodes(editor, {
-              type: 'paragraph',
-              children: [{ text: '', marks: [] }],
-            });
-            Transforms.move(editor);
-          }
-          // The cursor is in the middle of the text
-          else {
-            event.preventDefault();
-            // We insert a paragraph with the proper text
-            Transforms.splitNodes(editor);
-            Transforms.setNodes(editor, { type: 'paragraph' });
-          }
         }
       }
     },
