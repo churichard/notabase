@@ -13,7 +13,7 @@ import {
   Slate,
 } from 'slate-react';
 import { isHotkey } from 'is-hotkey';
-import { toggleMark } from 'editor/formatting';
+import { toggleMark, LIST_TYPES } from 'editor/formatting';
 import HoveringToolbar from './HoveringToolbar';
 
 const HOTKEYS: Record<string, string> = {
@@ -86,7 +86,7 @@ export default function Editor(props: Props) {
                 match: (n) =>
                   !SlateEditor.isEditor(n) &&
                   SlateElement.isElement(n) &&
-                  n.type === 'bulleted-list',
+                  LIST_TYPES.includes(n.type as string),
                 split: true,
               });
             }

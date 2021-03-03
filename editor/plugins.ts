@@ -6,6 +6,7 @@ import {
   Point,
 } from 'slate';
 import { ReactEditor } from 'slate-react';
+import { LIST_TYPES } from './formatting';
 
 const SHORTCUTS: Record<string, string | undefined> = {
   '*': 'list-item',
@@ -92,7 +93,7 @@ export const withShortcuts = (editor: ReactEditor) => {
               match: (n) =>
                 !SlateEditor.isEditor(n) &&
                 SlateElement.isElement(n) &&
-                n.type === 'bulleted-list',
+                LIST_TYPES.includes(n.type as string),
               split: true,
             });
           }

@@ -5,7 +5,7 @@ import {
 } from 'slate';
 import { ReactEditor } from 'slate-react';
 
-const LIST_TYPES = ['numbered-list', 'bulleted-list'];
+export const LIST_TYPES = ['numbered-list', 'bulleted-list'];
 
 export const isMarkActive = (editor: ReactEditor, format: string) => {
   const [match] = SlateEditor.nodes(editor, {
