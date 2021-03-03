@@ -1,15 +1,14 @@
-import React, { KeyboardEvent, useCallback, useMemo } from 'react';
-import { createEditor, Node, Transforms } from 'slate';
+import React, { KeyboardEvent, useCallback } from 'react';
+import { Node, Transforms } from 'slate';
 import {
   Editable,
+  ReactEditor,
   RenderElementProps,
   RenderLeafProps,
   Slate,
-  withReact,
 } from 'slate-react';
-import { withHistory } from 'slate-history';
 import { isHotkey } from 'is-hotkey';
-import { toggleMark, withShortcuts } from 'helper/editor';
+import { toggleMark } from 'helper/editor';
 import HoveringToolbar from './HoveringToolbar';
 
 const HOTKEYS: Record<string, string> = {
@@ -21,16 +20,13 @@ const HOTKEYS: Record<string, string> = {
 
 type Props = {
   className?: string;
+  editor: ReactEditor;
   value: Array<Node>;
   setValue: (value: Array<Node>) => void;
 };
 
 export default function Editor(props: Props) {
-  const { className, value, setValue } = props;
-  const editor = useMemo(
-    () => withShortcuts(withHistory(withReact(createEditor()))),
-    []
-  );
+  const { className, editor, value, setValue } = props;
   const renderElement = useCallback((props) => <Element {...props} />, []);
   const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
 

@@ -1,11 +1,14 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
-import { Node } from 'slate';
+import { createEditor, Node, Transforms } from 'slate';
+import { withReact } from 'slate-react';
+import { withHistory } from 'slate-history';
 import { User } from '@supabase/supabase-js';
 import Title from 'components/editor/Title';
 import { Note as NoteType } from 'types/supabase';
 import useDebounce from 'hooks/useDebounce';
 import supabase from 'lib/supabase';
+import { withShortcuts } from 'helper/editor';
 
 // Workaround for Slate bug when hot reloading: https://github.com/ianstormtaylor/slate/issues/3621
 const Editor = dynamic(() => import('components/editor/Editor'), {
@@ -20,6 +23,10 @@ type Props = {
 export default function Note(props: Props) {
   const { user, note } = props;
 
+  const editor = useMemo(
+    () => withShortcuts(withHistory(withReact(createEditor()))),
+    []
+  );
   const initialNote = useMemo(
     () => ({
       id: note.id,
@@ -52,10 +59,11 @@ export default function Note(props: Props) {
     saveNote(id, title, JSON.stringify(content));
     if (initialNote.id !== id) {
       // Reset the note contents if the note id has changed
+      Transforms.deselect(editor);
       setCurrentNote(initialNote);
       setDebouncedNote(initialNote);
     }
-  }, [initialNote, debouncedNote, saveNote, setDebouncedNote]);
+  }, [editor, initialNote, debouncedNote, saveNote, setDebouncedNote]);
 
   return (
     <div className="flex flex-col p-12 overflow-y-auto w-176">
@@ -66,6 +74,7 @@ export default function Note(props: Props) {
       />
       <Editor
         className="flex-1"
+        editor={editor}
         value={currentNote.content}
         setValue={(content) => setCurrentNote((note) => ({ ...note, content }))}
       />
