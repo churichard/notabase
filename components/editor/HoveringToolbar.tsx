@@ -18,7 +18,7 @@ import {
   isMarkActive,
   toggleBlock,
   isBlockActive,
-} from 'helper/editor';
+} from 'editor/formatting';
 
 export default function HoveringToolbar() {
   const ref = useRef<HTMLDivElement | null>(null);

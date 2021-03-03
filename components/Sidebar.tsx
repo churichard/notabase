@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import { User } from '@supabase/supabase-js';
 import { Note } from 'types/supabase';
 import supabase from 'lib/supabase';
-import { DEFAULT_NOTE_CONTENT } from 'constants/note';
+import { DEFAULT_NOTE_CONTENT } from 'editor/constants';
 
 type Props = {
   user: User;

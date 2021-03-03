@@ -8,7 +8,7 @@ import Title from 'components/editor/Title';
 import { Note as NoteType } from 'types/supabase';
 import useDebounce from 'hooks/useDebounce';
 import supabase from 'lib/supabase';
-import { withShortcuts } from 'helper/editor';
+import { withShortcuts } from 'editor/plugins';
 
 // Workaround for Slate bug when hot reloading: https://github.com/ianstormtaylor/slate/issues/3621
 const Editor = dynamic(() => import('components/editor/Editor'), {

@@ -8,7 +8,7 @@ import {
   Slate,
 } from 'slate-react';
 import { isHotkey } from 'is-hotkey';
-import { toggleMark } from 'helper/editor';
+import { toggleMark } from 'editor/formatting';
 import HoveringToolbar from './HoveringToolbar';
 
 const HOTKEYS: Record<string, string> = {
