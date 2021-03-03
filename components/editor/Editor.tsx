@@ -9,7 +9,7 @@ import {
 } from 'slate-react';
 import { withHistory } from 'slate-history';
 import { isHotkey } from 'is-hotkey';
-import { toggleMark } from 'helper/editor';
+import { toggleMark, withShortcuts } from 'helper/editor';
 import HoveringToolbar from './HoveringToolbar';
 
 const HOTKEYS: Record<string, string> = {
@@ -27,7 +27,10 @@ type Props = {
 
 export default function Editor(props: Props) {
   const { className, value, setValue } = props;
-  const editor = useMemo(() => withHistory(withReact(createEditor())), []);
+  const editor = useMemo(
+    () => withShortcuts(withHistory(withReact(createEditor()))),
+    []
+  );
   const renderElement = useCallback((props) => <Element {...props} />, []);
   const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
 
@@ -48,6 +51,10 @@ export default function Editor(props: Props) {
         const breakoutElements = [
           'heading-one',
           'heading-two',
+          'heading-three',
+          'heading-four',
+          'heading-five',
+          'heading-six',
           'block-quote',
           'list-item',
         ];
@@ -122,15 +129,39 @@ const Element = ({ attributes, children, element }: RenderElementProps) => {
   switch (element.type) {
     case 'heading-one':
       return (
-        <h1 className="mt-8 mb-2 text-2xl font-semibold" {...attributes}>
+        <h1 className="my-2 text-2xl font-semibold" {...attributes}>
           {children}
         </h1>
       );
     case 'heading-two':
       return (
-        <h2 className="mt-6 mb-2 text-xl font-medium" {...attributes}>
+        <h2 className="my-2 text-xl font-semibold" {...attributes}>
           {children}
         </h2>
+      );
+    case 'heading-three':
+      return (
+        <h3 className="my-2 text-lg font-semibold" {...attributes}>
+          {children}
+        </h3>
+      );
+    case 'heading-four':
+      return (
+        <h4 className="my-2 font-semibold" {...attributes}>
+          {children}
+        </h4>
+      );
+    case 'heading-five':
+      return (
+        <h5 className="my-2 font-semibold" {...attributes}>
+          {children}
+        </h5>
+      );
+    case 'heading-six':
+      return (
+        <h6 className="my-2 font-semibold" {...attributes}>
+          {children}
+        </h6>
       );
     case 'list-item':
       return (
@@ -167,7 +198,7 @@ const Element = ({ attributes, children, element }: RenderElementProps) => {
 
 const Leaf = ({ attributes, children, leaf }: RenderLeafProps) => {
   if (leaf.bold) {
-    children = <strong>{children}</strong>;
+    children = <span className="font-semibold">{children}</span>;
   }
 
   if (leaf.code) {
