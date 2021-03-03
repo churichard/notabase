@@ -92,15 +92,25 @@ export default function Editor(props: Props) {
             }
           }
           // The cursor is at the end of the text
-          else if (selectedLeafText.length === editor.selection.anchor.offset) {
+          else if (editor.selection.anchor.offset === selectedLeafText.length) {
             event.preventDefault();
-            // We insert a paragraph
+            // We insert a paragraph after the current node
             Transforms.insertNodes(editor, {
               type: 'paragraph',
               children: [{ text: '', marks: [] }],
             });
           }
-          // The cursor is not at the end of the text
+          // The cursor is at the beginning of the text
+          else if (editor.selection.anchor.offset === 0) {
+            event.preventDefault();
+            // We insert a paragraph before the current node
+            Transforms.insertNodes(editor, {
+              type: 'paragraph',
+              children: [{ text: '', marks: [] }],
+            });
+            Transforms.move(editor);
+          }
+          // The cursor is in the middle of the text
           else {
             event.preventDefault();
             // We insert a paragraph with the proper text
