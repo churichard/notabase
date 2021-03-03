@@ -1,5 +1,10 @@
 import React, { KeyboardEvent, useCallback } from 'react';
-import { Node, Transforms } from 'slate';
+import {
+  Node,
+  Transforms,
+  Element as SlateElement,
+  Editor as SlateEditor,
+} from 'slate';
 import {
   Editable,
   ReactEditor,
@@ -72,13 +77,18 @@ export default function Editor(props: Props) {
             // We only want to insert a paragraph if there is no text content in the current bullet point
             if (selectedLeafText.length === 0) {
               event.preventDefault();
-              // We remove the current list item and insert a paragraph
-              Transforms.removeNodes(editor);
-              Transforms.insertNodes(editor, {
+              const newProperties: Partial<SlateElement> = {
                 type: 'paragraph',
-                children: [{ text: '', marks: [] }],
+              };
+              Transforms.setNodes(editor, newProperties);
+
+              Transforms.unwrapNodes(editor, {
+                match: (n) =>
+                  !SlateEditor.isEditor(n) &&
+                  SlateElement.isElement(n) &&
+                  n.type === 'bulleted-list',
+                split: true,
               });
-              Transforms.liftNodes(editor);
             }
           }
           // The cursor is at the end of the text
