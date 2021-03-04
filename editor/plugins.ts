@@ -13,6 +13,7 @@ const SHORTCUTS: Record<string, string | undefined> = {
   '*': 'list-item',
   '-': 'list-item',
   '+': 'list-item',
+  '1.': 'list-item',
   '>': 'block-quote',
   '#': 'heading-one',
   '##': 'heading-two',
@@ -48,7 +49,10 @@ export const withMarkdownShortcuts = (editor: ReactEditor) => {
         });
 
         if (type === 'list-item') {
-          const list = { type: 'bulleted-list', children: [] };
+          const list = {
+            type: beforeText === '1.' ? 'numbered-list' : 'bulleted-list',
+            children: [],
+          };
           Transforms.wrapNodes(editor, list, {
             match: (n) =>
               !SlateEditor.isEditor(n) &&

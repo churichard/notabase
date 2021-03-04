@@ -41,12 +41,10 @@ export const toggleBlock = (editor: ReactEditor, format: string) => {
   const isList = LIST_TYPES.includes(format);
 
   Transforms.unwrapNodes(editor, {
-    match: (n) => {
-      if (SlateEditor.isEditor(n) || !SlateElement.isElement(n)) {
-        return false;
-      }
-      return LIST_TYPES.includes(n.type as string);
-    },
+    match: (n) =>
+      !SlateEditor.isEditor(n) &&
+      SlateElement.isElement(n) &&
+      LIST_TYPES.includes(n.type as string),
     split: true,
   });
   const newProperties: Partial<SlateElement> = {
