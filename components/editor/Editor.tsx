@@ -83,24 +83,6 @@ const Element = ({ attributes, children, element }: RenderElementProps) => {
           {children}
         </h3>
       );
-    case 'heading-four':
-      return (
-        <h4 className="my-2 font-semibold" {...attributes}>
-          {children}
-        </h4>
-      );
-    case 'heading-five':
-      return (
-        <h5 className="my-2 font-semibold" {...attributes}>
-          {children}
-        </h5>
-      );
-    case 'heading-six':
-      return (
-        <h6 className="my-2 font-semibold" {...attributes}>
-          {children}
-        </h6>
-      );
     case 'list-item':
       return (
         <li className="pl-1 my-2" {...attributes}>

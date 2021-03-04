@@ -8,6 +8,7 @@ import {
   CodeIcon,
   Header1Icon,
   Header2Icon,
+  Header3Icon,
   RightDoubleQuoteIcon,
   BulletedListIcon,
   NumberedListIcon,
@@ -68,6 +69,7 @@ export default function HoveringToolbar() {
         <FormatButton format="code" />
         <BlockButton format="heading-one" />
         <BlockButton format="heading-two" />
+        <BlockButton format="heading-three" />
         <BlockButton format="bulleted-list" />
         <BlockButton format="numbered-list" />
         <BlockButton format="block-quote" />
@@ -83,16 +85,7 @@ export default function HoveringToolbar() {
 }
 
 type ToolbarButtonProps = {
-  format:
-    | 'bold'
-    | 'italic'
-    | 'underline'
-    | 'code'
-    | 'heading-one'
-    | 'heading-two'
-    | 'bulleted-list'
-    | 'numbered-list'
-    | 'block-quote';
+  format: FormatButtonProps['format'] | BlockButtonProps['format'];
   onClick: () => void;
   isActive?: boolean;
 };
@@ -114,6 +107,8 @@ const ToolbarButton = (props: ToolbarButtonProps) => {
         return Header1Icon;
       case 'heading-two':
         return Header2Icon;
+      case 'heading-three':
+        return Header3Icon;
       case 'bulleted-list':
         return BulletedListIcon;
       case 'numbered-list':
@@ -162,6 +157,7 @@ type BlockButtonProps = {
   format:
     | 'heading-one'
     | 'heading-two'
+    | 'heading-three'
     | 'bulleted-list'
     | 'numbered-list'
     | 'block-quote';

@@ -17,9 +17,6 @@ const SHORTCUTS: Record<string, string | undefined> = {
   '#': 'heading-one',
   '##': 'heading-two',
   '###': 'heading-three',
-  '####': 'heading-four',
-  '#####': 'heading-five',
-  '######': 'heading-six',
 };
 
 // Add markdown formatting shortcuts
@@ -115,9 +112,6 @@ const BREAKOUT_ELEMENTS = [
   'heading-one',
   'heading-two',
   'heading-three',
-  'heading-four',
-  'heading-five',
-  'heading-six',
   'block-quote',
   'list-item',
 ];
