@@ -33,11 +33,10 @@ export default function Editor(props: Props) {
   const onKeyDown = useCallback(
     (event: KeyboardEvent<HTMLDivElement>) => {
       // Handle keyboard shortcuts for adding marks
-      for (const hotkey in HOTKEYS) {
+      for (const [hotkey, mark] of Object.entries(HOTKEYS)) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         if (isHotkey(hotkey, event as any)) {
           event.preventDefault();
-          const mark = HOTKEYS[hotkey];
           toggleMark(editor, mark);
         }
       }

@@ -5,11 +5,12 @@ import {
   Transforms,
   Range,
   Point,
+  Text,
 } from 'slate';
 import { ReactEditor } from 'slate-react';
 import { LIST_TYPES } from './formatting';
 
-const SHORTCUTS: Record<string, string | undefined> = {
+const BLOCK_SHORTCUTS: Record<string, string> = {
   '*': 'list-item',
   '-': 'list-item',
   '+': 'list-item',
@@ -20,6 +21,12 @@ const SHORTCUTS: Record<string, string | undefined> = {
   '###': 'heading-three',
 };
 
+const INLINE_SHORTCUTS: Record<string, string> = {
+  '**': 'bold',
+  '*': 'italic',
+  '`': 'code',
+};
+
 // Add markdown formatting shortcuts
 export const withMarkdownShortcuts = (editor: ReactEditor) => {
   const { deleteBackward, insertText } = editor;
@@ -27,6 +34,7 @@ export const withMarkdownShortcuts = (editor: ReactEditor) => {
   editor.insertText = (text) => {
     const { selection } = editor;
 
+    // Handle shortcuts at the beginning of a line
     if (text === ' ' && selection && Range.isCollapsed(selection)) {
       const { anchor } = selection;
       const block = SlateEditor.above(editor, {
@@ -36,7 +44,7 @@ export const withMarkdownShortcuts = (editor: ReactEditor) => {
       const start = SlateEditor.start(editor, path);
       const range = { anchor, focus: start };
       const beforeText = SlateEditor.string(editor, range);
-      const type = SHORTCUTS[beforeText];
+      const type = BLOCK_SHORTCUTS[beforeText];
 
       if (type) {
         Transforms.select(editor, range);
@@ -61,6 +69,86 @@ export const withMarkdownShortcuts = (editor: ReactEditor) => {
           });
         }
 
+        return;
+      }
+    }
+
+    // Handle inline shortcuts
+    if (text === ' ' && selection && Range.isCollapsed(selection)) {
+      const { anchor } = selection;
+      const block = SlateEditor.above(editor, {
+        match: (n) => SlateEditor.isBlock(editor, n),
+      });
+      const path = block ? block[1] : [];
+      const start = SlateEditor.start(editor, path);
+      const range = { anchor, focus: start };
+      const beforeText = SlateEditor.string(editor, range);
+
+      for (const [mark, format] of Object.entries(INLINE_SHORTCUTS)) {
+        const lastIndex = beforeText.lastIndexOf(mark);
+        const secondToLastIndex = beforeText.lastIndexOf(
+          mark,
+          lastIndex - mark.length
+        );
+
+        // If there aren't two marks, or the two marks are next to each other, then we don't format
+        if (
+          lastIndex === -1 ||
+          secondToLastIndex === -1 ||
+          lastIndex - secondToLastIndex <= 1
+        ) {
+          continue;
+        }
+
+        const textToFormat = beforeText.substring(
+          secondToLastIndex + mark.length,
+          lastIndex
+        );
+        const selectionPath = anchor.path;
+        let endOfSelection = anchor.offset;
+
+        // Delete the ending mark
+        const endMarkRange = {
+          anchor: { path: selectionPath, offset: endOfSelection - mark.length },
+          focus: { path: selectionPath, offset: endOfSelection },
+        };
+        Transforms.delete(editor, { at: endMarkRange });
+        endOfSelection -= mark.length;
+
+        // Delete the start mark
+        const startMarkRange = {
+          anchor: {
+            path: selectionPath,
+            offset: endOfSelection - textToFormat.length,
+          },
+          focus: {
+            path: selectionPath,
+            offset: endOfSelection - textToFormat.length - mark.length,
+          },
+        };
+        Transforms.delete(editor, { at: startMarkRange });
+        endOfSelection -= mark.length;
+
+        // Add formatting mark to the text to format
+        const textToFormatRange = {
+          anchor: {
+            path: selectionPath,
+            offset: endOfSelection,
+          },
+          focus: {
+            path: selectionPath,
+            offset: endOfSelection - textToFormat.length,
+          },
+        };
+        Transforms.setNodes(
+          editor,
+          { [format]: true },
+          { at: textToFormatRange, match: (n) => Text.isText(n), split: true }
+        );
+        SlateEditor.removeMark(editor, format);
+
+        // Insert the space at the end
+        insertText(text);
         return;
       }
     }
