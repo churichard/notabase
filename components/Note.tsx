@@ -76,7 +76,7 @@ export default function Note(props: Props) {
         onChange={(title) => setCurrentNote((note) => ({ ...note, title }))}
       />
       <Editor
-        className="flex-1"
+        className="flex-1 pb-96"
         editor={editor}
         value={currentNote.content}
         setValue={(content) => setCurrentNote((note) => ({ ...note, content }))}
