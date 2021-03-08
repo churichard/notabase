@@ -10,7 +10,7 @@ module.exports = {
     },
     extend: {
       width: {
-        176: '44rem',
+        192: '48rem',
       },
     },
     colors: {

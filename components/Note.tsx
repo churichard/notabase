@@ -69,7 +69,7 @@ export default function Note(props: Props) {
   }, [editor, initialNote, debouncedNote, saveNote, setDebouncedNote]);
 
   return (
-    <div className="flex flex-col p-12 overflow-y-auto w-176">
+    <div className="flex flex-col p-12 overflow-y-auto w-192">
       <Title
         className="mb-6"
         value={currentNote.title}
