@@ -44,6 +44,28 @@ export default function Editor(props: Props) {
     [editor]
   );
 
+  const onSelect = useCallback(() => {
+    // Adapted from https://github.com/ianstormtaylor/slate/issues/3750
+    if (editor.selection == null) return;
+    try {
+      /**
+       * Need a try/catch because sometimes you get an error like:
+       *
+       * Error: Cannot resolve a DOM node from Slate node: {"type":"p","children":[{"text":"","by":-1,"at":-1}]}
+       */
+      const domPoint = ReactEditor.toDOMPoint(editor, editor.selection.focus);
+      const node = domPoint[0];
+      if (node == null) return;
+      const element = node.parentElement;
+      if (element == null) return;
+      element.scrollIntoView({ block: 'nearest' });
+    } catch (e) {
+      /**
+       * Empty catch. Do nothing if there is an error.
+       */
+    }
+  }, [editor]);
+
   return (
     <Slate editor={editor} value={value} onChange={setValue}>
       <div id="hovering-toolbar">
@@ -55,6 +77,7 @@ export default function Editor(props: Props) {
         renderLeaf={renderLeaf}
         placeholder="Start typing here…"
         onKeyDown={onKeyDown}
+        onSelect={onSelect}
         spellCheck
         autoFocus
       />
