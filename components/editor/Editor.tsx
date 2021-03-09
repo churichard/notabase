@@ -89,19 +89,19 @@ const Element = ({ attributes, children, element }: RenderElementProps) => {
   switch (element.type) {
     case 'heading-one':
       return (
-        <h1 className="my-2 text-2xl font-semibold" {...attributes}>
+        <h1 className="my-3 text-2xl font-semibold" {...attributes}>
           {children}
         </h1>
       );
     case 'heading-two':
       return (
-        <h2 className="my-2 text-xl font-semibold" {...attributes}>
+        <h2 className="my-3 text-xl font-semibold" {...attributes}>
           {children}
         </h2>
       );
     case 'heading-three':
       return (
-        <h3 className="my-2 text-lg font-semibold" {...attributes}>
+        <h3 className="my-3 text-lg font-semibold" {...attributes}>
           {children}
         </h3>
       );
@@ -125,13 +125,13 @@ const Element = ({ attributes, children, element }: RenderElementProps) => {
       );
     case 'block-quote':
       return (
-        <blockquote className="pl-4 my-2 border-l-4" {...attributes}>
+        <blockquote className="pl-4 my-3 border-l-4" {...attributes}>
           {children}
         </blockquote>
       );
     default:
       return (
-        <p className="my-2" {...attributes}>
+        <p className="my-3" {...attributes}>
           {children}
         </p>
       );

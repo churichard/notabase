@@ -71,7 +71,7 @@ export default function Note(props: Props) {
   return (
     <div className="flex flex-col p-12 overflow-y-auto w-192">
       <Title
-        className="mb-6"
+        className="mb-3"
         value={currentNote.title}
         onChange={(title) => setCurrentNote((note) => ({ ...note, title }))}
       />
