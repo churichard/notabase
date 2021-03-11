@@ -18,11 +18,11 @@ const BLOCK_SHORTCUTS = [
   { match: /^###$/, type: 'heading-three' },
 ];
 
-const INLINE_SHORTCUTS: Record<string, string> = {
-  '**': 'bold',
-  '*': 'italic',
-  '`': 'code',
-};
+const INLINE_SHORTCUTS = [
+  { match: /(\*\*)(.+)(\*\*)/, type: 'bold' },
+  { match: /(\*)(.+)(\*)/, type: 'italic' },
+  { match: /(`)(.+)(`)/, type: 'code' },
+];
 
 // Add auto-markdown formatting shortcuts
 const withAutoMarkdown = (editor: ReactEditor) => {
@@ -42,116 +42,93 @@ const withAutoMarkdown = (editor: ReactEditor) => {
       const range = { anchor, focus: start };
       const beforeText = SlateEditor.string(editor, range);
 
-      let shortcut;
-      for (const blockShortcut of BLOCK_SHORTCUTS) {
-        if (beforeText.match(blockShortcut.match)) {
-          shortcut = blockShortcut;
-          break;
-        }
-      }
+      // Handle block shortcuts
+      for (const shortcut of BLOCK_SHORTCUTS) {
+        if (beforeText.match(shortcut.match)) {
+          const type = shortcut.type;
 
-      if (shortcut) {
-        const type = shortcut.type;
-
-        Transforms.select(editor, range);
-        Transforms.delete(editor);
-        const newProperties: Partial<SlateElement> = {
-          type,
-        };
-        Transforms.setNodes(editor, newProperties, {
-          match: (n) => SlateEditor.isBlock(editor, n),
-        });
-
-        if (type === 'list-item') {
-          const list = {
-            type: shortcut.listType,
-            children: [],
+          Transforms.select(editor, range);
+          Transforms.delete(editor);
+          const newProperties: Partial<SlateElement> = {
+            type,
           };
-          Transforms.wrapNodes(editor, list, {
-            match: (n) =>
-              !SlateEditor.isEditor(n) &&
-              SlateElement.isElement(n) &&
-              n.type === 'list-item',
+          Transforms.setNodes(editor, newProperties, {
+            match: (n) => SlateEditor.isBlock(editor, n),
           });
+
+          if (type === 'list-item') {
+            const list = {
+              type: shortcut.listType,
+              children: [],
+            };
+            Transforms.wrapNodes(editor, list, {
+              match: (n) =>
+                !SlateEditor.isEditor(n) &&
+                SlateElement.isElement(n) &&
+                n.type === 'list-item',
+            });
+          }
+          return;
         }
-
-        return;
       }
-    }
 
-    // Handle inline shortcuts
-    if (text === ' ' && selection && Range.isCollapsed(selection)) {
-      const { anchor } = selection;
-      const block = SlateEditor.above(editor, {
-        match: (n) => SlateEditor.isBlock(editor, n),
-      });
-      const path = block ? block[1] : [];
-      const start = SlateEditor.start(editor, path);
-      const range = { anchor, focus: start };
-      const beforeText = SlateEditor.string(editor, range);
+      // Handle inline shortcuts
+      for (const { match, type } of INLINE_SHORTCUTS) {
+        const result = beforeText.match(match);
 
-      for (const [mark, format] of Object.entries(INLINE_SHORTCUTS)) {
-        const lastIndex = beforeText.lastIndexOf(mark);
-        const secondToLastIndex = beforeText.lastIndexOf(
-          mark,
-          lastIndex - mark.length
-        );
-
-        // If there aren't two marks, or the two marks are next to each other, then we don't format
-        if (
-          lastIndex === -1 ||
-          secondToLastIndex === -1 ||
-          lastIndex - secondToLastIndex <= 1
-        ) {
+        if (!result) {
           continue;
         }
 
-        const textToFormat = beforeText.substring(
-          secondToLastIndex + mark.length,
-          lastIndex
-        );
-        const selectionPath = anchor.path;
-        let endOfSelection = anchor.offset;
+        if (type === 'bold' || type === 'italic' || type === 'code') {
+          const [, startMark, textToFormat, endMark] = result;
 
-        // Delete the ending mark
-        const endMarkRange = {
-          anchor: { path: selectionPath, offset: endOfSelection - mark.length },
-          focus: { path: selectionPath, offset: endOfSelection },
-        };
-        Transforms.delete(editor, { at: endMarkRange });
-        endOfSelection -= mark.length;
+          const selectionPath = anchor.path;
+          let endOfSelection = anchor.offset;
 
-        // Delete the start mark
-        const startMarkRange = {
-          anchor: {
-            path: selectionPath,
-            offset: endOfSelection - textToFormat.length,
-          },
-          focus: {
-            path: selectionPath,
-            offset: endOfSelection - textToFormat.length - mark.length,
-          },
-        };
-        Transforms.delete(editor, { at: startMarkRange });
-        endOfSelection -= mark.length;
+          // Delete the ending mark
+          const endMarkRange = {
+            anchor: {
+              path: selectionPath,
+              offset: endOfSelection - endMark.length,
+            },
+            focus: { path: selectionPath, offset: endOfSelection },
+          };
+          Transforms.delete(editor, { at: endMarkRange });
+          endOfSelection -= endMark.length;
 
-        // Add formatting mark to the text to format
-        const textToFormatRange = {
-          anchor: {
-            path: selectionPath,
-            offset: endOfSelection,
-          },
-          focus: {
-            path: selectionPath,
-            offset: endOfSelection - textToFormat.length,
-          },
-        };
-        Transforms.setNodes(
-          editor,
-          { [format]: true },
-          { at: textToFormatRange, match: (n) => Text.isText(n), split: true }
-        );
-        SlateEditor.removeMark(editor, format);
+          // Delete the start mark
+          const startMarkRange = {
+            anchor: {
+              path: selectionPath,
+              offset: endOfSelection - textToFormat.length,
+            },
+            focus: {
+              path: selectionPath,
+              offset: endOfSelection - textToFormat.length - startMark.length,
+            },
+          };
+          Transforms.delete(editor, { at: startMarkRange });
+          endOfSelection -= startMark.length;
+
+          // Add formatting mark to the text to format
+          const textToFormatRange = {
+            anchor: {
+              path: selectionPath,
+              offset: endOfSelection,
+            },
+            focus: {
+              path: selectionPath,
+              offset: endOfSelection - textToFormat.length,
+            },
+          };
+          Transforms.setNodes(
+            editor,
+            { [type]: true },
+            { at: textToFormatRange, match: (n) => Text.isText(n), split: true }
+          );
+          SlateEditor.removeMark(editor, type);
+        }
 
         // Insert the space at the end
         insertText(text);
