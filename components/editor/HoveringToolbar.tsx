@@ -138,7 +138,15 @@ const ToolbarButton = (props: ToolbarButtonProps) => {
       }}
     >
       <Icon className={`${isActive ? 'text-primary-500' : 'text-gray-700'}`} />
-      {text ? <span className="ml-1 text-sm text-gray-700">{text}</span> : null}
+      {text ? (
+        <span
+          className={`ml-1 text-sm ${
+            isActive ? 'text-primary-500' : 'text-gray-700'
+          }`}
+        >
+          {text}
+        </span>
+      ) : null}
     </span>
   );
 };
