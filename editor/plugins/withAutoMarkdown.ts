@@ -5,6 +5,7 @@ import {
   Range,
   Point,
   Text,
+  Path,
 } from 'slate';
 import { ReactEditor } from 'slate-react';
 import { LIST_TYPES } from 'editor/formatting';
@@ -22,6 +23,7 @@ const INLINE_SHORTCUTS = [
   { match: /(\*\*|__)(.+)(\*\*|__)/, type: 'bold' },
   { match: /(\*|_)(.+)(\*|_)/, type: 'italic' },
   { match: /(`)(.+)(`)/, type: 'code' },
+  { match: /(\[)(.+)(\]\()(.+)(\))/, type: 'link' },
 ];
 
 // Add auto-markdown formatting shortcuts
@@ -87,28 +89,16 @@ const withAutoMarkdown = (editor: ReactEditor) => {
           let endOfSelection = anchor.offset;
 
           // Delete the ending mark
-          const endMarkRange = {
-            anchor: {
-              path: selectionPath,
-              offset: endOfSelection - endMark.length,
-            },
-            focus: { path: selectionPath, offset: endOfSelection },
-          };
-          Transforms.delete(editor, { at: endMarkRange });
+          deleteText(editor, selectionPath, endOfSelection, endMark.length);
           endOfSelection -= endMark.length;
 
           // Delete the start mark
-          const startMarkRange = {
-            anchor: {
-              path: selectionPath,
-              offset: endOfSelection - textToFormat.length,
-            },
-            focus: {
-              path: selectionPath,
-              offset: endOfSelection - textToFormat.length - startMark.length,
-            },
-          };
-          Transforms.delete(editor, { at: startMarkRange });
+          deleteText(
+            editor,
+            selectionPath,
+            endOfSelection - textToFormat.length,
+            startMark.length
+          );
           endOfSelection -= startMark.length;
 
           // Add formatting mark to the text to format
@@ -128,12 +118,52 @@ const withAutoMarkdown = (editor: ReactEditor) => {
             { at: textToFormatRange, match: (n) => Text.isText(n), split: true }
           );
           SlateEditor.removeMark(editor, type);
-        }
+        } else if (type === 'link') {
+          const [, startMark, linkText, middleMark, linkUrl, endMark] = result;
 
-        // Insert the space at the end
-        insertText(text);
-        return;
+          const selectionPath = anchor.path;
+          let endOfSelection = anchor.offset;
+
+          // Delete the middle mark, link url, and end mark
+          const endLength = middleMark.length + linkUrl.length + endMark.length;
+          deleteText(editor, selectionPath, endOfSelection, endLength);
+          endOfSelection -= endLength;
+
+          // Delete the start mark
+          deleteText(
+            editor,
+            selectionPath,
+            endOfSelection - linkText.length,
+            startMark.length
+          );
+          endOfSelection -= startMark.length;
+
+          // Wrap text in a link
+          const linkTextRange = {
+            anchor: {
+              path: selectionPath,
+              offset: endOfSelection,
+            },
+            focus: {
+              path: selectionPath,
+              offset: endOfSelection - linkText.length,
+            },
+          };
+          const link = {
+            type: 'link',
+            url: linkUrl,
+            children: [],
+          };
+          Transforms.wrapNodes(editor, link, {
+            at: linkTextRange,
+            split: true,
+          });
+        }
       }
+
+      // Insert the space at the end
+      insertText(text);
+      return;
     }
 
     insertText(text);
@@ -181,6 +211,20 @@ const withAutoMarkdown = (editor: ReactEditor) => {
   };
 
   return editor;
+};
+
+// Deletes `length` characters at the specified path and offset
+const deleteText = (
+  editor: ReactEditor,
+  path: Path,
+  offset: number,
+  length: number
+) => {
+  const range = {
+    anchor: { path, offset: offset - length },
+    focus: { path, offset },
+  };
+  Transforms.delete(editor, { at: range });
 };
 
 export default withAutoMarkdown;
