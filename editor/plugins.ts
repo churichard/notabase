@@ -8,7 +8,8 @@ import {
   Text,
 } from 'slate';
 import { ReactEditor } from 'slate-react';
-import { LIST_TYPES } from './formatting';
+import isUrl from 'is-url';
+import { LIST_TYPES, wrapLink } from './formatting';
 
 const BLOCK_SHORTCUTS: Record<string, string> = {
   '*': 'list-item',
@@ -273,6 +274,34 @@ export const withBlockBreakout = (editor: ReactEditor) => {
     // Preserve normal behavior for the cursor at the beginning of the text
     else {
       insertBreak();
+    }
+  };
+
+  return editor;
+};
+
+export const withLinks = (editor: ReactEditor) => {
+  const { insertData, insertText, isInline } = editor;
+
+  editor.isInline = (element) => {
+    return element.type === 'link' ? true : isInline(element);
+  };
+
+  editor.insertText = (text) => {
+    if (text && isUrl(text)) {
+      wrapLink(editor, text);
+    } else {
+      insertText(text);
+    }
+  };
+
+  editor.insertData = (data) => {
+    const text = data.getData('text/plain');
+
+    if (text && isUrl(text)) {
+      wrapLink(editor, text);
+    } else {
+      insertData(data);
     }
   };
 

@@ -12,6 +12,7 @@ import {
   RightDoubleQuoteIcon,
   BulletedListIcon,
   NumberedListIcon,
+  LinkIcon,
 } from '@fluentui/react-icons';
 import Portal from 'components/Portal';
 import {
@@ -19,6 +20,7 @@ import {
   isMarkActive,
   toggleBlock,
   isBlockActive,
+  wrapLink,
 } from 'editor/formatting';
 
 export default function HoveringToolbar() {
@@ -61,8 +63,9 @@ export default function HoveringToolbar() {
     <Portal selector="#hovering-toolbar">
       <div
         ref={ref}
-        className="absolute z-10 flex items-center invisible -mt-2 overflow-hidden transition-opacity bg-white border rounded-md opacity-0"
+        className="absolute z-10 flex items-stretch invisible -mt-2 overflow-hidden transition-opacity bg-white border rounded-md opacity-0"
       >
+        <LinkButton />
         <FormatButton format="bold" />
         <FormatButton format="italic" />
         <FormatButton format="underline" />
@@ -85,13 +88,14 @@ export default function HoveringToolbar() {
 }
 
 type ToolbarButtonProps = {
-  format: FormatButtonProps['format'] | BlockButtonProps['format'];
+  format: FormatButtonProps['format'] | BlockButtonProps['format'] | 'link';
   onClick: () => void;
+  text?: string;
   isActive?: boolean;
 };
 
 const ToolbarButton = (props: ToolbarButtonProps) => {
-  const { format, onClick, isActive = false } = props;
+  const { format, onClick, text, isActive = false } = props;
 
   const Icon = useMemo(() => {
     switch (format) {
@@ -115,6 +119,8 @@ const ToolbarButton = (props: ToolbarButtonProps) => {
         return NumberedListIcon;
       case 'block-quote':
         return RightDoubleQuoteIcon;
+      case 'link':
+        return LinkIcon;
       default:
         throw new Error(`Format ${format} is not a valid format`);
     }
@@ -122,7 +128,7 @@ const ToolbarButton = (props: ToolbarButtonProps) => {
 
   return (
     <span
-      className="px-2 py-2 cursor-pointer hover:bg-gray-100"
+      className="flex items-center px-2 py-2 cursor-pointer hover:bg-gray-100"
       onMouseDown={(event) => event.preventDefault()}
       onMouseUp={(event) => {
         if (event.button === 0) {
@@ -132,6 +138,7 @@ const ToolbarButton = (props: ToolbarButtonProps) => {
       }}
     >
       <Icon className={`${isActive ? 'text-primary-500' : 'text-gray-700'}`} />
+      {text ? <span className="ml-1 text-sm text-gray-700">{text}</span> : null}
     </span>
   );
 };
@@ -171,6 +178,31 @@ const BlockButton = ({ format }: BlockButtonProps) => {
     <ToolbarButton
       format={format}
       onClick={() => toggleBlock(editor, format)}
+      isActive={isActive}
+    />
+  );
+};
+
+const insertLink = (editor: ReactEditor, url: string) => {
+  if (editor.selection) {
+    wrapLink(editor, url);
+  }
+};
+
+const LinkButton = () => {
+  const editor = useSlate();
+  const format = 'link';
+  const isActive = isBlockActive(editor, format);
+
+  return (
+    <ToolbarButton
+      format={format}
+      onClick={() => {
+        const url = window.prompt('Enter link URL:');
+        if (!url) return;
+        insertLink(editor, url);
+      }}
+      text="Link"
       isActive={isActive}
     />
   );

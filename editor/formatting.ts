@@ -2,6 +2,7 @@ import {
   Editor as SlateEditor,
   Element as SlateElement,
   Transforms,
+  Range,
 } from 'slate';
 import { ReactEditor } from 'slate-react';
 
@@ -55,5 +56,35 @@ export const toggleBlock = (editor: ReactEditor, format: string) => {
   if (!isActive && isList) {
     const block = { type: format, children: [] };
     Transforms.wrapNodes(editor, block);
+  }
+};
+
+export const unwrapLink = (editor: ReactEditor) => {
+  Transforms.unwrapNodes(editor, {
+    match: (n) =>
+      !SlateEditor.isEditor(n) &&
+      SlateElement.isElement(n) &&
+      n.type === 'link',
+  });
+};
+
+export const wrapLink = (editor: ReactEditor, url: string) => {
+  if (isBlockActive(editor, 'link')) {
+    unwrapLink(editor);
+  }
+
+  const { selection } = editor;
+  const isCollapsed = selection && Range.isCollapsed(selection);
+  const link = {
+    type: 'link',
+    url,
+    children: isCollapsed ? [{ text: url }] : [],
+  };
+
+  if (isCollapsed) {
+    Transforms.insertNodes(editor, link);
+  } else {
+    Transforms.wrapNodes(editor, link, { split: true });
+    Transforms.collapse(editor, { edge: 'end' });
   }
 };

@@ -129,6 +129,19 @@ const Element = ({ attributes, children, element }: RenderElementProps) => {
           {children}
         </blockquote>
       );
+    case 'link':
+      return (
+        <a
+          className="underline cursor-pointer text-primary-500"
+          href={element.url as string}
+          onClick={() =>
+            window.open(element.url as string, '_blank', 'noopener noreferrer')
+          }
+          {...attributes}
+        >
+          {children}
+        </a>
+      );
     default:
       return (
         <p className="my-3" {...attributes}>
