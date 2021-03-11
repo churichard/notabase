@@ -15,7 +15,7 @@ const HOTKEYS: Record<string, string> = {
   'mod+b': 'bold',
   'mod+i': 'italic',
   'mod+u': 'underline',
-  'mod+`': 'code',
+  'mod+e': 'code',
 };
 
 type Props = {
@@ -157,7 +157,7 @@ const Leaf = ({ attributes, children, leaf }: RenderLeafProps) => {
   }
 
   if (leaf.code) {
-    children = <code>{children}</code>;
+    children = <code className="bg-gray-200">{children}</code>;
   }
 
   if (leaf.italic) {
