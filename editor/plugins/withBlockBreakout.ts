@@ -65,22 +65,26 @@ const withBlockBreakout = (editor: ReactEditor) => {
     }
     // The cursor is at the end of the text
     else if (selection.anchor.offset === selectedLeafText.length) {
-      console.log('hi');
       // We insert a paragraph after the current node
       Transforms.insertNodes(editor, {
         type: 'paragraph',
         children: [{ text: '', marks: [] }],
       });
     }
+    // The cursor is at the beginning of the text
+    else if (selection.anchor.offset === 0) {
+      // We insert a paragraph before the current node
+      Transforms.insertNodes(editor, {
+        type: 'paragraph',
+        children: [{ text: '', marks: [] }],
+      });
+      Transforms.move(editor);
+    }
     // The cursor is in the middle of the text
-    else if (selection.anchor.offset !== 0) {
+    else {
       // We insert a paragraph with the proper text
       Transforms.splitNodes(editor);
       Transforms.setNodes(editor, { type: 'paragraph' });
-    }
-    // Preserve normal behavior for the cursor at the beginning of the text
-    else {
-      insertBreak();
     }
   };
 
