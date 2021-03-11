@@ -19,8 +19,8 @@ const BLOCK_SHORTCUTS = [
 ];
 
 const INLINE_SHORTCUTS = [
-  { match: /(\*\*)(.+)(\*\*)/, type: 'bold' },
-  { match: /(\*)(.+)(\*)/, type: 'italic' },
+  { match: /(\*\*|__)(.+)(\*\*|__)/, type: 'bold' },
+  { match: /(\*|_)(.+)(\*|_)/, type: 'italic' },
   { match: /(`)(.+)(`)/, type: 'code' },
 ];
 
