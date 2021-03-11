@@ -1,5 +1,5 @@
 import React, { KeyboardEvent, useCallback } from 'react';
-import { Node } from 'slate';
+import { Node, Range } from 'slate';
 import {
   Editable,
   ReactEditor,
@@ -8,15 +8,37 @@ import {
   Slate,
 } from 'slate-react';
 import { isHotkey } from 'is-hotkey';
-import { toggleMark } from 'editor/formatting';
+import { toggleMark, wrapLink } from 'editor/formatting';
 import HoveringToolbar from './HoveringToolbar';
 
-const HOTKEYS: Record<string, string> = {
-  'mod+b': 'bold',
-  'mod+i': 'italic',
-  'mod+u': 'underline',
-  'mod+e': 'code',
-};
+const HOTKEYS = [
+  {
+    hotkey: 'mod+b',
+    callback: (editor: ReactEditor) => toggleMark(editor, 'bold'),
+  },
+  {
+    hotkey: 'mod+i',
+    callback: (editor: ReactEditor) => toggleMark(editor, 'italic'),
+  },
+  {
+    hotkey: 'mod+u',
+    callback: (editor: ReactEditor) => toggleMark(editor, 'underline'),
+  },
+  {
+    hotkey: 'mod+e',
+    callback: (editor: ReactEditor) => toggleMark(editor, 'code'),
+  },
+  {
+    hotkey: 'mod+k',
+    callback: (editor: ReactEditor) => {
+      if (editor.selection && !Range.isCollapsed(editor.selection)) {
+        const url = window.prompt('Enter link URL:');
+        if (!url) return;
+        wrapLink(editor, url);
+      }
+    },
+  },
+];
 
 type Props = {
   className?: string;
@@ -33,11 +55,11 @@ export default function Editor(props: Props) {
   const onKeyDown = useCallback(
     (event: KeyboardEvent<HTMLDivElement>) => {
       // Handle keyboard shortcuts for adding marks
-      for (const [hotkey, mark] of Object.entries(HOTKEYS)) {
+      for (const { hotkey, callback } of HOTKEYS) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         if (isHotkey(hotkey, event as any)) {
           event.preventDefault();
-          toggleMark(editor, mark);
+          callback(editor);
         }
       }
     },
