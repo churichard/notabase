@@ -9,16 +9,14 @@ import {
 import { ReactEditor } from 'slate-react';
 import { LIST_TYPES } from 'editor/formatting';
 
-const BLOCK_SHORTCUTS: Record<string, string> = {
-  '*': 'list-item',
-  '-': 'list-item',
-  '+': 'list-item',
-  '1.': 'list-item',
-  '>': 'block-quote',
-  '#': 'heading-one',
-  '##': 'heading-two',
-  '###': 'heading-three',
-};
+const BLOCK_SHORTCUTS = [
+  { match: /^(\*|-|\+)$/, type: 'list-item', listType: 'bulleted-list' }, // match *, -, or +
+  { match: /^([0-9]+\.)$/, type: 'list-item', listType: 'numbered-list' }, // match numbered lists
+  { match: /^>$/, type: 'block-quote' },
+  { match: /^#$/, type: 'heading-one' },
+  { match: /^##$/, type: 'heading-two' },
+  { match: /^###$/, type: 'heading-three' },
+];
 
 const INLINE_SHORTCUTS: Record<string, string> = {
   '**': 'bold',
@@ -43,9 +41,18 @@ const withAutoMarkdown = (editor: ReactEditor) => {
       const start = SlateEditor.start(editor, path);
       const range = { anchor, focus: start };
       const beforeText = SlateEditor.string(editor, range);
-      const type = BLOCK_SHORTCUTS[beforeText];
 
-      if (type) {
+      let shortcut;
+      for (const blockShortcut of BLOCK_SHORTCUTS) {
+        if (beforeText.match(blockShortcut.match)) {
+          shortcut = blockShortcut;
+          break;
+        }
+      }
+
+      if (shortcut) {
+        const type = shortcut.type;
+
         Transforms.select(editor, range);
         Transforms.delete(editor);
         const newProperties: Partial<SlateElement> = {
@@ -57,7 +64,7 @@ const withAutoMarkdown = (editor: ReactEditor) => {
 
         if (type === 'list-item') {
           const list = {
-            type: beforeText === '1.' ? 'numbered-list' : 'bulleted-list',
+            type: shortcut.listType,
             children: [],
           };
           Transforms.wrapNodes(editor, list, {
