@@ -7,12 +7,12 @@ export default function Login() {
   return (
     <>
       <Head>
-        <title>Log in | Atomic</title>
+        <title>Log in | Notabase</title>
       </Head>
       <div className="min-h-screen bg-gray-50">
         <div className="container p-8 md:p-24">
           <div className="mx-auto card md:p-12">
-            <p className="pb-6 -mt-2 text-xl text-center">Log in to Atomic</p>
+            <p className="pb-6 -mt-2 text-xl text-center">Log in to Notabase</p>
             <AuthForm />
           </div>
           <p className="mt-4 text-sm text-center text-gray-700">

@@ -17,7 +17,7 @@ export default function AppHome(props: Props) {
   return (
     <>
       <Head>
-        <title>Atomic</title>
+        <title>Notabase</title>
       </Head>
       <div className="flex h-screen">
         <Sidebar user={user} notes={notes} />

@@ -21,7 +21,7 @@ export default function NotePage(props: Props) {
     return (
       <>
         <Head>
-          <title>Atomic</title>
+          <title>Notabase</title>
         </Head>
         <div className="flex flex-col items-center justify-center h-screen">
           <p className="text-2xl">

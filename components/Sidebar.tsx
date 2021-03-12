@@ -41,7 +41,7 @@ export default function Sidebar(props: Props) {
     <div className="flex flex-col flex-none w-64 h-full border-r border-gray-100 bg-gray-50">
       <Link href="/app">
         <a className="w-full px-8 py-3 text-gray-800 hover:bg-gray-200 active:bg-gray-300">
-          <div className="font-medium">Atomic</div>
+          <div className="font-medium">Notabase</div>
           <div className="text-sm">{user.email}</div>
         </a>
       </Link>
