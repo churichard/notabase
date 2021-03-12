@@ -40,16 +40,16 @@ const withAutoMarkdown = (editor: ReactEditor) => {
         match: (n) => SlateEditor.isBlock(editor, n),
       });
       const path = block ? block[1] : [];
-      const start = SlateEditor.start(editor, path);
-      const range = { anchor, focus: start };
-      const beforeText = SlateEditor.string(editor, range);
+      const lineStart = SlateEditor.start(editor, path);
+      const lineRange = { anchor, focus: lineStart };
+      const lineText = SlateEditor.string(editor, lineRange);
 
       // Handle block shortcuts
       for (const shortcut of BLOCK_SHORTCUTS) {
-        if (beforeText.match(shortcut.match)) {
+        if (lineText.match(shortcut.match)) {
           const type = shortcut.type;
 
-          Transforms.select(editor, range);
+          Transforms.select(editor, lineRange);
           Transforms.delete(editor);
           const newProperties: Partial<SlateElement> = {
             type,
@@ -75,8 +75,11 @@ const withAutoMarkdown = (editor: ReactEditor) => {
       }
 
       // Handle inline shortcuts
+      const elementStart = SlateEditor.start(editor, anchor.path);
+      const elementRange = { anchor, focus: elementStart };
+      const elementText = SlateEditor.string(editor, elementRange);
       for (const { match, type } of INLINE_SHORTCUTS) {
-        const result = beforeText.match(match);
+        const result = elementText.match(match);
 
         if (!result) {
           continue;
