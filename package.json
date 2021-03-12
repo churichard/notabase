@@ -13,7 +13,6 @@
     "@tailwindcss/forms": "^0.2.1",
     "autoprefixer": "^10.2.5",
     "is-hotkey": "^0.2.0",
-    "is-url": "^1.2.4",
     "next": "^10.0.8",
     "nprogress": "^0.2.0",
     "postcss": "^8.2.7",

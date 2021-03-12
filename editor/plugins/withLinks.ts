@@ -1,6 +1,6 @@
 import { Editor as SlateEditor, Range, Transforms } from 'slate';
 import { ReactEditor } from 'slate-react';
-import isUrl from 'is-url';
+import isUrl from 'helper/isUrl';
 import { wrapLink } from 'editor/formatting';
 
 const withLinks = (editor: ReactEditor) => {
@@ -17,11 +17,7 @@ const withLinks = (editor: ReactEditor) => {
       wrapLink(editor, text);
     } else if (text === ' ' && selection && Range.isCollapsed(selection)) {
       const { anchor } = selection;
-      const block = SlateEditor.above(editor, {
-        match: (n) => SlateEditor.isBlock(editor, n),
-      });
-      const path = block ? block[1] : [];
-      const start = SlateEditor.start(editor, path);
+      const start = SlateEditor.start(editor, anchor.path);
       const range = { anchor, focus: start };
       const beforeText = SlateEditor.string(editor, range);
       const beforeTextArr = beforeText.split(' ');
