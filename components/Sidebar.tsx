@@ -40,14 +40,14 @@ export default function Sidebar(props: Props) {
   return (
     <div className="flex flex-col flex-none w-64 h-full border-r border-gray-100 bg-gray-50">
       <Link href="/app">
-        <a className="w-full px-8 py-3 text-gray-800 hover:bg-gray-200 active:bg-gray-300">
+        <a className="w-full px-6 py-3 text-gray-800 hover:bg-gray-200 active:bg-gray-300">
           <div className="font-medium">Notabase</div>
           <div className="text-sm">{user.email}</div>
         </a>
       </Link>
       <input
         type="text"
-        className="py-1 mx-4 mt-2 input"
+        className="py-1 mx-6 my-2 input"
         placeholder="Create note"
         value={inputText}
         onChange={(e) => setInputText(e.target.value)}
@@ -76,7 +76,7 @@ function NoteLink(props: NoteLinkProps) {
   return (
     <Link href={`/app/note/${note.id}`}>
       <a
-        className={`w-full px-8 py-1 text-gray-800 hover:bg-gray-200 active:bg-gray-300 ${
+        className={`w-full px-6 py-1 text-gray-800 hover:bg-gray-200 active:bg-gray-300 ${
           currentNoteId === note.id ? 'bg-gray-200' : 'bg-gray-50'
         }`}
       >
