@@ -66,30 +66,41 @@ export default function Editor(props: Props) {
     [editor]
   );
 
-  const onSelect = useCallback(() => {
-    /**
-     * Add auto scrolling on type
-     * Adapted from https://github.com/ianstormtaylor/slate/issues/3750
-     */
-    if (!editor.selection) return;
-    try {
+  const onSelect = useCallback(
+    (event: KeyboardEvent<HTMLDivElement>) => {
       /**
-       * Need a try/catch because sometimes you get an error like:
-       *
-       * Error: Cannot resolve a DOM node from Slate node: {"type":"p","children":[{"text":"","by":-1,"at":-1}]}
+       * Add auto scrolling on type
+       * Adapted from https://github.com/ianstormtaylor/slate/issues/3750
        */
-      const domPoint = ReactEditor.toDOMPoint(editor, editor.selection.focus);
-      const node = domPoint[0];
-      if (!node) return;
-      const element = node.parentElement;
-      if (!element) return;
-      element.scrollIntoView({ block: 'nearest' });
-    } catch (e) {
-      /**
-       * Empty catch. Do nothing if there is an error.
-       */
-    }
-  }, [editor]);
+      if (
+        !editor.selection ||
+        event.nativeEvent.type === 'keyup' ||
+        event.nativeEvent.altKey ||
+        event.nativeEvent.metaKey ||
+        event.nativeEvent.ctrlKey
+      ) {
+        return;
+      }
+      try {
+        /**
+         * Need a try/catch because sometimes you get an error like:
+         *
+         * Error: Cannot resolve a DOM node from Slate node: {"type":"p","children":[{"text":"","by":-1,"at":-1}]}
+         */
+        const domPoint = ReactEditor.toDOMPoint(editor, editor.selection.focus);
+        const node = domPoint[0];
+        if (!node) return;
+        const element = node.parentElement;
+        if (!element) return;
+        element.scrollIntoView({ block: 'nearest' });
+      } catch (e) {
+        /**
+         * Empty catch. Do nothing if there is an error.
+         */
+      }
+    },
+    [editor]
+  );
 
   return (
     <Slate editor={editor} value={value} onChange={setValue}>

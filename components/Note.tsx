@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import dynamic from 'next/dynamic';
 import { createEditor, Node, Transforms } from 'slate';
 import { withReact } from 'slate-react';
@@ -24,6 +30,7 @@ type Props = {
 
 export default function Note(props: Props) {
   const { user, note } = props;
+  const noteRef = useRef<HTMLDivElement | null>(null);
 
   const editor = useMemo(
     () =>
@@ -62,16 +69,20 @@ export default function Note(props: Props) {
   useEffect(() => {
     const { id, title, content } = debouncedNote;
     saveNote(id, title, JSON.stringify(content));
+    // If the note id has changed
     if (initialNote.id !== id) {
-      // Reset the note contents if the note id has changed
+      // Deselect any current selection
       Transforms.deselect(editor);
+      // Scroll to the top of the note
+      noteRef.current?.scrollTo(0, 0);
+      // Reset the note contents
       setCurrentNote(initialNote);
       setDebouncedNote(initialNote);
     }
   }, [editor, initialNote, debouncedNote, saveNote, setDebouncedNote]);
 
   return (
-    <div className="flex flex-col p-12 overflow-y-auto w-192">
+    <div ref={noteRef} className="flex flex-col p-12 overflow-y-auto w-192">
       <Title
         className="mb-3"
         value={currentNote.title}
