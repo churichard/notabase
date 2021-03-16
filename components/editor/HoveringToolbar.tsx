@@ -2,9 +2,9 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useSlate, ReactEditor } from 'slate-react';
 import { Editor, Range } from 'slate';
 import {
-  TextBold20Regular as BoldIcon,
-  TextItalic20Regular as ItalicIcon,
-  TextUnderline20Regular as UnderlineIcon,
+  TextBold16Regular as BoldIcon,
+  TextItalic16Regular as ItalicIcon,
+  TextUnderline16Regular as UnderlineIcon,
   Code20Regular as CodeIcon,
   TextHeader120Regular as Header1Icon,
   TextHeader220Regular as Header2Icon,
@@ -92,11 +92,11 @@ export default function HoveringToolbar() {
         style={styles.popper}
         {...attributes.popper}
       >
-        <LinkButton />
+        <LinkButton className="border-r" />
         <FormatButton format="bold" />
         <FormatButton format="italic" />
         <FormatButton format="underline" />
-        <FormatButton format="code" />
+        <FormatButton format="code" className="border-r" />
         <BlockButton format="heading-one" />
         <BlockButton format="heading-two" />
         <BlockButton format="heading-three" />
@@ -127,10 +127,11 @@ type ToolbarButtonProps = {
   onClick: () => void;
   text?: string;
   isActive?: boolean;
+  className?: string;
 };
 
 const ToolbarButton = (props: ToolbarButtonProps) => {
-  const { format, onClick, text, isActive = false } = props;
+  const { format, onClick, text, isActive = false, className = '' } = props;
 
   const Icon = useMemo(() => {
     switch (format) {
@@ -163,7 +164,7 @@ const ToolbarButton = (props: ToolbarButtonProps) => {
 
   return (
     <span
-      className="flex items-center px-2 py-2 cursor-pointer hover:bg-gray-100 active:bg-gray-200"
+      className={`flex items-center px-2 py-2 cursor-pointer hover:bg-gray-100 active:bg-gray-200 ${className}`}
       onMouseDown={(event) => event.preventDefault()}
       onMouseUp={(event) => {
         if (event.button === 0) {
@@ -192,9 +193,10 @@ const ToolbarButton = (props: ToolbarButtonProps) => {
 
 type FormatButtonProps = {
   format: 'bold' | 'italic' | 'underline' | 'code';
+  className?: string;
 };
 
-const FormatButton = ({ format }: FormatButtonProps) => {
+const FormatButton = ({ format, className = '' }: FormatButtonProps) => {
   const editor = useSlate();
   const isActive = isMarkActive(editor, format);
 
@@ -203,6 +205,7 @@ const FormatButton = ({ format }: FormatButtonProps) => {
       format={format}
       onClick={() => toggleMark(editor, format)}
       isActive={isActive}
+      className={className}
     />
   );
 };
@@ -215,9 +218,10 @@ type BlockButtonProps = {
     | 'bulleted-list'
     | 'numbered-list'
     | 'block-quote';
+  className?: string;
 };
 
-const BlockButton = ({ format }: BlockButtonProps) => {
+const BlockButton = ({ format, className = '' }: BlockButtonProps) => {
   const editor = useSlate();
   const isActive = isBlockActive(editor, format);
 
@@ -226,6 +230,7 @@ const BlockButton = ({ format }: BlockButtonProps) => {
       format={format}
       onClick={() => toggleBlock(editor, format)}
       isActive={isActive}
+      className={className}
     />
   );
 };
@@ -236,7 +241,11 @@ const insertLink = (editor: ReactEditor, url: string) => {
   }
 };
 
-const LinkButton = () => {
+type LinkButtonProps = {
+  className?: string;
+};
+
+const LinkButton = ({ className = '' }: LinkButtonProps) => {
   const editor = useSlate();
   const format = 'link';
   const isActive = isBlockActive(editor, format);
@@ -251,6 +260,7 @@ const LinkButton = () => {
       }}
       text="Link"
       isActive={isActive}
+      className={className}
     />
   );
 };
