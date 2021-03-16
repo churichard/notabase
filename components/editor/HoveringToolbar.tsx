@@ -2,17 +2,17 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useSlate, ReactEditor } from 'slate-react';
 import { Editor, Range } from 'slate';
 import {
-  BoldIcon,
-  ItalicIcon,
-  UnderlineIcon,
-  CodeIcon,
-  Header1Icon,
-  Header2Icon,
-  Header3Icon,
-  RightDoubleQuoteIcon,
-  BulletedListIcon,
-  NumberedListIcon,
-  LinkIcon,
+  TextBold20Regular as BoldIcon,
+  TextItalic20Regular as ItalicIcon,
+  TextUnderline20Regular as UnderlineIcon,
+  Code20Regular as CodeIcon,
+  TextHeader120Regular as Header1Icon,
+  TextHeader220Regular as Header2Icon,
+  TextHeader320Regular as Header3Icon,
+  TextQuote20Filled as QuoteIcon,
+  TextBulletListLtr20Regular as BulletedListIcon,
+  TextNumberListLtr20Regular as NumberedListIcon,
+  Link20Regular as LinkIcon,
 } from '@fluentui/react-icons';
 import { usePopper } from 'react-popper';
 import { VirtualElement } from '@popperjs/core';
@@ -153,7 +153,7 @@ const ToolbarButton = (props: ToolbarButtonProps) => {
       case 'numbered-list':
         return NumberedListIcon;
       case 'block-quote':
-        return RightDoubleQuoteIcon;
+        return QuoteIcon;
       case 'link':
         return LinkIcon;
       default:
@@ -172,7 +172,11 @@ const ToolbarButton = (props: ToolbarButtonProps) => {
         }
       }}
     >
-      <Icon className={`${isActive ? 'text-primary-500' : 'text-gray-700'}`} />
+      <Icon
+        primaryFill={
+          isActive ? 'var(--color-primary-500)' : 'var(--color-gray-700)'
+        }
+      />
       {text ? (
         <span
           className={`ml-1 text-sm ${
