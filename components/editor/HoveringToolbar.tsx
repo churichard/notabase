@@ -35,7 +35,7 @@ export default function HoveringToolbar() {
   const { styles, attributes } = usePopper(referenceElement, popperElement, {
     placement: 'top-start',
     modifiers: [
-      { name: 'offset', options: { offset: [0, 8] } },
+      { name: 'offset', options: { offset: [0, 12] } },
       // We need to disable gpu acceleration in order to fix text selection breaking
       { name: 'computeStyles', options: { gpuAcceleration: false } },
     ],
