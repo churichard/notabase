@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useSlate, ReactEditor } from 'slate-react';
 import { Editor, Range } from 'slate';
 import {
@@ -14,6 +14,8 @@ import {
   NumberedListIcon,
   LinkIcon,
 } from '@fluentui/react-icons';
+import { usePopper } from 'react-popper';
+import { VirtualElement } from '@popperjs/core';
 import Portal from 'components/Portal';
 import {
   toggleMark,
@@ -24,46 +26,71 @@ import {
 } from 'editor/formatting';
 
 export default function HoveringToolbar() {
-  const ref = useRef<HTMLDivElement | null>(null);
+  const [referenceElement, setReferenceElement] = useState<
+    Element | VirtualElement | null
+  >(null);
+  const [popperElement, setPopperElement] = useState<HTMLDivElement | null>(
+    null
+  );
+  const { styles, attributes } = usePopper(referenceElement, popperElement, {
+    placement: 'top-start',
+    modifiers: [
+      { name: 'offset', options: { offset: [0, 8] } },
+      // We need to disable gpu acceleration in order to fix text selection breaking
+      { name: 'computeStyles', options: { gpuAcceleration: false } },
+    ],
+  });
   const editor = useSlate();
 
   useEffect(() => {
-    const el = ref.current;
-    const { selection } = editor;
+    const { onChange } = editor;
 
-    if (!el) {
-      return;
-    }
+    editor.onChange = () => {
+      if (!popperElement) {
+        onChange();
+        return;
+      }
 
-    if (
-      !selection ||
-      !ReactEditor.isFocused(editor) ||
-      Range.isCollapsed(selection) ||
-      Editor.string(editor, selection) === ''
-    ) {
-      el.style.opacity = '0';
-      el.style.visibility = 'hidden';
-      return;
-    }
+      const { selection } = editor;
+      if (
+        !selection ||
+        !ReactEditor.isFocused(editor) ||
+        Range.isCollapsed(selection) ||
+        Editor.string(editor, selection) === ''
+      ) {
+        // Hide the toolbar if no text is being selected
+        popperElement.style.opacity = '0';
+        popperElement.style.visibility = 'hidden';
+        onChange();
+        return;
+      }
 
-    const domSelection = window.getSelection();
-    if (!domSelection) {
-      return;
-    }
-    const domRange = domSelection.getRangeAt(0);
-    const rect = domRange.getBoundingClientRect();
+      const domSelection = window.getSelection();
+      const domRange = domSelection?.getRangeAt(0);
+      const parentElement = domRange?.startContainer.parentElement;
 
-    el.style.opacity = '1';
-    el.style.visibility = 'visible';
-    el.style.top = `${rect.top + window.pageYOffset - el.offsetHeight}px`;
-    el.style.left = `${rect.left + window.pageXOffset}px`;
-  });
+      // Set the toolbar position
+      const virtualElement = {
+        getBoundingClientRect: getSelectionBoundingClientRect,
+        contextElement: parentElement ?? undefined,
+      };
+      setReferenceElement(virtualElement);
+
+      // Show the toolbar
+      popperElement.style.opacity = '1';
+      popperElement.style.visibility = 'visible';
+
+      onChange();
+    };
+  }, [editor, popperElement]);
 
   return (
-    <Portal selector="#hovering-toolbar">
+    <Portal>
       <div
-        ref={ref}
-        className="absolute z-10 flex items-stretch invisible -mt-2 overflow-hidden transition-opacity bg-white border rounded-md opacity-0"
+        ref={setPopperElement}
+        className="z-10 flex items-stretch invisible overflow-hidden transition-opacity bg-white border rounded-md opacity-0"
+        style={styles.popper}
+        {...attributes.popper}
       >
         <LinkButton />
         <FormatButton format="bold" />
@@ -86,6 +113,14 @@ export default function HoveringToolbar() {
     </Portal>
   );
 }
+
+// Returns a DOM rect corresponding to the current editor text selection
+const getSelectionBoundingClientRect = () => {
+  const domSelection = window.getSelection();
+  const domRange = domSelection?.getRangeAt(0);
+  const rect = domRange?.getBoundingClientRect();
+  return rect ?? new DOMRect();
+};
 
 type ToolbarButtonProps = {
   format: FormatButtonProps['format'] | BlockButtonProps['format'] | 'link';
@@ -128,7 +163,7 @@ const ToolbarButton = (props: ToolbarButtonProps) => {
 
   return (
     <span
-      className="flex items-center px-2 py-2 cursor-pointer hover:bg-gray-100"
+      className="flex items-center px-2 py-2 cursor-pointer hover:bg-gray-100 active:bg-gray-200"
       onMouseDown={(event) => event.preventDefault()}
       onMouseUp={(event) => {
         if (event.button === 0) {

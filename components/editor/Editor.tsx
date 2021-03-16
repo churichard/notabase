@@ -67,8 +67,11 @@ export default function Editor(props: Props) {
   );
 
   const onSelect = useCallback(() => {
-    // Adapted from https://github.com/ianstormtaylor/slate/issues/3750
-    if (editor.selection == null) return;
+    /**
+     * Add auto scrolling on type
+     * Adapted from https://github.com/ianstormtaylor/slate/issues/3750
+     */
+    if (!editor.selection) return;
     try {
       /**
        * Need a try/catch because sometimes you get an error like:
@@ -77,9 +80,9 @@ export default function Editor(props: Props) {
        */
       const domPoint = ReactEditor.toDOMPoint(editor, editor.selection.focus);
       const node = domPoint[0];
-      if (node == null) return;
+      if (!node) return;
       const element = node.parentElement;
-      if (element == null) return;
+      if (!element) return;
       element.scrollIntoView({ block: 'nearest' });
     } catch (e) {
       /**
@@ -90,9 +93,7 @@ export default function Editor(props: Props) {
 
   return (
     <Slate editor={editor} value={value} onChange={setValue}>
-      <div id="hovering-toolbar">
-        <HoveringToolbar />
-      </div>
+      <HoveringToolbar />
       <Editable
         className={`placeholder-gray-300 ${className}`}
         renderElement={renderElement}
