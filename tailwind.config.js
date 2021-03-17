@@ -1,5 +1,6 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+/* eslint-disable @typescript-eslint/no-var-requires */
 const colors = require('tailwindcss/colors');
+const defaultTheme = require('tailwindcss/defaultTheme');
 
 module.exports = {
   purge: ['./pages/**/*.{js,ts,jsx,tsx}', './components/**/*.{js,ts,jsx,tsx}'],
@@ -18,6 +19,11 @@ module.exports = {
       primary: colors.teal,
       blue: colors.teal,
       gray: colors.warmGray,
+    },
+    boxShadow: {
+      ...defaultTheme.boxShadow,
+      popover:
+        'rgb(15 15 15 / 10%) 0px 3px 6px, rgb(15 15 15 / 20%) 0px 9px 24px',
     },
   },
   variants: {

@@ -1,6 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { useSlate, ReactEditor } from 'slate-react';
-import { Editor, Range } from 'slate';
 import {
   TextBold16Regular as BoldIcon,
   TextItalic16Regular as ItalicIcon,
@@ -14,9 +13,6 @@ import {
   TextNumberListLtr20Regular as NumberedListIcon,
   Link20Regular as LinkIcon,
 } from '@fluentui/react-icons';
-import { usePopper } from 'react-popper';
-import { VirtualElement } from '@popperjs/core';
-import Portal from 'components/Portal';
 import {
   toggleMark,
   isMarkActive,
@@ -24,103 +20,25 @@ import {
   isBlockActive,
   wrapLink,
 } from 'editor/formatting';
+import Popover from './Popover';
 
 export default function HoveringToolbar() {
-  const [referenceElement, setReferenceElement] = useState<
-    Element | VirtualElement | null
-  >(null);
-  const [popperElement, setPopperElement] = useState<HTMLDivElement | null>(
-    null
-  );
-  const { styles, attributes } = usePopper(referenceElement, popperElement, {
-    placement: 'top-start',
-    modifiers: [
-      { name: 'offset', options: { offset: [0, 12] } },
-      // We need to disable gpu acceleration in order to fix text selection breaking
-      { name: 'computeStyles', options: { gpuAcceleration: false } },
-    ],
-  });
-  const editor = useSlate();
-
-  useEffect(() => {
-    const { onChange } = editor;
-
-    editor.onChange = () => {
-      if (!popperElement) {
-        onChange();
-        return;
-      }
-
-      const { selection } = editor;
-      if (
-        !selection ||
-        !ReactEditor.isFocused(editor) ||
-        Range.isCollapsed(selection) ||
-        Editor.string(editor, selection) === ''
-      ) {
-        // Hide the toolbar if no text is being selected
-        popperElement.style.opacity = '0';
-        popperElement.style.visibility = 'hidden';
-        onChange();
-        return;
-      }
-
-      const domSelection = window.getSelection();
-      const domRange = domSelection?.getRangeAt(0);
-      const parentElement = domRange?.startContainer.parentElement;
-
-      // Set the toolbar position
-      const virtualElement = {
-        getBoundingClientRect: getSelectionBoundingClientRect,
-        contextElement: parentElement ?? undefined,
-      };
-      setReferenceElement(virtualElement);
-
-      // Show the toolbar
-      popperElement.style.opacity = '1';
-      popperElement.style.visibility = 'visible';
-
-      onChange();
-    };
-  }, [editor, popperElement]);
-
   return (
-    <Portal>
-      <div
-        ref={setPopperElement}
-        className="z-10 flex items-stretch invisible overflow-hidden transition-opacity bg-white border rounded-md opacity-0"
-        style={styles.popper}
-        {...attributes.popper}
-      >
-        <LinkButton className="border-r" />
-        <FormatButton format="bold" />
-        <FormatButton format="italic" />
-        <FormatButton format="underline" />
-        <FormatButton format="code" className="border-r" />
-        <BlockButton format="heading-one" />
-        <BlockButton format="heading-two" />
-        <BlockButton format="heading-three" />
-        <BlockButton format="bulleted-list" />
-        <BlockButton format="numbered-list" />
-        <BlockButton format="block-quote" />
-        <style jsx>{`
-          & {
-            box-shadow: rgb(15 15 15 / 10%) 0px 3px 6px,
-              rgb(15 15 15 / 20%) 0px 9px 24px;
-          }
-        `}</style>
-      </div>
-    </Portal>
+    <Popover placement="top-start">
+      <LinkButton className="border-r" />
+      <FormatButton format="bold" />
+      <FormatButton format="italic" />
+      <FormatButton format="underline" />
+      <FormatButton format="code" className="border-r" />
+      <BlockButton format="heading-one" />
+      <BlockButton format="heading-two" />
+      <BlockButton format="heading-three" />
+      <BlockButton format="bulleted-list" />
+      <BlockButton format="numbered-list" />
+      <BlockButton format="block-quote" />
+    </Popover>
   );
 }
-
-// Returns a DOM rect corresponding to the current editor text selection
-const getSelectionBoundingClientRect = () => {
-  const domSelection = window.getSelection();
-  const domRange = domSelection?.getRangeAt(0);
-  const rect = domRange?.getBoundingClientRect();
-  return rect ?? new DOMRect();
-};
 
 type ToolbarButtonProps = {
   format: FormatButtonProps['format'] | BlockButtonProps['format'] | 'link';
