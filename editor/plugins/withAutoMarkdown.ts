@@ -8,7 +8,6 @@ import {
   Path,
 } from 'slate';
 import { ReactEditor } from 'slate-react';
-import { LIST_TYPES } from 'editor/formatting';
 
 const BLOCK_SHORTCUTS = [
   { match: /^(\*|-|\+)$/, type: 'list-item', listType: 'bulleted-list' }, // match *, -, or +
@@ -41,15 +40,15 @@ const withAutoMarkdown = (editor: ReactEditor) => {
       });
       const path = block ? block[1] : [];
       const lineStart = SlateEditor.start(editor, path);
-      const lineRange = { anchor, focus: lineStart };
-      const lineText = SlateEditor.string(editor, lineRange);
+      const beforeRange = { anchor, focus: lineStart };
+      const beforeText = SlateEditor.string(editor, beforeRange);
 
       // Handle block shortcuts
       for (const shortcut of BLOCK_SHORTCUTS) {
-        if (lineText.match(shortcut.match)) {
+        if (beforeText.match(shortcut.match)) {
           const type = shortcut.type;
 
-          Transforms.select(editor, lineRange);
+          Transforms.select(editor, beforeRange);
           Transforms.delete(editor);
           const newProperties: Partial<SlateElement> = {
             type,
@@ -188,23 +187,13 @@ const withAutoMarkdown = (editor: ReactEditor) => {
           !SlateEditor.isEditor(block) &&
           SlateElement.isElement(block) &&
           block.type !== 'paragraph' &&
+          block.type !== 'list-item' &&
           Point.equals(selection.anchor, start)
         ) {
           const newProperties: Partial<SlateElement> = {
             type: 'paragraph',
           };
           Transforms.setNodes(editor, newProperties);
-
-          if (block.type === 'list-item') {
-            Transforms.unwrapNodes(editor, {
-              match: (n) =>
-                !SlateEditor.isEditor(n) &&
-                SlateElement.isElement(n) &&
-                LIST_TYPES.includes(n.type as string),
-              split: true,
-            });
-          }
-
           return;
         }
       }

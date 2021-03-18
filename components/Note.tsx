@@ -86,13 +86,17 @@ export default function Note(props: Props) {
       <Title
         className="mb-3"
         value={currentNote.title}
-        onChange={(title) => setCurrentNote((note) => ({ ...note, title }))}
+        onChange={(title: string) =>
+          setCurrentNote((note) => ({ ...note, title }))
+        }
       />
       <Editor
         className="flex-1 pb-96"
         editor={editor}
         value={currentNote.content}
-        setValue={(content) => setCurrentNote((note) => ({ ...note, content }))}
+        setValue={(content: Array<Node>) =>
+          setCurrentNote((note) => ({ ...note, content }))
+        }
       />
     </div>
   );
