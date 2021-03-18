@@ -28,28 +28,34 @@ const withBlockBreakout = (editor: ReactEditor) => {
       return;
     }
 
-    const selectedElement = Node.descendant(
-      editor,
-      selection.anchor.path.slice(0, -1)
-    );
-    const selectedElementType = selectedElement.type as string;
+    const { anchor } = selection;
+    const block = SlateEditor.above(editor, {
+      match: (n) => SlateEditor.isBlock(editor, n),
+    });
+    const path = block ? block[1] : [];
+    const lineStart = SlateEditor.start(editor, path);
+    const lineRange = { anchor, focus: lineStart };
+    const lineElement = Node.descendant(editor, path);
+    const lineElementType = lineElement.type as string;
+    const lineText = SlateEditor.string(editor, lineRange);
 
-    if (!BREAKOUT_ELEMENTS.includes(selectedElementType)) {
+    if (!BREAKOUT_ELEMENTS.includes(lineElementType)) {
       insertBreak();
       return;
     }
 
-    const selectedLeaf = Node.descendant(editor, selection.anchor.path);
+    const selectedLeaf = Node.descendant(editor, anchor.path);
     const selectedLeafText = selectedLeaf.text as string;
 
     // The element is a list item
-    if (selectedElementType === 'list-item') {
-      // We only want to insert a paragraph if there is no text content in the current bullet point
-      if (selectedLeafText.length !== 0) {
+    if (lineElementType === 'list-item') {
+      // Insert a regular break if there is text content in the current bullet point
+      if (lineText.length > 0) {
         insertBreak();
         return;
       }
 
+      // We only want to insert a paragraph if there is no text content in the current bullet point
       const newProperties: Partial<SlateElement> = {
         type: 'paragraph',
       };
@@ -64,7 +70,7 @@ const withBlockBreakout = (editor: ReactEditor) => {
       });
     }
     // The cursor is at the end of the text
-    else if (selection.anchor.offset === selectedLeafText.length) {
+    else if (anchor.offset === selectedLeafText.length) {
       // We insert a paragraph after the current node
       Transforms.insertNodes(editor, {
         type: 'paragraph',
@@ -72,7 +78,7 @@ const withBlockBreakout = (editor: ReactEditor) => {
       });
     }
     // The cursor is at the beginning of the text
-    else if (selection.anchor.offset === 0) {
+    else if (anchor.offset === 0) {
       // We insert a paragraph before the current node
       Transforms.insertNodes(editor, {
         type: 'paragraph',
