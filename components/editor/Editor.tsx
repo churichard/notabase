@@ -9,7 +9,7 @@ import {
 } from 'slate-react';
 import { isHotkey } from 'is-hotkey';
 import { useAtom } from 'jotai';
-import { isAddingLinkAtom, savedSelectionAtom } from 'editor/state';
+import { addLinkPopoverAtom } from 'editor/state';
 import { toggleMark } from 'editor/formatting';
 import HoveringToolbar from './HoveringToolbar';
 import AddLinkPopover from './AddLinkPopover';
@@ -23,8 +23,7 @@ type Props = {
 
 export default function Editor(props: Props) {
   const { className, editor, value, setValue } = props;
-  const [, setSavedSelection] = useAtom(savedSelectionAtom);
-  const [, setIsAddingLink] = useAtom(isAddingLinkAtom);
+  const [, setAddLinkPopoverState] = useAtom(addLinkPopoverAtom);
   const renderElement = useCallback((props) => <Element {...props} />, []);
   const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
 
@@ -51,13 +50,15 @@ export default function Editor(props: Props) {
         callback: (editor: ReactEditor) => {
           if (editor.selection) {
             // Save the selection and make the add link popover visible
-            setSavedSelection(editor.selection);
-            setIsAddingLink(true);
+            setAddLinkPopoverState({
+              isVisible: true,
+              selection: editor.selection,
+            });
           }
         },
       },
     ],
-    [setSavedSelection, setIsAddingLink]
+    [setAddLinkPopoverState]
   );
 
   const onKeyDown = useCallback(

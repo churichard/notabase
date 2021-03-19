@@ -2,26 +2,30 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Transforms } from 'slate';
 import { ReactEditor, useSlate } from 'slate-react';
 import { useAtom } from 'jotai';
-import { isAddingLinkAtom, savedSelectionAtom } from 'editor/state';
+import { addLinkPopoverAtom } from 'editor/state';
 import { wrapLink } from 'editor/formatting';
 import Popover from './Popover';
 
 export default function AddLinkPopover() {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [linkText, setLinkText] = useState<string>('');
-  const [savedSelection, setSavedSelection] = useAtom(savedSelectionAtom);
-  const [isAddingLink, setIsAddingLink] = useAtom(isAddingLinkAtom);
+  const [addLinkPopoverState, setAddLinkPopoverState] = useAtom(
+    addLinkPopoverAtom
+  );
   const editor = useSlate();
 
   useEffect(() => {
-    if (!inputRef.current || !isAddingLink) {
+    if (!inputRef.current || !addLinkPopoverState.isVisible) {
       return;
     }
     inputRef.current.focus(); // Focus the input when it becomes visible
-  }, [isAddingLink]);
+  }, [addLinkPopoverState.isVisible]);
 
   return (
-    <Popover isVisibleOverride={isAddingLink} placement="bottom">
+    <Popover
+      isVisibleOverride={addLinkPopoverState.isVisible}
+      placement="bottom"
+    >
       <input
         ref={inputRef}
         type="text"
@@ -30,9 +34,13 @@ export default function AddLinkPopover() {
         onChange={(e) => setLinkText(e.target.value)}
         placeholder="Enter link URL"
         onKeyPress={(event) => {
-          if (event.key === 'Enter' && linkText && savedSelection) {
+          if (
+            event.key === 'Enter' &&
+            linkText &&
+            addLinkPopoverState.selection
+          ) {
             // Restore the editor selection
-            Transforms.select(editor, savedSelection);
+            Transforms.select(editor, addLinkPopoverState.selection);
             // Insert the link
             insertLink(editor, linkText);
             // Focus the editor
@@ -40,8 +48,7 @@ export default function AddLinkPopover() {
           }
         }}
         onBlur={() => {
-          setSavedSelection(null);
-          setIsAddingLink(false);
+          setAddLinkPopoverState({ isVisible: false, selection: null });
           setLinkText('');
         }}
       />

@@ -20,7 +20,7 @@ import {
   toggleBlock,
   isBlockActive,
 } from 'editor/formatting';
-import { isAddingLinkAtom, savedSelectionAtom } from 'editor/state';
+import { addLinkPopoverAtom } from 'editor/state';
 import Popover from './Popover';
 
 export default function HoveringToolbar() {
@@ -160,8 +160,7 @@ type LinkButtonProps = {
 
 const LinkButton = ({ className = '' }: LinkButtonProps) => {
   const editor = useSlate();
-  const [, setSavedSelection] = useAtom(savedSelectionAtom);
-  const [, setIsAddingLink] = useAtom(isAddingLinkAtom);
+  const [, setAddLinkPopoverState] = useAtom(addLinkPopoverAtom);
   const isActive = isBlockActive(editor, 'link');
 
   return (
@@ -170,8 +169,10 @@ const LinkButton = ({ className = '' }: LinkButtonProps) => {
       onClick={() => {
         if (editor.selection) {
           // Save the selection and make the add link popover visible
-          setSavedSelection(editor.selection);
-          setIsAddingLink(true);
+          setAddLinkPopoverState({
+            isVisible: true,
+            selection: editor.selection,
+          });
         }
       }}
       text="Link"

@@ -1,8 +1,8 @@
 import { atom } from 'jotai';
 import { Range } from 'slate';
 
-// Is the Add Link popover visible?
-export const isAddingLinkAtom = atom(false);
-
-// The saved editor selection
-export const savedSelectionAtom = atom<Range | null>(null);
+// Stores state for the "add link" popover
+export const addLinkPopoverAtom = atom<{
+  isVisible: boolean;
+  selection: Range | null;
+}>({ isVisible: false, selection: null });
