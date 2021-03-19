@@ -19,10 +19,10 @@ const BLOCK_SHORTCUTS = [
 ];
 
 const INLINE_SHORTCUTS = [
-  { match: /(\*\*|__)(.+)(\*\*|__)/, type: 'bold' },
-  { match: /(\*|_)(.+)(\*|_)/, type: 'italic' },
-  { match: /(`)(.+)(`)/, type: 'code' },
-  { match: /(\[)(.+)(\]\()(.+)(\))/, type: 'link' },
+  { match: /(\s)(\*\*|__)(.+)(\*\*|__)/, type: 'bold' },
+  { match: /(\s)(\*|_)([^*]+)(\*|_)/, type: 'italic' },
+  { match: /(\s)(`)(.+)(`)/, type: 'code' },
+  { match: /(\s)(\[)(.+)(\]\()(.+)(\))/, type: 'link' },
 ];
 
 // Add auto-markdown formatting shortcuts
@@ -77,6 +77,7 @@ const withAutoMarkdown = (editor: ReactEditor) => {
       const elementStart = SlateEditor.start(editor, anchor.path);
       const elementRange = { anchor, focus: elementStart };
       const elementText = SlateEditor.string(editor, elementRange);
+
       for (const { match, type } of INLINE_SHORTCUTS) {
         const result = elementText.match(match);
 
@@ -85,7 +86,7 @@ const withAutoMarkdown = (editor: ReactEditor) => {
         }
 
         if (type === 'bold' || type === 'italic' || type === 'code') {
-          const [, startMark, textToFormat, endMark] = result;
+          const [, , startMark, textToFormat, endMark] = result;
 
           const selectionPath = anchor.path;
           let endOfSelection = anchor.offset;
@@ -120,6 +121,8 @@ const withAutoMarkdown = (editor: ReactEditor) => {
             { at: textToFormatRange, match: (n) => Text.isText(n), split: true }
           );
           SlateEditor.removeMark(editor, type);
+
+          break;
         } else if (type === 'link') {
           const [, startMark, linkText, middleMark, linkUrl, endMark] = result;
 
@@ -160,6 +163,8 @@ const withAutoMarkdown = (editor: ReactEditor) => {
             at: linkTextRange,
             split: true,
           });
+
+          break;
         }
       }
 
