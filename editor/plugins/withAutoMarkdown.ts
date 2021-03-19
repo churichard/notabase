@@ -19,10 +19,12 @@ const BLOCK_SHORTCUTS = [
 ];
 
 const INLINE_SHORTCUTS = [
-  { match: /(\s)(\*\*|__)(.+)(\*\*|__)/, type: 'bold' },
-  { match: /(\s)(\*|_)([^*]+)(\*|_)/, type: 'italic' },
-  { match: /(\s)(`)(.+)(`)/, type: 'code' },
-  { match: /(\s)(\[)(.+)(\]\()(.+)(\))/, type: 'link' },
+  { match: /(?:^|\s)(\*\*)([^*]+)(\*\*)/, type: 'bold' },
+  { match: /(?:^|\s)(__)([^_]+)(__)/, type: 'bold' },
+  { match: /(?:^|\s)(\*)([^*]+)(\*)/, type: 'italic' },
+  { match: /(?:^|\s)(_)([^_]+)(_)/, type: 'italic' },
+  { match: /(?:^|\s)(`)(.+)(`)/, type: 'code' },
+  { match: /(?:^|\s)(\[)(.+)(\]\()(.+)(\))/, type: 'link' },
 ];
 
 // Add auto-markdown formatting shortcuts
@@ -32,9 +34,15 @@ const withAutoMarkdown = (editor: ReactEditor) => {
   editor.insertText = (text) => {
     const { selection } = editor;
 
+    if (!selection || !Range.isCollapsed(selection)) {
+      insertText(text);
+      return;
+    }
+
+    const { anchor } = selection;
+
     // Handle shortcuts at the beginning of a line
-    if (text === ' ' && selection && Range.isCollapsed(selection)) {
-      const { anchor } = selection;
+    if (text === ' ') {
       const block = SlateEditor.above(editor, {
         match: (n) => SlateEditor.isBlock(editor, n),
       });
@@ -72,105 +80,100 @@ const withAutoMarkdown = (editor: ReactEditor) => {
           return;
         }
       }
+    }
 
-      // Handle inline shortcuts
-      const elementStart = SlateEditor.start(editor, anchor.path);
-      const elementRange = { anchor, focus: elementStart };
-      const elementText = SlateEditor.string(editor, elementRange);
+    // Handle inline shortcuts
+    const elementStart = SlateEditor.start(editor, anchor.path);
+    const elementRange = { anchor, focus: elementStart };
+    const elementText = SlateEditor.string(editor, elementRange) + text;
 
-      for (const { match, type } of INLINE_SHORTCUTS) {
-        const result = elementText.match(match);
+    for (const { match, type } of INLINE_SHORTCUTS) {
+      const result = elementText.match(match);
 
-        if (!result) {
-          continue;
-        }
-
-        if (type === 'bold' || type === 'italic' || type === 'code') {
-          const [, , startMark, textToFormat, endMark] = result;
-
-          const selectionPath = anchor.path;
-          let endOfSelection = anchor.offset;
-
-          // Delete the ending mark
-          deleteText(editor, selectionPath, endOfSelection, endMark.length);
-          endOfSelection -= endMark.length;
-
-          // Delete the start mark
-          deleteText(
-            editor,
-            selectionPath,
-            endOfSelection - textToFormat.length,
-            startMark.length
-          );
-          endOfSelection -= startMark.length;
-
-          // Add formatting mark to the text to format
-          const textToFormatRange = {
-            anchor: {
-              path: selectionPath,
-              offset: endOfSelection,
-            },
-            focus: {
-              path: selectionPath,
-              offset: endOfSelection - textToFormat.length,
-            },
-          };
-          Transforms.setNodes(
-            editor,
-            { [type]: true },
-            { at: textToFormatRange, match: (n) => Text.isText(n), split: true }
-          );
-          SlateEditor.removeMark(editor, type);
-
-          break;
-        } else if (type === 'link') {
-          const [, startMark, linkText, middleMark, linkUrl, endMark] = result;
-
-          const selectionPath = anchor.path;
-          let endOfSelection = anchor.offset;
-
-          // Delete the middle mark, link url, and end mark
-          const endLength = middleMark.length + linkUrl.length + endMark.length;
-          deleteText(editor, selectionPath, endOfSelection, endLength);
-          endOfSelection -= endLength;
-
-          // Delete the start mark
-          deleteText(
-            editor,
-            selectionPath,
-            endOfSelection - linkText.length,
-            startMark.length
-          );
-          endOfSelection -= startMark.length;
-
-          // Wrap text in a link
-          const linkTextRange = {
-            anchor: {
-              path: selectionPath,
-              offset: endOfSelection,
-            },
-            focus: {
-              path: selectionPath,
-              offset: endOfSelection - linkText.length,
-            },
-          };
-          const link = {
-            type: 'link',
-            url: linkUrl,
-            children: [],
-          };
-          Transforms.wrapNodes(editor, link, {
-            at: linkTextRange,
-            split: true,
-          });
-
-          break;
-        }
+      if (!result) {
+        continue;
       }
 
-      // Insert the space at the end
-      insertText(text);
-      return;
+      const selectionPath = anchor.path;
+      let endOfSelection = anchor.offset;
+
+      if (type === 'bold' || type === 'italic' || type === 'code') {
+        const [, startMark, textToFormat, endMark] = result;
+        const endMarkLength = endMark.length - 1; // The last character is not in the editor
+
+        // Delete the ending mark
+        deleteText(editor, selectionPath, endOfSelection, endMarkLength);
+        endOfSelection -= endMarkLength;
+
+        // Delete the start mark
+        deleteText(
+          editor,
+          selectionPath,
+          endOfSelection - textToFormat.length,
+          startMark.length
+        );
+        endOfSelection -= startMark.length;
+
+        // Add formatting mark to the text to format
+        const textToFormatRange = {
+          anchor: {
+            path: selectionPath,
+            offset: endOfSelection,
+          },
+          focus: {
+            path: selectionPath,
+            offset: endOfSelection - textToFormat.length,
+          },
+        };
+        Transforms.setNodes(
+          editor,
+          { [type]: true },
+          { at: textToFormatRange, match: (n) => Text.isText(n), split: true }
+        );
+        SlateEditor.removeMark(editor, type);
+
+        return;
+      } else if (type === 'link') {
+        const [, startMark, linkText, middleMark, linkUrl, endMark] = result;
+        const endMarkLength = endMark.length - 1; // The last character is not in the editor
+
+        // Delete the middle mark, link url, and end mark
+        const endLength = middleMark.length + linkUrl.length + endMarkLength;
+        deleteText(editor, selectionPath, endOfSelection, endLength);
+        endOfSelection -= endLength;
+
+        // Delete the start mark
+        deleteText(
+          editor,
+          selectionPath,
+          endOfSelection - linkText.length,
+          startMark.length
+        );
+        endOfSelection -= startMark.length;
+
+        // Wrap text in a link
+        const linkTextRange = {
+          anchor: {
+            path: selectionPath,
+            offset: endOfSelection,
+          },
+          focus: {
+            path: selectionPath,
+            offset: endOfSelection - linkText.length,
+          },
+        };
+        const link = {
+          type: 'link',
+          url: linkUrl,
+          children: [],
+        };
+        Transforms.wrapNodes(editor, link, {
+          at: linkTextRange,
+          split: true,
+        });
+
+        return;
+      }
     }
 
     insertText(text);
@@ -217,8 +220,12 @@ const deleteText = (
   offset: number,
   length: number
 ) => {
+  const anchorOffset = offset - length;
+  if (anchorOffset === offset) {
+    return; // Don't delete anything if the two offsets are the same
+  }
   const range = {
-    anchor: { path, offset: offset - length },
+    anchor: { path, offset: anchorOffset },
     focus: { path, offset },
   };
   Transforms.delete(editor, { at: range });
