@@ -1,5 +1,5 @@
-import React, { KeyboardEvent, useCallback } from 'react';
-import { Node, Range } from 'slate';
+import React, { KeyboardEvent, useCallback, useMemo } from 'react';
+import { Node } from 'slate';
 import {
   Editable,
   ReactEditor,
@@ -8,37 +8,11 @@ import {
   Slate,
 } from 'slate-react';
 import { isHotkey } from 'is-hotkey';
-import { toggleMark, wrapLink } from 'editor/formatting';
+import { useAtom } from 'jotai';
+import { isAddingLinkAtom, savedSelectionAtom } from 'editor/state';
+import { toggleMark } from 'editor/formatting';
 import HoveringToolbar from './HoveringToolbar';
-
-const HOTKEYS = [
-  {
-    hotkey: 'mod+b',
-    callback: (editor: ReactEditor) => toggleMark(editor, 'bold'),
-  },
-  {
-    hotkey: 'mod+i',
-    callback: (editor: ReactEditor) => toggleMark(editor, 'italic'),
-  },
-  {
-    hotkey: 'mod+u',
-    callback: (editor: ReactEditor) => toggleMark(editor, 'underline'),
-  },
-  {
-    hotkey: 'mod+e',
-    callback: (editor: ReactEditor) => toggleMark(editor, 'code'),
-  },
-  {
-    hotkey: 'mod+k',
-    callback: (editor: ReactEditor) => {
-      if (editor.selection && !Range.isCollapsed(editor.selection)) {
-        const url = window.prompt('Enter link URL:');
-        if (!url) return;
-        wrapLink(editor, url);
-      }
-    },
-  },
-];
+import AddLinkPopover from './AddLinkPopover';
 
 type Props = {
   className?: string;
@@ -49,13 +23,47 @@ type Props = {
 
 export default function Editor(props: Props) {
   const { className, editor, value, setValue } = props;
+  const [, setSavedSelection] = useAtom(savedSelectionAtom);
+  const [, setIsAddingLink] = useAtom(isAddingLinkAtom);
   const renderElement = useCallback((props) => <Element {...props} />, []);
   const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
+
+  const hotkeys = useMemo(
+    () => [
+      {
+        hotkey: 'mod+b',
+        callback: (editor: ReactEditor) => toggleMark(editor, 'bold'),
+      },
+      {
+        hotkey: 'mod+i',
+        callback: (editor: ReactEditor) => toggleMark(editor, 'italic'),
+      },
+      {
+        hotkey: 'mod+u',
+        callback: (editor: ReactEditor) => toggleMark(editor, 'underline'),
+      },
+      {
+        hotkey: 'mod+e',
+        callback: (editor: ReactEditor) => toggleMark(editor, 'code'),
+      },
+      {
+        hotkey: 'mod+k',
+        callback: (editor: ReactEditor) => {
+          if (editor.selection) {
+            // Save the selection and make the add link popover visible
+            setSavedSelection(editor.selection);
+            setIsAddingLink(true);
+          }
+        },
+      },
+    ],
+    [setSavedSelection, setIsAddingLink]
+  );
 
   const onKeyDown = useCallback(
     (event: KeyboardEvent<HTMLDivElement>) => {
       // Handle keyboard shortcuts for adding marks
-      for (const { hotkey, callback } of HOTKEYS) {
+      for (const { hotkey, callback } of hotkeys) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         if (isHotkey(hotkey, event as any)) {
           event.preventDefault();
@@ -63,7 +71,7 @@ export default function Editor(props: Props) {
         }
       }
     },
-    [editor]
+    [editor, hotkeys]
   );
 
   const onSelect = useCallback(
@@ -105,6 +113,7 @@ export default function Editor(props: Props) {
   return (
     <Slate editor={editor} value={value} onChange={setValue}>
       <HoveringToolbar />
+      <AddLinkPopover />
       <Editable
         className={`placeholder-gray-300 ${className}`}
         renderElement={renderElement}

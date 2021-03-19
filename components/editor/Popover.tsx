@@ -8,10 +8,11 @@ import Portal from 'components/Portal';
 type Props = {
   children: ReactElement | Array<ReactElement>;
   placement?: Placement;
+  isVisibleOverride?: boolean; // Overrides any visibility setting
 };
 
 export default function Popover(props: Props) {
-  const { children, placement } = props;
+  const { children, placement, isVisibleOverride } = props;
   const [referenceElement, setReferenceElement] = useState<
     Element | VirtualElement | null
   >(null);
@@ -32,43 +33,61 @@ export default function Popover(props: Props) {
     const { onChange } = editor;
 
     editor.onChange = () => {
-      if (!popperElement) {
+      if (
+        !popperElement ||
+        !editor.selection ||
+        !ReactEditor.isFocused(editor)
+      ) {
         onChange();
         return;
       }
 
-      const { selection } = editor;
-      if (
-        !selection ||
-        !ReactEditor.isFocused(editor) ||
-        Range.isCollapsed(selection) ||
-        Editor.string(editor, selection) === ''
-      ) {
+      // If isVisibleOverride is defined, hide the popover if it is false
+      // If isVisibleOverride is undefined, hide the popover if no text is being selected
+      const shouldHidePopover =
+        isVisibleOverride === undefined
+          ? Range.isCollapsed(editor.selection) ||
+            Editor.string(editor, editor.selection) === ''
+          : !isVisibleOverride;
+
+      if (shouldHidePopover) {
         // Hide the toolbar if no text is being selected
         popperElement.style.opacity = '0';
         popperElement.style.visibility = 'hidden';
-        onChange();
-        return;
+      } else {
+        // Show the toolbar
+        popperElement.style.opacity = '1';
+        popperElement.style.visibility = 'visible';
       }
 
+      // Update popover position
       const domSelection = window.getSelection();
       const domRange = domSelection?.getRangeAt(0);
       const parentElement = domRange?.startContainer.parentElement;
 
-      // Set the toolbar position
       const virtualElement = {
         getBoundingClientRect: getSelectionBoundingClientRect,
         contextElement: parentElement ?? undefined,
       };
       setReferenceElement(virtualElement);
 
-      // Show the toolbar
-      popperElement.style.opacity = '1';
-      popperElement.style.visibility = 'visible';
-
       onChange();
     };
-  }, [editor, popperElement]);
+  }, [editor, popperElement, isVisibleOverride]);
+
+  useEffect(() => {
+    if (!popperElement || isVisibleOverride === undefined) {
+      return;
+    }
+
+    if (isVisibleOverride) {
+      popperElement.style.opacity = '1';
+      popperElement.style.visibility = 'visible';
+    } else {
+      popperElement.style.opacity = '0';
+      popperElement.style.visibility = 'hidden';
+    }
+  }, [popperElement, isVisibleOverride]);
 
   return (
     <Portal>

@@ -12,7 +12,7 @@
   }
 
   .input {
-    @apply block border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500;
+    @apply block py-1 border-gray-300 rounded shadow-sm focus:ring-primary-500 focus:border-primary-500;
   }
 }
 

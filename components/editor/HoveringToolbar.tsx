@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
-import { useSlate, ReactEditor } from 'slate-react';
+import { useSlate } from 'slate-react';
+import { useAtom } from 'jotai';
 import {
   TextBold16Regular as BoldIcon,
   TextItalic16Regular as ItalicIcon,
@@ -18,8 +19,8 @@ import {
   isMarkActive,
   toggleBlock,
   isBlockActive,
-  wrapLink,
 } from 'editor/formatting';
+import { isAddingLinkAtom, savedSelectionAtom } from 'editor/state';
 import Popover from './Popover';
 
 export default function HoveringToolbar() {
@@ -153,28 +154,25 @@ const BlockButton = ({ format, className = '' }: BlockButtonProps) => {
   );
 };
 
-const insertLink = (editor: ReactEditor, url: string) => {
-  if (editor.selection) {
-    wrapLink(editor, url);
-  }
-};
-
 type LinkButtonProps = {
   className?: string;
 };
 
 const LinkButton = ({ className = '' }: LinkButtonProps) => {
   const editor = useSlate();
-  const format = 'link';
-  const isActive = isBlockActive(editor, format);
+  const [, setSavedSelection] = useAtom(savedSelectionAtom);
+  const [, setIsAddingLink] = useAtom(isAddingLinkAtom);
+  const isActive = isBlockActive(editor, 'link');
 
   return (
     <ToolbarButton
-      format={format}
+      format="link"
       onClick={() => {
-        const url = window.prompt('Enter link URL:');
-        if (!url) return;
-        insertLink(editor, url);
+        if (editor.selection) {
+          // Save the selection and make the add link popover visible
+          setSavedSelection(editor.selection);
+          setIsAddingLink(true);
+        }
       }}
       text="Link"
       isActive={isActive}

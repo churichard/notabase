@@ -47,7 +47,7 @@ export default function Sidebar(props: Props) {
       </Link>
       <input
         type="text"
-        className="py-1 mx-6 my-2 input"
+        className="mx-6 my-2 input"
         placeholder="Create note"
         value={inputText}
         onChange={(e) => setInputText(e.target.value)}

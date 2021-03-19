@@ -17,7 +17,6 @@ module.exports = {
     colors: {
       ...colors,
       primary: colors.teal,
-      blue: colors.teal,
       gray: colors.warmGray,
     },
     boxShadow: {
