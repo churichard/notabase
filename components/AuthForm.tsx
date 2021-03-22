@@ -86,7 +86,7 @@ export default function AuthForm(props: Props) {
           name="email"
           id="email"
           autoComplete="email"
-          className="w-full mt-2 input"
+          className="w-full py-2 mt-2 input"
           value={email}
           onChange={(event) => setEmail(event.target.value)}
           required
@@ -100,7 +100,7 @@ export default function AuthForm(props: Props) {
           type="password"
           name="password"
           id="password"
-          className="w-full mt-2 input"
+          className="w-full py-2 mt-2 input"
           value={password}
           onChange={(event) => setPassword(event.target.value)}
           required
