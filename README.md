@@ -2,7 +2,7 @@
 
 Notabase is a personal knowledge base for non-linear thinking.
 
-It lets you connect knowledge and form ideas by linking notes together. Think of it as a personal Wikipedia for your brain that you can edit and browse as you like.
+It lets you connect knowledge and form ideas by linking notes together. These links allow you to traverse your notes like webpages and find connections that you never would have thought of otherwise. Think of it as a personal Wikipedia for your brain that you can edit and browse as you like. As you add more notes, it gets more powerful!
 
 It is inspired by note-taking apps such as [Typora](https://typora.io), [Notion](https://notion.so), and [Roam](https://roamresearch.com).
 
