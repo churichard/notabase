@@ -4,7 +4,7 @@ import { ReactEditor, useSlate } from 'slate-react';
 import { useAtom } from 'jotai';
 import useSWR from 'swr';
 import Fuse from 'fuse.js';
-import { GET_NOTE_TITLES_KEY } from 'api/fetcher';
+import { GET_NOTE_TITLES_KEY } from 'api/note';
 import { addLinkPopoverAtom } from 'editor/state';
 import { wrapLink } from 'editor/formatting';
 import { Note } from 'types/supabase';

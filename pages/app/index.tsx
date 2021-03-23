@@ -5,6 +5,7 @@ import { User } from '@supabase/supabase-js';
 import supabase from 'lib/supabase';
 import Sidebar from 'components/Sidebar';
 import { Note } from 'types/supabase';
+import { getNoteTitles } from 'api/note';
 
 type Props = {
   user: User;
@@ -39,11 +40,7 @@ export async function getServerSideProps({ req }: GetServerSidePropsContext) {
   }
 
   // Get notes from database
-  const { data: notes } = await supabase
-    .from<Note>('notes')
-    .select('id, title')
-    .eq('user_id', user.id)
-    .order('title');
+  const { data: notes } = await getNoteTitles(user.id);
 
   // Redirect to first note if one exists
   if (notes && notes.length > 0) {

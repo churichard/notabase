@@ -8,7 +8,7 @@ import supabase from 'lib/supabase';
 import Sidebar from 'components/Sidebar';
 import Note from 'components/Note';
 import { Note as NoteType } from 'types/supabase';
-import { getNoteTitles, GET_NOTE_TITLES_KEY } from 'api/fetcher';
+import { getNoteTitles, GET_NOTE_TITLES_KEY } from 'api/note';
 
 type Props = {
   user: User;

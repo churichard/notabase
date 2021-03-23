@@ -1,15 +1,7 @@
 import supabase from 'lib/supabase';
-import { Note } from 'types/supabase';
+import { GET_NOTE_TITLES_KEY, getNoteTitles } from './note';
 
-export const GET_NOTE_TITLES_KEY = '/api/notes';
-export const getNoteTitles = (userId: string) => {
-  return supabase
-    .from<Note>('notes')
-    .select('id, title')
-    .eq('user_id', userId)
-    .order('title');
-};
-
+// Fetcher used for SWR
 export const fetcher = async (key: string) => {
   const userId = supabase.auth.user()?.id;
 
