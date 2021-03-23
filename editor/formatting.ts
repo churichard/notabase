@@ -68,20 +68,25 @@ export const unwrapLink = (editor: ReactEditor) => {
   });
 };
 
-export const wrapLink = (editor: ReactEditor, url: string) => {
+export const wrapLink = (editor: ReactEditor, url: string, text?: string) => {
+  const { selection } = editor;
+  if (!selection) {
+    return;
+  }
+
   if (isBlockActive(editor, 'link')) {
     unwrapLink(editor);
   }
 
-  const { selection } = editor;
   const isCollapsed = selection && Range.isCollapsed(selection);
+  const shouldInsertNode = isCollapsed || text;
   const link = {
     type: 'link',
     url,
-    children: isCollapsed ? [{ text: url }] : [],
+    children: shouldInsertNode ? [{ text: text ?? url }] : [],
   };
 
-  if (isCollapsed) {
+  if (shouldInsertNode) {
     Transforms.insertNodes(editor, link);
   } else {
     Transforms.wrapNodes(editor, link, { split: true });

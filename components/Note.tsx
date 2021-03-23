@@ -91,7 +91,7 @@ export default function Note(props: Props) {
         }
       />
       <Editor
-        className="flex-1 pb-96"
+        className="flex-1 pb-112"
         editor={editor}
         value={currentNote.content}
         setValue={(content: Array<Node>) =>

@@ -1,4 +1,4 @@
-import React, { ReactElement, useEffect, useState } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import { Editor, Range } from 'slate';
 import { ReactEditor, useSlate } from 'slate-react';
 import { Placement, VirtualElement } from '@popperjs/core';
@@ -6,13 +6,14 @@ import { usePopper } from 'react-popper';
 import Portal from 'components/Portal';
 
 type Props = {
-  children: ReactElement | Array<ReactElement>;
+  children: ReactNode;
+  className?: string;
   placement?: Placement;
   isVisibleOverride?: boolean; // Overrides any visibility setting
 };
 
 export default function Popover(props: Props) {
-  const { children, placement, isVisibleOverride } = props;
+  const { children, className = '', placement, isVisibleOverride } = props;
   const [referenceElement, setReferenceElement] = useState<
     Element | VirtualElement | null
   >(null);
@@ -93,7 +94,7 @@ export default function Popover(props: Props) {
     <Portal>
       <div
         ref={setPopperElement}
-        className="z-10 flex items-stretch invisible overflow-hidden transition-opacity bg-white border rounded-md opacity-0 shadow-popover"
+        className={`z-10 flex items-stretch invisible overflow-hidden transition-opacity bg-white border rounded-md opacity-0 shadow-popover ${className}`}
         style={styles.popper}
         {...attributes.popper}
       >
@@ -106,7 +107,10 @@ export default function Popover(props: Props) {
 // Returns a DOM rect corresponding to the current editor text selection
 const getSelectionBoundingClientRect = () => {
   const domSelection = window.getSelection();
-  const domRange = domSelection?.getRangeAt(0);
-  const rect = domRange?.getBoundingClientRect();
-  return rect ?? new DOMRect();
+  if (domSelection && domSelection.rangeCount > 0) {
+    const domRange = domSelection.getRangeAt(0);
+    return domRange.getBoundingClientRect();
+  } else {
+    return new DOMRect();
+  }
 };

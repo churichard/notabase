@@ -8,7 +8,7 @@ import { DEFAULT_NOTE_CONTENT } from 'editor/constants';
 
 type Props = {
   user: User;
-  notes: Array<Note>;
+  notes?: Array<Note>;
   currentNoteId?: string;
 };
 
@@ -58,9 +58,15 @@ export default function Sidebar(props: Props) {
         }}
       />
       <div className="flex flex-col mt-2">
-        {notes.map((note) => (
-          <NoteLink key={note.id} note={note} currentNoteId={currentNoteId} />
-        ))}
+        {notes
+          ? notes.map((note) => (
+              <NoteLink
+                key={note.id}
+                note={note}
+                currentNoteId={currentNoteId}
+              />
+            ))
+          : null}
       </div>
     </div>
   );

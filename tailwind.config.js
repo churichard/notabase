@@ -9,10 +9,10 @@ module.exports = {
     container: {
       center: true,
     },
-    extend: {
-      width: {
-        192: '48rem',
-      },
+    spacing: {
+      ...defaultTheme.spacing,
+      112: '28rem',
+      192: '48rem',
     },
     colors: {
       ...colors,

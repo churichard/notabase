@@ -1,8 +1,8 @@
-import { useRef, useEffect, useState, ReactElement } from 'react';
+import { useRef, useEffect, useState, ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 
 type Props = {
-  children: ReactElement;
+  children: ReactNode;
   selector?: string;
 };
 

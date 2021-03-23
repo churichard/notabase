@@ -9,6 +9,7 @@ import {
 } from 'slate-react';
 import { isHotkey } from 'is-hotkey';
 import { useAtom } from 'jotai';
+import Link from 'next/link';
 import { addLinkPopoverAtom } from 'editor/state';
 import { toggleMark } from 'editor/formatting';
 import HoveringToolbar from './HoveringToolbar';
@@ -174,18 +175,36 @@ const Element = ({ attributes, children, element }: RenderElementProps) => {
         </blockquote>
       );
     case 'link':
-      return (
-        <a
-          className="underline cursor-pointer text-primary-500"
-          href={element.url as string}
-          onClick={() =>
-            window.open(element.url as string, '_blank', 'noopener noreferrer')
-          }
-          {...attributes}
-        >
-          {children}
-        </a>
-      );
+      if ((element.url as string).startsWith('/')) {
+        // Internal link - we use Next.js's routing
+        return (
+          <Link href={element.url as string}>
+            <a
+              className="underline cursor-pointer text-primary-500"
+              {...attributes}
+            >
+              {children}
+            </a>
+          </Link>
+        );
+      } else {
+        return (
+          <a
+            className="underline cursor-pointer text-primary-500"
+            href={element.url as string}
+            onClick={() =>
+              window.open(
+                element.url as string,
+                '_blank',
+                'noopener noreferrer'
+              )
+            }
+            {...attributes}
+          >
+            {children}
+          </a>
+        );
+      }
     default:
       return (
         <p className="my-3" {...attributes}>
