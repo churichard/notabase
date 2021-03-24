@@ -56,6 +56,32 @@ export default function Note(props: Props) {
   }>(initialNote);
   const [debouncedNote, setDebouncedNote] = useDebounce(currentNote, 500);
 
+  const onTitleChange = useCallback(
+    (title: string) => {
+      // Update title in local cache
+      mutate(
+        GET_NOTE_TITLES_KEY,
+        (notes: Array<NoteType>) => {
+          const index = notes.findIndex((note) => note.id === currentNote.id);
+          if (index < 0) {
+            return notes;
+          }
+          const newNotes = [...notes];
+          newNotes[index] = { ...newNotes[index], title };
+          return newNotes;
+        },
+        false
+      );
+      setCurrentNote((note) => ({ ...note, title }));
+    },
+    [currentNote.id]
+  );
+
+  const setEditorValue = useCallback(
+    (content: Array<Node>) => setCurrentNote((note) => ({ ...note, content })),
+    []
+  );
+
   const saveNote = useCallback(
     async (id: string, title: string, content: string) => {
       await supabase
@@ -88,33 +114,13 @@ export default function Note(props: Props) {
       <Title
         className="mb-3"
         value={currentNote.title}
-        onChange={(title: string) => {
-          // Update title in local cache
-          mutate(
-            GET_NOTE_TITLES_KEY,
-            (notes: Array<NoteType>) => {
-              const index = notes.findIndex(
-                (note) => note.id === currentNote.id
-              );
-              if (index < 0) {
-                return notes;
-              }
-              const newNotes = [...notes];
-              newNotes[index] = { ...newNotes[index], title };
-              return newNotes;
-            },
-            false
-          );
-          setCurrentNote((note) => ({ ...note, title }));
-        }}
+        onChange={onTitleChange}
       />
       <Editor
         className="flex-1 pb-112"
         editor={editor}
         value={currentNote.content}
-        setValue={(content: Array<Node>) =>
-          setCurrentNote((note) => ({ ...note, content }))
-        }
+        setValue={setEditorValue}
       />
     </div>
   );
