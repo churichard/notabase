@@ -8,7 +8,7 @@ It is inspired by note-taking apps such as [Typora](https://typora.io), [Notion]
 
 ## Principles
 
-Notabase has a few principles that differentiates it from other knowledge bases.
+Notabase has a few principles that differentiates it from other knowledge bases. **These are still a work-in-progress.**
 
 ### 1. Open-source.
 
