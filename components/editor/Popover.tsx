@@ -30,28 +30,14 @@ export default function Popover(props: Props) {
   });
   const editor = useSlate();
 
-  // Update popover position whenever the editor changes
+  // Update popover reference element when the editor changes
   useEffect(() => {
     const { onChange } = editor;
-
     editor.onChange = () => {
-      if (!editor.selection || !ReactEditor.isFocused(editor)) {
-        onChange();
-        return;
+      // Update popover reference element if there is a selection and the editor is focused
+      if (editor.selection && ReactEditor.isFocused(editor)) {
+        setReferenceElement(getReferenceElementFromSelection());
       }
-
-      // Update popover position
-      const domSelection = window.getSelection();
-      if (domSelection && domSelection.rangeCount > 0) {
-        const domRange = domSelection.getRangeAt(0);
-        const parentElement = domRange.startContainer.parentElement;
-        const virtualElement = {
-          getBoundingClientRect: getSelectionBoundingClientRect,
-          contextElement: parentElement ?? undefined,
-        };
-        setReferenceElement(virtualElement);
-      }
-
       onChange();
     };
   }, [editor]);
@@ -95,13 +81,15 @@ export default function Popover(props: Props) {
   );
 }
 
-// Returns a DOM rect corresponding to the current editor text selection
-const getSelectionBoundingClientRect = () => {
+// Returns a virtual element to be used as the popover reference element
+const getReferenceElementFromSelection = () => {
   const domSelection = window.getSelection();
   if (domSelection && domSelection.rangeCount > 0) {
     const domRange = domSelection.getRangeAt(0);
-    return domRange.getBoundingClientRect();
-  } else {
-    return new DOMRect();
+    return {
+      getBoundingClientRect: () => domRange.getBoundingClientRect(),
+      contextElement: domRange.startContainer.parentElement ?? undefined,
+    };
   }
+  return null;
 };
