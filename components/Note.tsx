@@ -15,10 +15,10 @@ import Title from 'components/editor/Title';
 import { Note as NoteType } from 'types/supabase';
 import useDebounce from 'hooks/useDebounce';
 import supabase from 'lib/supabase';
+import { GET_NOTE_TITLES_KEY } from 'api/note';
 import withBlockBreakout from 'editor/plugins/withBlockBreakout';
 import withAutoMarkdown from 'editor/plugins/withAutoMarkdown';
 import withLinks from 'editor/plugins/withLinks';
-import { GET_NOTE_TITLES_KEY } from 'api/note';
 
 // Workaround for Slate bug when hot reloading: https://github.com/ianstormtaylor/slate/issues/3621
 const Editor = dynamic(() => import('components/editor/Editor'), {

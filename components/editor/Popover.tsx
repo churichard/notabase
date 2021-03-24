@@ -24,71 +24,62 @@ export default function Popover(props: Props) {
     placement,
     modifiers: [
       { name: 'offset', options: { offset: [0, 12] } },
-      // We need to disable gpu acceleration in order to fix text selection breaking
+      // We need to disable gpu acceleration in order to fix text selection breaking when selecting over the popover
       { name: 'computeStyles', options: { gpuAcceleration: false } },
     ],
   });
   const editor = useSlate();
 
+  // Update popover position whenever the editor changes
   useEffect(() => {
     const { onChange } = editor;
 
     editor.onChange = () => {
-      if (
-        !popperElement ||
-        !editor.selection ||
-        !ReactEditor.isFocused(editor)
-      ) {
+      if (!editor.selection || !ReactEditor.isFocused(editor)) {
         onChange();
         return;
       }
 
-      // If isVisibleOverride is defined, hide the popover if it is false
-      // If isVisibleOverride is undefined, hide the popover if no text is being selected
-      const shouldHidePopover =
-        isVisibleOverride === undefined
-          ? Range.isCollapsed(editor.selection) ||
-            Editor.string(editor, editor.selection) === ''
-          : !isVisibleOverride;
-
-      if (shouldHidePopover) {
-        // Hide the toolbar if no text is being selected
-        popperElement.style.opacity = '0';
-        popperElement.style.visibility = 'hidden';
-      } else {
-        // Show the toolbar
-        popperElement.style.opacity = '1';
-        popperElement.style.visibility = 'visible';
-      }
-
       // Update popover position
       const domSelection = window.getSelection();
-      const domRange = domSelection?.getRangeAt(0);
-      const parentElement = domRange?.startContainer.parentElement;
-
-      const virtualElement = {
-        getBoundingClientRect: getSelectionBoundingClientRect,
-        contextElement: parentElement ?? undefined,
-      };
-      setReferenceElement(virtualElement);
+      if (domSelection && domSelection.rangeCount > 0) {
+        const domRange = domSelection.getRangeAt(0);
+        const parentElement = domRange.startContainer.parentElement;
+        const virtualElement = {
+          getBoundingClientRect: getSelectionBoundingClientRect,
+          contextElement: parentElement ?? undefined,
+        };
+        setReferenceElement(virtualElement);
+      }
 
       onChange();
     };
-  }, [editor, popperElement, isVisibleOverride]);
+  }, [editor]);
 
+  // Update popover visibility whenever the component re-renders
   useEffect(() => {
-    if (!popperElement || isVisibleOverride === undefined) {
+    if (!popperElement || !editor.selection || !ReactEditor.isFocused(editor)) {
       return;
     }
 
-    if (isVisibleOverride) {
-      popperElement.style.opacity = '1';
-      popperElement.style.visibility = 'visible';
-    } else {
+    // If isVisibleOverride is defined, hide the popover if it is false
+    // If isVisibleOverride is undefined, hide the popover if no text is being selected
+    const shouldHidePopover =
+      isVisibleOverride === undefined
+        ? Range.isCollapsed(editor.selection) ||
+          Editor.string(editor, editor.selection) === ''
+        : !isVisibleOverride;
+
+    if (shouldHidePopover) {
+      // Hide the toolbar if no text is being selected
       popperElement.style.opacity = '0';
       popperElement.style.visibility = 'hidden';
+    } else {
+      // Show the toolbar
+      popperElement.style.opacity = '1';
+      popperElement.style.visibility = 'visible';
     }
-  }, [popperElement, isVisibleOverride]);
+  });
 
   return (
     <Portal>
