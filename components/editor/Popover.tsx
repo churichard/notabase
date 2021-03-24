@@ -4,16 +4,24 @@ import { ReactEditor, useSlate } from 'slate-react';
 import { Placement, VirtualElement } from '@popperjs/core';
 import { usePopper } from 'react-popper';
 import Portal from 'components/Portal';
+import useOnClickOutside from 'hooks/useOnClickOutside';
 
 type Props = {
   children: ReactNode;
   className?: string;
   placement?: Placement;
   isVisibleOverride?: boolean; // Overrides any visibility setting
+  onClickOutside?: (event: Event) => void; // Called when mouse is clicked outside the popover
 };
 
 export default function Popover(props: Props) {
-  const { children, className = '', placement, isVisibleOverride } = props;
+  const {
+    children,
+    className = '',
+    placement,
+    isVisibleOverride,
+    onClickOutside,
+  } = props;
   const [referenceElement, setReferenceElement] = useState<
     Element | VirtualElement | null
   >(null);
@@ -29,6 +37,8 @@ export default function Popover(props: Props) {
     ],
   });
   const editor = useSlate();
+
+  useOnClickOutside(popperElement, onClickOutside);
 
   // Update popover reference element when the editor changes
   useEffect(() => {
@@ -57,11 +67,9 @@ export default function Popover(props: Props) {
         : !isVisibleOverride;
 
     if (shouldHidePopover) {
-      // Hide the toolbar if no text is being selected
       popperElement.style.opacity = '0';
       popperElement.style.visibility = 'hidden';
     } else {
-      // Show the toolbar
       popperElement.style.opacity = '1';
       popperElement.style.visibility = 'visible';
     }

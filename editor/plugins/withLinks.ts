@@ -1,7 +1,7 @@
 import { Editor as SlateEditor, Range, Transforms } from 'slate';
 import { ReactEditor } from 'slate-react';
 import isUrl from 'helper/isUrl';
-import { wrapLink } from 'editor/formatting';
+import { insertLink } from 'editor/formatting';
 
 const withLinks = (editor: ReactEditor) => {
   const { insertData, insertText, isInline } = editor;
@@ -14,7 +14,7 @@ const withLinks = (editor: ReactEditor) => {
     const { selection } = editor;
 
     if (text && isUrl(text)) {
-      wrapLink(editor, text);
+      insertLink(editor, text);
     } else if (text === ' ' && selection && Range.isCollapsed(selection)) {
       const { anchor } = selection;
       const start = SlateEditor.start(editor, anchor.path);
@@ -33,7 +33,7 @@ const withLinks = (editor: ReactEditor) => {
           },
         };
         Transforms.select(editor, lastSegmentRange);
-        wrapLink(editor, lastSegment);
+        insertLink(editor, lastSegment);
       }
 
       insertText(text);
@@ -46,7 +46,7 @@ const withLinks = (editor: ReactEditor) => {
     const text = data.getData('text/plain');
 
     if (text && isUrl(text)) {
-      wrapLink(editor, text);
+      insertLink(editor, text);
     } else {
       insertData(data);
     }

@@ -68,7 +68,7 @@ export const unwrapLink = (editor: ReactEditor) => {
   });
 };
 
-export const wrapLink = (editor: ReactEditor, url: string, text?: string) => {
+export const insertLink = (editor: ReactEditor, url: string, text?: string) => {
   const { selection } = editor;
   if (!selection) {
     return;
