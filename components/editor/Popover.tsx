@@ -32,6 +32,11 @@ export default function Popover(props: Props) {
     placement,
     modifiers: [
       { name: 'offset', options: { offset: [0, 12] } },
+      // Disable event listeners when the popper is not visible, for performance
+      {
+        name: 'eventListeners',
+        enabled: popperElement?.style.visibility === 'visible',
+      },
       // We need to disable gpu acceleration in order to fix text selection breaking when selecting over the popover
       { name: 'computeStyles', options: { gpuAcceleration: false } },
     ],
