@@ -1,4 +1,4 @@
-import React, { ReactNode, useCallback, useEffect, useState } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import { Range } from 'slate';
 import { ReactEditor, useSlate } from 'slate-react';
 import { Placement, VirtualElement } from '@popperjs/core';
@@ -24,29 +24,9 @@ export default function Popover(props: Props) {
   } = props;
   const editor = useSlate();
 
-  // Returns a virtual element to be used as the popover reference element
-  const getReferenceElementFromSelection = useCallback(() => {
-    const getDomRange = () => {
-      if (selection) {
-        return ReactEditor.toDOMRange(editor, selection);
-      }
-      const domSelection = window.getSelection();
-      if (domSelection && domSelection.rangeCount > 0) {
-        return domSelection.getRangeAt(0);
-      }
-      return null;
-    };
-    return {
-      getBoundingClientRect: () => {
-        return getDomRange()?.getBoundingClientRect() ?? new DOMRect();
-      },
-      contextElement: getDomRange()?.startContainer.parentElement ?? undefined,
-    };
-  }, [editor, selection]);
-
   const [referenceElement, setReferenceElement] = useState<
     Element | VirtualElement | null
-  >(getReferenceElementFromSelection());
+  >(null);
   const [popperElement, setPopperElement] = useState<HTMLDivElement | null>(
     null
   );
@@ -62,21 +42,33 @@ export default function Popover(props: Props) {
 
   // Update popover reference element when the editor changes
   useEffect(() => {
-    let isMounted = true;
-    const { onChange } = editor;
-
-    editor.onChange = () => {
-      // Update popover reference element if there is a selection and the editor is focused
-      if (isMounted && editor.selection && ReactEditor.isFocused(editor)) {
-        setReferenceElement(getReferenceElementFromSelection());
+    // Returns the DOM range of the prop selection or the window selection
+    const getDOMRange = () => {
+      // Use the selection prop if it was passed in; otherwise, use the window selection
+      if (selection) {
+        try {
+          return ReactEditor.toDOMRange(editor, selection);
+        } catch (e) {
+          // Do nothing - use window selection instead
+        }
       }
-      onChange();
+      const domSelection = window.getSelection();
+      if (domSelection && domSelection.rangeCount > 0) {
+        return domSelection.getRangeAt(0);
+      }
+      return null;
     };
 
-    return () => {
-      isMounted = false;
+    // Virtual element to be used as the popover reference element
+    // We need this in order to position the popover relative to the selection (not just the DOM node)
+    const virtualElement = {
+      getBoundingClientRect: () =>
+        getDOMRange()?.getBoundingClientRect() ?? new DOMRect(),
+      contextElement: getDOMRange()?.startContainer.parentElement ?? undefined,
     };
-  }, [editor, getReferenceElementFromSelection]);
+
+    setReferenceElement(virtualElement);
+  }, [editor, editor.selection, selection]);
 
   return (
     <Portal>

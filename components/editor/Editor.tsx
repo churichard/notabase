@@ -30,11 +30,16 @@ export default function Editor(props: Props) {
   const renderElement = useCallback((props) => <Element {...props} />, []);
   const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
 
-  const isHoveringToolbarVisible =
-    editor.selection &&
-    ReactEditor.isFocused(editor) &&
-    !Range.isCollapsed(editor.selection) &&
-    SlateEditor.string(editor, editor.selection) !== '';
+  const isHoveringToolbarVisible = useMemo(
+    () =>
+      editor.selection &&
+      ReactEditor.isFocused(editor) &&
+      !Range.isCollapsed(editor.selection) &&
+      SlateEditor.string(editor, editor.selection) !== '',
+    // We actually need editor.selection in order for this to re-compute properly
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [editor, editor.selection]
+  );
 
   const hotkeys = useMemo(
     () => [
