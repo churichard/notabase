@@ -85,8 +85,8 @@ export default function AddLinkPopover() {
   }, [setAddLinkPopoverState]);
 
   const onOptionClick = useCallback(
-    (option: Option) => {
-      if (!addLinkPopoverState.selection) {
+    (option?: Option) => {
+      if (!addLinkPopoverState.selection || !option) {
         return;
       }
 
@@ -112,13 +112,13 @@ export default function AddLinkPopover() {
       // Update the selected option based on arrow key input
       if (event.key === 'ArrowUp') {
         event.preventDefault();
-        setSelectedOptionIndex((selectedOption) => {
-          return selectedOption <= 0 ? options.length - 1 : selectedOption - 1;
+        setSelectedOptionIndex((index) => {
+          return index <= 0 ? options.length - 1 : index - 1;
         });
       } else if (event.key === 'ArrowDown') {
         event.preventDefault();
-        setSelectedOptionIndex((selectedOption) => {
-          return selectedOption >= options.length - 1 ? 0 : selectedOption + 1;
+        setSelectedOptionIndex((index) => {
+          return index >= options.length - 1 ? 0 : index + 1;
         });
       }
     },
