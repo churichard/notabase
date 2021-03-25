@@ -1,6 +1,6 @@
 import { Editor as SlateEditor, Range, Transforms } from 'slate';
 import { ReactEditor } from 'slate-react';
-import isUrl from 'helper/isUrl';
+import isUrl from 'utils/isUrl';
 import { insertLink } from 'editor/formatting';
 
 const withLinks = (editor: ReactEditor) => {

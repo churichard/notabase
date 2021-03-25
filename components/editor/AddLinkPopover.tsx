@@ -9,13 +9,11 @@ import React, {
 import { Transforms } from 'slate';
 import { ReactEditor, useSlate } from 'slate-react';
 import { useAtom } from 'jotai';
-import useSWR from 'swr';
 import Fuse from 'fuse.js';
-import { GET_NOTE_TITLES_KEY } from 'api/note';
+import useNoteTitles from 'api/useNoteTitles';
 import { addLinkPopoverAtom } from 'editor/state';
 import { insertLink } from 'editor/formatting';
-import { Note } from 'types/supabase';
-import isUrl from 'helper/isUrl';
+import isUrl from 'utils/isUrl';
 import Popover from './Popover';
 
 enum OptionType {
@@ -38,7 +36,7 @@ export default function AddLinkPopover() {
   const editor = useSlate();
 
   const [selectedOptionIndex, setSelectedOptionIndex] = useState<number>(0);
-  const { data: notes = [] } = useSWR<Array<Note>>(GET_NOTE_TITLES_KEY);
+  const { data: notes = [] } = useNoteTitles();
   const fuse = useMemo(() => new Fuse(notes, { keys: ['title'] }), [notes]);
   const noteResults = useMemo(() => fuse.search(linkText).slice(0, 10), [
     fuse,

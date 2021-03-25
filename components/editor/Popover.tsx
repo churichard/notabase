@@ -4,7 +4,7 @@ import { ReactEditor, useSlate } from 'slate-react';
 import { Placement, VirtualElement } from '@popperjs/core';
 import { usePopper } from 'react-popper';
 import Portal from 'components/Portal';
-import useOnClickOutside from 'hooks/useOnClickOutside';
+import useOnClickOutside from 'utils/useOnClickOutside';
 
 type Props = {
   children: ReactNode;

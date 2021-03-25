@@ -4,8 +4,6 @@ import Head from 'next/head';
 import Router from 'next/router';
 import { ToastContainer } from 'react-toastify';
 import NProgress from 'nprogress';
-import { SWRConfig } from 'swr';
-import { fetcher } from 'api/fetcher';
 import 'styles/styles.css';
 import 'styles/nprogress.css';
 import 'react-toastify/dist/ReactToastify.css';
@@ -16,7 +14,7 @@ Router.events.on('routeChangeError', () => NProgress.done());
 
 export default function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <SWRConfig value={{ fetcher }}>
+    <>
       <Head>
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -26,6 +24,6 @@ export default function MyApp({ Component, pageProps }: AppProps) {
         hideProgressBar
         newestOnTop={true}
       />
-    </SWRConfig>
+    </>
   );
 }

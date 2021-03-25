@@ -3,12 +3,11 @@ import { GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
 import { User } from '@supabase/supabase-js';
-import useSWR from 'swr';
 import supabase from 'lib/supabase';
 import Sidebar from 'components/Sidebar';
 import Note from 'components/Note';
 import { Note as NoteType } from 'types/supabase';
-import { getNoteTitles, GET_NOTE_TITLES_KEY } from 'api/note';
+import useNoteTitles, { getNoteTitles } from 'api/useNoteTitles';
 
 type Props = {
   user: User;
@@ -18,9 +17,7 @@ type Props = {
 
 export default function NotePage(props: Props) {
   const { user, note } = props;
-  const { data: notes } = useSWR(GET_NOTE_TITLES_KEY, {
-    initialData: props.notes,
-  });
+  const { data: notes } = useNoteTitles({ initialData: props.notes });
 
   if (!note) {
     return (
@@ -64,12 +61,12 @@ export async function getServerSideProps({
   }
 
   // Get notes from database
-  const { data: notes } = await getNoteTitles(user.id);
+  const notes = await getNoteTitles(user.id);
 
   // Validate query param
   const noteId = query.id;
   if (!noteId || typeof noteId !== 'string') {
-    return { props: { user, notes: notes ?? [], note: null } };
+    return { props: { user, notes, note: null } };
   }
 
   // Get the current note
@@ -80,5 +77,5 @@ export async function getServerSideProps({
     .eq('id', noteId)
     .single();
 
-  return { props: { user, notes: notes ?? [], note } };
+  return { props: { user, notes, note } };
 }

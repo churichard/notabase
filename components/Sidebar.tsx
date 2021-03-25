@@ -6,7 +6,7 @@ import { mutate } from 'swr';
 import { Note } from 'types/supabase';
 import supabase from 'lib/supabase';
 import { DEFAULT_NOTE_CONTENT } from 'editor/constants';
-import { GET_NOTE_TITLES_KEY } from 'api/note';
+import { NOTE_TITLES_KEY } from 'api/useNoteTitles';
 
 type Props = {
   user: User;
@@ -37,7 +37,7 @@ export default function Sidebar(props: Props) {
 
     setInputText('');
     router.push(`/app/note/${data.id}`);
-    mutate(GET_NOTE_TITLES_KEY);
+    mutate(NOTE_TITLES_KEY); // Adds the new note to the sidebar
   };
 
   return (

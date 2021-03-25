@@ -13,9 +13,9 @@ import { User } from '@supabase/supabase-js';
 import { mutate } from 'swr';
 import Title from 'components/editor/Title';
 import { Note as NoteType } from 'types/supabase';
-import useDebounce from 'hooks/useDebounce';
+import useDebounce from 'utils/useDebounce';
 import supabase from 'lib/supabase';
-import { GET_NOTE_TITLES_KEY } from 'api/note';
+import { NOTE_TITLES_KEY } from 'api/useNoteTitles';
 import withBlockBreakout from 'editor/plugins/withBlockBreakout';
 import withAutoMarkdown from 'editor/plugins/withAutoMarkdown';
 import withLinks from 'editor/plugins/withLinks';
@@ -60,7 +60,7 @@ export default function Note(props: Props) {
     (title: string) => {
       // Update title in local cache
       mutate(
-        GET_NOTE_TITLES_KEY,
+        NOTE_TITLES_KEY,
         (notes: Array<NoteType>) => {
           const index = notes.findIndex((note) => note.id === currentNote.id);
           if (index < 0) {
