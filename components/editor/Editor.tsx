@@ -1,5 +1,5 @@
 import React, { KeyboardEvent, useCallback, useMemo } from 'react';
-import { Node } from 'slate';
+import { Node, Range, Editor as SlateEditor } from 'slate';
 import {
   Editable,
   ReactEditor,
@@ -24,9 +24,17 @@ type Props = {
 
 export default function Editor(props: Props) {
   const { className, editor, value, setValue } = props;
-  const [, setAddLinkPopoverState] = useAtom(addLinkPopoverAtom);
+  const [addLinkPopoverState, setAddLinkPopoverState] = useAtom(
+    addLinkPopoverAtom
+  );
   const renderElement = useCallback((props) => <Element {...props} />, []);
   const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
+
+  const isHoveringToolbarVisible =
+    editor.selection &&
+    ReactEditor.isFocused(editor) &&
+    !Range.isCollapsed(editor.selection) &&
+    SlateEditor.string(editor, editor.selection) !== '';
 
   const hotkeys = useMemo(
     () => [
@@ -114,8 +122,8 @@ export default function Editor(props: Props) {
 
   return (
     <Slate editor={editor} value={value} onChange={setValue}>
-      <HoveringToolbar />
-      <AddLinkPopover />
+      {isHoveringToolbarVisible ? <HoveringToolbar /> : null}
+      {addLinkPopoverState.isVisible ? <AddLinkPopover /> : null}
       <Editable
         className={`placeholder-gray-300 ${className}`}
         renderElement={renderElement}

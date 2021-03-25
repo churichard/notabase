@@ -4,5 +4,5 @@ import { Range } from 'slate';
 // Stores state for the "add link" popover
 export const addLinkPopoverAtom = atom<{
   isVisible: boolean;
-  selection: Range | null;
-}>({ isVisible: false, selection: null });
+  selection?: Range;
+}>({ isVisible: false, selection: undefined });

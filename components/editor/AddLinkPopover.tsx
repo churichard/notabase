@@ -71,18 +71,10 @@ export default function AddLinkPopover() {
     return result;
   }, [noteResults, linkText]);
 
-  useEffect(() => {
-    if (!inputRef.current || !addLinkPopoverState.isVisible) {
-      return;
-    }
-    inputRef.current.focus(); // Focus the input when it becomes visible
-  }, [addLinkPopoverState.isVisible]);
-
-  const hidePopover = useCallback(() => {
-    setAddLinkPopoverState({ isVisible: false, selection: null });
-    setLinkText('');
-    setSelectedOptionIndex(0);
-  }, [setAddLinkPopoverState]);
+  const hidePopover = useCallback(
+    () => setAddLinkPopoverState({ isVisible: false, selection: undefined }),
+    [setAddLinkPopoverState]
+  );
 
   const onOptionClick = useCallback(
     (option?: Option) => {
@@ -127,7 +119,7 @@ export default function AddLinkPopover() {
 
   return (
     <Popover
-      isVisibleOverride={addLinkPopoverState.isVisible}
+      selection={addLinkPopoverState.selection}
       placement="bottom"
       className="flex flex-col py-4 w-96"
       onClickOutside={hidePopover}
@@ -145,6 +137,7 @@ export default function AddLinkPopover() {
           }
         }}
         onKeyDown={onKeyDown}
+        autoFocus
       />
       {options.length > 0 ? (
         <div className="mt-2">
