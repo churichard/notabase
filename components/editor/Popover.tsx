@@ -32,11 +32,6 @@ export default function Popover(props: Props) {
     placement,
     modifiers: [
       { name: 'offset', options: { offset: [0, 12] } },
-      // Disable event listeners when the popper is not visible, for performance
-      {
-        name: 'eventListeners',
-        enabled: popperElement?.style.visibility === 'visible',
-      },
       // We need to disable gpu acceleration in order to fix text selection breaking when selecting over the popover
       { name: 'computeStyles', options: { gpuAcceleration: false } },
     ],
@@ -98,10 +93,11 @@ export default function Popover(props: Props) {
 const getReferenceElementFromSelection = () => {
   const domSelection = window.getSelection();
   if (domSelection && domSelection.rangeCount > 0) {
-    const domRange = domSelection.getRangeAt(0);
     return {
-      getBoundingClientRect: () => domRange.getBoundingClientRect(),
-      contextElement: domRange.startContainer.parentElement ?? undefined,
+      getBoundingClientRect: () =>
+        domSelection.getRangeAt(0).getBoundingClientRect(),
+      contextElement:
+        domSelection.getRangeAt(0).startContainer.parentElement ?? undefined,
     };
   }
   return null;
