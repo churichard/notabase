@@ -1,37 +1,29 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
 import { User } from '@supabase/supabase-js';
 import supabase from 'lib/supabase';
-import Sidebar from 'components/Sidebar';
 import { Note } from 'types/supabase';
 import { getNoteTitles } from 'api/useNoteTitles';
-import { useAuth } from 'utils/useAuth';
+import AppLayout from 'components/AppLayout';
 
 type Props = {
-  user: User;
-  notes: Array<Note>;
+  initialUser: User;
+  initialNotes: Array<Note>;
 };
 
 export default function AppHome(props: Props) {
-  const { user, notes } = props;
-  const { setUser } = useAuth();
-
-  useEffect(() => {
-    setUser(user);
-  }, [user, setUser]);
-
+  const { initialUser, initialNotes } = props;
   return (
     <>
       <Head>
         <title>Notabase</title>
       </Head>
-      <div className="flex h-screen">
-        <Sidebar notes={notes} />
+      <AppLayout initialUser={initialUser} initialNotes={initialNotes}>
         <div className="flex items-center justify-center w-full p-12">
           <p className="text-gray-500">Get started by adding a new note</p>
         </div>
-      </div>
+      </AppLayout>
     </>
   );
 }
@@ -54,5 +46,5 @@ export async function getServerSideProps({ req }: GetServerSidePropsContext) {
     };
   }
 
-  return { props: { user, notes: notes ?? [] } };
+  return { props: { initialUser: user, initialNotes: notes ?? [] } };
 }

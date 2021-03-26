@@ -6,7 +6,7 @@ import React, {
   ReactNode,
   useCallback,
 } from 'react';
-import { Provider, Session, User } from '@supabase/gotrue-js';
+import { User, Provider, Session } from '@supabase/supabase-js';
 import supabase from 'lib/supabase';
 
 type AuthContextType = {

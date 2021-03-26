@@ -1,31 +1,24 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
 import { User } from '@supabase/supabase-js';
 import supabase from 'lib/supabase';
-import Sidebar from 'components/Sidebar';
 import Note from 'components/Note';
 import { Note as NoteType } from 'types/supabase';
-import useNoteTitles, { getNoteTitles } from 'api/useNoteTitles';
-import { useAuth } from 'utils/useAuth';
+import { getNoteTitles } from 'api/useNoteTitles';
+import AppLayout from 'components/AppLayout';
 
 type Props = {
-  user: User;
-  notes: Array<NoteType>;
-  note?: NoteType;
+  initialUser: User;
+  initialNotes: Array<NoteType>;
+  currentNote?: NoteType;
 };
 
 export default function NotePage(props: Props) {
-  const { user, note } = props;
-  const { data: notes } = useNoteTitles({ initialData: props.notes });
-  const { setUser } = useAuth();
+  const { initialUser, initialNotes, currentNote } = props;
 
-  useEffect(() => {
-    setUser(user);
-  }, [user, setUser]);
-
-  if (!note) {
+  if (!currentNote) {
     return (
       <>
         <Head>
@@ -46,12 +39,15 @@ export default function NotePage(props: Props) {
   return (
     <>
       <Head>
-        <title>{note.title}</title>
+        <title>{currentNote.title}</title>
       </Head>
-      <div className="flex h-screen">
-        <Sidebar notes={notes} currentNoteId={note.id} />
-        <Note user={user} note={note} />
-      </div>
+      <AppLayout
+        initialUser={initialUser}
+        initialNotes={initialNotes}
+        currentNote={currentNote}
+      >
+        <Note user={initialUser} note={currentNote} />
+      </AppLayout>
     </>
   );
 }
@@ -76,12 +72,12 @@ export async function getServerSideProps({
   }
 
   // Get the current note
-  const { data: note } = await supabase
+  const { data: currentNote } = await supabase
     .from<NoteType>('notes')
     .select('id, title, content')
     .eq('user_id', user.id)
     .eq('id', noteId)
     .single();
 
-  return { props: { user, notes, note } };
+  return { props: { initialUser: user, initialNotes: notes, currentNote } };
 }
