@@ -1,21 +1,21 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { User } from '@supabase/supabase-js';
 import { mutate } from 'swr';
 import { Note } from 'types/supabase';
 import supabase from 'lib/supabase';
 import { DEFAULT_NOTE_CONTENT } from 'editor/constants';
 import { NOTE_TITLES_KEY } from 'api/useNoteTitles';
+import { useAuth } from 'utils/useAuth';
 
 type Props = {
-  user: User;
   notes?: Array<Note>;
   currentNoteId?: string;
 };
 
 export default function Sidebar(props: Props) {
-  const { user, notes, currentNoteId } = props;
+  const { notes, currentNoteId } = props;
+  const { user } = useAuth();
   const router = useRouter();
   const [inputText, setInputText] = useState('');
 
@@ -24,7 +24,7 @@ export default function Sidebar(props: Props) {
       .from<Note>('notes')
       .insert([
         {
-          user_id: user.id,
+          user_id: user?.id,
           title: inputText,
           content: JSON.stringify(DEFAULT_NOTE_CONTENT),
         },
@@ -45,7 +45,7 @@ export default function Sidebar(props: Props) {
       <Link href="/app">
         <a className="w-full px-6 py-3 text-gray-800 hover:bg-gray-200 active:bg-gray-300">
           <div className="font-medium">Notabase</div>
-          <div className="text-sm">{user.email}</div>
+          <div className="text-sm">{user?.email}</div>
         </a>
       </Link>
       <input
@@ -61,15 +61,13 @@ export default function Sidebar(props: Props) {
         }}
       />
       <div className="flex flex-col mt-2">
-        {notes
-          ? notes.map((note) => (
-              <NoteLink
-                key={note.id}
-                note={note}
-                currentNoteId={currentNoteId}
-              />
-            ))
-          : null}
+        {notes && notes.length > 0 ? (
+          notes.map((note) => (
+            <NoteLink key={note.id} note={note} currentNoteId={currentNoteId} />
+          ))
+        ) : (
+          <p className="px-6 text-gray-500">No notes yet</p>
+        )}
       </div>
     </div>
   );

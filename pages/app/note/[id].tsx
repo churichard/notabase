@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
@@ -8,6 +8,7 @@ import Sidebar from 'components/Sidebar';
 import Note from 'components/Note';
 import { Note as NoteType } from 'types/supabase';
 import useNoteTitles, { getNoteTitles } from 'api/useNoteTitles';
+import { useAuth } from 'utils/useAuth';
 
 type Props = {
   user: User;
@@ -18,6 +19,11 @@ type Props = {
 export default function NotePage(props: Props) {
   const { user, note } = props;
   const { data: notes } = useNoteTitles({ initialData: props.notes });
+  const { setUser } = useAuth();
+
+  useEffect(() => {
+    setUser(user);
+  }, [user, setUser]);
 
   if (!note) {
     return (
@@ -43,7 +49,7 @@ export default function NotePage(props: Props) {
         <title>{note.title}</title>
       </Head>
       <div className="flex h-screen">
-        <Sidebar user={user} notes={notes} currentNoteId={note.id} />
+        <Sidebar notes={notes} currentNoteId={note.id} />
         <Note user={user} note={note} />
       </div>
     </>

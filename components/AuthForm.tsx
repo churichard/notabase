@@ -1,7 +1,7 @@
-import React, { FormEvent, useCallback, useEffect, useState } from 'react';
+import React, { FormEvent, useCallback, useState } from 'react';
 import { useRouter } from 'next/router';
 import { toast } from 'react-toastify';
-import supabase from 'lib/supabase';
+import { useAuth } from 'utils/useAuth';
 
 type Props = {
   signup?: boolean;
@@ -9,6 +9,7 @@ type Props = {
 
 export default function AuthForm(props: Props) {
   const { signup = false } = props;
+  const { signIn, signUp } = useAuth();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState('');
@@ -18,32 +19,6 @@ export default function AuthForm(props: Props) {
     setShowEmailConfirmationMessage,
   ] = useState(false);
 
-  useEffect(() => {
-    const { data: authListener } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        if (!session) {
-          return;
-        }
-
-        // Set auth cookie
-        const res = await fetch('/api/auth', {
-          method: 'POST',
-          headers: new Headers({ 'Content-Type': 'application/json' }),
-          credentials: 'same-origin',
-          body: JSON.stringify({ event, session }),
-        });
-
-        if (res.ok) {
-          router.push('/app');
-        } else {
-          toast.error(`${res.status}: ${res.statusText}`);
-          setIsLoading(false);
-        }
-      }
-    );
-    return () => authListener?.unsubscribe();
-  }, [router]);
-
   const onSubmit = useCallback(
     async (event: FormEvent<HTMLFormElement>) => {
       event.preventDefault();
@@ -51,28 +26,24 @@ export default function AuthForm(props: Props) {
 
       let error;
       if (signup) {
-        const result = await supabase.auth.signUp({
-          email,
-          password,
-        });
+        const result = await signUp(email, password);
         error = result.error;
       } else {
-        const result = await supabase.auth.signIn({
-          email,
-          password,
-        });
+        const result = await signIn(email, password);
         error = result.error;
       }
 
       if (error) {
         toast.error(error.message);
-        setIsLoading(false);
       } else if (signup) {
         setShowEmailConfirmationMessage(true);
-        setIsLoading(false);
+      } else {
+        router.push('/app');
       }
+
+      setIsLoading(false);
     },
-    [signup, email, password]
+    [router, signup, email, password, signIn, signUp]
   );
 
   return (

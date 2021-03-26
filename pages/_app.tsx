@@ -4,6 +4,7 @@ import Head from 'next/head';
 import Router from 'next/router';
 import { ToastContainer } from 'react-toastify';
 import NProgress from 'nprogress';
+import { ProvideAuth } from 'utils/useAuth';
 import 'styles/styles.css';
 import 'styles/nprogress.css';
 import 'react-toastify/dist/ReactToastify.css';
@@ -18,7 +19,9 @@ export default function MyApp({ Component, pageProps }: AppProps) {
       <Head>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Component {...pageProps} />
+      <ProvideAuth>
+        <Component {...pageProps} />
+      </ProvideAuth>
       <ToastContainer
         position="top-center"
         hideProgressBar

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
 import { User } from '@supabase/supabase-js';
@@ -6,6 +6,7 @@ import supabase from 'lib/supabase';
 import Sidebar from 'components/Sidebar';
 import { Note } from 'types/supabase';
 import { getNoteTitles } from 'api/useNoteTitles';
+import { useAuth } from 'utils/useAuth';
 
 type Props = {
   user: User;
@@ -14,6 +15,11 @@ type Props = {
 
 export default function AppHome(props: Props) {
   const { user, notes } = props;
+  const { setUser } = useAuth();
+
+  useEffect(() => {
+    setUser(user);
+  }, [user, setUser]);
 
   return (
     <>
@@ -21,11 +27,9 @@ export default function AppHome(props: Props) {
         <title>Notabase</title>
       </Head>
       <div className="flex h-screen">
-        <Sidebar user={user} notes={notes} />
+        <Sidebar notes={notes} />
         <div className="flex items-center justify-center w-full p-12">
-          <p className="text-gray-500">
-            Get started by adding a new note or selecting an existing one
-          </p>
+          <p className="text-gray-500">Get started by adding a new note</p>
         </div>
       </div>
     </>
