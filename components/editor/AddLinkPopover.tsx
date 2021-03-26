@@ -10,9 +10,11 @@ import { ReactEditor, useSlate } from 'slate-react';
 import { useAtom } from 'jotai';
 import Fuse from 'fuse.js';
 import useNoteTitles from 'api/useNoteTitles';
+import addNote from 'api/addNote';
 import { addLinkPopoverAtom } from 'editor/state';
 import { insertLink } from 'editor/formatting';
 import isUrl from 'utils/isUrl';
+import { useAuth } from 'utils/useAuth';
 import Popover from './Popover';
 
 enum OptionType {
@@ -27,6 +29,7 @@ type Option =
   | { id: string; type: OptionType.NEW_NOTE; text: string };
 
 export default function AddLinkPopover() {
+  const { user } = useAuth();
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [linkText, setLinkText] = useState<string>('');
   const [addLinkPopoverState, setAddLinkPopoverState] = useAtom(
@@ -76,7 +79,7 @@ export default function AddLinkPopover() {
   );
 
   const onOptionClick = useCallback(
-    (option?: Option) => {
+    async (option?: Option) => {
       if (!addLinkPopoverState.selection || !option) {
         return;
       }
@@ -89,13 +92,19 @@ export default function AddLinkPopover() {
       } else if (option.type === OptionType.URL) {
         insertLink(editor, option.url);
       } else if (option.type === OptionType.NEW_NOTE) {
-        // TODO: Create new note and insert link
+        // Add a new note and insert link
+        if (user) {
+          const note = await addNote(user.id, option.text);
+          if (note) {
+            insertLink(editor, `/app/note/${note.id}`, option.text);
+          }
+        }
       }
 
       ReactEditor.focus(editor); // Focus the editor
       hidePopover();
     },
-    [editor, addLinkPopoverState.selection, hidePopover]
+    [editor, user, addLinkPopoverState.selection, hidePopover]
   );
 
   const onKeyDown = useCallback(

@@ -1,11 +1,8 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { mutate } from 'swr';
 import { Note } from 'types/supabase';
-import supabase from 'lib/supabase';
-import { DEFAULT_NOTE_CONTENT } from 'editor/constants';
-import { NOTE_TITLES_KEY } from 'api/useNoteTitles';
+import addNote from 'api/addNote';
 import { useAuth } from 'utils/useAuth';
 
 type Props = {
@@ -20,24 +17,15 @@ export default function Sidebar(props: Props) {
   const [inputText, setInputText] = useState('');
 
   const onInputSubmit = async () => {
-    const { data } = await supabase
-      .from<Note>('notes')
-      .insert([
-        {
-          user_id: user?.id,
-          title: inputText,
-          content: JSON.stringify(DEFAULT_NOTE_CONTENT),
-        },
-      ])
-      .single();
-
-    if (!data) {
+    if (!user) {
       return;
     }
-
+    const note = await addNote(user.id, inputText);
+    if (!note) {
+      return;
+    }
     setInputText('');
-    router.push(`/app/note/${data.id}`);
-    mutate(NOTE_TITLES_KEY); // Adds the new note to the sidebar
+    router.push(`/app/note/${note.id}`);
   };
 
   return (
