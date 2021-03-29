@@ -10,7 +10,7 @@
   "dependencies": {
     "@fluentui/react-icons": "^1.1.113",
     "@popperjs/core": "^2.9.1",
-    "@supabase/supabase-js": "^1.6.0",
+    "@supabase/supabase-js": "^1.7.5",
     "@tailwindcss/forms": "^0.3.2",
     "autoprefixer": "^10.2.5",
     "fuse.js": "^6.4.6",
@@ -23,9 +23,9 @@
     "react-dom": "17.0.2",
     "react-popper": "^2.2.5",
     "react-toastify": "^7.0.3",
-    "slate": "^0.59.0",
-    "slate-history": "^0.59.0",
-    "slate-react": "^0.59.0",
+    "slate": "^0.61.0",
+    "slate-history": "^0.61.0",
+    "slate-react": "^0.61.0",
     "swr": "^0.5.4",
     "tailwindcss": "^2.0.4"
   },
