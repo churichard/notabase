@@ -6,7 +6,7 @@ import React, {
   useState,
 } from 'react';
 import dynamic from 'next/dynamic';
-import { createEditor, Node, Transforms } from 'slate';
+import { createEditor, Descendant, Transforms } from 'slate';
 import { withReact } from 'slate-react';
 import { withHistory } from 'slate-history';
 import { User } from '@supabase/supabase-js';
@@ -52,7 +52,7 @@ export default function Note(props: Props) {
   const [currentNote, setCurrentNote] = useState<{
     id: string;
     title: string;
-    content: Array<Node>;
+    content: Descendant[];
   }>(initialNote);
   const [debouncedNote, setDebouncedNote] = useDebounce(currentNote, 500);
 
@@ -78,7 +78,7 @@ export default function Note(props: Props) {
   );
 
   const setEditorValue = useCallback(
-    (content: Array<Node>) => setCurrentNote((note) => ({ ...note, content })),
+    (content: Descendant[]) => setCurrentNote((note) => ({ ...note, content })),
     []
   );
 

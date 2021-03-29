@@ -1,34 +1,48 @@
-import {
-  Editor as SlateEditor,
-  Element as SlateElement,
-  Transforms,
-  Range,
-  Point,
-  Text,
-  Path,
-} from 'slate';
-import { ReactEditor } from 'slate-react';
+import { Editor, Element, Transforms, Range, Point, Text, Path } from 'slate';
+import { ElementType, ListElement, Mark } from 'types/slate';
+import { isMark } from 'editor/formatting';
 
-const BLOCK_SHORTCUTS = [
-  { match: /^(\*|-|\+)$/, type: 'list-item', listType: 'bulleted-list' }, // match *, -, or +
-  { match: /^([0-9]+\.)$/, type: 'list-item', listType: 'numbered-list' }, // match numbered lists
-  { match: /^>$/, type: 'block-quote' },
-  { match: /^#$/, type: 'heading-one' },
-  { match: /^##$/, type: 'heading-two' },
-  { match: /^###$/, type: 'heading-three' },
+const BLOCK_SHORTCUTS: Array<
+  | {
+      match: RegExp;
+      type: Exclude<ElementType, ElementType.ListItem>;
+    }
+  | {
+      match: RegExp;
+      type: ElementType.ListItem;
+      listType: ElementType.BulletedList | ElementType.NumberedList;
+    }
+> = [
+  {
+    match: /^(\*|-|\+)$/,
+    type: ElementType.ListItem,
+    listType: ElementType.BulletedList,
+  }, // match *, -, or +
+  {
+    match: /^([0-9]+\.)$/,
+    type: ElementType.ListItem,
+    listType: ElementType.NumberedList,
+  }, // match numbered lists
+  { match: /^>$/, type: ElementType.Blockquote },
+  { match: /^#$/, type: ElementType.HeadingOne },
+  { match: /^##$/, type: ElementType.HeadingTwo },
+  { match: /^###$/, type: ElementType.HeadingThree },
 ];
 
-const INLINE_SHORTCUTS = [
-  { match: /(?:^|\s)(\*\*)([^*]+)(\*\*)/, type: 'bold' },
-  { match: /(?:^|\s)(__)([^_]+)(__)/, type: 'bold' },
-  { match: /(?:^|\s)(\*)([^*]+)(\*)/, type: 'italic' },
-  { match: /(?:^|\s)(_)([^_]+)(_)/, type: 'italic' },
-  { match: /(?:^|\s)(`)(.+)(`)/, type: 'code' },
-  { match: /(?:^|\s)(\[)(.+)(\]\()(.+)(\))/, type: 'link' },
+const INLINE_SHORTCUTS: Array<{
+  match: RegExp;
+  type: Mark | ElementType.Link;
+}> = [
+  { match: /(?:^|\s)(\*\*)([^*]+)(\*\*)/, type: Mark.Bold },
+  { match: /(?:^|\s)(__)([^_]+)(__)/, type: Mark.Bold },
+  { match: /(?:^|\s)(\*)([^*]+)(\*)/, type: Mark.Italic },
+  { match: /(?:^|\s)(_)([^_]+)(_)/, type: Mark.Italic },
+  { match: /(?:^|\s)(`)(.+)(`)/, type: Mark.Code },
+  { match: /(?:^|\s)(\[)(.+)(\]\()(.+)(\))/, type: ElementType.Link },
 ];
 
 // Add auto-markdown formatting shortcuts
-const withAutoMarkdown = (editor: ReactEditor) => {
+const withAutoMarkdown = (editor: Editor) => {
   const { deleteBackward, insertText } = editor;
 
   editor.insertText = (text) => {
@@ -43,38 +57,35 @@ const withAutoMarkdown = (editor: ReactEditor) => {
 
     // Handle shortcuts at the beginning of a line
     if (text === ' ') {
-      const block = SlateEditor.above(editor, {
-        match: (n) => SlateEditor.isBlock(editor, n),
+      const block = Editor.above(editor, {
+        match: (n) => Editor.isBlock(editor, n),
       });
       const path = block ? block[1] : [];
-      const lineStart = SlateEditor.start(editor, path);
+      const lineStart = Editor.start(editor, path);
       const beforeRange = { anchor, focus: lineStart };
-      const beforeText = SlateEditor.string(editor, beforeRange);
+      const beforeText = Editor.string(editor, beforeRange);
 
       // Handle block shortcuts
       for (const shortcut of BLOCK_SHORTCUTS) {
         if (beforeText.match(shortcut.match)) {
-          const type = shortcut.type;
-
           Transforms.select(editor, beforeRange);
           Transforms.delete(editor);
-          const newProperties: Partial<SlateElement> = {
-            type,
-          };
-          Transforms.setNodes(editor, newProperties, {
-            match: (n) => SlateEditor.isBlock(editor, n),
-          });
+          Transforms.setNodes(
+            editor,
+            { type: shortcut.type },
+            { match: (n) => Editor.isBlock(editor, n) }
+          );
 
-          if (type === 'list-item') {
-            const list = {
+          if (shortcut.type === ElementType.ListItem) {
+            const list: ListElement = {
               type: shortcut.listType,
               children: [],
             };
             Transforms.wrapNodes(editor, list, {
               match: (n) =>
-                !SlateEditor.isEditor(n) &&
-                SlateElement.isElement(n) &&
-                n.type === 'list-item',
+                !Editor.isEditor(n) &&
+                Element.isElement(n) &&
+                n.type === ElementType.ListItem,
             });
           }
           return;
@@ -83,9 +94,9 @@ const withAutoMarkdown = (editor: ReactEditor) => {
     }
 
     // Handle inline shortcuts
-    const elementStart = SlateEditor.start(editor, anchor.path);
+    const elementStart = Editor.start(editor, anchor.path);
     const elementRange = { anchor, focus: elementStart };
-    const elementText = SlateEditor.string(editor, elementRange) + text;
+    const elementText = Editor.string(editor, elementRange) + text;
 
     for (const { match, type } of INLINE_SHORTCUTS) {
       const result = elementText.match(match);
@@ -96,8 +107,7 @@ const withAutoMarkdown = (editor: ReactEditor) => {
 
       const selectionPath = anchor.path;
       let endOfSelection = anchor.offset;
-
-      if (type === 'bold' || type === 'italic' || type === 'code') {
+      if (isMark(type)) {
         const [, startMark, textToFormat, endMark] = result;
         const endMarkLength = endMark.length - 1; // The last character is not in the editor
 
@@ -116,10 +126,7 @@ const withAutoMarkdown = (editor: ReactEditor) => {
 
         // Add formatting mark to the text to format
         const textToFormatRange = {
-          anchor: {
-            path: selectionPath,
-            offset: endOfSelection,
-          },
+          anchor: { path: selectionPath, offset: endOfSelection },
           focus: {
             path: selectionPath,
             offset: endOfSelection - textToFormat.length,
@@ -130,10 +137,10 @@ const withAutoMarkdown = (editor: ReactEditor) => {
           { [type]: true },
           { at: textToFormatRange, match: (n) => Text.isText(n), split: true }
         );
-        SlateEditor.removeMark(editor, type);
+        Editor.removeMark(editor, type);
 
         return;
-      } else if (type === 'link') {
+      } else if (type === ElementType.Link) {
         const [, startMark, linkText, middleMark, linkUrl, endMark] = result;
         const endMarkLength = endMark.length - 1; // The last character is not in the editor
 
@@ -153,24 +160,18 @@ const withAutoMarkdown = (editor: ReactEditor) => {
 
         // Wrap text in a link
         const linkTextRange = {
-          anchor: {
-            path: selectionPath,
-            offset: endOfSelection,
-          },
+          anchor: { path: selectionPath, offset: endOfSelection },
           focus: {
             path: selectionPath,
             offset: endOfSelection - linkText.length,
           },
         };
         const link = {
-          type: 'link',
+          type: ElementType.Link,
           url: linkUrl,
           children: [],
         };
-        Transforms.wrapNodes(editor, link, {
-          at: linkTextRange,
-          split: true,
-        });
+        Transforms.wrapNodes(editor, link, { at: linkTextRange, split: true });
 
         return;
       }
@@ -183,25 +184,22 @@ const withAutoMarkdown = (editor: ReactEditor) => {
     const { selection } = editor;
 
     if (selection && Range.isCollapsed(selection)) {
-      const match = SlateEditor.above(editor, {
-        match: (n) => SlateEditor.isBlock(editor, n),
+      const match = Editor.above(editor, {
+        match: (n) => Editor.isBlock(editor, n),
       });
 
       if (match) {
         const [block, path] = match;
-        const start = SlateEditor.start(editor, path);
+        const start = Editor.start(editor, path);
 
         if (
-          !SlateEditor.isEditor(block) &&
-          SlateElement.isElement(block) &&
-          block.type !== 'paragraph' &&
-          block.type !== 'list-item' &&
+          !Editor.isEditor(block) &&
+          Element.isElement(block) &&
+          block.type !== ElementType.Paragraph &&
+          block.type !== ElementType.ListItem &&
           Point.equals(selection.anchor, start)
         ) {
-          const newProperties: Partial<SlateElement> = {
-            type: 'paragraph',
-          };
-          Transforms.setNodes(editor, newProperties);
+          Transforms.setNodes(editor, { type: ElementType.Paragraph });
           return;
         }
       }
@@ -215,7 +213,7 @@ const withAutoMarkdown = (editor: ReactEditor) => {
 
 // Deletes `length` characters at the specified path and offset
 const deleteText = (
-  editor: ReactEditor,
+  editor: Editor,
   path: Path,
   offset: number,
   length: number

@@ -1,5 +1,5 @@
 import React, { KeyboardEvent, useCallback, useMemo } from 'react';
-import { Node, Range, Editor as SlateEditor } from 'slate';
+import { Range, Editor as SlateEditor, Descendant } from 'slate';
 import {
   Editable,
   ReactEditor,
@@ -12,14 +12,15 @@ import { useAtom } from 'jotai';
 import Link from 'next/link';
 import { addLinkPopoverAtom } from 'editor/state';
 import { toggleMark } from 'editor/formatting';
+import { ElementType, Mark } from 'types/slate';
 import HoveringToolbar from './HoveringToolbar';
 import AddLinkPopover from './AddLinkPopover';
 
 type Props = {
   className?: string;
-  editor: ReactEditor;
-  value: Array<Node>;
-  setValue: (value: Array<Node>) => void;
+  editor: SlateEditor;
+  value: Descendant[];
+  setValue: (value: Descendant[]) => void;
 };
 
 export default function Editor(props: Props) {
@@ -45,23 +46,23 @@ export default function Editor(props: Props) {
     () => [
       {
         hotkey: 'mod+b',
-        callback: (editor: ReactEditor) => toggleMark(editor, 'bold'),
+        callback: (editor: SlateEditor) => toggleMark(editor, Mark.Bold),
       },
       {
         hotkey: 'mod+i',
-        callback: (editor: ReactEditor) => toggleMark(editor, 'italic'),
+        callback: (editor: SlateEditor) => toggleMark(editor, Mark.Italic),
       },
       {
         hotkey: 'mod+u',
-        callback: (editor: ReactEditor) => toggleMark(editor, 'underline'),
+        callback: (editor: SlateEditor) => toggleMark(editor, Mark.Underline),
       },
       {
         hotkey: 'mod+e',
-        callback: (editor: ReactEditor) => toggleMark(editor, 'code'),
+        callback: (editor: SlateEditor) => toggleMark(editor, Mark.Code),
       },
       {
         hotkey: 'mod+k',
-        callback: (editor: ReactEditor) => {
+        callback: (editor: SlateEditor) => {
           if (editor.selection) {
             // Save the selection and make the add link popover visible
             setAddLinkPopoverState({
@@ -145,53 +146,53 @@ export default function Editor(props: Props) {
 
 const Element = ({ attributes, children, element }: RenderElementProps) => {
   switch (element.type) {
-    case 'heading-one':
+    case ElementType.HeadingOne:
       return (
         <h1 className="my-3 text-2xl font-semibold" {...attributes}>
           {children}
         </h1>
       );
-    case 'heading-two':
+    case ElementType.HeadingTwo:
       return (
         <h2 className="my-3 text-xl font-semibold" {...attributes}>
           {children}
         </h2>
       );
-    case 'heading-three':
+    case ElementType.HeadingThree:
       return (
         <h3 className="my-3 text-lg font-semibold" {...attributes}>
           {children}
         </h3>
       );
-    case 'list-item':
+    case ElementType.ListItem:
       return (
         <li className="pl-1 my-2" {...attributes}>
           {children}
         </li>
       );
-    case 'bulleted-list':
+    case ElementType.BulletedList:
       return (
         <ul className="my-2 ml-8 list-disc" {...attributes}>
           {children}
         </ul>
       );
-    case 'numbered-list':
+    case ElementType.NumberedList:
       return (
         <ol className="my-2 ml-8 list-decimal" {...attributes}>
           {children}
         </ol>
       );
-    case 'block-quote':
+    case ElementType.Blockquote:
       return (
         <blockquote className="pl-4 my-3 border-l-4" {...attributes}>
           {children}
         </blockquote>
       );
-    case 'link':
-      if ((element.url as string).startsWith('/')) {
+    case ElementType.Link:
+      if (element.url.startsWith('/')) {
         // Internal link - we use Next.js's routing
         return (
-          <Link href={element.url as string}>
+          <Link href={element.url}>
             <a
               className="underline cursor-pointer text-primary-500"
               {...attributes}
@@ -204,13 +205,9 @@ const Element = ({ attributes, children, element }: RenderElementProps) => {
         return (
           <a
             className="underline cursor-pointer text-primary-500"
-            href={element.url as string}
+            href={element.url}
             onClick={() =>
-              window.open(
-                element.url as string,
-                '_blank',
-                'noopener noreferrer'
-              )
+              window.open(element.url, '_blank', 'noopener noreferrer')
             }
             {...attributes}
           >

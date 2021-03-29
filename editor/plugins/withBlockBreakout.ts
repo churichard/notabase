@@ -1,17 +1,12 @@
-import {
-  Node,
-  Editor as SlateEditor,
-  Element as SlateElement,
-  Transforms,
-} from 'slate';
-import { ReactEditor } from 'slate-react';
-import { LIST_TYPES } from 'editor/formatting';
+import { Node, Editor, Element, Transforms } from 'slate';
+import { isListType } from 'editor/formatting';
+import { ElementType } from 'types/slate';
 
 /**
  * When enter is pressed in the middle or at the end of a block,
  * we want to create a paragraph and break out of the current formatting block
  */
-const withBlockBreakout = (editor: ReactEditor) => {
+const withBlockBreakout = (editor: Editor) => {
   const { insertBreak } = editor;
 
   editor.insertBreak = () => {
@@ -23,51 +18,57 @@ const withBlockBreakout = (editor: ReactEditor) => {
     }
 
     const { anchor } = selection;
-    const block = SlateEditor.above(editor, {
-      match: (n) => SlateEditor.isBlock(editor, n),
+    const block = Editor.above(editor, {
+      match: (n) => Editor.isBlock(editor, n),
     });
     const path = block ? block[1] : [];
 
-    const lineStart = SlateEditor.start(editor, path);
-    const lineEnd = SlateEditor.end(editor, path);
+    const lineStart = Editor.start(editor, path);
+    const lineEnd = Editor.end(editor, path);
     const lineRange = { anchor: lineStart, focus: lineEnd };
-    const lineText = SlateEditor.string(editor, lineRange);
+    const lineText = Editor.string(editor, lineRange);
 
-    const isAtLineStart = SlateEditor.isStart(editor, anchor, path);
-    const isAtLineEnd = SlateEditor.isEnd(editor, anchor, path);
+    const isAtLineStart = Editor.isStart(editor, anchor, path);
+    const isAtLineEnd = Editor.isEnd(editor, anchor, path);
 
     const lineElement = Node.descendant(editor, path);
-    const lineElementType = lineElement.type as string;
+
+    if (!Element.isElement(lineElement)) {
+      insertBreak();
+      return;
+    }
+
+    const lineElementType = lineElement.type;
     const insertElementType =
-      lineElementType === 'list-item' ? lineElementType : 'paragraph';
+      lineElementType === ElementType.ListItem
+        ? lineElementType
+        : ElementType.Paragraph;
 
     // The element is a list item
-    if (lineElementType === 'list-item' && lineText.length === 0) {
+    if (lineElementType === ElementType.ListItem && lineText.length === 0) {
       // We only want to insert a paragraph if there is no text content in the current bullet point
-      Transforms.setNodes(editor, { type: 'paragraph' });
+      Transforms.setNodes(editor, { type: ElementType.Paragraph });
 
       Transforms.unwrapNodes(editor, {
         match: (n) =>
-          !SlateEditor.isEditor(n) &&
-          SlateElement.isElement(n) &&
-          LIST_TYPES.includes(n.type as string),
+          !Editor.isEditor(n) && Element.isElement(n) && isListType(n.type),
         split: true,
       });
     }
     // The cursor is at the end of the line
     else if (isAtLineEnd) {
-      // We insert a paragraph after the current node
+      // We insert after the current node
       Transforms.insertNodes(editor, {
         type: insertElementType,
-        children: [{ text: '', marks: [] }],
+        children: [{ text: '' }],
       });
     }
     // The cursor is at the start of the line
     else if (isAtLineStart) {
-      // We insert a paragraph before the current node
+      // We insert before the current node
       Transforms.insertNodes(editor, {
         type: insertElementType,
-        children: [{ text: '', marks: [] }],
+        children: [{ text: '' }],
       });
       Transforms.move(editor); // Moves the cursor to the next line
     }

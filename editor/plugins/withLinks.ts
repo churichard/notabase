@@ -1,13 +1,13 @@
-import { Editor as SlateEditor, Range, Transforms } from 'slate';
-import { ReactEditor } from 'slate-react';
+import { Editor, Range, Transforms } from 'slate';
 import isUrl from 'utils/isUrl';
 import { insertLink } from 'editor/formatting';
+import { ElementType } from 'types/slate';
 
-const withLinks = (editor: ReactEditor) => {
+const withLinks = (editor: Editor) => {
   const { insertData, insertText, isInline } = editor;
 
   editor.isInline = (element) => {
-    return element.type === 'link' ? true : isInline(element);
+    return element.type === ElementType.Link ? true : isInline(element);
   };
 
   editor.insertText = (text) => {
@@ -17,9 +17,9 @@ const withLinks = (editor: ReactEditor) => {
       insertLink(editor, text);
     } else if (text === ' ' && selection && Range.isCollapsed(selection)) {
       const { anchor } = selection;
-      const start = SlateEditor.start(editor, anchor.path);
+      const start = Editor.start(editor, anchor.path);
       const range = { anchor, focus: start };
-      const beforeText = SlateEditor.string(editor, range);
+      const beforeText = Editor.string(editor, range);
       const beforeTextArr = beforeText.split(' ');
       const lastSegment = beforeTextArr[beforeTextArr.length - 1];
 

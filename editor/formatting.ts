@@ -1,87 +1,90 @@
-import {
-  Editor as SlateEditor,
-  Element as SlateElement,
-  Transforms,
-  Range,
-} from 'slate';
-import { ReactEditor } from 'slate-react';
+import { Editor, Element, Transforms, Range, Text, Node } from 'slate';
+import { ElementType, ListElement, Mark } from 'types/slate';
 
-export const LIST_TYPES = ['numbered-list', 'bulleted-list'];
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const isMark = (type: any): type is Mark => {
+  return Object.values(Mark).includes(type as Mark);
+};
 
-export const isMarkActive = (editor: ReactEditor, format: string) => {
-  const [match] = SlateEditor.nodes(editor, {
-    match: (n) => n[format] === true,
+export const isListType = (
+  type: ElementType
+): type is ElementType.BulletedList | ElementType.NumberedList => {
+  return type === ElementType.BulletedList || type === ElementType.NumberedList;
+};
+
+export const isMarkActive = (editor: Editor, format: Mark) => {
+  const [match] = Editor.nodes(editor, {
+    match: (n) => Text.isText(n) && n[format] === true,
     mode: 'all',
   });
   return !!match;
 };
 
-export const toggleMark = (editor: ReactEditor, format: string) => {
+export const toggleMark = (editor: Editor, format: Mark) => {
   const isActive = isMarkActive(editor, format);
 
   if (isActive) {
-    SlateEditor.removeMark(editor, format);
+    Editor.removeMark(editor, format);
   } else {
-    SlateEditor.addMark(editor, format, true);
+    Editor.addMark(editor, format, true);
   }
 };
 
-export const isBlockActive = (editor: ReactEditor, format: string) => {
-  const [match] = SlateEditor.nodes(editor, {
+export const isElementActive = (editor: Editor, format: ElementType) => {
+  const [match] = Editor.nodes(editor, {
     match: (n) =>
-      !SlateEditor.isEditor(n) &&
-      SlateElement.isElement(n) &&
-      n.type === format,
+      !Editor.isEditor(n) && Element.isElement(n) && n.type === format,
   });
 
   return !!match;
 };
 
-export const toggleBlock = (editor: ReactEditor, format: string) => {
-  const isActive = isBlockActive(editor, format);
-  const isList = LIST_TYPES.includes(format);
+export const toggleBlock = (editor: Editor, format: ElementType) => {
+  const isActive = isElementActive(editor, format);
 
   Transforms.unwrapNodes(editor, {
     match: (n) =>
-      !SlateEditor.isEditor(n) &&
-      SlateElement.isElement(n) &&
-      LIST_TYPES.includes(n.type as string),
+      !Editor.isEditor(n) && Element.isElement(n) && isListType(n.type),
     split: true,
   });
-  const newProperties: Partial<SlateElement> = {
-    type: isActive ? 'paragraph' : isList ? 'list-item' : format,
+  const newProperties: Partial<Element> = {
+    type: isActive
+      ? ElementType.Paragraph
+      : isListType(format)
+      ? ElementType.ListItem
+      : format,
   };
   Transforms.setNodes(editor, newProperties);
 
-  if (!isActive && isList) {
-    const block = { type: format, children: [] };
+  if (!isActive && isListType(format)) {
+    const block: ListElement = { type: format, children: [] };
     Transforms.wrapNodes(editor, block);
   }
 };
 
-export const unwrapLink = (editor: ReactEditor) => {
+export const unwrapLink = (editor: Editor) => {
   Transforms.unwrapNodes(editor, {
     match: (n) =>
-      !SlateEditor.isEditor(n) &&
-      SlateElement.isElement(n) &&
-      n.type === 'link',
+      !Editor.isEditor(n) &&
+      Element.isElement(n) &&
+      n.type === ElementType.Link,
   });
 };
 
-export const insertLink = (editor: ReactEditor, url: string, text?: string) => {
+export const insertLink = (editor: Editor, url: string, text?: string) => {
   const { selection } = editor;
   if (!selection) {
     return;
   }
 
-  if (isBlockActive(editor, 'link')) {
+  if (isElementActive(editor, ElementType.Link)) {
     unwrapLink(editor);
   }
 
   const isCollapsed = selection && Range.isCollapsed(selection);
   const shouldInsertNode = isCollapsed || text;
-  const link = {
-    type: 'link',
+  const link: Node = {
+    type: ElementType.Link,
     url,
     children: shouldInsertNode ? [{ text: text ?? url }] : [],
   };

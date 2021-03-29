@@ -18,31 +18,32 @@ import {
   toggleMark,
   isMarkActive,
   toggleBlock,
-  isBlockActive,
+  isElementActive,
 } from 'editor/formatting';
 import { addLinkPopoverAtom } from 'editor/state';
+import { ElementType, Mark } from 'types/slate';
 import Popover from './Popover';
 
 export default function HoveringToolbar() {
   return (
     <Popover placement="top-start">
       <LinkButton className="border-r" />
-      <FormatButton format="bold" />
-      <FormatButton format="italic" />
-      <FormatButton format="underline" />
-      <FormatButton format="code" className="border-r" />
-      <BlockButton format="heading-one" />
-      <BlockButton format="heading-two" />
-      <BlockButton format="heading-three" />
-      <BlockButton format="bulleted-list" />
-      <BlockButton format="numbered-list" />
-      <BlockButton format="block-quote" />
+      <FormatButton format={Mark.Bold} />
+      <FormatButton format={Mark.Italic} />
+      <FormatButton format={Mark.Underline} />
+      <FormatButton format={Mark.Code} className="border-r" />
+      <BlockButton format={ElementType.HeadingOne} />
+      <BlockButton format={ElementType.HeadingTwo} />
+      <BlockButton format={ElementType.HeadingThree} />
+      <BlockButton format={ElementType.BulletedList} />
+      <BlockButton format={ElementType.NumberedList} />
+      <BlockButton format={ElementType.Blockquote} />
     </Popover>
   );
 }
 
 type ToolbarButtonProps = {
-  format: FormatButtonProps['format'] | BlockButtonProps['format'] | 'link';
+  format: ElementType | Mark;
   onClick: () => void;
   text?: string;
   isActive?: boolean;
@@ -54,27 +55,27 @@ const ToolbarButton = (props: ToolbarButtonProps) => {
 
   const Icon = useMemo(() => {
     switch (format) {
-      case 'bold':
+      case Mark.Bold:
         return BoldIcon;
-      case 'italic':
+      case Mark.Italic:
         return ItalicIcon;
-      case 'underline':
+      case Mark.Underline:
         return UnderlineIcon;
-      case 'code':
+      case Mark.Code:
         return CodeIcon;
-      case 'heading-one':
+      case ElementType.HeadingOne:
         return Header1Icon;
-      case 'heading-two':
+      case ElementType.HeadingTwo:
         return Header2Icon;
-      case 'heading-three':
+      case ElementType.HeadingThree:
         return Header3Icon;
-      case 'bulleted-list':
+      case ElementType.BulletedList:
         return BulletedListIcon;
-      case 'numbered-list':
+      case ElementType.NumberedList:
         return NumberedListIcon;
-      case 'block-quote':
+      case ElementType.Blockquote:
         return QuoteIcon;
-      case 'link':
+      case ElementType.Link:
         return LinkIcon;
       default:
         throw new Error(`Format ${format} is not a valid format`);
@@ -111,7 +112,7 @@ const ToolbarButton = (props: ToolbarButtonProps) => {
 };
 
 type FormatButtonProps = {
-  format: 'bold' | 'italic' | 'underline' | 'code';
+  format: Mark;
   className?: string;
 };
 
@@ -130,19 +131,13 @@ const FormatButton = ({ format, className = '' }: FormatButtonProps) => {
 };
 
 type BlockButtonProps = {
-  format:
-    | 'heading-one'
-    | 'heading-two'
-    | 'heading-three'
-    | 'bulleted-list'
-    | 'numbered-list'
-    | 'block-quote';
+  format: ElementType;
   className?: string;
 };
 
 const BlockButton = ({ format, className = '' }: BlockButtonProps) => {
   const editor = useSlate();
-  const isActive = isBlockActive(editor, format);
+  const isActive = isElementActive(editor, format);
 
   return (
     <ToolbarButton
@@ -161,11 +156,11 @@ type LinkButtonProps = {
 const LinkButton = ({ className = '' }: LinkButtonProps) => {
   const editor = useSlate();
   const [, setAddLinkPopoverState] = useAtom(addLinkPopoverAtom);
-  const isActive = isBlockActive(editor, 'link');
+  const isActive = isElementActive(editor, ElementType.Link);
 
   return (
     <ToolbarButton
-      format="link"
+      format={ElementType.Link}
       onClick={() => {
         if (editor.selection) {
           // Save the selection and make the add link popover visible
