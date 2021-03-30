@@ -74,15 +74,20 @@ export default function Note(props: Props) {
         .eq('user_id', user.id)
         .eq('id', id);
 
-      if (error?.code === '23505') {
-        toast.error(
-          `There's already a note called ${title}. Please use a different title.`
-        );
+      if (error) {
+        if (error.code === '23514') {
+          toast.error(
+            `This note cannot have an empty title. Please use a different title.`
+          );
+        } else if (error.code === '23505') {
+          toast.error(
+            `There's already a note called ${title}. Please use a different title.`
+          );
+        }
+        return;
       }
 
-      if (!error) {
-        mutate(NOTE_TITLES_KEY); // Update note title in sidebar
-      }
+      mutate(NOTE_TITLES_KEY); // Update note title in sidebar
     },
     [user.id]
   );
