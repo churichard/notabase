@@ -76,6 +76,7 @@ const unwrapLink = (editor: Editor) => {
   });
 };
 
+// Text is only used as the link text if the range is collapsed; otherwise, we reuse the existing selection text.
 export const insertLink = (editor: Editor, url: string, text?: string) => {
   const { selection } = editor;
   if (!selection) {
@@ -86,8 +87,7 @@ export const insertLink = (editor: Editor, url: string, text?: string) => {
     unwrapLink(editor);
   }
 
-  const isCollapsed = selection && Range.isCollapsed(selection);
-  const shouldInsertNode = isCollapsed || text;
+  const shouldInsertNode = selection && Range.isCollapsed(selection);
   const link: Node = {
     type: ElementType.Link,
     url,

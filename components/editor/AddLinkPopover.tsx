@@ -108,12 +108,14 @@ export default function AddLinkPopover() {
 
       Transforms.select(editor, addLinkPopoverState.selection); // Restore the editor selection
 
-      // Insert link
       if (option.type === OptionType.NOTE) {
+        // Insert a link to an existing note with the note title as the link text
         insertLink(editor, `/app/note/${option.id}`, option.text);
       } else if (option.type === OptionType.URL) {
+        // Insert a link to a url
         insertLink(editor, linkText);
       } else if (option.type === OptionType.NEW_NOTE) {
+        // Add a new note and insert a link to it with the note title as the link text
         if (user) {
           const note = await addNote(user.id, linkText);
           if (note) {
@@ -121,6 +123,7 @@ export default function AddLinkPopover() {
           }
         }
       } else if (option.type === OptionType.REMOVE_LINK) {
+        // Remove the link
         removeLink(editor);
       } else {
         throw new Error(`Option type ${option.type} is not supported`);
