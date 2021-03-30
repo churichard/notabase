@@ -11,6 +11,7 @@ import { withReact } from 'slate-react';
 import { withHistory } from 'slate-history';
 import { User } from '@supabase/supabase-js';
 import { mutate } from 'swr';
+import { toast } from 'react-toastify';
 import Title from 'components/editor/Title';
 import { Note as NoteType } from 'types/supabase';
 import useDebounce from 'utils/useDebounce';
@@ -56,26 +57,9 @@ export default function Note(props: Props) {
   }>(initialNote);
   const [debouncedNote, setDebouncedNote] = useDebounce(currentNote, 500);
 
-  const onTitleChange = useCallback(
-    (title: string) => {
-      // Update title in local cache
-      mutate(
-        NOTE_TITLES_KEY,
-        (notes: Array<NoteType>) => {
-          const index = notes.findIndex((note) => note.id === currentNote.id);
-          if (index < 0) {
-            return notes;
-          }
-          const newNotes = [...notes];
-          newNotes[index] = { ...newNotes[index], title };
-          return newNotes;
-        },
-        false
-      );
-      setCurrentNote((note) => ({ ...note, title }));
-    },
-    [currentNote.id]
-  );
+  const onTitleChange = useCallback((title: string) => {
+    setCurrentNote((note) => ({ ...note, title }));
+  }, []);
 
   const setEditorValue = useCallback(
     (content: Descendant[]) => setCurrentNote((note) => ({ ...note, content })),
@@ -84,11 +68,21 @@ export default function Note(props: Props) {
 
   const saveNote = useCallback(
     async (id: string, title: string, content: string) => {
-      await supabase
+      const { error } = await supabase
         .from<NoteType>('notes')
         .update({ title, content })
         .eq('user_id', user.id)
         .eq('id', id);
+
+      if (error?.code === '23505') {
+        toast.error(
+          `There's already a note called ${title}. Please use a different title.`
+        );
+      }
+
+      if (!error) {
+        mutate(NOTE_TITLES_KEY); // Update note title in sidebar
+      }
     },
     [user.id]
   );
