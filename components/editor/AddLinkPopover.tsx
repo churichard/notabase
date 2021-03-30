@@ -141,6 +141,7 @@ export default function AddLinkPopover() {
         placeholder="Enter link URL"
         onKeyPress={(event) => {
           if (event.key === 'Enter') {
+            event.preventDefault();
             onOptionClick(options[selectedOptionIndex]);
           }
         }}
