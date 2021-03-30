@@ -11,7 +11,7 @@ import { isHotkey } from 'is-hotkey';
 import { useAtom } from 'jotai';
 import Link from 'next/link';
 import { addLinkPopoverAtom } from 'editor/state';
-import { toggleMark } from 'editor/formatting';
+import { isElementActive, toggleMark } from 'editor/formatting';
 import { ElementType, Mark } from 'types/slate';
 import HoveringToolbar from './HoveringToolbar';
 import AddLinkPopover from './AddLinkPopover';
@@ -68,6 +68,7 @@ export default function Editor(props: Props) {
             setAddLinkPopoverState({
               isVisible: true,
               selection: editor.selection,
+              isLink: isElementActive(editor, ElementType.Link),
             });
           }
         },

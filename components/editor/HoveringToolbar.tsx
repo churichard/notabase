@@ -17,7 +17,7 @@ import {
 import {
   toggleMark,
   isMarkActive,
-  toggleBlock,
+  toggleElement,
   isElementActive,
 } from 'editor/formatting';
 import { addLinkPopoverAtom } from 'editor/state';
@@ -142,7 +142,7 @@ const BlockButton = ({ format, className = '' }: BlockButtonProps) => {
   return (
     <ToolbarButton
       format={format}
-      onClick={() => toggleBlock(editor, format)}
+      onClick={() => toggleElement(editor, format)}
       isActive={isActive}
       className={className}
     />
@@ -167,6 +167,7 @@ const LinkButton = ({ className = '' }: LinkButtonProps) => {
           setAddLinkPopoverState({
             isVisible: true,
             selection: editor.selection,
+            isLink: isActive,
           });
         }
       }}

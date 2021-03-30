@@ -9,10 +9,16 @@ import { Transforms } from 'slate';
 import { ReactEditor, useSlate } from 'slate-react';
 import { useAtom } from 'jotai';
 import Fuse from 'fuse.js';
+import {
+  IFluentIconsProps,
+  Delete20Regular,
+  Globe20Regular,
+  DocumentAdd20Regular,
+} from '@fluentui/react-icons';
 import useNoteTitles from 'api/useNoteTitles';
 import addNote from 'api/addNote';
 import { addLinkPopoverAtom } from 'editor/state';
-import { insertLink } from 'editor/formatting';
+import { insertLink, removeLink } from 'editor/formatting';
 import isUrl from 'utils/isUrl';
 import { useAuth } from 'utils/useAuth';
 import Popover from './Popover';
@@ -21,12 +27,15 @@ enum OptionType {
   NOTE,
   NEW_NOTE,
   URL,
+  REMOVE_LINK,
 }
 
-type Option =
-  | { id: string; type: OptionType.NOTE; text: string; url: string }
-  | { id: string; type: OptionType.URL; text: string; url: string }
-  | { id: string; type: OptionType.NEW_NOTE; text: string };
+type Option = {
+  id: string;
+  type: OptionType;
+  text: string;
+  icon?: (props: IFluentIconsProps) => JSX.Element;
+};
 
 export default function AddLinkPopover() {
   const { user } = useAuth();
@@ -49,32 +58,45 @@ export default function AddLinkPopover() {
     if (linkText) {
       if (isUrl(linkText)) {
         result.push({
-          id: 'url',
+          id: 'URL',
           type: OptionType.URL,
-          text: linkText,
-          url: linkText,
+          text: `Link to url: ${linkText}`,
+          icon: Globe20Regular,
         });
       } else {
         result.push({
-          id: 'newNote',
+          id: 'NEW_NOTE',
           type: OptionType.NEW_NOTE,
-          text: linkText,
+          text: `New note: ${linkText}`,
+          icon: DocumentAdd20Regular,
         });
       }
+    }
+    if (addLinkPopoverState.isLink) {
+      result.push({
+        id: 'REMOVE_LINK',
+        type: OptionType.REMOVE_LINK,
+        text: 'Remove link',
+        icon: Delete20Regular,
+      });
     }
     result.push(
       ...noteResults.map(({ item: note }) => ({
         id: note.id,
         type: OptionType.NOTE,
         text: note.title,
-        url: `/app/note/${note.id}`,
       }))
     );
     return result;
-  }, [noteResults, linkText]);
+  }, [addLinkPopoverState.isLink, noteResults, linkText]);
 
   const hidePopover = useCallback(
-    () => setAddLinkPopoverState({ isVisible: false, selection: undefined }),
+    () =>
+      setAddLinkPopoverState({
+        isVisible: false,
+        selection: undefined,
+        isLink: false,
+      }),
     [setAddLinkPopoverState]
   );
 
@@ -88,23 +110,26 @@ export default function AddLinkPopover() {
 
       // Insert link
       if (option.type === OptionType.NOTE) {
-        insertLink(editor, option.url, option.text);
+        insertLink(editor, `/app/note/${option.id}`, option.text);
       } else if (option.type === OptionType.URL) {
-        insertLink(editor, option.url);
+        insertLink(editor, linkText);
       } else if (option.type === OptionType.NEW_NOTE) {
-        // Add a new note and insert link
         if (user) {
-          const note = await addNote(user.id, option.text);
+          const note = await addNote(user.id, linkText);
           if (note) {
-            insertLink(editor, `/app/note/${note.id}`, option.text);
+            insertLink(editor, `/app/note/${note.id}`, linkText);
           }
         }
+      } else if (option.type === OptionType.REMOVE_LINK) {
+        removeLink(editor);
+      } else {
+        throw new Error(`Option type ${option.type} is not supported`);
       }
 
       ReactEditor.focus(editor); // Focus the editor
       hidePopover();
     },
-    [editor, user, addLinkPopoverState.selection, hidePopover]
+    [editor, user, addLinkPopoverState.selection, hidePopover, linkText]
   );
 
   const onKeyDown = useCallback(
@@ -177,27 +202,16 @@ type OptionProps = {
 
 const OptionItem = (props: OptionProps) => {
   const { option, isSelected, onClick } = props;
-
-  const prefixText = useMemo(() => {
-    if (option.type === OptionType.URL) {
-      return 'Link to url: ';
-    } else if (option.type === OptionType.NEW_NOTE) {
-      return 'New note: ';
-    } else {
-      return null;
-    }
-  }, [option.type]);
-
   return (
     <div
       key={option.id}
-      className={`px-4 py-1 cursor-pointer hover:bg-gray-100 active:bg-gray-200 ${
+      className={`flex flex-row items-center px-4 py-1 cursor-pointer hover:bg-gray-100 active:bg-gray-200 ${
         isSelected ? 'bg-gray-100' : ''
       }`}
       onMouseDown={(event) => event.preventDefault()}
       onMouseUp={onClick}
     >
-      {prefixText ? <span className="italic">{prefixText}</span> : null}
+      {option.icon ? <option.icon className="mr-1" /> : null}
       <span>{option.text}</span>
     </div>
   );

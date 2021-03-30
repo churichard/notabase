@@ -39,7 +39,7 @@ export const isElementActive = (editor: Editor, format: ElementType) => {
   return !!match;
 };
 
-export const toggleBlock = (editor: Editor, format: ElementType) => {
+export const toggleElement = (editor: Editor, format: ElementType) => {
   const isActive = isElementActive(editor, format);
 
   Transforms.unwrapNodes(editor, {
@@ -62,7 +62,12 @@ export const toggleBlock = (editor: Editor, format: ElementType) => {
   }
 };
 
-export const unwrapLink = (editor: Editor) => {
+export const removeLink = (editor: Editor) => {
+  unwrapLink(editor);
+  Transforms.collapse(editor, { edge: 'end' });
+};
+
+const unwrapLink = (editor: Editor) => {
   Transforms.unwrapNodes(editor, {
     match: (n) =>
       !Editor.isEditor(n) &&
