@@ -15,6 +15,7 @@ import {
   Globe20Regular,
   DocumentAdd20Regular,
 } from '@fluentui/react-icons';
+import { toast } from 'react-toastify';
 import useNoteTitles from 'api/useNoteTitles';
 import addNote from 'api/addNote';
 import { addLinkPopoverAtom } from 'editor/state';
@@ -63,7 +64,13 @@ export default function AddLinkPopover() {
           text: `Link to url: ${linkText}`,
           icon: Globe20Regular,
         });
-      } else {
+      } else if (
+        noteResults.length <= 0 ||
+        linkText.localeCompare(noteResults[0].item.title, undefined, {
+          sensitivity: 'base',
+        }) !== 0
+      ) {
+        // Only show new note option if there isn't already a note with the same title
         result.push({
           id: 'NEW_NOTE',
           type: OptionType.NEW_NOTE,
@@ -120,6 +127,10 @@ export default function AddLinkPopover() {
           const note = await addNote(user.id, linkText);
           if (note) {
             insertLink(editor, `/app/note/${note.id}`, linkText);
+          } else {
+            toast.error(
+              'There was an error creating the note. Maybe it already exists?'
+            );
           }
         }
       } else if (option.type === OptionType.REMOVE_LINK) {
