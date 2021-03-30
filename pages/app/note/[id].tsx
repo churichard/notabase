@@ -6,7 +6,7 @@ import { User } from '@supabase/supabase-js';
 import supabase from 'lib/supabase';
 import Note from 'components/Note';
 import { Note as NoteType } from 'types/supabase';
-import { getNoteTitles } from 'api/useNoteTitles';
+import { getNoteTitles } from 'lib/api/useNoteTitles';
 import AppLayout from 'components/AppLayout';
 
 type Props = {

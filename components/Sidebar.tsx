@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { Note } from 'types/supabase';
-import addNote from 'api/addNote';
+import addNote from 'lib/api/addNote';
 import { useAuth } from 'utils/useAuth';
 
 type Props = {

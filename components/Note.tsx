@@ -16,7 +16,7 @@ import Title from 'components/editor/Title';
 import { Note as NoteType } from 'types/supabase';
 import useDebounce from 'utils/useDebounce';
 import supabase from 'lib/supabase';
-import { NOTE_TITLES_KEY } from 'api/useNoteTitles';
+import { NOTE_TITLES_KEY } from 'lib/api/useNoteTitles';
 import withBlockBreakout from 'editor/plugins/withBlockBreakout';
 import withAutoMarkdown from 'editor/plugins/withAutoMarkdown';
 import withLinks from 'editor/plugins/withLinks';

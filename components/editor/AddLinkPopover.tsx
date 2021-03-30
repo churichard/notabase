@@ -16,8 +16,8 @@ import {
   DocumentAdd20Regular,
 } from '@fluentui/react-icons';
 import { toast } from 'react-toastify';
-import useNoteTitles from 'api/useNoteTitles';
-import addNote from 'api/addNote';
+import useNoteTitles from 'lib/api/useNoteTitles';
+import addNote from 'lib/api/addNote';
 import { addLinkPopoverAtom } from 'editor/state';
 import { insertLink, removeLink } from 'editor/formatting';
 import isUrl from 'utils/isUrl';

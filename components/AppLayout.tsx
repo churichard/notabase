@@ -1,6 +1,6 @@
 import React, { ReactNode, useEffect } from 'react';
 import { User } from '@supabase/supabase-js';
-import useNoteTitles from 'api/useNoteTitles';
+import useNoteTitles from 'lib/api/useNoteTitles';
 import { Note } from 'types/supabase';
 import { useAuth } from 'utils/useAuth';
 import Sidebar from './Sidebar';
