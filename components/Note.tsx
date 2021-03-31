@@ -66,11 +66,22 @@ export default function Note(props: Props) {
     []
   );
 
-  const saveNote = useCallback(
-    async (id: string, title: string, content: string) => {
+  const updateNoteContent = useCallback(
+    async (id: string, content: string) => {
+      await supabase
+        .from<NoteType>('notes')
+        .update({ content })
+        .eq('user_id', user.id)
+        .eq('id', id);
+    },
+    [user.id]
+  );
+
+  const updateNoteTitle = useCallback(
+    async (id: string, title: string) => {
       const { error } = await supabase
         .from<NoteType>('notes')
-        .update({ title, content })
+        .update({ title })
         .eq('user_id', user.id)
         .eq('id', id);
 
@@ -92,12 +103,20 @@ export default function Note(props: Props) {
     [user.id]
   );
 
-  // Save the updated note in the database if it changes
+  // Save the note title in the database if it changes
   useEffect(() => {
-    const { id, title, content } = debouncedNote;
-    saveNote(id, title, JSON.stringify(content));
+    updateNoteTitle(debouncedNote.id, debouncedNote.title);
+  }, [updateNoteTitle, debouncedNote.id, debouncedNote.title]);
+
+  // Save the note content in the database if it changes
+  useEffect(() => {
+    updateNoteContent(debouncedNote.id, JSON.stringify(debouncedNote.content));
+  }, [updateNoteContent, debouncedNote.id, debouncedNote.content]);
+
+  // Update the current note if the note id has changed
+  useEffect(() => {
     // If the note id has changed
-    if (initialNote.id !== id) {
+    if (initialNote.id !== debouncedNote.id) {
       // Deselect any current selection
       Transforms.deselect(editor);
       // Scroll to the top of the note
@@ -106,7 +125,7 @@ export default function Note(props: Props) {
       setCurrentNote(initialNote);
       setDebouncedNote(initialNote);
     }
-  }, [editor, initialNote, debouncedNote, saveNote, setDebouncedNote]);
+  }, [editor, initialNote, debouncedNote.id, setDebouncedNote]);
 
   return (
     <div ref={noteRef} className="flex flex-col p-12 overflow-y-auto w-192">
