@@ -12,7 +12,7 @@ import Fuse from 'fuse.js';
 import {
   IFluentIconsProps,
   Delete20Regular,
-  Globe20Regular,
+  Link20Regular,
   DocumentAdd20Regular,
 } from '@fluentui/react-icons';
 import { toast } from 'react-toastify';
@@ -62,7 +62,7 @@ export default function AddLinkPopover() {
           id: 'URL',
           type: OptionType.URL,
           text: `Link to url: ${linkText}`,
-          icon: Globe20Regular,
+          icon: Link20Regular,
         });
       } else if (
         noteResults.length <= 0 ||
@@ -177,7 +177,7 @@ export default function AddLinkPopover() {
         className="mx-4 input"
         value={linkText}
         onChange={(e) => setLinkText(e.target.value)}
-        placeholder="Enter link URL"
+        placeholder="Enter link URL or search for a note"
         onKeyPress={(event) => {
           if (event.key === 'Enter') {
             event.preventDefault();
@@ -218,15 +218,16 @@ const OptionItem = (props: OptionProps) => {
   const { option, isSelected, onClick } = props;
   return (
     <div
-      key={option.id}
       className={`flex flex-row items-center px-4 py-1 cursor-pointer hover:bg-gray-100 active:bg-gray-200 ${
         isSelected ? 'bg-gray-100' : ''
       }`}
       onMouseDown={(event) => event.preventDefault()}
       onMouseUp={onClick}
     >
-      {option.icon ? <option.icon className="mr-1" /> : null}
-      <span>{option.text}</span>
+      {option.icon ? <option.icon className="flex-shrink-0 mr-1" /> : null}
+      <span className="overflow-hidden overflow-ellipsis whitespace-nowrap">
+        {option.text}
+      </span>
     </div>
   );
 };
