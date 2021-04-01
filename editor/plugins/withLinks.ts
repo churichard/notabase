@@ -1,4 +1,4 @@
-import { Editor, Element, Node, Range, Transforms } from 'slate';
+import { Editor, Element, Range, Transforms } from 'slate';
 import isUrl from 'utils/isUrl';
 import { insertLink } from 'editor/formatting';
 import { ElementType } from 'types/slate';
@@ -56,11 +56,12 @@ const withLinks = (editor: Editor) => {
     const [node, path] = entry;
 
     // Remove empty links
-    if (Element.isElement(node) && node.type === ElementType.Link) {
-      const text = Node.string(node);
-      if (!text || text.length === 0) {
-        Transforms.removeNodes(editor, { at: path });
-      }
+    if (
+      Element.isElement(node) &&
+      node.type === ElementType.Link &&
+      Editor.isEmpty(editor, node)
+    ) {
+      Transforms.removeNodes(editor, { at: path });
     }
 
     normalizeNode(entry);
