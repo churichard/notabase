@@ -1,10 +1,10 @@
-import { Editor, Element, Range, Transforms } from 'slate';
+import { Editor, Range, Transforms } from 'slate';
 import isUrl from 'utils/isUrl';
 import { insertLink } from 'editor/formatting';
 import { ElementType } from 'types/slate';
 
 const withLinks = (editor: Editor) => {
-  const { insertData, insertText, isInline, normalizeNode } = editor;
+  const { insertData, insertText, isInline } = editor;
 
   editor.isInline = (element) => {
     return element.type === ElementType.Link ? true : isInline(element);
@@ -50,21 +50,6 @@ const withLinks = (editor: Editor) => {
     } else {
       insertData(data);
     }
-  };
-
-  editor.normalizeNode = (entry) => {
-    const [node, path] = entry;
-
-    // Remove empty links
-    if (
-      Element.isElement(node) &&
-      node.type === ElementType.Link &&
-      Editor.isEmpty(editor, node)
-    ) {
-      Transforms.removeNodes(editor, { at: path });
-    }
-
-    normalizeNode(entry);
   };
 
   return editor;
