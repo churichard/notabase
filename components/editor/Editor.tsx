@@ -1,20 +1,14 @@
 import React, { KeyboardEvent, useCallback, useMemo } from 'react';
 import { Range, Editor as SlateEditor, Descendant } from 'slate';
-import {
-  Editable,
-  ReactEditor,
-  RenderElementProps,
-  RenderLeafProps,
-  Slate,
-} from 'slate-react';
+import { Editable, ReactEditor, RenderLeafProps, Slate } from 'slate-react';
 import { isHotkey } from 'is-hotkey';
 import { useAtom } from 'jotai';
-import Link from 'next/link';
 import { addLinkPopoverAtom } from 'editor/state';
 import { isElementActive, toggleMark } from 'editor/formatting';
 import { ElementType, Mark } from 'types/slate';
 import HoveringToolbar from './HoveringToolbar';
 import AddLinkPopover from './AddLinkPopover';
+import EditorElement from './EditorElement';
 
 type Props = {
   className?: string;
@@ -28,7 +22,10 @@ export default function Editor(props: Props) {
   const [addLinkPopoverState, setAddLinkPopoverState] = useAtom(
     addLinkPopoverAtom
   );
-  const renderElement = useCallback((props) => <Element {...props} />, []);
+  const renderElement = useCallback(
+    (props) => <EditorElement {...props} />,
+    []
+  );
   const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
 
   const isHoveringToolbarVisible = useMemo(
@@ -144,86 +141,6 @@ export default function Editor(props: Props) {
     </Slate>
   );
 }
-
-const Element = ({ attributes, children, element }: RenderElementProps) => {
-  switch (element.type) {
-    case ElementType.HeadingOne:
-      return (
-        <h1 className="my-3 text-2xl font-semibold" {...attributes}>
-          {children}
-        </h1>
-      );
-    case ElementType.HeadingTwo:
-      return (
-        <h2 className="my-3 text-xl font-semibold" {...attributes}>
-          {children}
-        </h2>
-      );
-    case ElementType.HeadingThree:
-      return (
-        <h3 className="my-3 text-lg font-semibold" {...attributes}>
-          {children}
-        </h3>
-      );
-    case ElementType.ListItem:
-      return (
-        <li className="pl-1 my-2" {...attributes}>
-          {children}
-        </li>
-      );
-    case ElementType.BulletedList:
-      return (
-        <ul className="my-3 ml-8 list-disc" {...attributes}>
-          {children}
-        </ul>
-      );
-    case ElementType.NumberedList:
-      return (
-        <ol className="my-3 ml-8 list-decimal" {...attributes}>
-          {children}
-        </ol>
-      );
-    case ElementType.Blockquote:
-      return (
-        <blockquote className="pl-4 my-3 border-l-4" {...attributes}>
-          {children}
-        </blockquote>
-      );
-    case ElementType.Link:
-      if (element.url.startsWith('/')) {
-        // Internal link - we use Next.js's routing
-        return (
-          <Link href={element.url}>
-            <a
-              className="underline cursor-pointer text-primary-500"
-              {...attributes}
-            >
-              {children}
-            </a>
-          </Link>
-        );
-      } else {
-        return (
-          <a
-            className="underline cursor-pointer text-primary-500"
-            href={element.url}
-            onClick={() =>
-              window.open(element.url, '_blank', 'noopener noreferrer')
-            }
-            {...attributes}
-          >
-            {children}
-          </a>
-        );
-      }
-    default:
-      return (
-        <p className="my-3" {...attributes}>
-          {children}
-        </p>
-      );
-  }
-};
 
 const Leaf = ({ attributes, children, leaf }: RenderLeafProps) => {
   if (leaf.bold) {
