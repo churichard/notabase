@@ -10,16 +10,14 @@ import { createEditor, Descendant, Transforms } from 'slate';
 import { withReact } from 'slate-react';
 import { withHistory } from 'slate-history';
 import { User } from '@supabase/supabase-js';
-import { mutate } from 'swr';
 import { toast } from 'react-toastify';
 import Title from 'components/editor/Title';
 import { Note as NoteType } from 'types/supabase';
 import useDebounce from 'utils/useDebounce';
-import supabase from 'lib/supabase';
-import { NOTE_TITLES_KEY } from 'lib/api/useNoteTitles';
 import withBlockBreakout from 'editor/plugins/withBlockBreakout';
 import withAutoMarkdown from 'editor/plugins/withAutoMarkdown';
 import withLinks from 'editor/plugins/withLinks';
+import updateNote from 'lib/api/updateNote';
 
 // Workaround for Slate bug when hot reloading: https://github.com/ianstormtaylor/slate/issues/3621
 const Editor = dynamic(() => import('components/editor/Editor'), {
@@ -68,37 +66,34 @@ export default function Note(props: Props) {
 
   const updateNoteContent = useCallback(
     async (id: string, content: string) => {
-      await supabase
-        .from<NoteType>('notes')
-        .update({ content })
-        .eq('user_id', user.id)
-        .eq('id', id);
+      const { error } = await updateNote(user.id, id, { content });
+
+      if (error) {
+        toast.error(
+          'Something went wrong saving your note. Please try again later.'
+        );
+      }
     },
     [user.id]
   );
 
   const updateNoteTitle = useCallback(
     async (id: string, title: string) => {
-      const { error } = await supabase
-        .from<NoteType>('notes')
-        .update({ title })
-        .eq('user_id', user.id)
-        .eq('id', id);
+      const { error } = await updateNote(user.id, id, { title });
 
-      if (error) {
-        if (error.code === '23514') {
-          toast.error(
-            `This note cannot have an empty title. Please use a different title.`
-          );
-        } else if (error.code === '23505') {
-          toast.error(
-            `There's already a note called ${title}. Please use a different title.`
-          );
-        }
-        return;
+      if (error?.code === '23514') {
+        toast.error(
+          `This note cannot have an empty title. Please use a different title.`
+        );
+      } else if (error?.code === '23505') {
+        toast.error(
+          `There's already a note called ${title}. Please use a different title.`
+        );
+      } else if (error) {
+        toast.error(
+          'Something went wrong saving your note title. Please try using a different title, or try again later.'
+        );
       }
-
-      mutate(NOTE_TITLES_KEY); // Update note title in sidebar
     },
     [user.id]
   );
