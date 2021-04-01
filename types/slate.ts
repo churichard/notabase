@@ -66,7 +66,7 @@ export type Blockquote = {
 export type Link = {
   type: ElementType.Link;
   url: string;
-  children: Descendant[];
+  children: FormattedText[];
 };
 
 export type NotabaseElement =
