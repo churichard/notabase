@@ -48,7 +48,7 @@ export default function Sidebar(props: Props) {
           }
         }}
       />
-      <div className="flex flex-col mt-2">
+      <div className="flex flex-col mt-2 overflow-y-auto">
         {notes && notes.length > 0 ? (
           notes.map((note) => (
             <NoteLink key={note.id} note={note} currentNoteId={currentNoteId} />
