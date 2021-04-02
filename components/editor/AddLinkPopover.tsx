@@ -61,6 +61,7 @@ export default function AddLinkPopover() {
   const options = useMemo(() => {
     const result: Array<Option> = [];
     if (linkText) {
+      // Show url option if `linkText` is a url
       if (isUrl(linkText)) {
         result.push({
           id: 'URL',
@@ -68,13 +69,14 @@ export default function AddLinkPopover() {
           text: `Link to url: ${linkText}`,
           icon: Link20Regular,
         });
-      } else if (
+      }
+      // Show new note option if there isn't already a note called `linkText`
+      else if (
         noteResults.length <= 0 ||
         linkText.localeCompare(noteResults[0].item.title, undefined, {
           sensitivity: 'base',
         }) !== 0
       ) {
-        // Only show new note option if there isn't already a note with the same title
         result.push({
           id: 'NEW_NOTE',
           type: OptionType.NEW_NOTE,
@@ -83,7 +85,8 @@ export default function AddLinkPopover() {
         });
       }
     }
-    if (addLinkPopoverState.isLink) {
+    // Show remove link option if there is no `linkText` and the selected text is part of a link
+    else if (addLinkPopoverState.isLink) {
       result.push({
         id: 'REMOVE_LINK',
         type: OptionType.REMOVE_LINK,
@@ -91,6 +94,7 @@ export default function AddLinkPopover() {
         icon: Delete20Regular,
       });
     }
+    // Show notes that match `linkText`
     result.push(
       ...noteResults.map(({ item: note }) => ({
         id: note.id,
