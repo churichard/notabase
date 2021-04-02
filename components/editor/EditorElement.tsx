@@ -2,7 +2,7 @@ import React, { ReactNode } from 'react';
 import { RenderElementProps } from 'slate-react';
 import Tippy from '@tippyjs/react';
 import Link from 'next/link';
-import { ElementType, Link as LinkType } from 'types/slate';
+import { ElementType, ExternalLink, NoteLink } from 'types/slate';
 
 export default function EditorElement({
   attributes,
@@ -52,20 +52,18 @@ export default function EditorElement({
           {children}
         </blockquote>
       );
-    case ElementType.Link:
-      if (element.url.startsWith('/')) {
-        return (
-          <NoteLink element={element} attributes={attributes}>
-            {children}
-          </NoteLink>
-        );
-      } else {
-        return (
-          <ExternalLink element={element} attributes={attributes}>
-            {children}
-          </ExternalLink>
-        );
-      }
+    case ElementType.ExternalLink:
+      return (
+        <ExternalLinkElement element={element} attributes={attributes}>
+          {children}
+        </ExternalLinkElement>
+      );
+    case ElementType.NoteLink:
+      return (
+        <NoteLinkElement element={element} attributes={attributes}>
+          {children}
+        </NoteLinkElement>
+      );
     default:
       return (
         <p className="my-3" {...attributes}>
@@ -75,13 +73,13 @@ export default function EditorElement({
   }
 }
 
-type NoteLinkProps = {
-  element: LinkType;
+type NoteLinkElementProps = {
+  element: NoteLink;
   children: ReactNode;
   attributes: RenderElementProps['attributes'];
 };
 
-const NoteLink = (props: NoteLinkProps) => {
+const NoteLinkElement = (props: NoteLinkElementProps) => {
   const { element, children, attributes } = props;
   return (
     <Tippy
@@ -103,13 +101,13 @@ const NoteLink = (props: NoteLinkProps) => {
   );
 };
 
-type ExternalLinkProps = {
-  element: LinkType;
+type ExternalLinkElementProps = {
+  element: ExternalLink;
   children: ReactNode;
   attributes: RenderElementProps['attributes'];
 };
 
-const ExternalLink = (props: ExternalLinkProps) => {
+const ExternalLinkElement = (props: ExternalLinkElementProps) => {
   const { element, children, attributes } = props;
   return (
     <Tippy content={element.url} duration={0} placement="bottom">

@@ -13,7 +13,8 @@ export enum ElementType {
   BulletedList = 'bulleted-list',
   NumberedList = 'numbered-list',
   Blockquote = 'block-quote',
-  Link = 'link',
+  ExternalLink = 'link',
+  NoteLink = 'note-link',
 }
 
 export enum Mark {
@@ -63,10 +64,17 @@ export type Blockquote = {
   children: Descendant[];
 };
 
-export type Link = {
-  type: ElementType.Link;
+export type ExternalLink = {
+  type: ElementType.ExternalLink;
   url: string;
-  title?: string;
+  children: FormattedText[];
+};
+
+export type NoteLink = {
+  type: ElementType.NoteLink;
+  url: string; // todo: this will eventually be removed
+  noteId: string;
+  title: string;
   children: FormattedText[];
 };
 
@@ -79,7 +87,8 @@ export type NotabaseElement =
   | BulletedList
   | NumberedList
   | Blockquote
-  | Link;
+  | ExternalLink
+  | NoteLink;
 
 export type ListElement = BulletedList | NumberedList;
 

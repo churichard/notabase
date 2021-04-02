@@ -65,7 +65,9 @@ export default function Editor(props: Props) {
             setAddLinkPopoverState({
               isVisible: true,
               selection: editor.selection,
-              isLink: isElementActive(editor, ElementType.Link),
+              isLink:
+                isElementActive(editor, ElementType.ExternalLink) ||
+                isElementActive(editor, ElementType.NoteLink),
             });
           }
         },

@@ -7,7 +7,10 @@ const withLinks = (editor: Editor) => {
   const { insertData, insertText, isInline } = editor;
 
   editor.isInline = (element) => {
-    return element.type === ElementType.Link ? true : isInline(element);
+    return element.type === ElementType.ExternalLink ||
+      element.type === ElementType.NoteLink
+      ? true
+      : isInline(element);
   };
 
   editor.insertText = (text) => {

@@ -1,5 +1,11 @@
-import { Editor, Element, Transforms, Range, Text, Node } from 'slate';
-import { ElementType, Link, ListElement, Mark } from 'types/slate';
+import { Editor, Element, Transforms, Range, Text } from 'slate';
+import {
+  ElementType,
+  ExternalLink,
+  NoteLink,
+  ListElement,
+  Mark,
+} from 'types/slate';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const isMark = (type: any): type is Mark => {
@@ -72,17 +78,20 @@ const unwrapLink = (editor: Editor) => {
     match: (n) =>
       !Editor.isEditor(n) &&
       Element.isElement(n) &&
-      n.type === ElementType.Link,
+      (n.type === ElementType.ExternalLink || n.type === ElementType.NoteLink),
   });
 };
 
-const wrapLink = (editor: Editor, link: Link) => {
+const wrapLink = (editor: Editor, link: ExternalLink | NoteLink) => {
   const { selection } = editor;
   if (!selection) {
     return;
   }
 
-  if (isElementActive(editor, ElementType.Link)) {
+  if (
+    isElementActive(editor, ElementType.ExternalLink) ||
+    isElementActive(editor, ElementType.NoteLink)
+  ) {
     unwrapLink(editor);
   }
 
@@ -107,8 +116,8 @@ export const insertExternalLink = (
   }
 
   const isCollapsed = selection && Range.isCollapsed(selection);
-  const link: Node = {
-    type: ElementType.Link,
+  const link: ExternalLink = {
+    type: ElementType.ExternalLink,
     url,
     children: isCollapsed ? [{ text: text ?? url }] : [],
   };
@@ -126,9 +135,10 @@ export const insertNoteLink = (
   }
 
   const isCollapsed = selection && Range.isCollapsed(selection);
-  const link: Node = {
-    type: ElementType.Link,
+  const link: NoteLink = {
+    type: ElementType.NoteLink,
     url: `/app/note/${noteId}`,
+    noteId,
     title: noteTitle,
     children: isCollapsed ? [{ text: noteTitle }] : [],
   };

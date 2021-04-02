@@ -43,7 +43,7 @@ export default function HoveringToolbar() {
 }
 
 type ToolbarButtonProps = {
-  format: ElementType | Mark;
+  format: ElementType | Mark | 'link';
   onClick: () => void;
   text?: string;
   isActive?: boolean;
@@ -75,7 +75,7 @@ const ToolbarButton = (props: ToolbarButtonProps) => {
         return NumberedListIcon;
       case ElementType.Blockquote:
         return QuoteIcon;
-      case ElementType.Link:
+      case 'link':
         return LinkIcon;
       default:
         throw new Error(`Format ${format} is not a valid format`);
@@ -156,11 +156,13 @@ type LinkButtonProps = {
 const LinkButton = ({ className = '' }: LinkButtonProps) => {
   const editor = useSlate();
   const [, setAddLinkPopoverState] = useAtom(addLinkPopoverAtom);
-  const isActive = isElementActive(editor, ElementType.Link);
+  const isActive =
+    isElementActive(editor, ElementType.ExternalLink) ||
+    isElementActive(editor, ElementType.NoteLink);
 
   return (
     <ToolbarButton
-      format={ElementType.Link}
+      format="link"
       onClick={() => {
         if (editor.selection) {
           // Save the selection and make the add link popover visible
