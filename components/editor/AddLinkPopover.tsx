@@ -8,7 +8,6 @@ import React, {
 import { Transforms } from 'slate';
 import { ReactEditor, useSlate } from 'slate-react';
 import { useAtom } from 'jotai';
-import Fuse from 'fuse.js';
 import {
   IFluentIconsProps,
   Delete20Regular,
@@ -16,7 +15,6 @@ import {
   DocumentAdd20Regular,
 } from '@fluentui/react-icons';
 import { toast } from 'react-toastify';
-import useNoteTitles from 'lib/api/useNoteTitles';
 import addNote from 'lib/api/addNote';
 import { addLinkPopoverAtom } from 'editor/state';
 import {
@@ -26,6 +24,7 @@ import {
 } from 'editor/formatting';
 import isUrl from 'utils/isUrl';
 import { useAuth } from 'utils/useAuth';
+import useNoteSearch from 'utils/useNoteSearch';
 import Popover from './Popover';
 
 enum OptionType {
@@ -52,12 +51,7 @@ export default function AddLinkPopover() {
   const editor = useSlate();
 
   const [selectedOptionIndex, setSelectedOptionIndex] = useState<number>(0);
-  const { data: notes = [] } = useNoteTitles();
-  const fuse = useMemo(() => new Fuse(notes, { keys: ['title'] }), [notes]);
-  const noteResults = useMemo(() => fuse.search(linkText).slice(0, 10), [
-    fuse,
-    linkText,
-  ]);
+  const searchResults = useNoteSearch(linkText);
   const options = useMemo(() => {
     const result: Array<Option> = [];
     if (linkText) {
@@ -71,9 +65,10 @@ export default function AddLinkPopover() {
         });
       }
       // Show new note option if there isn't already a note called `linkText`
+      // (We assume if there is a note, then it will be the first result)
       else if (
-        noteResults.length <= 0 ||
-        linkText.localeCompare(noteResults[0].item.title, undefined, {
+        searchResults.length <= 0 ||
+        linkText.localeCompare(searchResults[0].title, undefined, {
           sensitivity: 'base',
         }) !== 0
       ) {
@@ -96,14 +91,14 @@ export default function AddLinkPopover() {
     }
     // Show notes that match `linkText`
     result.push(
-      ...noteResults.map(({ item: note }) => ({
+      ...searchResults.map((note) => ({
         id: note.id,
         type: OptionType.NOTE,
         text: note.title,
       }))
     );
     return result;
-  }, [addLinkPopoverState.isLink, noteResults, linkText]);
+  }, [addLinkPopoverState.isLink, searchResults, linkText]);
 
   const hidePopover = useCallback(
     () =>
