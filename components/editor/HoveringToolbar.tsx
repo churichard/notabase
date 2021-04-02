@@ -13,6 +13,7 @@ import {
   TextBulletListLtr20Regular as BulletedListIcon,
   TextNumberListLtr20Regular as NumberedListIcon,
   Link20Regular as LinkIcon,
+  IFluentIconsProps,
 } from '@fluentui/react-icons';
 import {
   toggleMark,
@@ -43,7 +44,7 @@ export default function HoveringToolbar() {
 }
 
 type ToolbarButtonProps = {
-  format: ElementType | Mark | 'link';
+  icon: (props: IFluentIconsProps) => JSX.Element;
   onClick: () => void;
   text?: string;
   isActive?: boolean;
@@ -51,37 +52,7 @@ type ToolbarButtonProps = {
 };
 
 const ToolbarButton = (props: ToolbarButtonProps) => {
-  const { format, onClick, text, isActive = false, className = '' } = props;
-
-  const Icon = useMemo(() => {
-    switch (format) {
-      case Mark.Bold:
-        return BoldIcon;
-      case Mark.Italic:
-        return ItalicIcon;
-      case Mark.Underline:
-        return UnderlineIcon;
-      case Mark.Code:
-        return CodeIcon;
-      case ElementType.HeadingOne:
-        return Header1Icon;
-      case ElementType.HeadingTwo:
-        return Header2Icon;
-      case ElementType.HeadingThree:
-        return Header3Icon;
-      case ElementType.BulletedList:
-        return BulletedListIcon;
-      case ElementType.NumberedList:
-        return NumberedListIcon;
-      case ElementType.Blockquote:
-        return QuoteIcon;
-      case 'link':
-        return LinkIcon;
-      default:
-        throw new Error(`Format ${format} is not a valid format`);
-    }
-  }, [format]);
-
+  const { icon: Icon, onClick, text, isActive = false, className = '' } = props;
   return (
     <span
       className={`flex items-center px-2 py-2 cursor-pointer hover:bg-gray-100 active:bg-gray-200 ${className}`}
@@ -120,9 +91,24 @@ const FormatButton = ({ format, className = '' }: FormatButtonProps) => {
   const editor = useSlate();
   const isActive = isMarkActive(editor, format);
 
+  const Icon = useMemo(() => {
+    switch (format) {
+      case Mark.Bold:
+        return BoldIcon;
+      case Mark.Italic:
+        return ItalicIcon;
+      case Mark.Underline:
+        return UnderlineIcon;
+      case Mark.Code:
+        return CodeIcon;
+      default:
+        throw new Error(`Format ${format} is not a valid format`);
+    }
+  }, [format]);
+
   return (
     <ToolbarButton
-      format={format}
+      icon={Icon}
       onClick={() => toggleMark(editor, format)}
       isActive={isActive}
       className={className}
@@ -139,9 +125,28 @@ const BlockButton = ({ format, className = '' }: BlockButtonProps) => {
   const editor = useSlate();
   const isActive = isElementActive(editor, format);
 
+  const Icon = useMemo(() => {
+    switch (format) {
+      case ElementType.HeadingOne:
+        return Header1Icon;
+      case ElementType.HeadingTwo:
+        return Header2Icon;
+      case ElementType.HeadingThree:
+        return Header3Icon;
+      case ElementType.BulletedList:
+        return BulletedListIcon;
+      case ElementType.NumberedList:
+        return NumberedListIcon;
+      case ElementType.Blockquote:
+        return QuoteIcon;
+      default:
+        throw new Error(`Format ${format} is not a valid format`);
+    }
+  }, [format]);
+
   return (
     <ToolbarButton
-      format={format}
+      icon={Icon}
       onClick={() => toggleElement(editor, format)}
       isActive={isActive}
       className={className}
@@ -162,7 +167,7 @@ const LinkButton = ({ className = '' }: LinkButtonProps) => {
 
   return (
     <ToolbarButton
-      format="link"
+      icon={LinkIcon}
       onClick={() => {
         if (editor.selection) {
           // Save the selection and make the add link popover visible
