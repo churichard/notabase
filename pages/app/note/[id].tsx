@@ -4,10 +4,11 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { User } from '@supabase/supabase-js';
 import supabase from 'lib/supabase';
+import { getNoteTitles } from 'lib/api/useNoteTitles';
+import { getNote } from 'lib/api/useNote';
+import AppLayout from 'components/AppLayout';
 import Note from 'components/Note';
 import { Note as NoteType } from 'types/supabase';
-import { getNoteTitles } from 'lib/api/useNoteTitles';
-import AppLayout from 'components/AppLayout';
 
 type Props = {
   initialUser: User;
@@ -72,12 +73,7 @@ export async function getServerSideProps({
   }
 
   // Get the current note
-  const { data: currentNote } = await supabase
-    .from<NoteType>('notes')
-    .select('id, title, content')
-    .eq('user_id', user.id)
-    .eq('id', noteId)
-    .single();
+  const currentNote = await getNote(user.id, noteId);
 
   return { props: { initialUser: user, initialNotes: notes, currentNote } };
 }
