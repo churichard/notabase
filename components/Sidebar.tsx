@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 import { Note } from 'types/supabase';
-import addNote from 'lib/api/addNote';
 import { useAuth } from 'utils/useAuth';
+import SidebarInput from './SidebarInput';
 
 type Props = {
   notes?: Array<Note>;
@@ -13,20 +12,6 @@ type Props = {
 export default function Sidebar(props: Props) {
   const { notes, currentNoteId } = props;
   const { user } = useAuth();
-  const router = useRouter();
-  const [inputText, setInputText] = useState('');
-
-  const onInputSubmit = async () => {
-    if (!user) {
-      return;
-    }
-    const note = await addNote(user.id, inputText);
-    if (!note) {
-      return;
-    }
-    setInputText('');
-    router.push(`/app/note/${note.id}`);
-  };
 
   return (
     <div className="flex flex-col flex-none w-64 h-full border-r border-gray-100 bg-gray-50">
@@ -36,18 +21,7 @@ export default function Sidebar(props: Props) {
           <div className="text-sm">{user?.email}</div>
         </a>
       </Link>
-      <input
-        type="text"
-        className="mx-6 my-2 input"
-        placeholder="Create note"
-        value={inputText}
-        onChange={(e) => setInputText(e.target.value)}
-        onKeyPress={(event) => {
-          if (event.key === 'Enter') {
-            onInputSubmit();
-          }
-        }}
-      />
+      <SidebarInput />
       <div className="flex flex-col mt-2 overflow-y-auto">
         {notes && notes.length > 0 ? (
           notes.map((note) => (
