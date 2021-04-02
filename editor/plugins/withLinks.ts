@@ -1,6 +1,6 @@
 import { Editor, Range, Transforms } from 'slate';
 import isUrl from 'utils/isUrl';
-import { insertLink } from 'editor/formatting';
+import { insertExternalLink } from 'editor/formatting';
 import { ElementType } from 'types/slate';
 
 const withLinks = (editor: Editor) => {
@@ -14,7 +14,7 @@ const withLinks = (editor: Editor) => {
     const { selection } = editor;
 
     if (text && isUrl(text)) {
-      insertLink(editor, text);
+      insertExternalLink(editor, text);
     } else if (text === ' ' && selection && Range.isCollapsed(selection)) {
       const { anchor } = selection;
       const start = Editor.start(editor, anchor.path);
@@ -33,7 +33,7 @@ const withLinks = (editor: Editor) => {
           },
         };
         Transforms.select(editor, lastSegmentRange);
-        insertLink(editor, lastSegment);
+        insertExternalLink(editor, lastSegment);
       }
 
       insertText(text);
@@ -46,7 +46,7 @@ const withLinks = (editor: Editor) => {
     const text = data.getData('text/plain');
 
     if (text && isUrl(text)) {
-      insertLink(editor, text);
+      insertExternalLink(editor, text);
     } else {
       insertData(data);
     }

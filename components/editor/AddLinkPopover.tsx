@@ -19,7 +19,11 @@ import { toast } from 'react-toastify';
 import useNoteTitles from 'lib/api/useNoteTitles';
 import addNote from 'lib/api/addNote';
 import { addLinkPopoverAtom } from 'editor/state';
-import { insertLink, removeLink } from 'editor/formatting';
+import {
+  insertExternalLink,
+  insertNoteLink,
+  removeLink,
+} from 'editor/formatting';
 import isUrl from 'utils/isUrl';
 import { useAuth } from 'utils/useAuth';
 import Popover from './Popover';
@@ -117,16 +121,16 @@ export default function AddLinkPopover() {
 
       if (option.type === OptionType.NOTE) {
         // Insert a link to an existing note with the note title as the link text
-        insertLink(editor, `/app/note/${option.id}`, option.text);
+        insertNoteLink(editor, option.id, option.text);
       } else if (option.type === OptionType.URL) {
         // Insert a link to a url
-        insertLink(editor, linkText);
+        insertExternalLink(editor, linkText);
       } else if (option.type === OptionType.NEW_NOTE) {
         // Add a new note and insert a link to it with the note title as the link text
         if (user) {
           const note = await addNote(user.id, linkText);
           if (note) {
-            insertLink(editor, `/app/note/${note.id}`, linkText);
+            insertNoteLink(editor, note.id, linkText);
           } else {
             toast.error(
               'There was an error creating the note. Maybe it already exists?'

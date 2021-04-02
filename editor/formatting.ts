@@ -1,5 +1,5 @@
 import { Editor, Element, Transforms, Range, Text, Node } from 'slate';
-import { ElementType, ListElement, Mark } from 'types/slate';
+import { ElementType, Link, ListElement, Mark } from 'types/slate';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const isMark = (type: any): type is Mark => {
@@ -76,8 +76,7 @@ const unwrapLink = (editor: Editor) => {
   });
 };
 
-// Text is only used as the link text if the range is collapsed; otherwise, we reuse the existing selection text.
-export const insertLink = (editor: Editor, url: string, text?: string) => {
+const wrapLink = (editor: Editor, link: Link) => {
   const { selection } = editor;
   if (!selection) {
     return;
@@ -88,16 +87,50 @@ export const insertLink = (editor: Editor, url: string, text?: string) => {
   }
 
   const shouldInsertNode = selection && Range.isCollapsed(selection);
-  const link: Node = {
-    type: ElementType.Link,
-    url,
-    children: shouldInsertNode ? [{ text: text ?? url }] : [],
-  };
-
   if (shouldInsertNode) {
     Transforms.insertNodes(editor, link);
   } else {
     Transforms.wrapNodes(editor, link, { split: true });
     Transforms.collapse(editor, { edge: 'end' });
   }
+};
+
+// Text is only used as the link text if the range is collapsed; otherwise, we reuse the existing selection text.
+export const insertExternalLink = (
+  editor: Editor,
+  url: string,
+  text?: string
+) => {
+  const { selection } = editor;
+  if (!selection) {
+    return;
+  }
+
+  const isCollapsed = selection && Range.isCollapsed(selection);
+  const link: Node = {
+    type: ElementType.Link,
+    url,
+    children: isCollapsed ? [{ text: text ?? url }] : [],
+  };
+  wrapLink(editor, link);
+};
+
+export const insertNoteLink = (
+  editor: Editor,
+  noteId: string,
+  noteTitle: string
+) => {
+  const { selection } = editor;
+  if (!selection) {
+    return;
+  }
+
+  const isCollapsed = selection && Range.isCollapsed(selection);
+  const link: Node = {
+    type: ElementType.Link,
+    url: `/app/note/${noteId}`,
+    title: noteTitle,
+    children: isCollapsed ? [{ text: noteTitle }] : [],
+  };
+  wrapLink(editor, link);
 };

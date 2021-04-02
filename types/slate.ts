@@ -66,6 +66,7 @@ export type Blockquote = {
 export type Link = {
   type: ElementType.Link;
   url: string;
+  title?: string;
   children: FormattedText[];
 };
 

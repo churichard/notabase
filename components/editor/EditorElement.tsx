@@ -84,7 +84,11 @@ type NoteLinkProps = {
 const NoteLink = (props: NoteLinkProps) => {
   const { element, children, attributes } = props;
   return (
-    <Tippy content={element.url} duration={0} placement="bottom">
+    <Tippy
+      content={element?.title ?? element.url}
+      duration={0}
+      placement="bottom"
+    >
       <span>
         <Link href={element.url}>
           <a
