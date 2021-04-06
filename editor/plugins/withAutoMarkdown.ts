@@ -9,6 +9,7 @@ import {
 import { isMark } from 'editor/formatting';
 import supabase from 'lib/supabase';
 import addNote from 'lib/api/addNote';
+import isUrl from 'utils/isUrl';
 
 const BLOCK_SHORTCUTS: Array<
   | {
@@ -193,6 +194,11 @@ const withAutoMarkdown = (editor: Editor) => {
       } else if (type === ElementType.ExternalLink) {
         const [, startMark, linkText, middleMark, linkUrl, endMark] = result;
         const endMarkLength = endMark.length - 1; // The last character is not in the editor
+
+        if (!isUrl(linkUrl)) {
+          insertText(text);
+          return;
+        }
 
         // Delete the middle mark, link url, and end mark
         const endLength = middleMark.length + linkUrl.length + endMarkLength;
