@@ -1,5 +1,5 @@
 import { Editor, Element, Transforms, Range, Point, Text, Path } from 'slate';
-import { ElementType, ListElement, Mark } from 'types/slate';
+import { ElementType, ExternalLink, ListElement, Mark } from 'types/slate';
 import { isMark } from 'editor/formatting';
 
 const BLOCK_SHORTCUTS: Array<
@@ -31,14 +31,14 @@ const BLOCK_SHORTCUTS: Array<
 
 const INLINE_SHORTCUTS: Array<{
   match: RegExp;
-  type: Mark | ElementType.Link;
+  type: Mark | ElementType.ExternalLink;
 }> = [
   { match: /(?:^|\s)(\*\*)([^*]+)(\*\*)/, type: Mark.Bold },
   { match: /(?:^|\s)(__)([^_]+)(__)/, type: Mark.Bold },
   { match: /(?:^|\s)(\*)([^*]+)(\*)/, type: Mark.Italic },
   { match: /(?:^|\s)(_)([^_]+)(_)/, type: Mark.Italic },
   { match: /(?:^|\s)(`)(.+)(`)/, type: Mark.Code },
-  { match: /(?:^|\s)(\[)(.+)(\]\()(.+)(\))/, type: ElementType.Link },
+  { match: /(?:^|\s)(\[)(.+)(\]\()(.+)(\))/, type: ElementType.ExternalLink },
 ];
 
 // Add auto-markdown formatting shortcuts
@@ -140,7 +140,7 @@ const withAutoMarkdown = (editor: Editor) => {
         Editor.removeMark(editor, type);
 
         return;
-      } else if (type === ElementType.Link) {
+      } else if (type === ElementType.ExternalLink) {
         const [, startMark, linkText, middleMark, linkUrl, endMark] = result;
         const endMarkLength = endMark.length - 1; // The last character is not in the editor
 
@@ -166,8 +166,8 @@ const withAutoMarkdown = (editor: Editor) => {
             offset: endOfSelection - linkText.length,
           },
         };
-        const link = {
-          type: ElementType.Link,
+        const link: ExternalLink = {
+          type: ElementType.ExternalLink,
           url: linkUrl,
           children: [],
         };
