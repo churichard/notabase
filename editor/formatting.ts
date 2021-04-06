@@ -124,11 +124,7 @@ export const insertExternalLink = (
   wrapLink(editor, link);
 };
 
-export const insertNoteLink = (
-  editor: Editor,
-  noteId: string,
-  noteTitle: string
-) => {
+export const insertNoteLink = (editor: Editor, noteTitle: string) => {
   const { selection } = editor;
   if (!selection) {
     return;
@@ -137,8 +133,6 @@ export const insertNoteLink = (
   const isCollapsed = selection && Range.isCollapsed(selection);
   const link: NoteLink = {
     type: ElementType.NoteLink,
-    url: `/app/note/${noteId}`,
-    noteId,
     title: noteTitle,
     children: isCollapsed ? [{ text: noteTitle }] : [],
   };

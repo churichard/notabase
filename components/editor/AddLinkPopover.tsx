@@ -119,7 +119,7 @@ export default function AddLinkPopover() {
 
       if (option.type === OptionType.NOTE) {
         // Insert a link to an existing note with the note title as the link text
-        insertNoteLink(editor, option.id, option.text);
+        insertNoteLink(editor, option.text);
       } else if (option.type === OptionType.URL) {
         // Insert a link to a url
         insertExternalLink(editor, linkText);
@@ -128,7 +128,7 @@ export default function AddLinkPopover() {
         if (user) {
           const note = await addNote(user.id, linkText);
           if (note) {
-            insertNoteLink(editor, note.id, linkText);
+            insertNoteLink(editor, linkText);
           } else {
             toast.error(
               'There was an error creating the note. Maybe it already exists?'

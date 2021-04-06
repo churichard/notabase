@@ -1,8 +1,9 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useMemo } from 'react';
 import { RenderElementProps } from 'slate-react';
 import Tippy from '@tippyjs/react';
 import Link from 'next/link';
 import { ElementType, ExternalLink, NoteLink } from 'types/slate';
+import useNoteTitles from 'lib/api/useNoteTitles';
 
 export default function EditorElement({
   attributes,
@@ -81,14 +82,15 @@ type NoteLinkElementProps = {
 
 const NoteLinkElement = (props: NoteLinkElementProps) => {
   const { element, children, attributes } = props;
+  const { data: notes } = useNoteTitles();
+  const noteId = useMemo(
+    () => notes?.find((note) => note.title === element.title)?.id,
+    [notes, element.title]
+  );
   return (
-    <Tippy
-      content={element?.title ?? element.url}
-      duration={0}
-      placement="bottom"
-    >
+    <Tippy content={element.title} duration={0} placement="bottom">
       <span>
-        <Link href={element.url}>
+        <Link href={`/app/note/${noteId}`}>
           <a
             className="underline cursor-pointer text-primary-500"
             {...attributes}

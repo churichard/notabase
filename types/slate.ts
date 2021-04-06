@@ -72,8 +72,6 @@ export type ExternalLink = {
 
 export type NoteLink = {
   type: ElementType.NoteLink;
-  url: string; // todo: this will eventually be removed
-  noteId: string;
   title: string;
   children: FormattedText[];
 };
