@@ -25,6 +25,7 @@ import {
 import isUrl from 'utils/isUrl';
 import { useAuth } from 'utils/useAuth';
 import useNoteSearch from 'utils/useNoteSearch';
+import { caseInsensitiveStringEqual } from 'utils/string';
 import Popover from './Popover';
 
 enum OptionType {
@@ -68,9 +69,7 @@ export default function AddLinkPopover() {
       // (We assume if there is a note, then it will be the first result)
       else if (
         searchResults.length <= 0 ||
-        linkText.localeCompare(searchResults[0].title, undefined, {
-          sensitivity: 'base',
-        }) !== 0
+        !caseInsensitiveStringEqual(linkText, searchResults[0].title)
       ) {
         result.push({
           id: 'NEW_NOTE',
