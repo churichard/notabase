@@ -4,6 +4,7 @@ import Tippy from '@tippyjs/react';
 import Link from 'next/link';
 import { ElementType, ExternalLink, NoteLink } from 'types/slate';
 import useNoteTitles from 'lib/api/useNoteTitles';
+import { caseInsensitiveStringEqual } from 'utils/string';
 
 export default function EditorElement({
   attributes,
@@ -84,7 +85,10 @@ const NoteLinkElement = (props: NoteLinkElementProps) => {
   const { element, children, attributes } = props;
   const { data: notes } = useNoteTitles();
   const noteId = useMemo(
-    () => notes?.find((note) => note.title === element.title)?.id,
+    () =>
+      notes?.find((note) =>
+        caseInsensitiveStringEqual(note.title, element.title)
+      )?.id,
     [notes, element.title]
   );
   return (

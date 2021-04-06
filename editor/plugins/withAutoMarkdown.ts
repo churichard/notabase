@@ -1,6 +1,14 @@
 import { Editor, Element, Transforms, Range, Point, Text, Path } from 'slate';
-import { ElementType, ExternalLink, ListElement, Mark } from 'types/slate';
+import {
+  ElementType,
+  ExternalLink,
+  ListElement,
+  Mark,
+  NoteLink,
+} from 'types/slate';
 import { isMark } from 'editor/formatting';
+import supabase from 'lib/supabase';
+import addNote from 'lib/api/addNote';
 
 const BLOCK_SHORTCUTS: Array<
   | {
@@ -31,7 +39,7 @@ const BLOCK_SHORTCUTS: Array<
 
 const INLINE_SHORTCUTS: Array<{
   match: RegExp;
-  type: Mark | ElementType.ExternalLink;
+  type: Mark | ElementType.ExternalLink | ElementType.NoteLink;
 }> = [
   { match: /(?:^|\s)(\*\*)([^*]+)(\*\*)/, type: Mark.Bold },
   { match: /(?:^|\s)(__)([^_]+)(__)/, type: Mark.Bold },
@@ -39,6 +47,7 @@ const INLINE_SHORTCUTS: Array<{
   { match: /(?:^|\s)(_)([^_]+)(_)/, type: Mark.Italic },
   { match: /(?:^|\s)(`)(.+)(`)/, type: Mark.Code },
   { match: /(?:^|\s)(\[)(.+)(\]\()(.+)(\))/, type: ElementType.ExternalLink },
+  { match: /(?:^|\s)(\[\[)(.+)(\]\])/, type: ElementType.NoteLink },
 ];
 
 // Add auto-markdown formatting shortcuts
@@ -138,6 +147,47 @@ const withAutoMarkdown = (editor: Editor) => {
           { at: textToFormatRange, match: (n) => Text.isText(n), split: true }
         );
         Editor.removeMark(editor, type);
+
+        return;
+      } else if (type === ElementType.NoteLink) {
+        const [, startMark, noteTitle, endMark] = result;
+        const endMarkLength = endMark.length - 1; // The last character is not in the editor
+
+        // Delete the ending mark
+        deleteText(editor, selectionPath, endOfSelection, endMarkLength);
+        endOfSelection -= endMarkLength;
+
+        // Delete the start mark
+        deleteText(
+          editor,
+          selectionPath,
+          endOfSelection - noteTitle.length,
+          startMark.length
+        );
+        endOfSelection -= startMark.length;
+
+        // Wrap text in a link
+        const noteTitleRange = {
+          anchor: { path: selectionPath, offset: endOfSelection },
+          focus: {
+            path: selectionPath,
+            offset: endOfSelection - noteTitle.length,
+          },
+        };
+        const link: NoteLink = {
+          type: ElementType.NoteLink,
+          title: noteTitle,
+          children: [],
+        };
+        Transforms.wrapNodes(editor, link, {
+          at: noteTitleRange,
+          split: true,
+        });
+
+        // Add a new note, if applicable
+        // TODO: check for the presence of existing note before trying to add a new one
+        const userId = supabase.auth.user()?.id ?? '';
+        addNote(userId, noteTitle);
 
         return;
       } else if (type === ElementType.ExternalLink) {
