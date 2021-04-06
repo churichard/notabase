@@ -1,4 +1,10 @@
-import React, { KeyboardEvent, useCallback, useMemo } from 'react';
+import React, {
+  KeyboardEvent,
+  MouseEvent,
+  useCallback,
+  useMemo,
+  useState,
+} from 'react';
 import { Range, Editor as SlateEditor, Descendant } from 'slate';
 import { Editable, ReactEditor, RenderLeafProps, Slate } from 'slate-react';
 import { isHotkey } from 'is-hotkey';
@@ -28,15 +34,20 @@ export default function Editor(props: Props) {
   );
   const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
 
-  const isHoveringToolbarVisible = useMemo(
+  const [toolbarCanBeVisible, setToolbarCanBeVisible] = useState(true);
+  const hasExpandedSelection = useMemo(
     () =>
-      editor.selection &&
+      !!editor.selection &&
       ReactEditor.isFocused(editor) &&
       !Range.isCollapsed(editor.selection) &&
       SlateEditor.string(editor, editor.selection) !== '',
     // We actually need editor.selection in order for this to re-compute properly
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [editor, editor.selection]
+  );
+  const isToolbarVisible = useMemo(
+    () => toolbarCanBeVisible && hasExpandedSelection,
+    [toolbarCanBeVisible, hasExpandedSelection]
   );
 
   const hotkeys = useMemo(
@@ -91,7 +102,7 @@ export default function Editor(props: Props) {
   );
 
   const onSelect = useCallback(
-    (event: KeyboardEvent<HTMLDivElement>) => {
+    (event: KeyboardEvent<HTMLDivElement> | MouseEvent<HTMLDivElement>) => {
       /**
        * Add auto scrolling on type
        * Adapted from https://github.com/ianstormtaylor/slate/issues/3750
@@ -103,6 +114,7 @@ export default function Editor(props: Props) {
         event.nativeEvent.metaKey ||
         event.nativeEvent.ctrlKey
       ) {
+        // Don't auto scroll
         return;
       }
       try {
@@ -128,7 +140,7 @@ export default function Editor(props: Props) {
 
   return (
     <Slate editor={editor} value={value} onChange={setValue}>
-      {isHoveringToolbarVisible ? <HoveringToolbar /> : null}
+      {isToolbarVisible ? <HoveringToolbar /> : null}
       {addLinkPopoverState.isVisible ? <AddLinkPopover /> : null}
       <Editable
         className={`placeholder-gray-300 ${className}`}
@@ -137,6 +149,8 @@ export default function Editor(props: Props) {
         placeholder="Start typing here…"
         onKeyDown={onKeyDown}
         onSelect={onSelect}
+        onMouseDown={() => setToolbarCanBeVisible(false)}
+        onMouseUp={() => setTimeout(() => setToolbarCanBeVisible(true), 100)}
         spellCheck
         autoFocus
       />
