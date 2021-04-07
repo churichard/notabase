@@ -75,5 +75,11 @@ export async function getServerSideProps({
   // Get the current note
   const currentNote = await getNote(user.id, noteId);
 
-  return { props: { initialUser: user, initialNotes: notes, currentNote } };
+  return {
+    props: {
+      initialUser: user,
+      initialNotes: notes,
+      currentNote: currentNote ?? null,
+    },
+  };
 }
