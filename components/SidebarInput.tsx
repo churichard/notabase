@@ -63,6 +63,7 @@ export default function SidebarInput() {
     } else {
       throw new Error(`Option type ${option.type} is not supported`);
     }
+    setSelectedOptionIndex(0);
     setInputText('');
   };
 
@@ -88,7 +89,7 @@ export default function SidebarInput() {
     <div className="relative mx-6 my-2">
       <input
         type="text"
-        className="input"
+        className="w-full input"
         placeholder="Find or create note"
         value={inputText}
         onChange={(e) => setInputText(e.target.value)}
