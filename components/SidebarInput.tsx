@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
-import addNote from 'lib/api/addNote';
+import getOrAddNote from 'lib/api/getOrAddNote';
 import { useAuth } from 'utils/useAuth';
 import useNoteSearch from 'utils/useNoteSearch';
 import { caseInsensitiveStringEqual } from 'utils/string';
@@ -53,7 +53,7 @@ export default function SidebarInput() {
       if (!user) {
         return;
       }
-      const note = await addNote(user.id, inputText);
+      const note = await getOrAddNote(user.id, inputText);
       if (!note) {
         return;
       }

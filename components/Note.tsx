@@ -18,6 +18,7 @@ import withBlockBreakout from 'editor/plugins/withBlockBreakout';
 import withAutoMarkdown from 'editor/plugins/withAutoMarkdown';
 import withLinks from 'editor/plugins/withLinks';
 import updateNote from 'lib/api/updateNote';
+import { ProvideCurrentNote } from 'utils/useCurrentNote';
 
 // Workaround for Slate bug when hot reloading: https://github.com/ianstormtaylor/slate/issues/3621
 const Editor = dynamic(() => import('components/editor/Editor'), {
@@ -44,7 +45,7 @@ export default function Note(props: Props) {
     () => ({
       id: note.id,
       title: note.title,
-      content: JSON.parse(note.content),
+      content: note.content,
     }),
     [note]
   );
@@ -65,7 +66,7 @@ export default function Note(props: Props) {
   );
 
   const updateNoteContent = useCallback(
-    async (id: string, content: string) => {
+    async (id: string, content: Descendant[]) => {
       const { error } = await updateNote(user.id, id, { content });
 
       if (error) {
@@ -105,7 +106,7 @@ export default function Note(props: Props) {
 
   // Save the note content in the database if it changes
   useEffect(() => {
-    updateNoteContent(debouncedNote.id, JSON.stringify(debouncedNote.content));
+    updateNoteContent(debouncedNote.id, debouncedNote.content);
   }, [updateNoteContent, debouncedNote.id, debouncedNote.content]);
 
   // Update the current note if the note id has changed
@@ -123,18 +124,20 @@ export default function Note(props: Props) {
   }, [editor, initialNote, debouncedNote.id, setDebouncedNote]);
 
   return (
-    <div ref={noteRef} className="flex flex-col p-12 overflow-y-auto w-192">
-      <Title
-        className="mb-3"
-        value={currentNote.title}
-        onChange={onTitleChange}
-      />
-      <Editor
-        className="flex-1 pb-112"
-        editor={editor}
-        value={currentNote.content}
-        setValue={setEditorValue}
-      />
-    </div>
+    <ProvideCurrentNote value={currentNote}>
+      <div ref={noteRef} className="flex flex-col p-12 overflow-y-auto w-192">
+        <Title
+          className="mb-3"
+          value={currentNote.title}
+          onChange={onTitleChange}
+        />
+        <Editor
+          className="flex-1 pb-112"
+          editor={editor}
+          value={currentNote.content}
+          setValue={setEditorValue}
+        />
+      </div>
+    </ProvideCurrentNote>
   );
 }

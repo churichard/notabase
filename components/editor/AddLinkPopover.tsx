@@ -15,7 +15,8 @@ import {
   DocumentAdd20Regular,
 } from '@fluentui/react-icons';
 import { toast } from 'react-toastify';
-import addNote from 'lib/api/addNote';
+import getOrAddNote from 'lib/api/getOrAddNote';
+import addLink from 'lib/api/addLink';
 import { addLinkPopoverAtom } from 'editor/state';
 import {
   insertExternalLink,
@@ -25,6 +26,7 @@ import {
 import isUrl from 'utils/isUrl';
 import { useAuth } from 'utils/useAuth';
 import useNoteSearch from 'utils/useNoteSearch';
+import { useCurrentNote } from 'utils/useCurrentNote';
 import { caseInsensitiveStringEqual } from 'utils/string';
 import Popover from './Popover';
 
@@ -44,6 +46,7 @@ type Option = {
 
 export default function AddLinkPopover() {
   const { user } = useAuth();
+  const currentNote = useCurrentNote();
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [linkText, setLinkText] = useState<string>('');
   const [addLinkPopoverState, setAddLinkPopoverState] = useAtom(
@@ -120,15 +123,19 @@ export default function AddLinkPopover() {
       if (option.type === OptionType.NOTE) {
         // Insert a link to an existing note with the note title as the link text
         insertNoteLink(editor, option.text);
+        if (user) {
+          addLink(user.id, currentNote.id, option.id);
+        }
       } else if (option.type === OptionType.URL) {
         // Insert a link to a url
         insertExternalLink(editor, linkText);
       } else if (option.type === OptionType.NEW_NOTE) {
         // Add a new note and insert a link to it with the note title as the link text
         if (user) {
-          const note = await addNote(user.id, linkText);
+          const note = await getOrAddNote(user.id, linkText);
           if (note) {
             insertNoteLink(editor, linkText);
+            addLink(user.id, currentNote.id, note.id);
           } else {
             toast.error(
               'There was an error creating the note. Maybe it already exists?'
@@ -145,7 +152,14 @@ export default function AddLinkPopover() {
       ReactEditor.focus(editor); // Focus the editor
       hidePopover();
     },
-    [editor, user, addLinkPopoverState.selection, hidePopover, linkText]
+    [
+      editor,
+      user,
+      addLinkPopoverState.selection,
+      hidePopover,
+      linkText,
+      currentNote.id,
+    ]
   );
 
   const onKeyDown = useCallback(
