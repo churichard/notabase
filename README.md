@@ -6,9 +6,11 @@ It lets you connect knowledge and form ideas by linking notes together. These li
 
 It is inspired by note-taking apps such as [Typora](https://typora.io), [Notion](https://notion.so), and [Roam](https://roamresearch.com).
 
+**Notabase is currently in pre-alpha, and the main features are still being built out.**
+
 ## Principles
 
-Notabase has a few principles that differentiates it from other knowledge bases. **These are still a work-in-progress.**
+Notabase has a few principles that differentiates it from other knowledge bases. **These are a work-in-progress.**
 
 ### 1. Open-source.
 
