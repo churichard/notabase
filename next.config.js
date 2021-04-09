@@ -5,6 +5,9 @@ module.exports = (phase) => {
   const isDev = phase === PHASE_DEVELOPMENT_SERVER;
 
   return {
+    future: {
+      webpack5: true,
+    },
     env: {
       BASE_URL: isDev ? 'http://localhost:3000' : 'https://notabase.io',
     },
