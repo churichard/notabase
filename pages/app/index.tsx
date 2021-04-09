@@ -1,23 +1,22 @@
 import React from 'react';
 import { GetServerSideProps } from 'next';
 import Head from 'next/head';
-import { createClient, User } from '@supabase/supabase-js';
+import { createClient } from '@supabase/supabase-js';
 import { Note } from 'types/supabase';
 import AppLayout from 'components/AppLayout';
 
 type Props = {
-  initialUser: User;
   initialNotes: Array<Note>;
 };
 
 export default function AppHome(props: Props) {
-  const { initialUser, initialNotes } = props;
+  const { initialNotes } = props;
   return (
     <>
       <Head>
         <title>Notabase</title>
       </Head>
-      <AppLayout initialUser={initialUser} initialNotes={initialNotes}>
+      <AppLayout initialNotes={initialNotes}>
         <div className="flex items-center justify-center w-full p-12">
           <p className="text-gray-500">Get started by adding a new note</p>
         </div>
@@ -57,5 +56,5 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
     };
   }
 
-  return { props: { initialUser: user, initialNotes: notes ?? [] } };
+  return { props: { initialNotes: notes ?? [] } };
 };

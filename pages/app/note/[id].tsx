@@ -2,19 +2,18 @@ import React from 'react';
 import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
-import { createClient, User } from '@supabase/supabase-js';
+import { createClient } from '@supabase/supabase-js';
 import AppLayout from 'components/AppLayout';
 import Note from 'components/Note';
 import { Note as NoteType } from 'types/supabase';
 
 type Props = {
-  initialUser: User;
   initialNotes: Array<NoteType>;
   currentNote: NoteType | null;
 };
 
 export default function NotePage(props: Props) {
-  const { initialUser, initialNotes, currentNote } = props;
+  const { initialNotes, currentNote } = props;
 
   if (!currentNote) {
     return (
@@ -39,12 +38,8 @@ export default function NotePage(props: Props) {
       <Head>
         <title>{currentNote.title}</title>
       </Head>
-      <AppLayout
-        initialUser={initialUser}
-        initialNotes={initialNotes}
-        currentNote={currentNote}
-      >
-        <Note user={initialUser} note={currentNote} />
+      <AppLayout initialNotes={initialNotes} currentNote={currentNote}>
+        <Note note={currentNote} />
       </AppLayout>
     </>
   );
@@ -78,7 +73,6 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
   if (!noteId || typeof noteId !== 'string') {
     return {
       props: {
-        initialUser: user,
         initialNotes: notes ?? [],
         currentNote: null,
       },
@@ -95,7 +89,6 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
 
   return {
     props: {
-      initialUser: user,
       initialNotes: notes ?? [],
       currentNote,
     },

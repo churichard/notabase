@@ -12,7 +12,6 @@ import supabase from 'lib/supabase';
 type AuthContextType = {
   isLoaded: boolean;
   user: User | null;
-  setUser: (user: User) => void;
   signIn: (
     email: string,
     password: string
@@ -47,6 +46,11 @@ function useProvideAuth(): AuthContextType {
     setUser(user);
     setIsLoaded(true);
   }, []);
+
+  // Initialize the user
+  useEffect(() => {
+    updateUser(supabase.auth.user());
+  }, [updateUser]);
 
   const signIn = useCallback(
     async (email: string, password: string) => {
@@ -95,7 +99,6 @@ function useProvideAuth(): AuthContextType {
   return {
     isLoaded,
     user,
-    setUser: updateUser,
     signIn,
     signUp,
   };

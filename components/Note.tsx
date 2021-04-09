@@ -9,7 +9,6 @@ import dynamic from 'next/dynamic';
 import { createEditor, Descendant, Transforms } from 'slate';
 import { withReact } from 'slate-react';
 import { withHistory } from 'slate-history';
-import { User } from '@supabase/supabase-js';
 import { toast } from 'react-toastify';
 import Title from 'components/editor/Title';
 import { Note as NoteType } from 'types/supabase';
@@ -26,12 +25,11 @@ const Editor = dynamic(() => import('components/editor/Editor'), {
 });
 
 type Props = {
-  user: User;
   note: NoteType;
 };
 
 export default function Note(props: Props) {
-  const { user, note } = props;
+  const { note } = props;
   const noteRef = useRef<HTMLDivElement | null>(null);
 
   const editor = useMemo(
@@ -67,7 +65,7 @@ export default function Note(props: Props) {
 
   const updateNoteContent = useCallback(
     async (id: string, content: Descendant[]) => {
-      const { error } = await updateNote(user.id, id, { content });
+      const { error } = await updateNote(id, { content });
 
       if (error) {
         toast.error(
@@ -75,29 +73,26 @@ export default function Note(props: Props) {
         );
       }
     },
-    [user.id]
+    []
   );
 
-  const updateNoteTitle = useCallback(
-    async (id: string, title: string) => {
-      const { error } = await updateNote(user.id, id, { title });
+  const updateNoteTitle = useCallback(async (id: string, title: string) => {
+    const { error } = await updateNote(id, { title });
 
-      if (error?.code === '23514') {
-        toast.error(
-          `This note cannot have an empty title. Please use a different title.`
-        );
-      } else if (error?.code === '23505') {
-        toast.error(
-          `There's already a note called ${title}. Please use a different title.`
-        );
-      } else if (error) {
-        toast.error(
-          'Something went wrong saving your note title. Please try using a different title, or try again later.'
-        );
-      }
-    },
-    [user.id]
-  );
+    if (error?.code === '23514') {
+      toast.error(
+        `This note cannot have an empty title. Please use a different title.`
+      );
+    } else if (error?.code === '23505') {
+      toast.error(
+        `There's already a note called ${title}. Please use a different title.`
+      );
+    } else if (error) {
+      toast.error(
+        'Something went wrong saving your note title. Please try using a different title, or try again later.'
+      );
+    }
+  }, []);
 
   // Save the note title in the database if it changes
   useEffect(() => {
