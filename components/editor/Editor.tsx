@@ -11,6 +11,7 @@ import { isHotkey } from 'is-hotkey';
 import { useAtom } from 'jotai';
 import { addLinkPopoverAtom } from 'editor/state';
 import { isElementActive, toggleMark } from 'editor/formatting';
+import useNoteLinks from 'editor/useNoteLinks';
 import { ElementType, Mark } from 'types/slate';
 import HoveringToolbar from './HoveringToolbar';
 import AddLinkPopover from './AddLinkPopover';
@@ -25,14 +26,17 @@ type Props = {
 
 export default function Editor(props: Props) {
   const { className, editor, value, setValue } = props;
-  const [addLinkPopoverState, setAddLinkPopoverState] = useAtom(
-    addLinkPopoverAtom
-  );
+  useNoteLinks(editor, value);
+
   const renderElement = useCallback(
     (props) => <EditorElement {...props} />,
     []
   );
   const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
+
+  const [addLinkPopoverState, setAddLinkPopoverState] = useAtom(
+    addLinkPopoverAtom
+  );
 
   const [toolbarCanBeVisible, setToolbarCanBeVisible] = useState(true);
   const hasExpandedSelection = useMemo(
