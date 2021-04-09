@@ -13,7 +13,7 @@ export default function useNoteTitles(options?: SWRConfiguration) {
   );
 }
 
-export const getNoteTitles = async (userId: string) => {
+const getNoteTitles = async (userId: string) => {
   const { data } = await supabase
     .from<Note>('notes')
     .select('id, title')

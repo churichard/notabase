@@ -1,10 +1,8 @@
 import React from 'react';
-import { GetServerSidePropsContext } from 'next';
+import { GetServerSideProps } from 'next';
 import Head from 'next/head';
-import { User } from '@supabase/supabase-js';
-import supabase from 'lib/supabase';
+import { createClient, User } from '@supabase/supabase-js';
 import { Note } from 'types/supabase';
-import { getNoteTitles } from 'lib/api/useNoteTitles';
 import AppLayout from 'components/AppLayout';
 
 type Props = {
@@ -28,7 +26,15 @@ export default function AppHome(props: Props) {
   );
 }
 
-export async function getServerSideProps({ req }: GetServerSidePropsContext) {
+export const getServerSideProps: GetServerSideProps<Props> = async ({
+  req,
+}) => {
+  // Create admin supabase client on server
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL ?? '',
+    process.env.SUPABASE_SERVICE_KEY ?? ''
+  );
+
   // Get authed user
   const { user } = await supabase.auth.api.getUserByCookie(req);
   if (!user) {
@@ -36,10 +42,15 @@ export async function getServerSideProps({ req }: GetServerSidePropsContext) {
   }
 
   // Get notes from database
-  const notes = await getNoteTitles(user.id);
+  const { data: notes } = await supabase
+    .from<Note>('notes')
+    .select('id, title')
+    .eq('user_id', user.id)
+    .order('title');
 
   // Redirect to first note if one exists
-  if (notes.length > 0) {
+  // TODO: maybe we should redirect to the most recent note instead?
+  if (notes && notes.length > 0) {
     return {
       props: {},
       redirect: { destination: `/app/note/${notes[0].id}`, permanent: false },
@@ -47,4 +58,4 @@ export async function getServerSideProps({ req }: GetServerSidePropsContext) {
   }
 
   return { props: { initialUser: user, initialNotes: notes ?? [] } };
-}
+};

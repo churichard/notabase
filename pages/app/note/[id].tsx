@@ -1,11 +1,8 @@
 import React from 'react';
-import { GetServerSidePropsContext } from 'next';
+import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
-import { User } from '@supabase/supabase-js';
-import supabase from 'lib/supabase';
-import { getNoteTitles } from 'lib/api/useNoteTitles';
-import { getNote } from 'lib/api/useNote';
+import { createClient, User } from '@supabase/supabase-js';
 import AppLayout from 'components/AppLayout';
 import Note from 'components/Note';
 import { Note as NoteType } from 'types/supabase';
@@ -13,7 +10,7 @@ import { Note as NoteType } from 'types/supabase';
 type Props = {
   initialUser: User;
   initialNotes: Array<NoteType>;
-  currentNote?: NoteType;
+  currentNote: NoteType | null;
 };
 
 export default function NotePage(props: Props) {
@@ -53,10 +50,16 @@ export default function NotePage(props: Props) {
   );
 }
 
-export async function getServerSideProps({
+export const getServerSideProps: GetServerSideProps<Props> = async ({
   req,
   query,
-}: GetServerSidePropsContext) {
+}) => {
+  // Create admin supabase client on server
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL ?? '',
+    process.env.SUPABASE_SERVICE_KEY ?? ''
+  );
+
   // Get authed user
   const { user } = await supabase.auth.api.getUserByCookie(req);
   if (!user) {
@@ -64,22 +67,37 @@ export async function getServerSideProps({
   }
 
   // Get notes from database
-  const notes = await getNoteTitles(user.id);
+  const { data: notes } = await supabase
+    .from<NoteType>('notes')
+    .select('id, title')
+    .eq('user_id', user.id)
+    .order('title');
 
   // Validate query param
   const noteId = query.id;
   if (!noteId || typeof noteId !== 'string') {
-    return { props: { user, notes, note: null } };
+    return {
+      props: {
+        initialUser: user,
+        initialNotes: notes ?? [],
+        currentNote: null,
+      },
+    };
   }
 
   // Get the current note
-  const currentNote = await getNote(user.id, noteId);
+  const { data: currentNote } = await supabase
+    .from<NoteType>('notes')
+    .select('id, title, content')
+    .eq('user_id', user.id)
+    .eq('id', noteId)
+    .single();
 
   return {
     props: {
       initialUser: user,
-      initialNotes: notes,
-      currentNote: currentNote ?? null,
+      initialNotes: notes ?? [],
+      currentNote,
     },
   };
-}
+};
