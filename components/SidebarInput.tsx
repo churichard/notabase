@@ -106,7 +106,7 @@ export default function SidebarInput() {
         onBlur={() => setIsInputFocused(false)}
       />
       {options.length > 0 && isInputFocused ? (
-        <div className="absolute z-10 bg-white border rounded-md shadow-popover w-96">
+        <div className="absolute z-10 bg-white border rounded shadow-popover w-96">
           {options.map((option, index) => (
             <OptionItem
               key={option.id}

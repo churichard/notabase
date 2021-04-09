@@ -18,6 +18,7 @@ import withAutoMarkdown from 'editor/plugins/withAutoMarkdown';
 import withLinks from 'editor/plugins/withLinks';
 import updateNote from 'lib/api/updateNote';
 import { ProvideCurrentNote } from 'utils/useCurrentNote';
+import Backlinks from './editor/Backlinks';
 
 // Workaround for Slate bug when hot reloading: https://github.com/ianstormtaylor/slate/issues/3621
 const Editor = dynamic(() => import('components/editor/Editor'), {
@@ -120,18 +121,21 @@ export default function Note(props: Props) {
 
   return (
     <ProvideCurrentNote value={currentNote}>
-      <div ref={noteRef} className="flex flex-col p-12 overflow-y-auto w-192">
-        <Title
-          className="mb-3"
-          value={currentNote.title}
-          onChange={onTitleChange}
-        />
-        <Editor
-          className="flex-1 pb-112"
-          editor={editor}
-          value={currentNote.content}
-          setValue={setEditorValue}
-        />
+      <div ref={noteRef} className="flex flex-col overflow-y-auto pb-112 w-192">
+        <div className="flex flex-col flex-1 p-12">
+          <Title
+            className="mb-3"
+            value={currentNote.title}
+            onChange={onTitleChange}
+          />
+          <Editor
+            className="flex-1"
+            editor={editor}
+            value={currentNote.content}
+            setValue={setEditorValue}
+          />
+        </div>
+        <Backlinks className="mx-8" />
       </div>
     </ProvideCurrentNote>
   );

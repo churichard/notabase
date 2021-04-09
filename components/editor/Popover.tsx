@@ -74,7 +74,7 @@ export default function Popover(props: Props) {
     <Portal>
       <div
         ref={setPopperElement}
-        className={`z-10 flex items-stretch overflow-hidden transition-opacity bg-white border rounded-md shadow-popover ${className}`}
+        className={`z-10 flex items-stretch overflow-hidden transition-opacity bg-white border rounded shadow-popover ${className}`}
         style={styles.popper}
         {...attributes.popper}
       >
