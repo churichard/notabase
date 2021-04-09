@@ -49,7 +49,9 @@ function NoteLink(props: NoteLinkProps) {
           currentNoteId === note.id ? 'bg-gray-200' : 'bg-gray-50'
         }`}
       >
-        {note.title}
+        <p className="overflow-hidden overflow-ellipsis whitespace-nowrap">
+          {note.title}
+        </p>
       </a>
     </Link>
   );
