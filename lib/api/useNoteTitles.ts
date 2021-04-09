@@ -1,19 +1,23 @@
 import useSWR, { SWRConfiguration } from 'swr';
 import supabase from 'lib/supabase';
 import { Note } from 'types/supabase';
+import { useAuth } from 'utils/useAuth';
 
 export const NOTE_TITLES_KEY = 'api/noteTitles';
 
 export default function useNoteTitles(options?: SWRConfiguration) {
-  const userId = supabase.auth.user()?.id ?? '';
+  const { user } = useAuth();
   return useSWR<Array<Note>>(
     NOTE_TITLES_KEY,
-    () => getNoteTitles(userId),
+    () => getNoteTitles(user?.id ?? ''),
     options
   );
 }
 
 const getNoteTitles = async (userId: string) => {
+  if (!userId) {
+    return [];
+  }
   const { data } = await supabase
     .from<Note>('notes')
     .select('id, title')
