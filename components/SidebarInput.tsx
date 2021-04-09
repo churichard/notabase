@@ -19,6 +19,8 @@ type Option = {
 export default function SidebarInput() {
   const { user } = useAuth();
   const router = useRouter();
+  const [isInputFocused, setIsInputFocused] = useState(false);
+
   const [inputText, setInputText] = useState('');
   const [selectedOptionIndex, setSelectedOptionIndex] = useState<number>(0);
   const searchResults = useNoteSearch(inputText);
@@ -100,8 +102,10 @@ export default function SidebarInput() {
             onOptionClick(options[selectedOptionIndex]);
           }
         }}
+        onFocus={() => setIsInputFocused(true)}
+        onBlur={() => setIsInputFocused(false)}
       />
-      {options.length > 0 ? (
+      {options.length > 0 && isInputFocused ? (
         <div className="absolute z-10 bg-white border rounded-md shadow-popover w-96">
           {options.map((option, index) => (
             <OptionItem
