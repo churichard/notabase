@@ -121,21 +121,21 @@ export default function Note(props: Props) {
 
   return (
     <ProvideCurrentNote value={currentNote}>
-      <div ref={noteRef} className="flex flex-col overflow-y-auto pb-112 w-192">
-        <div className="flex flex-col flex-1 p-12">
+      <div ref={noteRef} className="flex flex-col overflow-y-auto w-192">
+        <div className="flex flex-col flex-1">
           <Title
-            className="mb-3"
+            className="px-12 pt-12 pb-1"
             value={currentNote.title}
             onChange={onTitleChange}
           />
           <Editor
-            className="flex-1"
+            className="flex-1 px-12 pt-2 pb-12"
             editor={editor}
             value={currentNote.content}
             setValue={setEditorValue}
           />
         </div>
-        <Backlinks className="mx-8" />
+        <Backlinks className="mx-8 mb-12" />
       </div>
     </ProvideCurrentNote>
   );
