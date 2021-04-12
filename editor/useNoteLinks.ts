@@ -1,11 +1,8 @@
 import { useCallback, useEffect } from 'react';
 import { Descendant, Editor, Range, Transforms } from 'slate';
-import { toast } from 'react-toastify';
 import { ElementType, NoteLink } from 'types/slate';
 import getOrAddNote from 'lib/api/getOrAddNote';
-import addLink from 'lib/api/addLink';
 import { useAuth } from 'utils/useAuth';
-import { useCurrentNote } from 'utils/useCurrentNote';
 import { deleteText } from './transforms';
 
 export default function useNoteLinks(
@@ -13,7 +10,6 @@ export default function useNoteLinks(
   editorValue: Descendant[]
 ) {
   const { user } = useAuth();
-  const currentNote = useCurrentNote();
 
   const handleNoteLinks = useCallback(async () => {
     const NOTE_LINK_REGEX = /(?:^|\s)(\[\[)(.+)(\]\])/;
@@ -72,16 +68,11 @@ export default function useNoteLinks(
       split: true,
     });
 
-    // Get (or add) the note and add a link to it
+    // Get (or add) the note
     if (user) {
-      const note = await getOrAddNote(user.id, noteTitle);
-      if (note) {
-        addLink(user.id, currentNote.id, note.id);
-      } else {
-        toast.error('There was an error getting/adding the proper note.');
-      }
+      getOrAddNote(user.id, noteTitle);
     }
-  }, [editor, user, currentNote.id]);
+  }, [editor, user]);
 
   useEffect(() => {
     handleNoteLinks();

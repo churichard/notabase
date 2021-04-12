@@ -16,7 +16,6 @@ import {
 } from '@fluentui/react-icons';
 import { toast } from 'react-toastify';
 import getOrAddNote from 'lib/api/getOrAddNote';
-import addLink from 'lib/api/addLink';
 import { addLinkPopoverAtom } from 'editor/state';
 import {
   insertExternalLink,
@@ -123,9 +122,6 @@ export default function AddLinkPopover() {
       if (option.type === OptionType.NOTE) {
         // Insert a link to an existing note with the note title as the link text
         insertNoteLink(editor, option.text);
-        if (user) {
-          addLink(user.id, currentNote.id, option.id);
-        }
       } else if (option.type === OptionType.URL) {
         // Insert a link to a url
         insertExternalLink(editor, linkText);
@@ -135,11 +131,8 @@ export default function AddLinkPopover() {
           const note = await getOrAddNote(user.id, linkText);
           if (note) {
             insertNoteLink(editor, linkText);
-            addLink(user.id, currentNote.id, note.id);
           } else {
-            toast.error(
-              'There was an error creating the note. Maybe it already exists?'
-            );
+            toast.error('There was an error getting/adding the proper note.');
           }
         }
       } else if (option.type === OptionType.REMOVE_LINK) {
@@ -152,14 +145,7 @@ export default function AddLinkPopover() {
       ReactEditor.focus(editor); // Focus the editor
       hidePopover();
     },
-    [
-      editor,
-      user,
-      addLinkPopoverState.selection,
-      hidePopover,
-      linkText,
-      currentNote.id,
-    ]
+    [editor, user, addLinkPopoverState.selection, hidePopover, linkText]
   );
 
   const onKeyDown = useCallback(

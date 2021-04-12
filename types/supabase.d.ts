@@ -10,10 +10,3 @@ export type Note = {
   content: Descendant[];
   title: string;
 };
-
-export type Link = {
-  id: string;
-  user_id: User['id'];
-  tail: Note['id'];
-  head: Note['id'];
-};
