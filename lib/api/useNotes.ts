@@ -11,6 +11,7 @@ export default function useNotes(options?: SWRConfiguration) {
 const getNotes = async () => {
   const { data } = await supabase
     .from<Note>('notes')
-    .select('id, title, content');
+    .select('id, title, content')
+    .order('title');
   return data ?? [];
 };

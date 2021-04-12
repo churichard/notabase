@@ -5,6 +5,7 @@ import { useCurrentNote } from 'utils/useCurrentNote';
 import { ElementType } from 'types/slate';
 import useNotes from 'lib/api/useNotes';
 import { Note } from 'types/supabase';
+import { caseInsensitiveStringEqual } from 'utils/string';
 
 type Props = {
   className: string;
@@ -92,7 +93,7 @@ const getBacklinkMatchesHelper = (
     if (Element.isElement(child)) {
       if (
         child.type === ElementType.NoteLink &&
-        child.title === noteTitle &&
+        caseInsensitiveStringEqual(child.title, noteTitle) &&
         Node.string(child)
       ) {
         result.push(Node.string(node));
