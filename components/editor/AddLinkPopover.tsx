@@ -25,7 +25,6 @@ import {
 import isUrl from 'utils/isUrl';
 import { useAuth } from 'utils/useAuth';
 import useNoteSearch from 'utils/useNoteSearch';
-import { useCurrentNote } from 'utils/useCurrentNote';
 import { caseInsensitiveStringEqual } from 'utils/string';
 import Popover from './Popover';
 
@@ -45,7 +44,6 @@ type Option = {
 
 export default function AddLinkPopover() {
   const { user } = useAuth();
-  const currentNote = useCurrentNote();
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [linkText, setLinkText] = useState<string>('');
   const [addLinkPopoverState, setAddLinkPopoverState] = useAtom(
