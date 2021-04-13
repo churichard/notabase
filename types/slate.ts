@@ -72,7 +72,7 @@ export type ExternalLink = {
 
 export type NoteLink = {
   type: ElementType.NoteLink;
-  title: string;
+  noteId: string;
   children: FormattedText[];
 };
 

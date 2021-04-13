@@ -14,7 +14,7 @@ import {
   Link20Regular,
   DocumentAdd20Regular,
 } from '@fluentui/react-icons';
-import { toast } from 'react-toastify';
+import { v4 as uuidv4 } from 'uuid';
 import getOrAddNote from 'lib/api/getOrAddNote';
 import { addLinkPopoverAtom } from 'editor/state';
 import {
@@ -111,7 +111,7 @@ export default function AddLinkPopover() {
 
   const onOptionClick = useCallback(
     async (option?: Option) => {
-      if (!addLinkPopoverState.selection || !option) {
+      if (!addLinkPopoverState.selection || !option || !user) {
         return;
       }
 
@@ -119,20 +119,15 @@ export default function AddLinkPopover() {
 
       if (option.type === OptionType.NOTE) {
         // Insert a link to an existing note with the note title as the link text
-        insertNoteLink(editor, option.text);
+        insertNoteLink(editor, option.id, option.text);
       } else if (option.type === OptionType.URL) {
         // Insert a link to a url
         insertExternalLink(editor, linkText);
       } else if (option.type === OptionType.NEW_NOTE) {
         // Add a new note and insert a link to it with the note title as the link text
-        if (user) {
-          const note = await getOrAddNote(user.id, linkText);
-          if (note) {
-            insertNoteLink(editor, linkText);
-          } else {
-            toast.error('There was an error getting/adding the proper note.');
-          }
-        }
+        const noteId = uuidv4();
+        insertNoteLink(editor, noteId, linkText);
+        getOrAddNote(user.id, linkText, noteId);
       } else if (option.type === OptionType.REMOVE_LINK) {
         // Remove the link
         removeLink(editor);

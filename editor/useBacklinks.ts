@@ -11,23 +11,20 @@ type Backlink = {
   matches: string[];
 };
 
-export default function useBacklinks(noteTitle: string) {
+export default function useBacklinks(noteId: string) {
   const { data: notes = [] } = useNotes();
-  const backlinks = useMemo(() => getBacklinks(notes, noteTitle), [
-    notes,
-    noteTitle,
-  ]);
+  const backlinks = useMemo(() => getBacklinks(notes, noteId), [notes, noteId]);
   return backlinks;
 }
 
 /**
- * Searches the notes array for note links to the given noteTitle
+ * Searches the notes array for note links to the given noteId
  * and returns an array of the matches.
  */
-const getBacklinks = (notes: Note[], noteTitle: string): Backlink[] => {
+const getBacklinks = (notes: Note[], noteId: string): Backlink[] => {
   const result: Backlink[] = [];
   for (const note of notes) {
-    const matches = getBacklinkMatches(note.content, noteTitle);
+    const matches = getBacklinkMatches(note.content, noteId);
     if (matches.length > 0) {
       result.push({
         id: note.id,
@@ -39,17 +36,17 @@ const getBacklinks = (notes: Note[], noteTitle: string): Backlink[] => {
   return result;
 };
 
-const getBacklinkMatches = (nodes: Descendant[], noteTitle: string) => {
+const getBacklinkMatches = (nodes: Descendant[], noteId: string) => {
   const result: Backlink['matches'] = [];
   for (const node of nodes) {
-    result.push(...getBacklinkMatchesHelper(node, noteTitle));
+    result.push(...getBacklinkMatchesHelper(node, noteId));
   }
   return result;
 };
 
 const getBacklinkMatchesHelper = (
   node: Descendant,
-  noteTitle: string
+  noteId: string
 ): Backlink['matches'] => {
   if (Text.isText(node)) {
     return [];
@@ -61,12 +58,12 @@ const getBacklinkMatchesHelper = (
     if (Element.isElement(child)) {
       if (
         child.type === ElementType.NoteLink &&
-        caseInsensitiveStringEqual(child.title, noteTitle) &&
+        caseInsensitiveStringEqual(child.noteId, noteId) &&
         Node.string(child)
       ) {
         result.push(Node.string(node));
       }
-      result.push(...getBacklinkMatchesHelper(child, noteTitle));
+      result.push(...getBacklinkMatchesHelper(child, noteId));
     }
   }
 

@@ -10,7 +10,7 @@ type Props = {
 export default function Backlinks(props: Props) {
   const { className } = props;
   const currentNote = useCurrentNote();
-  const backlinks = useBacklinks(currentNote.title);
+  const backlinks = useBacklinks(currentNote.id);
 
   return (
     <div className={`bg-gray-50 rounded py-4 ${className}`}>

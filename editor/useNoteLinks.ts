@@ -1,7 +1,9 @@
 import { useCallback, useEffect } from 'react';
 import { Descendant, Editor, Range, Transforms } from 'slate';
+import { v4 as uuidv4 } from 'uuid';
 import { ElementType, NoteLink } from 'types/slate';
 import getOrAddNote from 'lib/api/getOrAddNote';
+import useNotes from 'lib/api/useNotes';
 import { useAuth } from 'utils/useAuth';
 import { deleteText } from './transforms';
 
@@ -10,8 +12,13 @@ export default function useNoteLinks(
   editorValue: Descendant[]
 ) {
   const { user } = useAuth();
+  const { data: notes = [] } = useNotes();
 
   const handleNoteLinks = useCallback(async () => {
+    if (!user) {
+      return;
+    }
+
     const NOTE_LINK_REGEX = /(?:^|\s)(\[\[)(.+)(\]\])/;
     const { selection } = editor;
 
@@ -50,6 +57,16 @@ export default function useNoteLinks(
     );
     endOfSelection -= startMark.length;
 
+    // Get or generate note id
+    let noteId;
+    const matchingNote = notes.find((note) => note.title === noteTitle);
+    if (matchingNote) {
+      noteId = matchingNote.id;
+    } else {
+      noteId = uuidv4();
+      getOrAddNote(user.id, noteTitle, noteId);
+    }
+
     // Wrap text in a link
     const noteTitleRange = {
       anchor: { path: selectionPath, offset: endOfSelection },
@@ -60,19 +77,14 @@ export default function useNoteLinks(
     };
     const link: NoteLink = {
       type: ElementType.NoteLink,
-      title: noteTitle,
+      noteId,
       children: [],
     };
     Transforms.wrapNodes(editor, link, {
       at: noteTitleRange,
       split: true,
     });
-
-    // Get (or add) the note
-    if (user) {
-      getOrAddNote(user.id, noteTitle);
-    }
-  }, [editor, user]);
+  }, [editor, user, notes]);
 
   useEffect(() => {
     handleNoteLinks();
