@@ -26,11 +26,11 @@ const Editor = dynamic(() => import('components/editor/Editor'), {
 });
 
 type Props = {
-  note: NoteType;
+  initialNote: Omit<NoteType, 'user_id'>;
 };
 
 export default function Note(props: Props) {
-  const { note } = props;
+  const { initialNote } = props;
   const noteRef = useRef<HTMLDivElement | null>(null);
 
   const editor = useMemo(
@@ -40,19 +40,9 @@ export default function Note(props: Props) {
       ),
     []
   );
-  const initialNote = useMemo(
-    () => ({
-      id: note.id,
-      title: note.title,
-      content: note.content,
-    }),
-    [note]
+  const [currentNote, setCurrentNote] = useState<Omit<NoteType, 'user_id'>>(
+    initialNote
   );
-  const [currentNote, setCurrentNote] = useState<{
-    id: string;
-    title: string;
-    content: Descendant[];
-  }>(initialNote);
   const [debouncedNote, setDebouncedNote] = useDebounce(currentNote, 500);
 
   const onTitleChange = useCallback((title: string) => {

@@ -9,7 +9,7 @@ import { Note as NoteType } from 'types/supabase';
 
 type Props = {
   initialNotes: Array<NoteType>;
-  currentNote: NoteType | null;
+  currentNote: Omit<NoteType, 'user_id'> | null;
 };
 
 export default function NotePage(props: Props) {
@@ -38,8 +38,8 @@ export default function NotePage(props: Props) {
       <Head>
         <title>{currentNote.title}</title>
       </Head>
-      <AppLayout initialNotes={initialNotes} currentNote={currentNote}>
-        <Note note={currentNote} />
+      <AppLayout initialNotes={initialNotes} currentNoteId={currentNote.id}>
+        <Note initialNote={currentNote} />
       </AppLayout>
     </>
   );
@@ -90,7 +90,13 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
   return {
     props: {
       initialNotes: notes ?? [],
-      currentNote,
+      currentNote: currentNote
+        ? {
+            id: currentNote.id,
+            title: currentNote.title,
+            content: currentNote.content,
+          }
+        : null,
     },
   };
 };

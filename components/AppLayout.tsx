@@ -6,16 +6,16 @@ import Sidebar from './Sidebar';
 type Props = {
   children: ReactNode;
   initialNotes: Array<Note>;
-  currentNote?: Note;
+  currentNoteId?: string;
 };
 
 export default function AppLayout(props: Props) {
-  const { children, initialNotes, currentNote } = props;
+  const { children, initialNotes, currentNoteId } = props;
   const { data: notes } = useNoteTitles({ initialData: initialNotes });
 
   return (
     <div className="flex h-screen">
-      <Sidebar notes={notes} currentNoteId={currentNote?.id} />
+      <Sidebar notes={notes} currentNoteId={currentNoteId} />
       {children}
     </div>
   );
