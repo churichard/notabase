@@ -78,6 +78,8 @@ export default function useNoteLinks(
     const link: NoteLink = {
       type: ElementType.NoteLink,
       noteId,
+      noteTitle,
+      isTextTitle: true,
       children: [],
     };
     Transforms.wrapNodes(editor, link, {
