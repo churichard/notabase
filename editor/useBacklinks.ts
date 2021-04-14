@@ -1,8 +1,7 @@
 import { useMemo } from 'react';
-import { Descendant, Element, Node, Text } from 'slate';
+import { createEditor, Editor, Element, Node } from 'slate';
 import { ElementType } from 'types/slate';
 import { Note } from 'types/supabase';
-import { caseInsensitiveStringEqual } from 'utils/string';
 import useNotes from 'lib/api/useNotes';
 
 type Backlink = {
@@ -24,7 +23,27 @@ export default function useBacklinks(noteId: string) {
 const getBacklinks = (notes: Note[], noteId: string): Backlink[] => {
   const result: Backlink[] = [];
   for (const note of notes) {
-    const matches = getBacklinkMatches(note.content, noteId);
+    // Instantiate editor
+    const editor = createEditor();
+    editor.children = note.content;
+
+    // Find matching note link nodes
+    const linkNodes = Editor.nodes(editor, {
+      at: [], // We need this to search through the entire note content
+      match: (n) =>
+        Element.isElement(n) &&
+        n.type === ElementType.NoteLink &&
+        n.noteId === noteId &&
+        !!Node.string(n),
+    });
+
+    // Get the parent text
+    const matches = [];
+    for (const [, path] of linkNodes) {
+      const [parentNode] = Editor.parent(editor, path);
+      matches.push(Node.string(parentNode));
+    }
+
     if (matches.length > 0) {
       result.push({
         id: note.id,
@@ -33,39 +52,5 @@ const getBacklinks = (notes: Note[], noteId: string): Backlink[] => {
       });
     }
   }
-  return result;
-};
-
-const getBacklinkMatches = (nodes: Descendant[], noteId: string) => {
-  const result: Backlink['matches'] = [];
-  for (const node of nodes) {
-    result.push(...getBacklinkMatchesHelper(node, noteId));
-  }
-  return result;
-};
-
-const getBacklinkMatchesHelper = (
-  node: Descendant,
-  noteId: string
-): Backlink['matches'] => {
-  if (Text.isText(node)) {
-    return [];
-  }
-
-  const result: Backlink['matches'] = [];
-  const children = node.children;
-  for (const child of children) {
-    if (Element.isElement(child)) {
-      if (
-        child.type === ElementType.NoteLink &&
-        caseInsensitiveStringEqual(child.noteId, noteId) &&
-        Node.string(child)
-      ) {
-        result.push(Node.string(node));
-      }
-      result.push(...getBacklinkMatchesHelper(child, noteId));
-    }
-  }
-
   return result;
 };
