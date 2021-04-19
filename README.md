@@ -28,7 +28,3 @@ Format your text however you want -- Notabase will always show you rich text in 
 Many note-taking apps are closed-source. This is a problem for several reasons: One, you don't actually know what the app is doing with your data; two, you (as a user of the product) can't directly participate in the development of the product; and three, if the product ever shuts down, you won't be able to use it anymore.
 
 Making Notabase open-source is a commitment to transparency and longevity. You can personally examine the code to see how your data is being used. The entire community can participate in project development -- such as by contributing code, reporting bugs, or helping each other out. And if the product ever shuts down, the source code is public, so anyone can build on top of it and host it themselves.
-
-### 3. Offline-first.
-
-A spotty Internet connection should not be a blocker to accessing your notes. Notabase provides a rich offline experience by prioritizing local computation and caching. An Internet connection enhances your experience (such as by letting you sync your notes across your devices), but is not required.
