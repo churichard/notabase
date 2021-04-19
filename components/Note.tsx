@@ -13,7 +13,6 @@ import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
 import Title from 'components/editor/Title';
 import { Note as NoteType } from 'types/supabase';
-import useDebounce from 'utils/useDebounce';
 import useBacklinks from 'editor/useBacklinks';
 import withBlockBreakout from 'editor/plugins/withBlockBreakout';
 import withAutoMarkdown from 'editor/plugins/withAutoMarkdown';
@@ -21,6 +20,8 @@ import withLinks from 'editor/plugins/withLinks';
 import updateNote from 'lib/api/updateNote';
 import { ProvideCurrentNote } from 'utils/useCurrentNote';
 import Backlinks from './editor/Backlinks';
+
+const SYNC_DEBOUNCE_MS = 1000;
 
 const CHECK_VIOLATION_ERROR_CODE = '23514';
 const UNIQUE_VIOLATION_ERROR_CODE = '23505';
@@ -62,7 +63,6 @@ export default function Note(props: Props) {
     () => syncState.isTitleSynced && syncState.isContentSynced,
     [syncState]
   );
-  const [debouncedNote, setDebouncedNote] = useDebounce(currentNote, 1000);
 
   const { updateBacklinks } = useBacklinks(currentNote.id);
 
@@ -134,46 +134,48 @@ export default function Note(props: Props) {
 
   // Save the note title in the database if it changes and it hasn't been saved yet
   useEffect(() => {
-    if (currentNote.title === debouncedNote.title && !syncState.isTitleSynced) {
-      updateNoteTitle(debouncedNote.id, debouncedNote.title);
+    if (!syncState.isTitleSynced) {
+      const handler = setTimeout(
+        () => updateNoteTitle(currentNote.id, currentNote.title),
+        SYNC_DEBOUNCE_MS
+      );
+      return () => clearTimeout(handler);
     }
   }, [
-    updateNoteTitle,
-    currentNote.title,
-    debouncedNote.id,
-    debouncedNote.title,
     syncState.isTitleSynced,
+    currentNote.id,
+    currentNote.title,
+    updateNoteTitle,
   ]);
 
   // Save the note content in the database if it changes and it hasn't been saved yet
   useEffect(() => {
-    if (
-      currentNote.content === debouncedNote.content &&
-      !syncState.isContentSynced
-    ) {
-      updateNoteContent(debouncedNote.id, debouncedNote.content);
+    if (!syncState.isContentSynced) {
+      const handler = setTimeout(
+        () => updateNoteContent(currentNote.id, currentNote.content),
+        SYNC_DEBOUNCE_MS
+      );
+      return () => clearTimeout(handler);
     }
   }, [
-    updateNoteContent,
-    currentNote.content,
-    debouncedNote.id,
-    debouncedNote.content,
     syncState.isContentSynced,
+    currentNote.id,
+    currentNote.content,
+    updateNoteContent,
   ]);
 
   // Update the current note if the note id has changed
   useEffect(() => {
     // If the note id has changed
-    if (initialNote.id !== debouncedNote.id) {
+    if (initialNote.id !== currentNote.id) {
       // Deselect any current selection
       Transforms.deselect(editor);
       // Scroll to the top of the note
       noteRef.current?.scrollTo(0, 0);
       // Reset the note contents
       setCurrentNote(initialNote);
-      setDebouncedNote(initialNote);
     }
-  }, [editor, initialNote, debouncedNote.id, setDebouncedNote]);
+  }, [editor, initialNote, currentNote.id]);
 
   // Prompt the user with a dialog box about unsaved changes if they navigate away
   useEffect(() => {
