@@ -1,9 +1,10 @@
 import { useCallback, useMemo } from 'react';
 import { Descendant, Element, Node, Path, Text } from 'slate';
 import produce from 'immer';
+import { mutate } from 'swr';
 import { ElementType } from 'types/slate';
 import { Note } from 'types/supabase';
-import useNotes from 'lib/api/useNotes';
+import useNotes, { NOTES_KEY } from 'lib/api/useNotes';
 import supabase from 'lib/supabase';
 import { useAuth } from 'utils/useAuth';
 
@@ -81,6 +82,7 @@ export default function useBacklinks(noteId: string) {
 
       // Update in database
       await supabase.from<Note>('notes').upsert(upsertData);
+      mutate(NOTES_KEY); // Make sure backlinks are updated
     },
     [user, notes, backlinks]
   );
