@@ -49,7 +49,7 @@ const withAutoMarkdown = (editor: Editor) => {
   editor.insertText = (text) => {
     const { selection } = editor;
 
-    if (!selection || !Range.isCollapsed(selection)) {
+    if (!selection || !Range.isCollapsed(selection) || text.length > 1) {
       insertText(text);
       return;
     }
