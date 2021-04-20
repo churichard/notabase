@@ -147,7 +147,7 @@ export default function Editor(props: Props) {
       {isToolbarVisible ? <HoveringToolbar /> : null}
       {addLinkPopoverState.isVisible ? <AddLinkPopover /> : null}
       <Editable
-        className={`placeholder-gray-300 ${className}`}
+        className={`overflow-hidden placeholder-gray-300 ${className}`}
         renderElement={renderElement}
         renderLeaf={renderLeaf}
         placeholder="Start typing here…"
@@ -156,7 +156,6 @@ export default function Editor(props: Props) {
         onMouseDown={() => setToolbarCanBeVisible(false)}
         onMouseUp={() => setTimeout(() => setToolbarCanBeVisible(true), 100)}
         spellCheck
-        autoFocus
       />
     </Slate>
   );

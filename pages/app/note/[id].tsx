@@ -10,10 +10,11 @@ import { Note as NoteType } from 'types/supabase';
 type Props = {
   initialNotes: Array<NoteType>;
   currentNote: Omit<NoteType, 'user_id'> | null;
+  stackedNotes: Array<NoteType> | null;
 };
 
 export default function NotePage(props: Props) {
-  const { initialNotes, currentNote } = props;
+  const { initialNotes, currentNote, stackedNotes } = props;
 
   if (!currentNote) {
     return (
@@ -39,7 +40,14 @@ export default function NotePage(props: Props) {
         <title>{currentNote.title}</title>
       </Head>
       <AppLayout initialNotes={initialNotes} currentNoteId={currentNote.id}>
-        <Note initialNote={currentNote} />
+        <div className="flex overflow-x-auto divide-x">
+          <Note initialNote={currentNote} />
+          {stackedNotes
+            ? stackedNotes.map((note) => (
+                <Note key={note.id} initialNote={note} />
+              ))
+            : null}
+        </div>
       </AppLayout>
     </>
   );
@@ -68,13 +76,14 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
     .eq('user_id', user.id)
     .order('title');
 
-  // Validate query param
+  // Validate id query param
   const noteId = query.id;
   if (!noteId || typeof noteId !== 'string') {
     return {
       props: {
         initialNotes: notes ?? [],
         currentNote: null,
+        stackedNotes: null,
       },
     };
   }
@@ -87,6 +96,30 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
     .eq('id', noteId)
     .single();
 
+  // Get stacked notes
+  const stackQuery = query.stack;
+  let stackedNotes: NoteType[] | null = null;
+  if (stackQuery) {
+    let stackedNoteIds: string[];
+    if (typeof stackQuery === 'string') {
+      stackedNoteIds = [stackQuery];
+    } else {
+      stackedNoteIds = stackQuery;
+    }
+
+    const { data } = await supabase
+      .from<NoteType>('notes')
+      .select('id, title, content')
+      .eq('user_id', user.id)
+      .in('id', stackedNoteIds);
+
+    // Make sure stacked notes are sorted in the same order as in the query param
+    stackedNotes =
+      data?.sort((n1, n2) => {
+        return stackedNoteIds.indexOf(n1.id) - stackedNoteIds.indexOf(n2.id);
+      }) ?? null;
+  }
+
   return {
     props: {
       initialNotes: notes ?? [],
@@ -97,6 +130,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
             content: currentNote.content,
           }
         : null,
+      stackedNotes,
     },
   };
 };

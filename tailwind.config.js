@@ -11,7 +11,7 @@ module.exports = {
     },
     spacing: {
       ...defaultTheme.spacing,
-      192: '48rem',
+      176: '44rem',
     },
     colors: {
       ...colors,

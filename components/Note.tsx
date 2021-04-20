@@ -205,7 +205,10 @@ export default function Note(props: Props) {
 
   return (
     <ProvideCurrentNote value={currentNote}>
-      <div ref={noteRef} className="flex flex-col overflow-y-auto w-192">
+      <div
+        ref={noteRef}
+        className="flex flex-col flex-shrink-0 overflow-y-auto w-176"
+      >
         <div className="flex flex-col flex-1">
           <Title
             className="px-12 pt-12 pb-1"
