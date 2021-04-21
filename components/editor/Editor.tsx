@@ -114,6 +114,8 @@ export default function Editor(props: Props) {
       if (
         !editor.selection ||
         event.nativeEvent.type === 'keyup' ||
+        event.nativeEvent.type === 'mousedown' ||
+        event.nativeEvent.type === 'mouseup' ||
         event.nativeEvent.altKey ||
         event.nativeEvent.metaKey ||
         event.nativeEvent.ctrlKey
