@@ -7,7 +7,6 @@ import React, {
 } from 'react';
 import { Transforms } from 'slate';
 import { ReactEditor, useSlate } from 'slate-react';
-import { useAtom } from 'jotai';
 import {
   IFluentIconsProps,
   Delete20Regular,
@@ -16,7 +15,6 @@ import {
 } from '@fluentui/react-icons';
 import { v4 as uuidv4 } from 'uuid';
 import getOrAddNote from 'lib/api/getOrAddNote';
-import { addLinkPopoverAtom } from 'editor/state';
 import {
   insertExternalLink,
   insertNoteLink,
@@ -27,6 +25,7 @@ import { useAuth } from 'utils/useAuth';
 import useNoteSearch from 'utils/useNoteSearch';
 import { caseInsensitiveStringEqual } from 'utils/string';
 import Popover from './Popover';
+import { AddLinkPopoverState } from './Editor';
 
 enum OptionType {
   NOTE,
@@ -42,13 +41,16 @@ type Option = {
   icon?: (props: IFluentIconsProps) => JSX.Element;
 };
 
-export default function AddLinkPopover() {
+type Props = {
+  addLinkPopoverState: AddLinkPopoverState;
+  setAddLinkPopoverState: (state: AddLinkPopoverState) => void;
+};
+
+export default function AddLinkPopover(props: Props) {
+  const { addLinkPopoverState, setAddLinkPopoverState } = props;
   const { user } = useAuth();
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [linkText, setLinkText] = useState<string>('');
-  const [addLinkPopoverState, setAddLinkPopoverState] = useAtom(
-    addLinkPopoverAtom
-  );
   const editor = useSlate();
 
   const [selectedOptionIndex, setSelectedOptionIndex] = useState<number>(0);

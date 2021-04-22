@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react';
 import { useSlate } from 'slate-react';
-import { useAtom } from 'jotai';
 import {
   TextBold16Regular as BoldIcon,
   TextItalic16Regular as ItalicIcon,
@@ -21,14 +20,21 @@ import {
   toggleElement,
   isElementActive,
 } from 'editor/formatting';
-import { addLinkPopoverAtom } from 'editor/state';
 import { ElementType, Mark } from 'types/slate';
 import Popover from './Popover';
+import { AddLinkPopoverState } from './Editor';
 
-export default function HoveringToolbar() {
+type Props = {
+  setAddLinkPopoverState: (state: AddLinkPopoverState) => void;
+};
+export default function HoveringToolbar(props: Props) {
+  const { setAddLinkPopoverState } = props;
   return (
     <Popover placement="top-start">
-      <LinkButton className="border-r" />
+      <LinkButton
+        setAddLinkPopoverState={setAddLinkPopoverState}
+        className="border-r"
+      />
       <FormatButton format={Mark.Bold} />
       <FormatButton format={Mark.Italic} />
       <FormatButton format={Mark.Underline} />
@@ -155,12 +161,13 @@ const BlockButton = ({ format, className = '' }: BlockButtonProps) => {
 };
 
 type LinkButtonProps = {
+  setAddLinkPopoverState: (state: AddLinkPopoverState) => void;
   className?: string;
 };
 
-const LinkButton = ({ className = '' }: LinkButtonProps) => {
+const LinkButton = (props: LinkButtonProps) => {
+  const { setAddLinkPopoverState, className = '' } = props;
   const editor = useSlate();
-  const [, setAddLinkPopoverState] = useAtom(addLinkPopoverAtom);
   const isActive =
     isElementActive(editor, ElementType.ExternalLink) ||
     isElementActive(editor, ElementType.NoteLink);

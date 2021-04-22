@@ -8,14 +8,18 @@ import React, {
 import { Range, Editor as SlateEditor, Descendant } from 'slate';
 import { Editable, ReactEditor, RenderLeafProps, Slate } from 'slate-react';
 import { isHotkey } from 'is-hotkey';
-import { useAtom } from 'jotai';
-import { addLinkPopoverAtom } from 'editor/state';
 import { isElementActive, toggleMark } from 'editor/formatting';
 import useNoteLinks from 'editor/useNoteLinks';
 import { ElementType, Mark } from 'types/slate';
 import HoveringToolbar from './HoveringToolbar';
 import AddLinkPopover from './AddLinkPopover';
 import EditorElement from './EditorElement';
+
+export type AddLinkPopoverState = {
+  isVisible: boolean;
+  selection?: Range;
+  isLink?: boolean;
+};
 
 type Props = {
   className?: string;
@@ -34,9 +38,14 @@ export default function Editor(props: Props) {
   );
   const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
 
-  const [addLinkPopoverState, setAddLinkPopoverState] = useAtom(
-    addLinkPopoverAtom
-  );
+  const [
+    addLinkPopoverState,
+    setAddLinkPopoverState,
+  ] = useState<AddLinkPopoverState>({
+    isVisible: false,
+    selection: undefined,
+    isLink: false,
+  });
 
   const [toolbarCanBeVisible, setToolbarCanBeVisible] = useState(true);
   const hasExpandedSelection = useMemo(
@@ -146,8 +155,15 @@ export default function Editor(props: Props) {
 
   return (
     <Slate editor={editor} value={value} onChange={setValue}>
-      {isToolbarVisible ? <HoveringToolbar /> : null}
-      {addLinkPopoverState.isVisible ? <AddLinkPopover /> : null}
+      {isToolbarVisible ? (
+        <HoveringToolbar setAddLinkPopoverState={setAddLinkPopoverState} />
+      ) : null}
+      {addLinkPopoverState.isVisible ? (
+        <AddLinkPopover
+          addLinkPopoverState={addLinkPopoverState}
+          setAddLinkPopoverState={setAddLinkPopoverState}
+        />
+      ) : null}
       <Editable
         className={`overflow-hidden placeholder-gray-300 ${className}`}
         renderElement={renderElement}

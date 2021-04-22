@@ -4,7 +4,7 @@ import Tippy from '@tippyjs/react';
 import { useAtom } from 'jotai';
 import { useRouter } from 'next/router';
 import { ElementType, ExternalLink, NoteLink } from 'types/slate';
-import { openNotesAtom } from 'editor/state';
+import { openNotesAtom } from 'lib/state';
 import { useAuth } from 'utils/useAuth';
 import getOrAddNote from 'lib/api/getOrAddNote';
 import { useCurrentNote } from 'utils/useCurrentNote';

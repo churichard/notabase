@@ -7,7 +7,7 @@ import { useAtom } from 'jotai';
 import AppLayout from 'components/AppLayout';
 import Note from 'components/Note';
 import { Note as NoteType } from 'types/supabase';
-import { openNotesAtom } from 'editor/state';
+import { openNotesAtom } from 'lib/state';
 
 type Props = {
   initialNotes: Array<NoteType>;
