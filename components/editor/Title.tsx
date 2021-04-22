@@ -37,7 +37,6 @@ export default function Title(props: Props) {
         className={`title text-3xl font-semibold border-none focus:outline-none p-0 leading-10 cursor-text ${className}`}
         role="textbox"
         placeholder="Untitled"
-        spellCheck={false}
         onKeyPress={(event) => {
           // Disallow newlines in the title field
           if (event.key === 'Enter') {
@@ -54,6 +53,7 @@ export default function Title(props: Props) {
         onInput={emitChange}
         onBlur={emitChange}
         contentEditable
+        spellCheck
       />
       <style jsx>{`
         .title[placeholder]:empty:before {
