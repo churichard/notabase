@@ -22,6 +22,10 @@ export default function useBacklinks(noteId: string) {
   const { data: notes = [] } = useNotes();
   const backlinks = useMemo(() => getBacklinks(notes, noteId), [notes, noteId]);
 
+  /**
+   * Updates the link properties of the backlinks on each backlinked note when the
+   * current note title has changed.
+   */
   const updateBacklinks = useCallback(
     async (newTitle: string) => {
       if (!user) {

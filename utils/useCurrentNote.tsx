@@ -2,7 +2,6 @@ import React, { useContext, createContext, ReactNode } from 'react';
 
 type CurrentNote = {
   id: string;
-  title: string;
 };
 
 const NoteContext = createContext<CurrentNote | undefined>(undefined);
