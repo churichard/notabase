@@ -72,6 +72,8 @@ export default function useBacklinks(noteId: string) {
             }
           });
         }
+        // TODO: update would be better so that we don't have to pass in the title or user id here.
+        // See https://github.com/supabase/supabase-js/issues/156
         upsertData.push({
           id: backlink.id,
           title: backlink.title,
