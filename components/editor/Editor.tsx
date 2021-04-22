@@ -59,8 +59,11 @@ export default function Editor(props: Props) {
     [editor, editor.selection]
   );
   const isToolbarVisible = useMemo(
-    () => toolbarCanBeVisible && hasExpandedSelection,
-    [toolbarCanBeVisible, hasExpandedSelection]
+    () =>
+      toolbarCanBeVisible &&
+      hasExpandedSelection &&
+      !addLinkPopoverState.isVisible,
+    [toolbarCanBeVisible, hasExpandedSelection, addLinkPopoverState.isVisible]
   );
 
   const hotkeys = useMemo(
