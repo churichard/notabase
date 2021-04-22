@@ -1,20 +1,42 @@
-import React from 'react';
+import React, { createRef, useEffect } from 'react';
 import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
 import { createClient } from '@supabase/supabase-js';
+import { useAtom } from 'jotai';
 import AppLayout from 'components/AppLayout';
 import Note from 'components/Note';
 import { Note as NoteType } from 'types/supabase';
+import { openNotesAtom } from 'editor/state';
 
 type Props = {
   initialNotes: Array<NoteType>;
-  currentNote: Omit<NoteType, 'user_id'> | null;
-  stackedNotes: Array<NoteType> | null;
+  currentNote: NoteType | null;
+  initialStackedNotes: Array<NoteType> | null;
 };
 
 export default function NotePage(props: Props) {
-  const { initialNotes, currentNote, stackedNotes } = props;
+  const { initialNotes, currentNote, initialStackedNotes } = props;
+  const [openNotes, setOpenNotes] = useAtom(openNotesAtom);
+
+  useEffect(() => {
+    const openNotes = [];
+    if (currentNote) {
+      openNotes.push({
+        note: currentNote,
+        ref: createRef<HTMLElement | null>(),
+      });
+    }
+    if (initialStackedNotes) {
+      openNotes.push(
+        ...initialStackedNotes.map((note) => ({
+          note,
+          ref: createRef<HTMLElement | null>(),
+        }))
+      );
+    }
+    setOpenNotes(openNotes);
+  }, [setOpenNotes, currentNote, initialStackedNotes]);
 
   if (!currentNote) {
     return (
@@ -41,10 +63,13 @@ export default function NotePage(props: Props) {
       </Head>
       <AppLayout initialNotes={initialNotes} currentNoteId={currentNote.id}>
         <div className="flex overflow-x-auto divide-x">
-          <Note initialNote={currentNote} />
-          {stackedNotes
-            ? stackedNotes.map((note) => (
-                <Note key={note.id} initialNote={note} />
+          {openNotes.length > 0
+            ? openNotes.map(({ note, ref }) => (
+                <Note
+                  key={note.id}
+                  ref={(node) => (ref.current = node)}
+                  initialNote={note}
+                />
               ))
             : null}
         </div>
@@ -83,7 +108,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
       props: {
         initialNotes: notes ?? [],
         currentNote: null,
-        stackedNotes: null,
+        initialStackedNotes: null,
       },
     };
   }
@@ -100,11 +125,11 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
   const stackQuery = query.stack;
   let stackedNotes: NoteType[] | null = null;
   if (stackQuery) {
-    let stackedNoteIds: string[];
+    const stackedNoteIds: string[] = [];
     if (typeof stackQuery === 'string') {
-      stackedNoteIds = [stackQuery];
+      stackedNoteIds.push(stackQuery);
     } else {
-      stackedNoteIds = stackQuery;
+      stackedNoteIds.push(...stackQuery);
     }
 
     const { data } = await supabase
@@ -123,14 +148,8 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
   return {
     props: {
       initialNotes: notes ?? [],
-      currentNote: currentNote
-        ? {
-            id: currentNote.id,
-            title: currentNote.title,
-            content: currentNote.content,
-          }
-        : null,
-      stackedNotes,
+      currentNote,
+      initialStackedNotes: stackedNotes,
     },
   };
 };

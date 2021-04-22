@@ -1,4 +1,6 @@
 import React, {
+  ForwardedRef,
+  forwardRef,
   useCallback,
   useEffect,
   useMemo,
@@ -31,12 +33,11 @@ const Editor = dynamic(() => import('components/editor/Editor'), {
   ssr: false,
 });
 
-type NoteState = Omit<NoteType, 'user_id'>;
 type Props = {
-  initialNote: NoteState;
+  initialNote: NoteType;
 };
 
-export default function Note(props: Props) {
+function Note(props: Props, ref: ForwardedRef<HTMLDivElement>) {
   const { initialNote } = props;
   const router = useRouter();
   const noteRef = useRef<HTMLDivElement | null>(null);
@@ -48,9 +49,7 @@ export default function Note(props: Props) {
       ),
     []
   );
-  const [currentNote, setCurrentNote] = useState<Omit<NoteType, 'user_id'>>(
-    initialNote
-  );
+  const [currentNote, setCurrentNote] = useState<NoteType>(initialNote);
 
   const [syncState, setSyncState] = useState<{
     isTitleSynced: boolean;
@@ -206,7 +205,14 @@ export default function Note(props: Props) {
   return (
     <ProvideCurrentNote value={currentNote}>
       <div
-        ref={noteRef}
+        ref={(node) => {
+          noteRef.current = node;
+          if (typeof ref === 'function') {
+            ref(node);
+          } else if (ref) {
+            ref.current = node;
+          }
+        }}
         className="flex flex-col flex-shrink-0 overflow-y-auto w-176"
       >
         <div className="flex flex-col flex-1">
@@ -227,3 +233,5 @@ export default function Note(props: Props) {
     </ProvideCurrentNote>
   );
 }
+
+export default forwardRef<HTMLDivElement, Props>(Note);
