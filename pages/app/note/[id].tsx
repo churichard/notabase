@@ -11,19 +11,19 @@ import { openNotesAtom } from 'editor/state';
 
 type Props = {
   initialNotes: Array<NoteType>;
-  currentNote: NoteType | null;
+  mainNote: NoteType | null;
   initialStackedNotes: Array<NoteType> | null;
 };
 
 export default function NotePage(props: Props) {
-  const { initialNotes, currentNote, initialStackedNotes } = props;
+  const { initialNotes, mainNote, initialStackedNotes } = props;
   const [openNotes, setOpenNotes] = useAtom(openNotesAtom);
 
   useEffect(() => {
     const openNotes = [];
-    if (currentNote) {
+    if (mainNote) {
       openNotes.push({
-        note: currentNote,
+        note: mainNote,
         ref: createRef<HTMLElement | null>(),
       });
     }
@@ -36,9 +36,9 @@ export default function NotePage(props: Props) {
       );
     }
     setOpenNotes(openNotes);
-  }, [setOpenNotes, currentNote, initialStackedNotes]);
+  }, [setOpenNotes, mainNote, initialStackedNotes]);
 
-  if (!currentNote) {
+  if (!mainNote) {
     return (
       <>
         <Head>
@@ -59,9 +59,9 @@ export default function NotePage(props: Props) {
   return (
     <>
       <Head>
-        <title>{currentNote.title}</title>
+        <title>{mainNote.title}</title>
       </Head>
-      <AppLayout initialNotes={initialNotes} currentNoteId={currentNote.id}>
+      <AppLayout initialNotes={initialNotes} mainNoteId={mainNote.id}>
         <div className="flex overflow-x-auto divide-x">
           {openNotes.length > 0
             ? openNotes.map(({ note, ref }) => (
@@ -107,14 +107,14 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
     return {
       props: {
         initialNotes: notes ?? [],
-        currentNote: null,
+        mainNote: null,
         initialStackedNotes: null,
       },
     };
   }
 
-  // Get the current note
-  const { data: currentNote } = await supabase
+  // Get the main note
+  const { data: mainNote } = await supabase
     .from<NoteType>('notes')
     .select('id, title, content')
     .eq('user_id', user.id)
@@ -148,7 +148,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
   return {
     props: {
       initialNotes: notes ?? [],
-      currentNote,
+      mainNote,
       initialStackedNotes: stackedNotes,
     },
   };

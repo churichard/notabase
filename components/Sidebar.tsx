@@ -6,11 +6,11 @@ import SidebarInput from './SidebarInput';
 
 type Props = {
   notes?: Array<Note>;
-  currentNoteId?: string;
+  mainNoteId?: string;
 };
 
 export default function Sidebar(props: Props) {
-  const { notes, currentNoteId } = props;
+  const { notes, mainNoteId } = props;
   const { user } = useAuth();
 
   return (
@@ -25,7 +25,7 @@ export default function Sidebar(props: Props) {
       <div className="flex flex-col mt-2 overflow-y-auto">
         {notes && notes.length > 0 ? (
           notes.map((note) => (
-            <NoteLink key={note.id} note={note} currentNoteId={currentNoteId} />
+            <NoteLink key={note.id} note={note} mainNoteId={mainNoteId} />
           ))
         ) : (
           <p className="px-6 text-gray-500">No notes yet</p>
@@ -37,16 +37,16 @@ export default function Sidebar(props: Props) {
 
 type NoteLinkProps = {
   note: Note;
-  currentNoteId?: string;
+  mainNoteId?: string;
 };
 
 function NoteLink(props: NoteLinkProps) {
-  const { note, currentNoteId } = props;
+  const { note, mainNoteId } = props;
   return (
     <Link href={`/app/note/${note.id}`}>
       <a
         className={`w-full px-6 py-1 text-gray-800 hover:bg-gray-200 active:bg-gray-300 ${
-          currentNoteId === note.id ? 'bg-gray-200' : 'bg-gray-50'
+          mainNoteId === note.id ? 'bg-gray-200' : 'bg-gray-50'
         }`}
       >
         <p className="overflow-hidden overflow-ellipsis whitespace-nowrap">
