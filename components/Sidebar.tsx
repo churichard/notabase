@@ -5,7 +5,7 @@ import { useAuth } from 'utils/useAuth';
 import SidebarInput from './SidebarInput';
 
 type Props = {
-  notes?: Array<Note>;
+  notes?: Array<Pick<Note, 'id' | 'title'>>;
   mainNoteId?: string;
 };
 
@@ -36,7 +36,7 @@ export default function Sidebar(props: Props) {
 }
 
 type NoteLinkProps = {
-  note: Note;
+  note: Pick<Note, 'id' | 'title'>;
   mainNoteId?: string;
 };
 
