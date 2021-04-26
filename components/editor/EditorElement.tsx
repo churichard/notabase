@@ -85,13 +85,13 @@ const NoteLinkElement = (props: NoteLinkElementProps) => {
 
   return (
     <Tippy content={element.noteTitle} duration={0} placement="bottom">
-      <button
+      <span
         className="underline cursor-pointer text-primary-500"
         onClick={() => onNoteLinkClick(element.noteId)}
         {...attributes}
       >
         {children}
-      </button>
+      </span>
     </Tippy>
   );
 };
