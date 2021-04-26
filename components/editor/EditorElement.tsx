@@ -81,13 +81,13 @@ type NoteLinkElementProps = {
 
 const NoteLinkElement = (props: NoteLinkElementProps) => {
   const { element, children, attributes } = props;
-  const onNoteLinkClick = useOnNoteLinkClick(element.noteId);
+  const onNoteLinkClick = useOnNoteLinkClick();
 
   return (
     <Tippy content={element.noteTitle} duration={0} placement="bottom">
       <button
         className="underline cursor-pointer text-primary-500"
-        onClick={onNoteLinkClick}
+        onClick={() => onNoteLinkClick(element.noteId)}
         {...attributes}
       >
         {children}

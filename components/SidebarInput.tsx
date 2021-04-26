@@ -131,7 +131,7 @@ const OptionItem = (props: OptionProps) => {
   const { option, isSelected, onClick } = props;
   return (
     <button
-      className={`flex flex-row w-full items-center px-4 py-1 cursor-pointer hover:bg-gray-100 active:bg-gray-200 ${
+      className={`flex flex-row w-full items-center px-4 py-1 hover:bg-gray-100 active:bg-gray-200 ${
         isSelected ? 'bg-gray-100' : ''
       }`}
       onClick={onClick}
