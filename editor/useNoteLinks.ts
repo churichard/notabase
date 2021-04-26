@@ -2,7 +2,7 @@ import { useCallback, useEffect } from 'react';
 import { Descendant, Editor, Range, Transforms } from 'slate';
 import { v4 as uuidv4 } from 'uuid';
 import { ElementType, NoteLink } from 'types/slate';
-import getOrAddNote from 'lib/api/getOrAddNote';
+import upsertNote from 'lib/api/upsertNote';
 import useNoteTitles from 'lib/api/useNoteTitles';
 import { useAuth } from 'utils/useAuth';
 import { deleteText } from './transforms';
@@ -64,7 +64,7 @@ export default function useNoteLinks(
       noteId = matchingNote.id;
     } else {
       noteId = uuidv4();
-      getOrAddNote(user.id, noteTitle, noteId);
+      upsertNote({ id: noteId, user_id: user.id, title: noteTitle });
     }
 
     // Wrap text in a link

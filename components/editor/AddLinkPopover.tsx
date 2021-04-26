@@ -14,7 +14,7 @@ import {
   DocumentAdd20Regular,
 } from '@fluentui/react-icons';
 import { v4 as uuidv4 } from 'uuid';
-import getOrAddNote from 'lib/api/getOrAddNote';
+import upsertNote from 'lib/api/upsertNote';
 import {
   insertExternalLink,
   insertNoteLink,
@@ -129,7 +129,7 @@ export default function AddLinkPopover(props: Props) {
         // Add a new note and insert a link to it with the note title as the link text
         const noteId = uuidv4();
         insertNoteLink(editor, noteId, linkText);
-        getOrAddNote(user.id, linkText, noteId);
+        upsertNote({ id: noteId, user_id: user.id, title: linkText });
       } else if (option.type === OptionType.REMOVE_LINK) {
         // Remove the link
         removeLink(editor);
