@@ -32,7 +32,7 @@ export default function useBacklinks(noteId: string) {
         return;
       }
 
-      const upsertData = [];
+      const updateData = [];
       for (const backlink of backlinks) {
         const backlinkContent = notes.find((note) => note.id === backlink.id)
           ?.content;
@@ -76,18 +76,25 @@ export default function useBacklinks(noteId: string) {
             }
           });
         }
-        // TODO: update would be better so that we don't have to pass in the title or user id here.
-        // See https://github.com/supabase/supabase-js/issues/156
-        upsertData.push({
+        updateData.push({
           id: backlink.id,
-          title: backlink.title,
-          user_id: user.id,
           content: newBacklinkContent,
         });
       }
 
-      // Update in database
-      await supabase.from<Note>('notes').upsert(upsertData);
+      // It would be better if we could consolidate the update requests into one request
+      // See https://github.com/supabase/supabase-js/issues/156
+      const promises = [];
+      for (const data of updateData) {
+        promises.push(
+          supabase
+            .from<Note>('notes')
+            .update({ content: data.content })
+            .eq('id', data.id)
+        );
+      }
+      await Promise.all(promises);
+
       mutate(NOTES_KEY); // Make sure backlinks are updated
     },
     [user, notes, backlinks]

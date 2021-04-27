@@ -5,7 +5,11 @@ import { NOTE_TITLES_KEY } from './useNoteTitles';
 import { NOTES_KEY } from './useNotes';
 
 export default async function updateNote(id: string, note: Partial<Note>) {
-  const response = await supabase.from<Note>('notes').update(note).eq('id', id);
+  const response = await supabase
+    .from<Note>('notes')
+    .update(note)
+    .eq('id', id)
+    .single();
 
   if (note.title && !response.error) {
     mutate(NOTE_TITLES_KEY); // Update note title in sidebar

@@ -85,25 +85,9 @@ function Note(props: Props, ref: ForwardedRef<HTMLDivElement>) {
     [currentNote.content]
   );
 
-  const updateNoteContent = useCallback(
-    async (id: string, content: Descendant[]) => {
-      const { error } = await updateNote(id, { content });
-
-      if (error) {
-        toast.error(
-          'Something went wrong saving your note. Please try again later.'
-        );
-        return;
-      }
-
-      setSyncState((syncState) => ({ ...syncState, isContentSynced: true }));
-    },
-    []
-  );
-
-  const updateNoteTitle = useCallback(
-    async (id: string, title: string) => {
-      const { error } = await updateNote(id, { title });
+  const handleNoteUpdate = useCallback(
+    async (id: string, note: Partial<NoteType>) => {
+      const { error } = await updateNote(id, note);
 
       if (error) {
         switch (error.code) {
@@ -114,53 +98,48 @@ function Note(props: Props, ref: ForwardedRef<HTMLDivElement>) {
             return;
           case UNIQUE_VIOLATION_ERROR_CODE:
             toast.error(
-              `There's already a note called ${title}. Please use a different title.`
+              `There's already a note called ${note.title}. Please use a different title.`
             );
             return;
           default:
             toast.error(
-              'Something went wrong saving your note title. Please try using a different title, or try again later.'
+              'Something went wrong saving your note. Please try again later.'
             );
             return;
         }
       }
-
-      await updateBacklinks(title);
-      setSyncState((syncState) => ({ ...syncState, isTitleSynced: true }));
+      if (note.title) {
+        await updateBacklinks(note.title);
+      }
+      setSyncState({ isTitleSynced: true, isContentSynced: true });
     },
     [updateBacklinks]
   );
 
-  // Save the note title in the database if it changes and it hasn't been saved yet
+  // Save the note in the database if it changes and it hasn't been saved yet
   useEffect(() => {
-    if (!syncState.isTitleSynced) {
-      const handler = setTimeout(
-        () => updateNoteTitle(currentNote.id, currentNote.title),
-        SYNC_DEBOUNCE_MS
-      );
-      return () => clearTimeout(handler);
-    }
-  }, [
-    syncState.isTitleSynced,
-    currentNote.id,
-    currentNote.title,
-    updateNoteTitle,
-  ]);
-
-  // Save the note content in the database if it changes and it hasn't been saved yet
-  useEffect(() => {
+    const newNote: Partial<NoteType> = {};
     if (!syncState.isContentSynced) {
+      newNote.content = currentNote.content;
+    }
+    if (!syncState.isTitleSynced) {
+      newNote.title = currentNote.title;
+    }
+
+    if (Object.keys(newNote).length !== 0) {
       const handler = setTimeout(
-        () => updateNoteContent(currentNote.id, currentNote.content),
+        () => handleNoteUpdate(currentNote.id, newNote),
         SYNC_DEBOUNCE_MS
       );
       return () => clearTimeout(handler);
     }
   }, [
     syncState.isContentSynced,
+    syncState.isTitleSynced,
     currentNote.id,
     currentNote.content,
-    updateNoteContent,
+    currentNote.title,
+    handleNoteUpdate,
   ]);
 
   // Update the current note if the note id has changed
