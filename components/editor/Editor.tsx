@@ -47,16 +47,15 @@ export default function Editor(props: Props) {
     isLink: false,
   });
 
+  const [selection, setSelection] = useState(editor.selection);
   const [toolbarCanBeVisible, setToolbarCanBeVisible] = useState(true);
   const hasExpandedSelection = useMemo(
     () =>
-      !!editor.selection &&
+      !!selection &&
       ReactEditor.isFocused(editor) &&
-      !Range.isCollapsed(editor.selection) &&
-      SlateEditor.string(editor, editor.selection) !== '',
-    // We actually need editor.selection in order for this to re-compute properly
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [editor, editor.selection]
+      !Range.isCollapsed(selection) &&
+      SlateEditor.string(editor, selection) !== '',
+    [editor, selection]
   );
   const isToolbarVisible = useMemo(
     () =>
@@ -157,7 +156,14 @@ export default function Editor(props: Props) {
   );
 
   return (
-    <Slate editor={editor} value={value} onChange={setValue}>
+    <Slate
+      editor={editor}
+      value={value}
+      onChange={(value) => {
+        setValue(value);
+        setSelection(editor.selection);
+      }}
+    >
       {isToolbarVisible ? (
         <HoveringToolbar setAddLinkPopoverState={setAddLinkPopoverState} />
       ) : null}
