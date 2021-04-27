@@ -34,15 +34,19 @@ export default function useBacklinks(noteId: string) {
 
       const updateData = [];
       for (const backlink of backlinks) {
-        const backlinkContent = notes.find((note) => note.id === backlink.id)
-          ?.content;
+        // Note: this can still result in a race condition if the content is updated elsewhere
+        // after we get the note and before we update the backlinks.
+        const { data: note } = await supabase
+          .from<Note>('notes')
+          .select('id, content')
+          .eq('id', backlink.id)
+          .single();
 
-        if (!backlinkContent) {
-          console.error(`No backlink content found for note ${backlink.id}`);
+        if (!note) {
           continue;
         }
 
-        let newBacklinkContent = backlinkContent;
+        let newBacklinkContent = note.content;
         for (const match of backlink.matches) {
           newBacklinkContent = produce(newBacklinkContent, (draftState) => {
             // Path should not be empty
@@ -97,7 +101,7 @@ export default function useBacklinks(noteId: string) {
 
       mutate(NOTES_KEY); // Make sure backlinks are updated
     },
-    [user, notes, backlinks]
+    [user, backlinks]
   );
 
   return { backlinks, updateBacklinks };
