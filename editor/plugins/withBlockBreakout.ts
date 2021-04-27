@@ -1,4 +1,13 @@
-import { Node, Editor, Element, Transforms } from 'slate';
+import {
+  Node,
+  Editor,
+  Element,
+  Transforms,
+  Range,
+  Text,
+  Path,
+  Point,
+} from 'slate';
 import { isListType } from 'editor/formatting';
 import { ElementType } from 'types/slate';
 
@@ -74,6 +83,23 @@ const withBlockBreakout = (editor: Editor) => {
     }
     // The cursor is in the middle of the text
     else {
+      // Don't create empty inline nodes
+      const [ancestorNode, path] = Editor.parent(editor, selection);
+      if (Element.isElement(ancestorNode) && editor.isInline(ancestorNode)) {
+        const endPoint = Range.end(selection);
+        const [selectedLeaf] = Editor.node(editor, endPoint);
+        if (
+          Text.isText(selectedLeaf) &&
+          selectedLeaf.text.length === endPoint.offset
+        ) {
+          if (Range.isExpanded(selection)) {
+            Transforms.delete(editor);
+          }
+          const point: Point = { path: Path.next(path), offset: 0 };
+          const newSelection: Range = { anchor: point, focus: point };
+          Transforms.select(editor, newSelection);
+        }
+      }
       insertBreak();
     }
   };
