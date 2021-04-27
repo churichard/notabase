@@ -83,7 +83,8 @@ const withBlockBreakout = (editor: Editor) => {
     }
     // The cursor is in the middle of the text
     else {
-      // Don't create empty inline nodes
+      // Don't create empty inline elements
+      // Workaround for https://github.com/ianstormtaylor/slate/issues/3772
       const [ancestorNode, path] = Editor.parent(editor, selection);
       if (Element.isElement(ancestorNode) && editor.isInline(ancestorNode)) {
         const endPoint = Range.end(selection);
