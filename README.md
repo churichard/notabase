@@ -6,25 +6,15 @@ It lets you connect knowledge and form ideas by linking notes together. These li
 
 It is inspired by note-taking apps such as [Typora](https://typora.io), [Notion](https://notion.so), and [Roam](https://roamresearch.com).
 
-**Notabase is currently in pre-alpha, and the main features are still being built out.**
+## Status
 
-## Principles
+**Notabase is currently in pre-alpha. Go easy on it, there might be some bugs!**
 
-Notabase has a few principles that differentiates it from other knowledge bases. **The principles are a work-in-progress and may not be fully implemented yet.**
+## Features
 
-### 1. Rich text with markdown-optional editing.
-
-A lot of markdown note-taking apps are highly frictional: you have to deal with asterisks, brackets, and parentheses every time you want to edit something; you have to switch to a different pane in order to actually read your notes; or you forget the syntax for links and have to look it up.
-
-Notabase solves this problem by providing a flexible rich-text editor that you can use how you'd like. For example, if you want to make some text bold, you can:
-- Highlight it and press a button on a toolbar
-- Highlight it and use the keyboard shortcut
-- Type the Markdown syntax, and it'll be converted automatically!
-
-Format your text however you want -- Notabase will always show you rich text in real-time as you type.
-
-### 2. Open-source.
-
-Many note-taking apps are closed-source. This is a problem for several reasons: One, you don't actually know what the app is doing with your data; two, you (as a user of the product) can't directly participate in the development of the product; and three, if the product ever shuts down, you won't be able to use it anymore.
-
-Making Notabase open-source is a commitment to transparency and longevity. You can personally examine the code to see how your data is being used. The entire community can participate in project development -- such as by contributing code, reporting bugs, or helping each other out. And if the product ever shuts down, the source code is public, so anyone can build on top of it and host it themselves.
+- Seamlessly navigate and browse through your notes side-by-side
+- WYSIWYG editor with markdown support makes it easy to edit notes
+- Linked references let you see other notes that reference a specific note
+- Your notes are synced to the cloud and can be accessed on any device
+- Offline support (coming soon)
+- Open source, allowing community involvement and transparent development
