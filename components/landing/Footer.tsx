@@ -14,6 +14,7 @@ export default function Footer(props: Props) {
           <p className="text-gray-700">
             An open-source personal knowledge base for non-linear thinking.
           </p>
+          <p className="text-gray-700">Currently in alpha.</p>
         </div>
         <div className="flex flex-wrap flex-1 lg:justify-end">
           <div className="flex flex-col mt-8 space-y-2 lg:mt-0">
