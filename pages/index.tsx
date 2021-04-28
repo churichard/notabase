@@ -1,6 +1,7 @@
 import React from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
+import Footer from 'components/landing/Footer';
 
 export default function Home() {
   return (
@@ -11,7 +12,7 @@ export default function Home() {
         </title>
       </Head>
       <div className="flex flex-col h-screen bg-gray-50">
-        <div className="container px-6 max-w-7xl">
+        <div className="container flex-1 px-6">
           <div className="flex items-center justify-between py-6">
             <Link href="/">
               <a className="text-xl">Notabase</a>
@@ -43,6 +44,7 @@ export default function Home() {
             </Link>
           </div>
         </div>
+        <Footer className="mt-16 md:mt-32" />
       </div>
     </>
   );
