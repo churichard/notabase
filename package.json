@@ -9,8 +9,10 @@
   },
   "dependencies": {
     "@fluentui/react-icons": "^1.1.121",
+    "@headlessui/react": "^1.1.1",
     "@popperjs/core": "^2.9.2",
     "@supabase/supabase-js": "^1.11.8",
+    "@tabler/icons": "^1.41.1",
     "@tailwindcss/forms": "^0.3.2",
     "@tippyjs/react": "^4.2.5",
     "autoprefixer": "^10.2.5",
@@ -19,6 +21,7 @@
     "is-hotkey": "^0.2.0",
     "jotai": "^0.16.3",
     "next": "^10.2.0",
+    "next-transpile-modules": "^7.0.0",
     "nprogress": "^0.2.0",
     "postcss": "^8.2.13",
     "react": "17.0.2",
