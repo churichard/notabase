@@ -1,9 +1,14 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { Menu } from '@headlessui/react';
 import { IconDots, IconTrash } from '@tabler/icons';
+import { useAtom } from 'jotai';
 import { Note } from 'types/supabase';
 import { useAuth } from 'utils/useAuth';
+import { openNotesAtom } from 'lib/state';
+import deleteNote from 'lib/api/deleteNote';
+import useBacklinks from 'editor/useBacklinks';
 import SidebarInput from './SidebarInput';
 
 type Props = {
@@ -55,12 +60,33 @@ function NoteLink(props: NoteLinkProps) {
           {note.title}
         </a>
       </Link>
-      <NoteLinkDropdown />
+      <NoteLinkDropdown note={note} />
     </div>
   );
 }
 
-function NoteLinkDropdown() {
+type NoteLinkDropdownProps = {
+  note: Pick<Note, 'id' | 'title'>;
+};
+
+function NoteLinkDropdown(props: NoteLinkDropdownProps) {
+  const { note } = props;
+  const router = useRouter();
+  const { deleteBacklinks } = useBacklinks(note.id);
+  const [openNotes] = useAtom(openNotesAtom);
+
+  const onDeleteClick = useCallback(async () => {
+    await deleteNote(note.id);
+    await deleteBacklinks();
+
+    if (
+      openNotes.findIndex((openNote) => openNote.note.id === note.id) !== -1
+    ) {
+      // Redirect if one of the notes that was deleted was open
+      router.push('/app');
+    }
+  }, [router, note.id, openNotes, deleteBacklinks]);
+
   return (
     <Menu>
       <Menu.Button className="hidden py-1 rounded group-hover:block hover:bg-gray-300 active:bg-gray-400">
@@ -74,6 +100,7 @@ function NoteLinkDropdown() {
                 className={`flex w-full items-center px-4 py-1 text-left ${
                   active ? 'bg-gray-100' : ''
                 }`}
+                onClick={onDeleteClick}
               >
                 <IconTrash size={18} className="mr-1 text-gray-700" />
                 <span>Delete</span>

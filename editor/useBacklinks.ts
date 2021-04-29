@@ -1,12 +1,20 @@
 import { useCallback, useMemo } from 'react';
-import { Descendant, Element, Node, Path, Text } from 'slate';
+import {
+  createEditor,
+  Descendant,
+  Editor,
+  Element,
+  Node,
+  Path,
+  Text,
+  Transforms,
+} from 'slate';
 import produce from 'immer';
 import { mutate } from 'swr';
 import { ElementType } from 'types/slate';
 import { Note } from 'types/supabase';
 import useNotes, { NOTES_KEY } from 'lib/api/useNotes';
 import supabase from 'lib/supabase';
-import { useAuth } from 'utils/useAuth';
 
 type Backlink = {
   id: string;
@@ -18,7 +26,6 @@ type Backlink = {
 };
 
 export default function useBacklinks(noteId: string) {
-  const { user } = useAuth();
   const { data: notes = [] } = useNotes();
   const backlinks = useMemo(() => getBacklinks(notes, noteId), [notes, noteId]);
 
@@ -28,14 +35,11 @@ export default function useBacklinks(noteId: string) {
    */
   const updateBacklinks = useCallback(
     async (newTitle: string) => {
-      if (!user) {
-        return;
-      }
-
       const updateData = [];
       for (const backlink of backlinks) {
-        // Note: this can still result in a race condition if the content is updated elsewhere
+        // TODO: this can still result in a race condition if the content is updated elsewhere
         // after we get the note and before we update the backlinks.
+        // Also, the matches could be out of sync, so this might not work correctly.
         const { data: note } = await supabase
           .from<Note>('notes')
           .select('id, content')
@@ -101,10 +105,62 @@ export default function useBacklinks(noteId: string) {
 
       mutate(NOTES_KEY); // Make sure backlinks are updated
     },
-    [user, backlinks]
+    [backlinks]
   );
 
-  return { backlinks, updateBacklinks };
+  /**
+   * Deletes the backlinks on each backlinked note and replaces them with the link text.
+   */
+  const deleteBacklinks = useCallback(async () => {
+    const updateData = [];
+    for (const backlink of backlinks) {
+      // TODO: this can still result in a race condition if the content is updated elsewhere
+      // after we get the note and before we update the backlinks.
+      const { data: note } = await supabase
+        .from<Note>('notes')
+        .select('id, content')
+        .eq('id', backlink.id)
+        .single();
+
+      if (!note) {
+        continue;
+      }
+
+      const editor = createEditor();
+      editor.children = note.content;
+
+      Transforms.unwrapNodes(editor, {
+        at: [],
+        match: (n) =>
+          !Editor.isEditor(n) &&
+          Element.isElement(n) &&
+          n.type === ElementType.NoteLink &&
+          n.noteId === noteId,
+      });
+
+      updateData.push({
+        id: backlink.id,
+        content: editor.children,
+      });
+    }
+
+    // It would be better if we could consolidate the update requests into one request
+    // See https://github.com/supabase/supabase-js/issues/156
+    const promises = [];
+    for (const data of updateData) {
+      promises.push(
+        supabase
+          .from<Note>('notes')
+          .update({ content: data.content })
+          .eq('id', data.id)
+      );
+    }
+    await Promise.all(promises);
+
+    mutate(NOTES_KEY); // Make sure backlinks are updated
+  }, [backlinks, noteId]);
+
+  return { backlinks, updateBacklinks, deleteBacklinks };
 }
 
 /**
