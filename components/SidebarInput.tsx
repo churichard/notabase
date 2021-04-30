@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
+import { IconFilePlus, TablerIcon } from '@tabler/icons';
 import upsertNote from 'lib/api/upsertNote';
 import { useAuth } from 'utils/useAuth';
 import useNoteSearch from 'utils/useNoteSearch';
@@ -14,6 +15,7 @@ type Option = {
   id: string;
   type: OptionType;
   text: string;
+  icon?: TablerIcon;
 };
 
 export default function SidebarInput() {
@@ -37,6 +39,7 @@ export default function SidebarInput() {
         id: 'NEW_NOTE',
         type: OptionType.NEW_NOTE,
         text: `New note: ${inputText}`,
+        icon: IconFilePlus,
       });
     }
     // Show notes that match `inputText`
@@ -131,11 +134,14 @@ const OptionItem = (props: OptionProps) => {
   const { option, isSelected, onClick } = props;
   return (
     <button
-      className={`flex flex-row w-full items-center px-4 py-1 hover:bg-gray-100 active:bg-gray-200 ${
+      className={`flex flex-row w-full items-center px-4 py-1 text-gray-800 hover:bg-gray-100 active:bg-gray-200 ${
         isSelected ? 'bg-gray-100' : ''
       }`}
       onClick={onClick}
     >
+      {option.icon ? (
+        <option.icon size={18} className="flex-shrink-0 mr-1" />
+      ) : null}
       <span className="overflow-hidden overflow-ellipsis whitespace-nowrap">
         {option.text}
       </span>
