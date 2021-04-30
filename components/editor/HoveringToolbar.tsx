@@ -61,7 +61,9 @@ const ToolbarButton = (props: ToolbarButtonProps) => {
   const { icon: Icon, onClick, text, isActive = false, className = '' } = props;
   return (
     <span
-      className={`flex items-center px-2 py-2 cursor-pointer hover:bg-gray-100 active:bg-gray-200 ${className}`}
+      className={`flex items-center px-2 py-2 cursor-pointer hover:bg-gray-100 active:bg-gray-200 ${
+        isActive ? 'text-primary-500' : 'text-gray-800'
+      } ${className}`}
       onMouseDown={(event) => event.preventDefault()}
       onMouseUp={(event) => {
         if (event.button === 0) {
@@ -70,19 +72,8 @@ const ToolbarButton = (props: ToolbarButtonProps) => {
         }
       }}
     >
-      <Icon
-        size={18}
-        className={isActive ? 'text-primary-500' : 'text-gray-700'}
-      />
-      {text ? (
-        <span
-          className={`ml-1 text-sm tracking-wide ${
-            isActive ? 'text-primary-500' : ''
-          }`}
-        >
-          {text}
-        </span>
-      ) : null}
+      <Icon size={18} />
+      {text ? <span className="ml-1 text-sm tracking-wide">{text}</span> : null}
     </span>
   );
 };

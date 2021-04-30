@@ -208,14 +208,14 @@ const OptionItem = (props: OptionProps) => {
   const { option, isSelected, onClick } = props;
   return (
     <div
-      className={`flex flex-row items-center px-4 py-1 cursor-pointer hover:bg-gray-100 active:bg-gray-200 ${
+      className={`flex flex-row items-center px-4 py-1 cursor-pointer text-gray-800 hover:bg-gray-100 active:bg-gray-200 ${
         isSelected ? 'bg-gray-100' : ''
       }`}
       onMouseDown={(event) => event.preventDefault()}
       onMouseUp={onClick}
     >
       {option.icon ? (
-        <option.icon size={18} className="flex-shrink-0 mr-1 text-gray-700" />
+        <option.icon size={18} className="flex-shrink-0 mr-1" />
       ) : null}
       <span className="overflow-hidden overflow-ellipsis whitespace-nowrap">
         {option.text}

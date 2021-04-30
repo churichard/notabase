@@ -32,6 +32,7 @@ type AuthContextType = {
     error: Error | null;
     data: Session | User | null;
   }>;
+  signOut: () => Promise<{ error: Error | null }>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -79,6 +80,12 @@ function useProvideAuth(): AuthContextType {
     [updateUser]
   );
 
+  const signOut = useCallback(async () => {
+    const response = await supabase.auth.signOut();
+    updateUser(null);
+    return response;
+  }, [updateUser]);
+
   useEffect(() => {
     const { data: authListener } = supabase.auth.onAuthStateChange(
       async (event, session) => {
@@ -101,6 +108,7 @@ function useProvideAuth(): AuthContextType {
     user,
     signIn,
     signUp,
+    signOut,
   };
 }
 
