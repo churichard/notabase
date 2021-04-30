@@ -1,5 +1,4 @@
 import React, { FormEvent, useCallback, useState } from 'react';
-import { useRouter } from 'next/router';
 import { toast } from 'react-toastify';
 import { useAuth } from 'utils/useAuth';
 
@@ -10,7 +9,6 @@ type Props = {
 export default function AuthForm(props: Props) {
   const { signup = false } = props;
   const { signIn, signUp } = useAuth();
-  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -37,13 +35,11 @@ export default function AuthForm(props: Props) {
         toast.error(error.message);
       } else if (signup) {
         setShowEmailConfirmationMessage(true);
-      } else {
-        router.push('/app');
       }
 
       setIsLoading(false);
     },
-    [router, signup, email, password, signIn, signUp]
+    [signup, email, password, signIn, signUp]
   );
 
   return (

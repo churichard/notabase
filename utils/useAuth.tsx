@@ -6,7 +6,7 @@ import React, {
   ReactNode,
   useCallback,
 } from 'react';
-import { User, Provider, Session } from '@supabase/supabase-js';
+import { User, GoTrueClient } from '@supabase/supabase-js';
 import supabase from 'lib/supabase';
 
 type AuthContextType = {
@@ -15,24 +15,12 @@ type AuthContextType = {
   signIn: (
     email: string,
     password: string
-  ) => Promise<{
-    session: Session | null;
-    user: User | null;
-    provider?: Provider;
-    url?: string | null;
-    error: Error | null;
-    data: Session | null;
-  }>;
+  ) => ReturnType<GoTrueClient['signIn']>;
   signUp: (
     email: string,
     password: string
-  ) => Promise<{
-    user: User | null;
-    session: Session | null;
-    error: Error | null;
-    data: Session | User | null;
-  }>;
-  signOut: () => Promise<{ error: Error | null }>;
+  ) => ReturnType<GoTrueClient['signUp']>;
+  signOut: () => ReturnType<GoTrueClient['signOut']>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -54,43 +42,33 @@ function useProvideAuth(): AuthContextType {
   }, [updateUser]);
 
   const signIn = useCallback(
-    async (email: string, password: string) => {
-      const response = await supabase.auth.signIn({
+    (email: string, password: string) =>
+      supabase.auth.signIn({
         email,
         password,
-      });
-      updateUser(response.user);
-      return response;
-    },
-    [updateUser]
+      }),
+    []
   );
 
   const signUp = useCallback(
-    async (email: string, password: string) => {
-      const response = await supabase.auth.signUp(
+    (email: string, password: string) =>
+      supabase.auth.signUp(
         {
           email,
           password,
         },
         { redirectTo: `${process.env.BASE_URL}/app` }
-      );
-      updateUser(response.user);
-      return response;
-    },
-    [updateUser]
+      ),
+    []
   );
 
-  const signOut = useCallback(async () => {
-    const response = await supabase.auth.signOut();
-    updateUser(null);
-    return response;
-  }, [updateUser]);
+  const signOut = useCallback(() => supabase.auth.signOut(), []);
 
   useEffect(() => {
     const { data: authListener } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         // Set auth cookie and update user
-        fetch('/api/auth', {
+        await fetch('/api/auth', {
           method: 'POST',
           headers: new Headers({ 'Content-Type': 'application/json' }),
           credentials: 'same-origin',

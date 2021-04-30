@@ -1,9 +1,21 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import AuthForm from 'components/AuthForm';
+import { useAuth } from 'utils/useAuth';
 
 export default function Login() {
+  const router = useRouter();
+  const { isLoaded, user } = useAuth();
+
+  useEffect(() => {
+    // Redirect to /app once we've logged in
+    if (isLoaded && user) {
+      router.push('/app');
+    }
+  }, [router, isLoaded, user]);
+
   return (
     <>
       <Head>
