@@ -160,7 +160,7 @@ export default function AddLinkPopover(props: Props) {
     <Popover
       selection={addLinkPopoverState.selection}
       placement="bottom"
-      className="flex flex-col py-4 w-96"
+      className="flex flex-col pt-4 pb-2 w-96"
       onClickOutside={hidePopover}
     >
       <input
@@ -179,23 +179,21 @@ export default function AddLinkPopover(props: Props) {
         onKeyDown={onKeyDown}
         autoFocus
       />
-      {options.length > 0 ? (
-        <div className="mt-2">
-          {options.map((option, index) => (
-            <OptionItem
-              key={option.id}
-              option={option}
-              isSelected={index === selectedOptionIndex}
-              onClick={(event) => {
-                if (event.button === 0) {
-                  event.preventDefault();
-                  onOptionClick(option);
-                }
-              }}
-            />
-          ))}
-        </div>
-      ) : null}
+      <div className="mt-2">
+        {options.map((option, index) => (
+          <OptionItem
+            key={option.id}
+            option={option}
+            isSelected={index === selectedOptionIndex}
+            onClick={(event) => {
+              if (event.button === 0) {
+                event.preventDefault();
+                onOptionClick(option);
+              }
+            }}
+          />
+        ))}
+      </div>
     </Popover>
   );
 }
