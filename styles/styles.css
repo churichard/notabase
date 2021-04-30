@@ -17,6 +17,6 @@
 }
 
 :root {
+  /* This is used for the spinner and progress bar */
   --color-primary-500: #10B981;
-  --color-gray-700: #44403C;
 }

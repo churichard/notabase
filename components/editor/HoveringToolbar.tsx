@@ -1,19 +1,19 @@
 import React, { useMemo } from 'react';
 import { useSlate } from 'slate-react';
 import {
-  TextBold16Regular as BoldIcon,
-  TextItalic16Regular as ItalicIcon,
-  TextUnderline16Regular as UnderlineIcon,
-  Code20Regular as CodeIcon,
-  TextHeader120Regular as Header1Icon,
-  TextHeader220Regular as Header2Icon,
-  TextHeader320Regular as Header3Icon,
-  TextQuote20Filled as QuoteIcon,
-  TextBulletListLtr20Regular as BulletedListIcon,
-  TextNumberListLtr20Regular as NumberedListIcon,
-  Link20Regular as LinkIcon,
-  IFluentIconsProps,
-} from '@fluentui/react-icons';
+  IconBold,
+  IconItalic,
+  IconUnderline,
+  IconCode,
+  IconH1,
+  IconH2,
+  IconH3,
+  IconBlockquote,
+  IconList,
+  IconListNumbers,
+  IconLink,
+  TablerIcon,
+} from '@tabler/icons';
 import {
   toggleMark,
   isMarkActive,
@@ -50,7 +50,7 @@ export default function HoveringToolbar(props: Props) {
 }
 
 type ToolbarButtonProps = {
-  icon: (props: IFluentIconsProps) => JSX.Element;
+  icon: TablerIcon;
   onClick: () => void;
   text?: string;
   isActive?: boolean;
@@ -71,14 +71,13 @@ const ToolbarButton = (props: ToolbarButtonProps) => {
       }}
     >
       <Icon
-        primaryFill={
-          isActive ? 'var(--color-primary-500)' : 'var(--color-gray-700)'
-        }
+        size={18}
+        className={isActive ? 'text-primary-500' : 'text-gray-700'}
       />
       {text ? (
         <span
-          className={`ml-1 text-sm ${
-            isActive ? 'text-primary-500' : 'text-gray-700'
+          className={`ml-1 text-sm tracking-wide ${
+            isActive ? 'text-primary-500' : ''
           }`}
         >
           {text}
@@ -100,13 +99,13 @@ const FormatButton = ({ format, className = '' }: FormatButtonProps) => {
   const Icon = useMemo(() => {
     switch (format) {
       case Mark.Bold:
-        return BoldIcon;
+        return IconBold;
       case Mark.Italic:
-        return ItalicIcon;
+        return IconItalic;
       case Mark.Underline:
-        return UnderlineIcon;
+        return IconUnderline;
       case Mark.Code:
-        return CodeIcon;
+        return IconCode;
       default:
         throw new Error(`Format ${format} is not a valid format`);
     }
@@ -134,17 +133,17 @@ const BlockButton = ({ format, className = '' }: BlockButtonProps) => {
   const Icon = useMemo(() => {
     switch (format) {
       case ElementType.HeadingOne:
-        return Header1Icon;
+        return IconH1;
       case ElementType.HeadingTwo:
-        return Header2Icon;
+        return IconH2;
       case ElementType.HeadingThree:
-        return Header3Icon;
+        return IconH3;
       case ElementType.BulletedList:
-        return BulletedListIcon;
+        return IconList;
       case ElementType.NumberedList:
-        return NumberedListIcon;
+        return IconListNumbers;
       case ElementType.Blockquote:
-        return QuoteIcon;
+        return IconBlockquote;
       default:
         throw new Error(`Format ${format} is not a valid format`);
     }
@@ -174,7 +173,7 @@ const LinkButton = (props: LinkButtonProps) => {
 
   return (
     <ToolbarButton
-      icon={LinkIcon}
+      icon={IconLink}
       onClick={() => {
         if (editor.selection) {
           // Save the selection and make the add link popover visible

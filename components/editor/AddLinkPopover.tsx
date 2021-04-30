@@ -7,12 +7,7 @@ import React, {
 } from 'react';
 import { Transforms } from 'slate';
 import { ReactEditor, useSlate } from 'slate-react';
-import {
-  IFluentIconsProps,
-  Delete20Regular,
-  Link20Regular,
-  DocumentAdd20Regular,
-} from '@fluentui/react-icons';
+import { IconUnlink, IconLink, IconFilePlus, TablerIcon } from '@tabler/icons';
 import { v4 as uuidv4 } from 'uuid';
 import upsertNote from 'lib/api/upsertNote';
 import {
@@ -38,7 +33,7 @@ type Option = {
   id: string;
   type: OptionType;
   text: string;
-  icon?: (props: IFluentIconsProps) => JSX.Element;
+  icon?: TablerIcon;
 };
 
 type Props = {
@@ -64,7 +59,7 @@ export default function AddLinkPopover(props: Props) {
           id: 'URL',
           type: OptionType.URL,
           text: `Link to url: ${linkText}`,
-          icon: Link20Regular,
+          icon: IconLink,
         });
       }
       // Show new note option if there isn't already a note called `linkText`
@@ -77,7 +72,7 @@ export default function AddLinkPopover(props: Props) {
           id: 'NEW_NOTE',
           type: OptionType.NEW_NOTE,
           text: `New note: ${linkText}`,
-          icon: DocumentAdd20Regular,
+          icon: IconFilePlus,
         });
       }
     }
@@ -87,7 +82,7 @@ export default function AddLinkPopover(props: Props) {
         id: 'REMOVE_LINK',
         type: OptionType.REMOVE_LINK,
         text: 'Remove link',
-        icon: Delete20Regular,
+        icon: IconUnlink,
       });
     }
     // Show notes that match `linkText`
@@ -221,7 +216,9 @@ const OptionItem = (props: OptionProps) => {
       onMouseDown={(event) => event.preventDefault()}
       onMouseUp={onClick}
     >
-      {option.icon ? <option.icon className="flex-shrink-0 mr-1" /> : null}
+      {option.icon ? (
+        <option.icon size={18} className="flex-shrink-0 mr-1 text-gray-700" />
+      ) : null}
       <span className="overflow-hidden overflow-ellipsis whitespace-nowrap">
         {option.text}
       </span>
