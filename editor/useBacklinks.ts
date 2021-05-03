@@ -39,7 +39,6 @@ export default function useBacklinks(noteId: string) {
       for (const backlink of backlinks) {
         // TODO: this can still result in a race condition if the content is updated elsewhere
         // after we get the note and before we update the backlinks.
-        // Also, the matches could be out of sync, so this might not work correctly.
         const { data: note } = await supabase
           .from<Note>('notes')
           .select('id, content')
@@ -50,8 +49,9 @@ export default function useBacklinks(noteId: string) {
           continue;
         }
 
+        const matches = getBacklinkMatches(note.content, noteId); // Compute matches for the db note
         let newBacklinkContent = note.content;
-        for (const match of backlink.matches) {
+        for (const match of matches) {
           newBacklinkContent = produce(newBacklinkContent, (draftState) => {
             // Path should not be empty
             const path = match.path;
@@ -105,7 +105,7 @@ export default function useBacklinks(noteId: string) {
 
       mutate(NOTES_KEY); // Make sure backlinks are updated
     },
-    [backlinks]
+    [backlinks, noteId]
   );
 
   /**
