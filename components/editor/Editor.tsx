@@ -8,7 +8,12 @@ import React, {
 import { Range, Editor as SlateEditor, Descendant } from 'slate';
 import { Editable, ReactEditor, RenderLeafProps, Slate } from 'slate-react';
 import { isHotkey } from 'is-hotkey';
-import { isElementActive, toggleMark } from 'editor/formatting';
+import {
+  handleIndent,
+  handleUnindent,
+  isElementActive,
+  toggleMark,
+} from 'editor/formatting';
 import useNoteLinks from 'editor/useNoteLinks';
 import { ElementType, Mark } from 'types/slate';
 import HoveringToolbar from './HoveringToolbar';
@@ -69,23 +74,23 @@ export default function Editor(props: Props) {
     () => [
       {
         hotkey: 'mod+b',
-        callback: (editor: SlateEditor) => toggleMark(editor, Mark.Bold),
+        callback: () => toggleMark(editor, Mark.Bold),
       },
       {
         hotkey: 'mod+i',
-        callback: (editor: SlateEditor) => toggleMark(editor, Mark.Italic),
+        callback: () => toggleMark(editor, Mark.Italic),
       },
       {
         hotkey: 'mod+u',
-        callback: (editor: SlateEditor) => toggleMark(editor, Mark.Underline),
+        callback: () => toggleMark(editor, Mark.Underline),
       },
       {
         hotkey: 'mod+e',
-        callback: (editor: SlateEditor) => toggleMark(editor, Mark.Code),
+        callback: () => toggleMark(editor, Mark.Code),
       },
       {
         hotkey: 'mod+k',
-        callback: (editor: SlateEditor) => {
+        callback: () => {
           if (editor.selection) {
             // Save the selection and make the add link popover visible
             setAddLinkPopoverState({
@@ -98,8 +103,16 @@ export default function Editor(props: Props) {
           }
         },
       },
+      {
+        hotkey: 'tab',
+        callback: () => handleIndent(editor),
+      },
+      {
+        hotkey: 'shift+tab',
+        callback: () => handleUnindent(editor),
+      },
     ],
-    [setAddLinkPopoverState]
+    [editor, setAddLinkPopoverState]
   );
 
   const onKeyDown = useCallback(
@@ -109,11 +122,11 @@ export default function Editor(props: Props) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         if (isHotkey(hotkey, event as any)) {
           event.preventDefault();
-          callback(editor);
+          callback();
         }
       }
     },
-    [editor, hotkeys]
+    [hotkeys]
   );
 
   const onSelect = useCallback(

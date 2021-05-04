@@ -36,13 +36,13 @@ export default function EditorElement({
       );
     case ElementType.BulletedList:
       return (
-        <ul className="my-3 ml-8 list-disc" {...attributes}>
+        <ul className="my-2 ml-8 list-disc" {...attributes}>
           {children}
         </ul>
       );
     case ElementType.NumberedList:
       return (
-        <ol className="my-3 ml-8 list-decimal" {...attributes}>
+        <ol className="my-2 ml-8 list-decimal" {...attributes}>
           {children}
         </ol>
       );

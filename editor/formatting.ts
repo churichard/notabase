@@ -1,4 +1,4 @@
-import { Editor, Element, Transforms, Range, Text } from 'slate';
+import { Editor, Element, Transforms, Range, Text, Node } from 'slate';
 import {
   ElementType,
   ExternalLink,
@@ -65,6 +65,44 @@ export const toggleElement = (editor: Editor, format: ElementType) => {
   if (!isActive && isListType(format)) {
     const block: ListElement = { type: format, children: [] };
     Transforms.wrapNodes(editor, block);
+  }
+};
+
+export const handleIndent = (editor: Editor) => {
+  if (isElementActive(editor, ElementType.BulletedList)) {
+    Transforms.wrapNodes(editor, {
+      type: ElementType.BulletedList,
+      children: [],
+    });
+  } else if (isElementActive(editor, ElementType.NumberedList)) {
+    Transforms.wrapNodes(editor, {
+      type: ElementType.NumberedList,
+      children: [],
+    });
+  }
+};
+
+export const handleUnindent = (editor: Editor) => {
+  const { selection } = editor;
+  if (!selection) {
+    return;
+  }
+
+  const ancestors = Node.ancestors(editor, selection.anchor.path);
+  let numOfLists = 0;
+  for (const [ancestorNode] of ancestors) {
+    if (Element.isElement(ancestorNode) && isListType(ancestorNode.type)) {
+      numOfLists++;
+    }
+  }
+
+  // Only unindent if there would be another list above the current node
+  if (numOfLists > 1) {
+    Transforms.unwrapNodes(editor, {
+      match: (n) =>
+        !Editor.isEditor(n) && Element.isElement(n) && isListType(n.type),
+      split: true,
+    });
   }
 };
 
