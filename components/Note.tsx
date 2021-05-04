@@ -19,6 +19,7 @@ import useBacklinks from 'editor/useBacklinks';
 import withBlockBreakout from 'editor/plugins/withBlockBreakout';
 import withAutoMarkdown from 'editor/plugins/withAutoMarkdown';
 import withLinks from 'editor/plugins/withLinks';
+import withDeleteBackwardWorkaround from 'editor/plugins/withDeleteBackwardWorkaround';
 import updateNote from 'lib/api/updateNote';
 import { ProvideCurrentNote } from 'utils/useCurrentNote';
 import Backlinks from './editor/Backlinks';
@@ -44,8 +45,10 @@ function Note(props: Props, ref: ForwardedRef<HTMLDivElement>) {
 
   const editor = useMemo(
     () =>
-      withAutoMarkdown(
-        withBlockBreakout(withLinks(withHistory(withReact(createEditor()))))
+      withDeleteBackwardWorkaround(
+        withAutoMarkdown(
+          withBlockBreakout(withLinks(withHistory(withReact(createEditor()))))
+        )
       ),
     []
   );
