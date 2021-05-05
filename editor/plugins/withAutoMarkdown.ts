@@ -97,12 +97,15 @@ const withAutoMarkdown = (editor: Editor) => {
     // Handle inline shortcuts
     const elementStart = Editor.start(editor, anchor.path);
     const elementRange = { anchor, focus: elementStart };
-    const elementText = Editor.string(editor, elementRange) + text;
+    const insertedElementText = Editor.string(editor, elementRange);
+    const elementText = insertedElementText + text;
 
     for (const { match, type } of INLINE_SHORTCUTS) {
       const result = elementText.match(match);
+      const insertedResult = insertedElementText.match(match);
 
-      if (!result) {
+      // We only care about matches that happen as a result of the inserted character
+      if (!result || (result && insertedResult)) {
         continue;
       }
 
