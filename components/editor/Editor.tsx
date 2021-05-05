@@ -207,7 +207,11 @@ const Leaf = ({ attributes, children, leaf }: RenderLeafProps) => {
   }
 
   if (leaf.code) {
-    children = <code className="bg-gray-200">{children}</code>;
+    children = (
+      <code className="p-0.5 bg-gray-200 rounded text-primary-800">
+        {children}
+      </code>
+    );
   }
 
   if (leaf.italic) {

@@ -86,7 +86,7 @@ const NoteLinkElement = (props: NoteLinkElementProps) => {
   return (
     <Tippy content={element.noteTitle} duration={0} placement="bottom">
       <span
-        className="underline cursor-pointer text-primary-500"
+        className="underline cursor-pointer text-primary-600"
         onClick={() => onNoteLinkClick(element.noteId)}
         {...attributes}
       >
@@ -107,7 +107,7 @@ const ExternalLinkElement = (props: ExternalLinkElementProps) => {
   return (
     <Tippy content={element.url} duration={0} placement="bottom">
       <a
-        className="underline cursor-pointer text-primary-500"
+        className="underline cursor-pointer text-primary-600"
         href={element.url}
         onClick={() =>
           window.open(element.url, '_blank', 'noopener noreferrer')
