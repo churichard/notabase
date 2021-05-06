@@ -36,16 +36,7 @@ export default function Sidebar(props: Props) {
 }
 
 function Header() {
-  const router = useRouter();
   const { user, signOut } = useAuth();
-
-  const onSignOutClick = useCallback(async () => {
-    const response = await signOut();
-    if (!response.error) {
-      router.push('/login');
-    }
-  }, [router, signOut]);
-
   return (
     <div className="relative">
       <Menu>
@@ -63,7 +54,7 @@ function Header() {
                 className={`flex w-full items-center px-4 py-2 text-left text-gray-800 ${
                   active ? 'bg-gray-100' : ''
                 }`}
-                onClick={onSignOutClick}
+                onClick={() => signOut()}
               >
                 <IconLogout size={18} className="mr-1" />
                 <span>Sign out</span>

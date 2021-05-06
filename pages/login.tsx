@@ -1,21 +1,11 @@
-import React, { useEffect } from 'react';
+import React from 'react';
+import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
+import { createClient } from '@supabase/supabase-js';
 import AuthForm from 'components/AuthForm';
-import { useAuth } from 'utils/useAuth';
 
 export default function Login() {
-  const router = useRouter();
-  const { isLoaded, user } = useAuth();
-
-  useEffect(() => {
-    // Redirect to /app once we've logged in
-    if (isLoaded && user) {
-      router.push('/app');
-    }
-  }, [router, isLoaded, user]);
-
   return (
     <>
       <Head>
@@ -38,3 +28,21 @@ export default function Login() {
     </>
   );
 }
+
+export const getServerSideProps: GetServerSideProps<
+  Record<string, never>
+> = async ({ req }) => {
+  // Create admin supabase client on server
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL ?? '',
+    process.env.SUPABASE_SERVICE_KEY ?? ''
+  );
+
+  // Get authed user
+  const { user } = await supabase.auth.api.getUserByCookie(req);
+  if (user) {
+    return { props: {}, redirect: { destination: '/app', permanent: false } };
+  }
+
+  return { props: {} };
+};

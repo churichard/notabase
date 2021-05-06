@@ -7,6 +7,7 @@ import React, {
   useCallback,
 } from 'react';
 import { User, GoTrueClient } from '@supabase/supabase-js';
+import { useRouter } from 'next/router';
 import supabase from 'lib/supabase';
 
 type AuthContextType = {
@@ -27,6 +28,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // Provider hook that creates auth object and handles state
 function useProvideAuth(): AuthContextType {
+  const router = useRouter();
   const [isLoaded, setIsLoaded] = useState(false);
   const [user, setUser] = useState<User | null>(null);
 
@@ -75,10 +77,17 @@ function useProvideAuth(): AuthContextType {
           body: JSON.stringify({ event, session }),
         });
         updateUser(session?.user ?? null);
+
+        // Redirect to /app if the user has signed in
+        if (event === 'SIGNED_IN') {
+          router.push('/app');
+        } else if (event === 'SIGNED_OUT') {
+          router.push('/login');
+        }
       }
     );
     return () => authListener?.unsubscribe();
-  }, [updateUser]);
+  }, [router, updateUser]);
 
   // Return the user object and auth methods
   return {
