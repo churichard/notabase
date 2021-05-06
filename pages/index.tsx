@@ -11,7 +11,7 @@ export default function Home() {
           Notabase | A personal knowledge base for non-linear thinking.
         </title>
       </Head>
-      <div className="flex flex-col h-screen bg-gray-50">
+      <div className="flex flex-col min-h-screen bg-gray-50">
         <div className="container flex-1 px-6">
           <div className="flex items-center justify-between py-6">
             <Link href="/">
@@ -42,6 +42,15 @@ export default function Home() {
                 Start your knowledge base
               </a>
             </Link>
+            <video
+              className="mx-auto mt-16 text-center shadow-popover"
+              width={1200}
+              autoPlay
+              loop
+              muted
+            >
+              <source src="/demo.mp4" type="video/mp4" />
+            </video>
           </div>
         </div>
         <Footer className="mt-16 md:mt-32" />
