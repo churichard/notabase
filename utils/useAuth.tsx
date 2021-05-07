@@ -79,7 +79,7 @@ function useProvideAuth(): AuthContextType {
         updateUser(session?.user ?? null);
 
         // Redirect to /app if the user has signed in
-        if (event === 'SIGNED_IN') {
+        if (event === 'SIGNED_IN' && router.pathname === '/login') {
           router.push('/app');
         } else if (event === 'SIGNED_OUT') {
           router.push('/login');
