@@ -12,8 +12,8 @@ export default function Home() {
         </title>
       </Head>
       <div className="flex flex-col min-h-screen bg-gray-50">
-        <div className="container flex-1 px-6">
-          <div className="flex items-center justify-between py-6">
+        <div className="flex-1">
+          <div className="container flex items-center justify-between px-6 py-6">
             <Link href="/">
               <a className="text-xl">Notabase</a>
             </Link>
@@ -30,7 +30,7 @@ export default function Home() {
               </Link>
             </div>
           </div>
-          <div className="pt-16 text-center md:pt-32">
+          <div className="container px-6 py-16 text-center md:py-32">
             <h1 className="text-4xl font-medium md:text-6xl">
               A wiki for your brain.
             </h1>
@@ -43,7 +43,7 @@ export default function Home() {
               </a>
             </Link>
             <video
-              className="mx-auto mt-16 text-center shadow-popover"
+              className="mx-auto mt-8 text-center md:mt-16 shadow-popover"
               width={1200}
               autoPlay
               loop
@@ -52,8 +52,74 @@ export default function Home() {
               <source src="/demo.mp4" type="video/mp4" />
             </video>
           </div>
+          <div className="py-16 md:py-32 bg-primary-50">
+            <div className="container px-6 mx-auto">
+              <h2 className="text-3xl font-medium text-center md:text-4xl">
+                Link your knowledge together
+              </h2>
+              <div className="max-w-3xl mx-auto">
+                <p className="pt-4 text-lg leading-loose text-gray-700 md:pt-8 md:text-xl md:leading-loose">
+                  Your brain stores information as a network, not as a
+                  collection of files and folders. In Notabase, you make
+                  <span className="text-primary-600">
+                    {' '}
+                    [[connections]]
+                  </span>{' '}
+                  between notes and organize knowledge associatively. This lets
+                  you perceive relationships between pieces of knowledge that
+                  may not be apparent in isolation.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="py-16 md:py-32">
+            <div className="container px-6 mx-auto">
+              <h2 className="text-3xl font-medium text-center md:text-4xl">
+                Write in rich text, in real-time
+              </h2>
+              <div className="max-w-3xl mx-auto">
+                <p className="pt-4 text-lg leading-loose text-gray-700 md:pt-8 md:text-xl md:leading-loose">
+                  You don&apos;t need to be an expert at markdown to be
+                  productive with Notabase. With a formatting menu and keyboard
+                  shortcuts, you can format your text however you&apos;d like.
+                  Of course, if you&apos;d prefer to write markdown, you can do
+                  that too. Everything is converted <i>effortlessly</i> into{' '}
+                  <b>rich text</b> as you{' '}
+                  <code className="p-0.5 bg-gray-200 rounded text-primary-800">
+                    type
+                  </code>
+                  , making it frictionless to write down your thoughts.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="py-16 md:py-32 bg-primary-50">
+            <div className="container px-6 mx-auto">
+              <h2 className="text-3xl font-medium text-center md:text-4xl">
+                Open source
+              </h2>
+              <div className="max-w-3xl mx-auto">
+                <p className="pt-4 text-lg leading-loose text-gray-700 md:pt-8 md:text-xl md:leading-loose">
+                  Notabase is{' '}
+                  <a
+                    href="https://github.com/churichard/notabase"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="link"
+                  >
+                    open source software
+                  </a>
+                  , which means development happens transparently. You can
+                  personally help make the product better by contributing code,
+                  reporting bugs, or providing community support. And if the
+                  product ever shuts down, the source code is public, so anyone
+                  can build on top of it and host it themselves.
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
-        <Footer className="mt-16 md:mt-32" />
+        <Footer />
       </div>
     </>
   );
