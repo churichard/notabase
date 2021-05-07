@@ -16,5 +16,6 @@ Notabase is currently in alpha.
 - WYSIWYG editor with markdown support makes it easy to edit notes
 - Linked references let you see other notes that reference a specific note
 - Your notes are synced to the cloud and can be accessed on any device
+- Graph view (coming soon)
 - Offline support (coming soon)
 - Open source, allowing community involvement and transparent development
