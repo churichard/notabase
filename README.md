@@ -8,7 +8,7 @@ It is inspired by note-taking apps such as [Typora](https://typora.io), [Notion]
 
 ## Status
 
-**Notabase is currently in alpha. Go easy on it, there might be some bugs!**
+Notabase is currently in alpha.
 
 ## Features
 
