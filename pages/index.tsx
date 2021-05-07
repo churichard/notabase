@@ -30,30 +30,32 @@ export default function Home() {
               </Link>
             </div>
           </div>
-          <div className="container px-6 py-16 text-center md:py-32">
-            <h1 className="text-4xl font-medium md:text-6xl">
-              A wiki for your brain.
-            </h1>
-            <p className="pt-4 text-2xl text-gray-700 md:pt-8 md:text-3xl">
-              Notabase is a personal knowledge base for non-linear thinking.
-            </p>
-            <Link href="/signup">
-              <a className="inline-block mt-4 font-medium md:mt-8 btn">
-                Start your knowledge base
-              </a>
-            </Link>
-            <video
-              className="mx-auto mt-8 text-center md:mt-16 shadow-popover"
-              width={1200}
-              autoPlay
-              loop
-              muted
-            >
-              <source src="/demo.mp4" type="video/mp4" />
-            </video>
+          <div className="py-16 md:py-32">
+            <div className="container px-6 text-center">
+              <h1 className="text-4xl font-medium md:text-6xl">
+                A wiki for your brain.
+              </h1>
+              <p className="pt-4 text-2xl text-gray-700 md:pt-8 md:text-3xl">
+                Notabase is a personal knowledge base for non-linear thinking.
+              </p>
+              <Link href="/signup">
+                <a className="inline-block mt-4 font-medium md:mt-8 btn">
+                  Start your knowledge base
+                </a>
+              </Link>
+              <video
+                className="mx-auto mt-8 rounded md:mt-16 shadow-popover"
+                width={1200}
+                autoPlay
+                loop
+                muted
+              >
+                <source src="/demo.mp4" type="video/mp4" />
+              </video>
+            </div>
           </div>
           <div className="py-16 md:py-32 bg-primary-50">
-            <div className="container px-6 mx-auto">
+            <div className="container px-6">
               <h2 className="text-3xl font-medium text-center md:text-4xl">
                 Link your knowledge together
               </h2>
@@ -73,7 +75,7 @@ export default function Home() {
             </div>
           </div>
           <div className="py-16 md:py-32">
-            <div className="container px-6 mx-auto">
+            <div className="container px-6">
               <h2 className="text-3xl font-medium text-center md:text-4xl">
                 Write in rich text, in real-time
               </h2>
@@ -94,7 +96,7 @@ export default function Home() {
             </div>
           </div>
           <div className="py-16 md:py-32 bg-primary-50">
-            <div className="container px-6 mx-auto">
+            <div className="container px-6">
               <h2 className="text-3xl font-medium text-center md:text-4xl">
                 Open source
               </h2>
@@ -116,6 +118,36 @@ export default function Home() {
                   can build on top of it and host it themselves.
                 </p>
               </div>
+            </div>
+          </div>
+          <div className="py-16 md:py-32">
+            <div className="container px-6">
+              <h2 className="text-3xl font-medium text-center md:text-4xl">
+                Pricing
+              </h2>
+              <div className="max-w-3xl mx-auto">
+                <p className="pt-4 text-lg leading-loose text-gray-700 md:pt-8 md:text-xl md:leading-loose">
+                  Notabase is currently <b>free</b> to use while in alpha. Once
+                  Notabase officially releases, a paid tier will be added in
+                  order to cover the costs of hosting and development (but there
+                  will always be a generous free tier).
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="py-16 md:py-32 bg-primary-50">
+            <div className="container px-6 text-center">
+              <h2 className="text-4xl font-medium md:text-5xl">
+                A wiki for your brain.
+              </h2>
+              <p className="pt-4 text-2xl text-gray-700 md:pt-8 md:text-3xl">
+                Start your personal knowledge base today.
+              </p>
+              <Link href="/signup">
+                <a className="inline-block mt-4 font-medium md:mt-8 btn">
+                  Sign up
+                </a>
+              </Link>
             </div>
           </div>
         </div>
