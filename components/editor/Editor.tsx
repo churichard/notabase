@@ -19,6 +19,7 @@ import { ElementType, Mark } from 'types/slate';
 import HoveringToolbar from './HoveringToolbar';
 import AddLinkPopover from './AddLinkPopover';
 import EditorElement from './EditorElement';
+import LinkAutocompletePopover from './LinkAutocompletePopover';
 
 export type AddLinkPopoverState = {
   isVisible: boolean;
@@ -186,6 +187,7 @@ export default function Editor(props: Props) {
           setAddLinkPopoverState={setAddLinkPopoverState}
         />
       ) : null}
+      <LinkAutocompletePopover />
       <Editable
         className={`overflow-hidden placeholder-gray-300 ${className}`}
         renderElement={renderElement}

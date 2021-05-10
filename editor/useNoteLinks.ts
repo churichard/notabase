@@ -7,6 +7,7 @@ import useNoteTitles from 'lib/api/useNoteTitles';
 import { useAuth } from 'utils/useAuth';
 import { deleteText } from './transforms';
 
+// TODO: refactor into plugin
 export default function useNoteLinks(
   editor: Editor,
   editorValue: Descendant[]
