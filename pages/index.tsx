@@ -54,7 +54,7 @@ export default function Home() {
               </video>
             </div>
           </div>
-          <div className="py-16 md:py-32 bg-primary-50">
+          <div className="py-16 bg-gray-100 md:py-32">
             <div className="container px-6">
               <h2 className="text-3xl font-medium text-center md:text-4xl">
                 Link your knowledge together
@@ -95,7 +95,7 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <div className="py-16 md:py-32 bg-primary-50">
+          <div className="py-16 bg-gray-100 md:py-32">
             <div className="container px-6">
               <h2 className="text-3xl font-medium text-center md:text-4xl">
                 Open source

@@ -7,7 +7,7 @@ type Props = {
 export default function Footer(props: Props) {
   const { className } = props;
   return (
-    <div className={`py-8 bg-primary-50 md:py-16 ${className}`}>
+    <div className={`py-8 bg-gray-50 md:py-16 ${className}`}>
       <div className="container flex flex-col justify-between px-6 lg:flex-row">
         <div>
           <p className="font-medium">Notabase</p>
