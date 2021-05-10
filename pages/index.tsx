@@ -32,7 +32,7 @@ export default function Home() {
           </div>
           <div className="py-16 md:py-32">
             <div className="container px-6 text-center">
-              <h1 className="text-4xl font-medium md:text-6xl">
+              <h1 className="text-5xl font-medium md:text-6xl">
                 A wiki for your brain.
               </h1>
               <p className="pt-4 text-2xl text-gray-700 md:pt-8 md:text-3xl">
@@ -44,7 +44,7 @@ export default function Home() {
                 </a>
               </Link>
               <video
-                className="mx-auto mt-8 rounded md:mt-16 shadow-popover"
+                className="hidden mx-auto mt-8 rounded md:mt-16 shadow-popover md:block"
                 width={1200}
                 autoPlay
                 loop
