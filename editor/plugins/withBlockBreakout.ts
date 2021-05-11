@@ -53,9 +53,8 @@ const withBlockBreakout = (editor: Editor) => {
         ? lineElementType
         : ElementType.Paragraph;
 
-    // The element is a list item
+    // The element is a list item and the line is empty
     if (lineElementType === ElementType.ListItem && lineText.length === 0) {
-      // We only want to insert a paragraph if there is no text content in the current bullet point
       Transforms.setNodes(editor, { type: ElementType.Paragraph });
 
       Transforms.unwrapNodes(editor, {

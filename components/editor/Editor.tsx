@@ -5,7 +5,7 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { Range, Editor as SlateEditor, Descendant } from 'slate';
+import { Range, Editor as SlateEditor, Descendant, Transforms } from 'slate';
 import { Editable, ReactEditor, RenderLeafProps, Slate } from 'slate-react';
 import { isHotkey } from 'is-hotkey';
 import {
@@ -44,14 +44,12 @@ export default function Editor(props: Props) {
   );
   const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
 
-  const [
-    addLinkPopoverState,
-    setAddLinkPopoverState,
-  ] = useState<AddLinkPopoverState>({
-    isVisible: false,
-    selection: undefined,
-    isLink: false,
-  });
+  const [addLinkPopoverState, setAddLinkPopoverState] =
+    useState<AddLinkPopoverState>({
+      isVisible: false,
+      selection: undefined,
+      isLink: false,
+    });
 
   const [selection, setSelection] = useState(editor.selection);
   const [toolbarCanBeVisible, setToolbarCanBeVisible] = useState(true);
@@ -111,6 +109,10 @@ export default function Editor(props: Props) {
       {
         hotkey: 'shift+tab',
         callback: () => handleUnindent(editor),
+      },
+      {
+        hotkey: 'shift+enter',
+        callback: () => Transforms.insertText(editor, '\n'),
       },
     ],
     [editor, setAddLinkPopoverState]
