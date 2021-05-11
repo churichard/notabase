@@ -16,7 +16,7 @@ import { Note } from 'types/supabase';
 import useNotes, { NOTES_KEY } from 'lib/api/useNotes';
 import supabase from 'lib/supabase';
 
-type Backlink = {
+export type Backlink = {
   id: string;
   title: string;
   matches: Array<{
@@ -28,6 +28,10 @@ type Backlink = {
 export default function useBacklinks(noteId: string) {
   const { data: notes = [] } = useNotes();
   const backlinks = useMemo(() => getBacklinks(notes, noteId), [notes, noteId]);
+  const unlinkedBacklinks = useMemo(() => {
+    const noteTitle = notes.find((note) => note.id === noteId)?.title;
+    return noteTitle ? getUnlinkedBacklinks(notes, noteTitle) : [];
+  }, [notes, noteId]);
 
   /**
    * Updates the link properties of the backlinks on each backlinked note when the
@@ -160,7 +164,7 @@ export default function useBacklinks(noteId: string) {
     mutate(NOTES_KEY); // Make sure backlinks are updated
   }, [backlinks, noteId]);
 
-  return { backlinks, updateBacklinks, deleteBacklinks };
+  return { backlinks, unlinkedBacklinks, updateBacklinks, deleteBacklinks };
 }
 
 /**
@@ -182,10 +186,59 @@ const getBacklinks = (notes: Note[], noteId: string): Backlink[] => {
   return result;
 };
 
+/**
+ * Searches the notes array for text matches to the given noteTitle
+ * and returns an array of the matches.
+ */
+const getUnlinkedBacklinks = (notes: Note[], noteTitle: string): Backlink[] => {
+  const result: Backlink[] = [];
+  for (const note of notes) {
+    if (note.title === noteTitle) {
+      // We skip getting unlinked backlinks if the note titles are the same
+      continue;
+    }
+    const matches = getUnlinkedBacklinkMatches(note.content, noteTitle);
+    if (matches.length > 0) {
+      result.push({
+        id: note.id,
+        title: note.title,
+        matches,
+      });
+    }
+  }
+  return result;
+};
+
 const getBacklinkMatches = (nodes: Descendant[], noteId: string) => {
   const result: Backlink['matches'] = [];
   for (const [index, node] of nodes.entries()) {
     result.push(...getBacklinkMatchesHelper(node, noteId, [index]));
+  }
+  return result;
+};
+
+const getUnlinkedBacklinkMatches = (nodes: Descendant[], noteTitle: string) => {
+  const editor = createEditor();
+  editor.children = nodes;
+
+  // Remove note links
+  Transforms.removeNodes(editor, {
+    at: [],
+    match: (n) => Element.isElement(n) && n.type === ElementType.NoteLink,
+  });
+
+  // Find elements that have noteTitle in them
+  const matchingElements = Editor.nodes(editor, {
+    at: [],
+    mode: 'lowest',
+    match: (n) =>
+      Element.isElement(n) &&
+      Node.string(n).toLowerCase().includes(noteTitle.toLowerCase()),
+  });
+
+  const result: Backlink['matches'] = [];
+  for (const [node, path] of matchingElements) {
+    result.push({ context: Node.string(node), path });
   }
   return result;
 };
@@ -206,12 +259,9 @@ const getBacklinkMatchesHelper = (
       if (
         child.type === ElementType.NoteLink &&
         child.noteId === noteId &&
-        Node.string(child)
+        Node.string(child) // We ignore note links with empty link text
       ) {
-        result.push({
-          context: Node.string(node),
-          path: [...path, index],
-        });
+        result.push({ context: Node.string(node), path: [...path, index] });
       }
       result.push(...getBacklinkMatchesHelper(child, noteId, [...path, index]));
     }

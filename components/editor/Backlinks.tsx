@@ -1,6 +1,6 @@
 import React from 'react';
 import { useCurrentNote } from 'utils/useCurrentNote';
-import useBacklinks from 'editor/useBacklinks';
+import useBacklinks, { Backlink } from 'editor/useBacklinks';
 import useOnNoteLinkClick from 'editor/useOnNoteLinkClick';
 
 type Props = {
@@ -10,14 +10,35 @@ type Props = {
 export default function Backlinks(props: Props) {
   const { className } = props;
   const currentNote = useCurrentNote();
-  const { backlinks } = useBacklinks(currentNote.id);
-  const onNoteLinkClick = useOnNoteLinkClick();
+  const { backlinks, unlinkedBacklinks } = useBacklinks(currentNote.id);
 
   return (
     <div className={`bg-gray-50 rounded py-4 ${className}`}>
-      <p className="px-4 text-xl text-gray-800">
-        {backlinks.length} Linked References
-      </p>
+      <BacklinkBlock
+        title={`${backlinks.length} Linked References`}
+        backlinks={backlinks}
+      />
+      <BacklinkBlock
+        title={`${unlinkedBacklinks.length} Unlinked References`}
+        backlinks={unlinkedBacklinks}
+        className="pt-2"
+      />
+    </div>
+  );
+}
+
+type BacklinkBlockProps = {
+  title: string;
+  backlinks: Backlink[];
+  className?: string;
+};
+
+const BacklinkBlock = (props: BacklinkBlockProps) => {
+  const { title, backlinks, className } = props;
+  const onNoteLinkClick = useOnNoteLinkClick();
+  return (
+    <div className={className}>
+      <p className="px-4 text-lg text-gray-800">{title}</p>
       {backlinks.length > 0 ? (
         <div className="mx-2 mt-2">
           {backlinks.map((backlink) => (
@@ -33,7 +54,7 @@ export default function Backlinks(props: Props) {
                 return (
                   <span
                     key={index}
-                    className="block my-1 text-xs text-gray-600"
+                    className="block my-1 text-xs text-gray-600 break-words"
                   >
                     {match.context}
                   </span>
@@ -45,4 +66,4 @@ export default function Backlinks(props: Props) {
       ) : null}
     </div>
   );
-}
+};
