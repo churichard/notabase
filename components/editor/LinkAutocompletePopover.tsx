@@ -119,10 +119,8 @@ export default function LinkAutocompletePopover() {
       if (!regexResult || !editor.selection) {
         return;
       }
-      const {
-        path: selectionPath,
-        offset: endOfSelection,
-      } = editor.selection.anchor;
+      const { path: selectionPath, offset: endOfSelection } =
+        editor.selection.anchor;
       const [, startMark, noteTitle] = regexResult;
 
       deleteText(
@@ -180,12 +178,12 @@ export default function LinkAutocompletePopover() {
 
   useEffect(() => {
     if (isVisible) {
-      window.addEventListener('keydown', onKeyDown);
-      window.addEventListener('keypress', onKeyPress);
+      document.addEventListener('keydown', onKeyDown);
+      document.addEventListener('keypress', onKeyPress);
 
       return () => {
-        window.removeEventListener('keydown', onKeyDown);
-        window.removeEventListener('keypress', onKeyPress);
+        document.removeEventListener('keydown', onKeyDown);
+        document.removeEventListener('keypress', onKeyPress);
       };
     }
   }, [isVisible, onKeyDown, onKeyPress, options.length]);
