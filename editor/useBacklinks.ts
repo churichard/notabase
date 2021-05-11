@@ -6,7 +6,6 @@ import {
   Element,
   Node,
   Path,
-  Text,
   Transforms,
 } from 'slate';
 import produce from 'immer';
@@ -27,7 +26,10 @@ export type Backlink = {
 
 export default function useBacklinks(noteId: string) {
   const { data: notes = [] } = useNotes();
-  const backlinks = useMemo(() => getBacklinks(notes, noteId), [notes, noteId]);
+  const linkedBacklinks = useMemo(
+    () => getLinkedBacklinks(notes, noteId),
+    [notes, noteId]
+  );
   const unlinkedBacklinks = useMemo(() => {
     const noteTitle = notes.find((note) => note.id === noteId)?.title;
     return noteTitle ? getUnlinkedBacklinks(notes, noteTitle) : [];
@@ -40,7 +42,7 @@ export default function useBacklinks(noteId: string) {
   const updateBacklinks = useCallback(
     async (newTitle: string) => {
       const updateData = [];
-      for (const backlink of backlinks) {
+      for (const backlink of linkedBacklinks) {
         // TODO: this can still result in a race condition if the content is updated elsewhere
         // after we get the note and before we update the backlinks.
         const { data: note } = await supabase
@@ -53,7 +55,7 @@ export default function useBacklinks(noteId: string) {
           continue;
         }
 
-        const matches = getBacklinkMatches(note.content, noteId); // Compute matches for the db note
+        const matches = getLinkedMatches(note.content, noteId); // Compute matches for the db note
         let newBacklinkContent = note.content;
         for (const match of matches) {
           newBacklinkContent = produce(newBacklinkContent, (draftState) => {
@@ -109,7 +111,7 @@ export default function useBacklinks(noteId: string) {
 
       mutate(NOTES_KEY); // Make sure backlinks are updated
     },
-    [backlinks, noteId]
+    [linkedBacklinks, noteId]
   );
 
   /**
@@ -117,7 +119,7 @@ export default function useBacklinks(noteId: string) {
    */
   const deleteBacklinks = useCallback(async () => {
     const updateData = [];
-    for (const backlink of backlinks) {
+    for (const backlink of linkedBacklinks) {
       // TODO: this can still result in a race condition if the content is updated elsewhere
       // after we get the note and before we update the backlinks.
       const { data: note } = await supabase
@@ -162,19 +164,24 @@ export default function useBacklinks(noteId: string) {
     await Promise.all(promises);
 
     mutate(NOTES_KEY); // Make sure backlinks are updated
-  }, [backlinks, noteId]);
+  }, [linkedBacklinks, noteId]);
 
-  return { backlinks, unlinkedBacklinks, updateBacklinks, deleteBacklinks };
+  return {
+    linkedBacklinks,
+    unlinkedBacklinks,
+    updateBacklinks,
+    deleteBacklinks,
+  };
 }
 
 /**
  * Searches the notes array for note links to the given noteId
  * and returns an array of the matches.
  */
-const getBacklinks = (notes: Note[], noteId: string): Backlink[] => {
+const getLinkedBacklinks = (notes: Note[], noteId: string): Backlink[] => {
   const result: Backlink[] = [];
   for (const note of notes) {
-    const matches = getBacklinkMatches(note.content, noteId);
+    const matches = getLinkedMatches(note.content, noteId);
     if (matches.length > 0) {
       result.push({
         id: note.id,
@@ -197,7 +204,7 @@ const getUnlinkedBacklinks = (notes: Note[], noteTitle: string): Backlink[] => {
       // We skip getting unlinked backlinks if the note titles are the same
       continue;
     }
-    const matches = getUnlinkedBacklinkMatches(note.content, noteTitle);
+    const matches = getUnlinkedMatches(note.content, noteTitle);
     if (matches.length > 0) {
       result.push({
         id: note.id,
@@ -209,15 +216,29 @@ const getUnlinkedBacklinks = (notes: Note[], noteTitle: string): Backlink[] => {
   return result;
 };
 
-const getBacklinkMatches = (nodes: Descendant[], noteId: string) => {
+const getLinkedMatches = (nodes: Descendant[], noteId: string) => {
+  const editor = createEditor();
+  editor.children = nodes;
+
+  // Find note link elements that match noteId
+  const matchingElements = Editor.nodes(editor, {
+    at: [],
+    match: (n) =>
+      Element.isElement(n) &&
+      n.type === ElementType.NoteLink &&
+      n.noteId === noteId &&
+      !!Node.string(n), // We ignore note links with empty link text
+  });
+
   const result: Backlink['matches'] = [];
-  for (const [index, node] of nodes.entries()) {
-    result.push(...getBacklinkMatchesHelper(node, noteId, [index]));
+  for (const [, path] of matchingElements) {
+    const parent = Node.parent(editor, path);
+    result.push({ context: Node.string(parent), path });
   }
   return result;
 };
 
-const getUnlinkedBacklinkMatches = (nodes: Descendant[], noteTitle: string) => {
+const getUnlinkedMatches = (nodes: Descendant[], noteTitle: string) => {
   const editor = createEditor();
   editor.children = nodes;
 
@@ -240,32 +261,5 @@ const getUnlinkedBacklinkMatches = (nodes: Descendant[], noteTitle: string) => {
   for (const [node, path] of matchingElements) {
     result.push({ context: Node.string(node), path });
   }
-  return result;
-};
-
-const getBacklinkMatchesHelper = (
-  node: Descendant,
-  noteId: string,
-  path: Path
-): Backlink['matches'] => {
-  if (Text.isText(node)) {
-    return [];
-  }
-
-  const result: Backlink['matches'] = [];
-  const children = node.children;
-  for (const [index, child] of children.entries()) {
-    if (Element.isElement(child)) {
-      if (
-        child.type === ElementType.NoteLink &&
-        child.noteId === noteId &&
-        Node.string(child) // We ignore note links with empty link text
-      ) {
-        result.push({ context: Node.string(node), path: [...path, index] });
-      }
-      result.push(...getBacklinkMatchesHelper(child, noteId, [...path, index]));
-    }
-  }
-
   return result;
 };
