@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useRef } from 'react';
 import * as d3 from 'd3';
+import defaultTheme from 'tailwindcss/defaultTheme';
 
 type NodeDatum = {
   id: string;
@@ -42,10 +43,12 @@ export default function ForceGraph(props: Props) {
 
       // Draw nodes
       for (const node of data.nodes) {
-        context.beginPath();
-        drawNode(context, node, node.numOfLinks);
-        context.fillStyle = '#A8A29E';
-        context.fill();
+        drawNode(
+          context,
+          node,
+          getRadius(node.numOfLinks),
+          transform.current.k
+        );
       }
 
       context.restore();
@@ -83,7 +86,11 @@ export default function ForceGraph(props: Props) {
       .call(
         d3
           .zoom<HTMLCanvasElement, NodeDatum>()
-          .scaleExtent([0.1, 8])
+          .scaleExtent([0.1, 10])
+          .extent([
+            [0, 0],
+            [width, height],
+          ])
           .on('zoom', ({ transform }) => onZoom(transform))
       );
   }, [data, renderCanvas, width, height]);
@@ -169,18 +176,68 @@ const drawLink = (context: CanvasRenderingContext2D, link: LinkDatum) => {
 const drawNode = (
   context: CanvasRenderingContext2D,
   node: NodeDatum,
-  numOfLinks: number
+  radius: number,
+  scale: number
 ) => {
-  const radius = getRadius(numOfLinks);
   if (!node.x || !node.y) {
     return;
   }
+  context.save();
+
+  // Draw node
+  context.beginPath();
   context.moveTo(node.x + radius, node.y);
   context.arc(node.x, node.y, radius, 0, 2 * Math.PI);
+  // Fill node color
+  context.fillStyle = '#A8A29E';
+  context.fill();
+  // Add node text
+  if (scale > 3) {
+    context.globalAlpha = 1;
+  } else if (scale > 2) {
+    context.globalAlpha = 0.8;
+  } else {
+    context.globalAlpha = 0;
+  }
+  context.fillStyle = '#57534E';
+  context.font = `4px ${defaultTheme.fontFamily.sans.join(', ')}`;
+
+  const lines = getLines(context, node.id, 50);
+  let yPos = node.y + radius + 5;
+  for (const line of lines) {
+    const textWidth = context.measureText(line).width;
+    context.fillText(line, node.x - textWidth / 2, yPos);
+    yPos += 5;
+  }
+
+  context.restore();
 };
 
 const getRadius = (numOfLinks: number) => {
   const BASE_RADIUS = 3;
   const LINK_MULTIPLIER = 0.5;
   return BASE_RADIUS + LINK_MULTIPLIER * numOfLinks;
+};
+
+const getLines = (
+  context: CanvasRenderingContext2D,
+  text: string,
+  maxWidth: number
+) => {
+  const words = text.split(' ');
+  const lines = [];
+  let currentLine = words[0];
+
+  for (let i = 1; i < words.length; i++) {
+    const word = words[i];
+    const width = context.measureText(currentLine + ' ' + word).width;
+    if (width < maxWidth) {
+      currentLine += ' ' + word;
+    } else {
+      lines.push(currentLine);
+      currentLine = word;
+    }
+  }
+  lines.push(currentLine);
+  return lines;
 };
