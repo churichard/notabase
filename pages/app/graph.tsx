@@ -56,12 +56,12 @@ export default function Graph(props: Props) {
         numOfLinks++;
         const noteLinkElement = node as NoteLink;
         data.links.push({
-          source: note.title,
-          target: noteLinkElement.noteTitle,
+          source: note.id,
+          target: noteLinkElement.noteId,
         });
       }
 
-      data.nodes.push({ id: note.title, name: note.title, numOfLinks });
+      data.nodes.push({ id: note.id, name: note.title, numOfLinks });
     }
     return data;
   }, [notes]);

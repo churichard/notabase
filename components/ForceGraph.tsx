@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 import defaultTheme from 'tailwindcss/defaultTheme';
+import { useRouter } from 'next/router';
 
 type NodeDatum = {
   id: string;
@@ -26,6 +27,8 @@ export default function ForceGraph(props: Props) {
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const transform = useRef(d3.zoomIdentity);
+
+  const router = useRouter();
 
   const renderCanvas = useCallback(
     (context: CanvasRenderingContext2D) => {
@@ -72,12 +75,6 @@ export default function ForceGraph(props: Props) {
 
     simulation.on('tick', () => renderCanvas(context));
 
-    // Add drag + zoom
-    const onZoom = (t: d3.ZoomTransform) => {
-      transform.current = t;
-      renderCanvas(context);
-    };
-
     d3.select<HTMLCanvasElement, NodeDatum>(context.canvas)
       .call(drag(simulation, context.canvas))
       .call(
@@ -88,19 +85,32 @@ export default function ForceGraph(props: Props) {
             [0, 0],
             [width, height],
           ])
-          .on('zoom', ({ transform }) => onZoom(transform))
+          .on('zoom', ({ transform: t }) => {
+            transform.current = t;
+            renderCanvas(context);
+          })
       )
       .on('mousemove', (event) => {
         const { x, y } = getMousePos(context.canvas, event);
         const hoveredNode = getNode(simulation, context.canvas, x, y);
 
+        // Change mouse cursor depending on what it's hovering over
         if (hoveredNode) {
           context.canvas.style.cursor = 'pointer';
         } else {
           context.canvas.style.cursor = 'default';
         }
+      })
+      .on('click', (event) => {
+        const { x, y } = getMousePos(context.canvas, event);
+        const clickedNode = getNode(simulation, context.canvas, x, y);
+
+        // Redirect to note when a node is clicked
+        if (clickedNode) {
+          router.push(`/app/note/${clickedNode.id}`);
+        }
       });
-  }, [data, renderCanvas, width, height]);
+  }, [data, renderCanvas, width, height, router]);
 
   return (
     <canvas
@@ -228,7 +238,7 @@ const drawNode = (
   context.fillStyle = '#57534E';
   context.font = `4px ${defaultTheme.fontFamily.sans.join(', ')}`;
 
-  const lines = getLines(context, node.id, 50);
+  const lines = getLines(context, node.name, 50);
   let yPos = node.y + radius + 5;
   for (const line of lines) {
     const textWidth = context.measureText(line).width;
