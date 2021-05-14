@@ -6,7 +6,7 @@ import { useRouter } from 'next/router';
 type NodeDatum = {
   id: string;
   name: string;
-  numOfLinks: number;
+  radius: number;
 } & d3.SimulationNodeDatum;
 
 type LinkDatum = d3.SimulationLinkDatum<NodeDatum>;
@@ -43,12 +43,7 @@ export default function ForceGraph(props: Props) {
 
       // Draw nodes
       for (const node of data.nodes) {
-        drawNode(
-          context,
-          node,
-          getRadius(node.numOfLinks),
-          transform.current.k
-        );
+        drawNode(context, node, transform.current.k);
       }
 
       context.restore();
@@ -144,7 +139,7 @@ const getNode = (
     subject &&
     subject.x &&
     subject.y &&
-    Math.hypot(x - subject.x, y - subject.y) <= getRadius(subject.numOfLinks)
+    Math.hypot(x - subject.x, y - subject.y) <= subject.radius
   ) {
     return subject;
   } else {
@@ -212,7 +207,6 @@ const drawLink = (context: CanvasRenderingContext2D, link: LinkDatum) => {
 const drawNode = (
   context: CanvasRenderingContext2D,
   node: NodeDatum,
-  radius: number,
   scale: number
 ) => {
   if (!node.x || !node.y) {
@@ -222,8 +216,8 @@ const drawNode = (
 
   // Draw node
   context.beginPath();
-  context.moveTo(node.x + radius, node.y);
-  context.arc(node.x, node.y, radius, 0, 2 * Math.PI);
+  context.moveTo(node.x + node.radius, node.y);
+  context.arc(node.x, node.y, node.radius, 0, 2 * Math.PI);
   // Fill node color
   context.fillStyle = '#A8A29E';
   context.fill();
@@ -239,7 +233,7 @@ const drawNode = (
   context.font = `4px ${defaultTheme.fontFamily.sans.join(', ')}`;
 
   const lines = getLines(context, node.name, 50);
-  let yPos = node.y + radius + 5;
+  let yPos = node.y + node.radius + 5;
   for (const line of lines) {
     const textWidth = context.measureText(line).width;
     context.fillText(line, node.x - textWidth / 2, yPos);
@@ -247,12 +241,6 @@ const drawNode = (
   }
 
   context.restore();
-};
-
-const getRadius = (numOfLinks: number) => {
-  const BASE_RADIUS = 3;
-  const LINK_MULTIPLIER = 0.5;
-  return BASE_RADIUS + LINK_MULTIPLIER * numOfLinks;
 };
 
 const getLines = (

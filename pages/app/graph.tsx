@@ -61,7 +61,11 @@ export default function Graph(props: Props) {
         });
       }
 
-      data.nodes.push({ id: note.id, name: note.title, numOfLinks });
+      data.nodes.push({
+        id: note.id,
+        name: note.title,
+        radius: getRadius(numOfLinks),
+      });
     }
     return data;
   }, [notes]);
@@ -108,4 +112,10 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
     .order('title');
 
   return { props: { initialNotes: notes ?? [] } };
+};
+
+const getRadius = (numOfLinks: number) => {
+  const BASE_RADIUS = 3;
+  const LINK_MULTIPLIER = 0.5;
+  return BASE_RADIUS + LINK_MULTIPLIER * numOfLinks;
 };
