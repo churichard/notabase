@@ -36,10 +36,7 @@ export default function ForceGraph(props: Props) {
       context.scale(transform.current.k, transform.current.k);
 
       // Draw links
-      context.beginPath();
       data.links.forEach((link) => drawLink(context, link));
-      context.strokeStyle = '#D6D3D1';
-      context.stroke();
 
       // Draw nodes
       for (const node of data.nodes) {
@@ -92,7 +89,17 @@ export default function ForceGraph(props: Props) {
             [width, height],
           ])
           .on('zoom', ({ transform }) => onZoom(transform))
-      );
+      )
+      .on('mousemove', (event) => {
+        const { x, y } = getMousePos(context.canvas, event);
+        const hoveredNode = getNode(simulation, context.canvas, x, y);
+
+        if (hoveredNode) {
+          context.canvas.style.cursor = 'pointer';
+        } else {
+          context.canvas.style.cursor = 'default';
+        }
+      });
   }, [data, renderCanvas, width, height]);
 
   return (
@@ -105,6 +112,36 @@ export default function ForceGraph(props: Props) {
   );
 }
 
+const getMousePos = (canvas: HTMLCanvasElement, event: MouseEvent) => {
+  const rect = canvas.getBoundingClientRect();
+  return {
+    x: event.clientX - rect.left,
+    y: event.clientY - rect.top,
+  };
+};
+
+const getNode = (
+  simulation: d3.Simulation<NodeDatum, LinkDatum>,
+  canvas: HTMLCanvasElement,
+  canvasX: number,
+  canvasY: number
+) => {
+  const transform = d3.zoomTransform(canvas);
+  const x = transform.invertX(canvasX);
+  const y = transform.invertY(canvasY);
+  const subject = simulation.find(x, y);
+  if (
+    subject &&
+    subject.x &&
+    subject.y &&
+    Math.hypot(x - subject.x, y - subject.y) <= getRadius(subject.numOfLinks)
+  ) {
+    return subject;
+  } else {
+    return undefined;
+  }
+};
+
 const drag = (
   simulation: d3.Simulation<NodeDatum, LinkDatum>,
   canvas: HTMLCanvasElement
@@ -112,22 +149,7 @@ const drag = (
   let initialDragPos: { x: number; y: number };
 
   function dragsubject(event: DragEvent) {
-    const transform = d3.zoomTransform(canvas);
-    const x = transform.invertX(event.x);
-    const y = transform.invertY(event.y);
-    const subject = simulation.find(x, y);
-
-    // Check if mouse click is in the node circle
-    if (
-      subject &&
-      subject.x &&
-      subject.y &&
-      Math.hypot(x - subject.x, y - subject.y) <= getRadius(subject.numOfLinks)
-    ) {
-      return subject;
-    } else {
-      return undefined;
-    }
+    return getNode(simulation, canvas, event.x, event.y);
   }
 
   function dragstarted(event: DragEvent) {
@@ -169,8 +191,12 @@ const drawLink = (context: CanvasRenderingContext2D, link: LinkDatum) => {
   if (!source.x || !source.y || !target.x || !target.y) {
     return;
   }
+  context.beginPath();
   context.moveTo(source.x, source.y);
+  context.lineWidth = 0.5;
   context.lineTo(target.x, target.y);
+  context.strokeStyle = '#D6D3D1';
+  context.stroke();
 };
 
 const drawNode = (
