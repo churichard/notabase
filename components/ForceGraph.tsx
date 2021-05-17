@@ -224,6 +224,10 @@ export default function ForceGraph(props: Props) {
       });
   }, [data, renderCanvas, width, height, router]);
 
+  if (width === 0 || height === 0) {
+    return null;
+  }
+
   return (
     <canvas
       ref={canvasRef}
