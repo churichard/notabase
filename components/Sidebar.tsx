@@ -1,8 +1,14 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { ReactNode, useCallback, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { Menu } from '@headlessui/react';
-import { IconDots, IconLogout, IconSelector, IconTrash } from '@tabler/icons';
+import {
+  IconDots,
+  IconLogout,
+  IconSelector,
+  IconTrash,
+  IconAffiliate,
+} from '@tabler/icons';
 import { useAtom } from 'jotai';
 import { usePopper } from 'react-popper';
 import { Note } from 'types/supabase';
@@ -15,19 +21,33 @@ import Portal from './Portal';
 
 type Props = {
   notes?: Array<Pick<Note, 'id' | 'title'>>;
-  mainNoteId?: string;
 };
 
 export default function Sidebar(props: Props) {
-  const { notes, mainNoteId } = props;
+  const { notes } = props;
+  const router = useRouter();
+  const queryNoteId = router.query.id;
+
   return (
     <div className="flex flex-col flex-none w-64 h-full border-r border-gray-100 bg-gray-50">
       <Header />
+      <SidebarItem isHighlighted={router.pathname.includes('/app/graph')}>
+        <Link href="/app/graph">
+          <a className="flex items-center px-6 py-1">
+            <IconAffiliate className="mr-1 text-gray-800" size={20} />
+            <span>Graph View</span>
+          </a>
+        </Link>
+      </SidebarItem>
       <SidebarInput />
       <div className="flex flex-col mt-2 overflow-x-hidden overflow-y-auto">
         {notes && notes.length > 0 ? (
           notes.map((note) => (
-            <NoteLink key={note.id} note={note} mainNoteId={mainNoteId} />
+            <NoteLink
+              key={note.id}
+              note={note}
+              isHighlighted={note.id === queryNoteId}
+            />
           ))
         ) : (
           <p className="px-6 text-gray-500">No notes yet</p>
@@ -37,7 +57,7 @@ export default function Sidebar(props: Props) {
   );
 }
 
-function Header() {
+const Header = () => {
   const { user, signOut } = useAuth();
   return (
     <div className="relative">
@@ -67,20 +87,38 @@ function Header() {
       </Menu>
     </div>
   );
-}
+};
+
+type SidebarItemProps = {
+  children: ReactNode;
+  className?: string;
+  isHighlighted?: boolean;
+};
+
+const SidebarItem = (props: SidebarItemProps) => {
+  const { children, className, isHighlighted } = props;
+  return (
+    <div
+      className={`w-full text-gray-800 hover:bg-gray-200 active:bg-gray-300 ${className} ${
+        isHighlighted ? 'bg-gray-200' : 'bg-gray-50'
+      }`}
+    >
+      {children}
+    </div>
+  );
+};
 
 type NoteLinkProps = {
   note: Pick<Note, 'id' | 'title'>;
-  mainNoteId?: string;
+  isHighlighted?: boolean;
 };
 
-function NoteLink(props: NoteLinkProps) {
-  const { note, mainNoteId } = props;
+const NoteLink = (props: NoteLinkProps) => {
+  const { note, isHighlighted } = props;
   return (
-    <div
-      className={`group relative flex items-center justify-between w-full text-gray-800 hover:bg-gray-200 active:bg-gray-300 ${
-        mainNoteId === note.id ? 'bg-gray-200' : 'bg-gray-50'
-      }`}
+    <SidebarItem
+      className="relative flex items-center justify-between group"
+      isHighlighted={isHighlighted}
     >
       <Link href={`/app/note/${note.id}`}>
         <a className="flex-1 px-6 py-1 overflow-hidden overflow-ellipsis whitespace-nowrap">
@@ -88,15 +126,15 @@ function NoteLink(props: NoteLinkProps) {
         </a>
       </Link>
       <NoteLinkDropdown note={note} />
-    </div>
+    </SidebarItem>
   );
-}
+};
 
 type NoteLinkDropdownProps = {
   note: Pick<Note, 'id' | 'title'>;
 };
 
-function NoteLinkDropdown(props: NoteLinkDropdownProps) {
+const NoteLinkDropdown = (props: NoteLinkDropdownProps) => {
   const { note } = props;
   const router = useRouter();
   const { deleteBacklinks } = useBacklinks(note.id);
@@ -161,4 +199,4 @@ function NoteLinkDropdown(props: NoteLinkDropdownProps) {
       </Menu>
     </div>
   );
-}
+};
