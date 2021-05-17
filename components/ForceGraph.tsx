@@ -1,15 +1,16 @@
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import * as d3 from 'd3';
 import defaultTheme from 'tailwindcss/defaultTheme';
+import colors from 'tailwindcss/colors';
 import { useRouter } from 'next/router';
 
-type NodeDatum = {
+export type NodeDatum = {
   id: string;
   name: string;
   radius: number;
 } & d3.SimulationNodeDatum;
 
-type LinkDatum = d3.SimulationLinkDatum<NodeDatum>;
+export type LinkDatum = d3.SimulationLinkDatum<NodeDatum>;
 
 export type GraphData = { nodes: NodeDatum[]; links: LinkDatum[] };
 
@@ -27,8 +28,118 @@ export default function ForceGraph(props: Props) {
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const transform = useRef(d3.zoomIdentity);
+  const hoveredNode = useRef<NodeDatum | null>(null);
 
   const router = useRouter();
+
+  const neighbors = useMemo(() => {
+    const neighbors: Record<string, boolean> = {};
+    for (const link of data.links) {
+      const sourceId = isNodeDatum(link.source) ? link.source.id : link.source;
+      const targetId = isNodeDatum(link.target) ? link.target.id : link.target;
+      neighbors[`${sourceId}-${targetId}`] = true;
+      neighbors[`${targetId}-${sourceId}`] = true;
+    }
+    return neighbors;
+  }, [data.links]);
+
+  const areNeighbors = useCallback(
+    (nodeId1: string | undefined, nodeId2: string | undefined) => {
+      if (!nodeId1 || !nodeId2) {
+        return false;
+      }
+      return (
+        neighbors[`${nodeId1}-${nodeId2}`] || neighbors[`${nodeId2}-${nodeId1}`]
+      );
+    },
+    [neighbors]
+  );
+
+  const drawLink = useCallback(
+    (context: CanvasRenderingContext2D, link: LinkDatum) => {
+      const source = link.source;
+      const target = link.target;
+
+      if (
+        !isNodeDatum(source) ||
+        !isNodeDatum(target) ||
+        !source.x ||
+        !source.y ||
+        !target.x ||
+        !target.y
+      ) {
+        return;
+      }
+
+      const isSourceHovered = source.id === hoveredNode.current?.id;
+      const isTargetHovered = target.id === hoveredNode.current?.id;
+      const isLinkHighlighted = isSourceHovered || isTargetHovered;
+
+      context.save();
+
+      context.beginPath();
+      context.moveTo(source.x, source.y);
+      context.lineWidth = 0.5;
+      context.lineTo(target.x, target.y);
+      context.strokeStyle = isLinkHighlighted
+        ? colors.emerald[300]
+        : colors.warmGray[300];
+      context.stroke();
+
+      context.restore();
+    },
+    []
+  );
+
+  const drawNode = useCallback(
+    (context: CanvasRenderingContext2D, node: NodeDatum, scale: number) => {
+      if (!node.x || !node.y) {
+        return;
+      }
+      const isHovered = node.id === hoveredNode.current?.id;
+
+      context.save();
+
+      // Draw node
+      context.beginPath();
+      context.moveTo(node.x + node.radius, node.y);
+      context.arc(node.x, node.y, node.radius, 0, 2 * Math.PI);
+
+      // Fill node color
+      if (isHovered) {
+        context.strokeStyle = colors.emerald[300];
+        context.stroke();
+        context.fillStyle = colors.emerald[500];
+      } else if (areNeighbors(hoveredNode.current?.id, node.id)) {
+        context.fillStyle = colors.emerald[300];
+      } else {
+        context.fillStyle = colors.warmGray[400];
+      }
+      context.fill();
+
+      // Add node text
+      if (scale > 3) {
+        context.globalAlpha = 1;
+      } else if (scale > 2) {
+        context.globalAlpha = 0.8;
+      } else {
+        context.globalAlpha = 0;
+      }
+      context.fillStyle = colors.warmGray[600];
+      context.font = `4px ${defaultTheme.fontFamily.sans.join(', ')}`;
+
+      const lines = getLines(context, node.name, 50);
+      let yPos = node.y + node.radius + 5;
+      for (const line of lines) {
+        const textWidth = context.measureText(line).width;
+        context.fillText(line, node.x - textWidth / 2, yPos);
+        yPos += 5;
+      }
+
+      context.restore();
+    },
+    [areNeighbors]
+  );
 
   const renderCanvas = useCallback(
     (context: CanvasRenderingContext2D) => {
@@ -39,7 +150,9 @@ export default function ForceGraph(props: Props) {
       context.scale(transform.current.k, transform.current.k);
 
       // Draw links
-      data.links.forEach((link) => drawLink(context, link));
+      for (const link of data.links) {
+        drawLink(context, link);
+      }
 
       // Draw nodes
       for (const node of data.nodes) {
@@ -48,7 +161,7 @@ export default function ForceGraph(props: Props) {
 
       context.restore();
     },
-    [width, height, data]
+    [width, height, data, drawLink, drawNode]
   );
 
   useEffect(() => {
@@ -87,13 +200,17 @@ export default function ForceGraph(props: Props) {
       )
       .on('mousemove', (event) => {
         const { x, y } = getMousePos(context.canvas, event);
-        const hoveredNode = getNode(simulation, context.canvas, x, y);
+        const node = getNode(simulation, context.canvas, x, y);
 
-        // Change mouse cursor depending on what it's hovering over
-        if (hoveredNode) {
+        // Update mouse cursor and hovered node
+        if (node) {
           context.canvas.style.cursor = 'pointer';
-        } else {
+          hoveredNode.current = node;
+          renderCanvas(context);
+        } else if (hoveredNode.current) {
           context.canvas.style.cursor = 'default';
+          hoveredNode.current = null;
+          renderCanvas(context);
         }
       })
       .on('click', (event) => {
@@ -116,6 +233,12 @@ export default function ForceGraph(props: Props) {
     />
   );
 }
+
+const isNodeDatum = (
+  datum: string | number | NodeDatum
+): datum is NodeDatum => {
+  return typeof datum !== 'string' && typeof datum !== 'number';
+};
 
 const getMousePos = (canvas: HTMLCanvasElement, event: MouseEvent) => {
   const rect = canvas.getBoundingClientRect();
@@ -188,59 +311,6 @@ const drag = (
     .on('start', dragstarted)
     .on('drag', dragged)
     .on('end', dragended);
-};
-
-const drawLink = (context: CanvasRenderingContext2D, link: LinkDatum) => {
-  const source = link.source as NodeDatum;
-  const target = link.target as NodeDatum;
-  if (!source.x || !source.y || !target.x || !target.y) {
-    return;
-  }
-  context.beginPath();
-  context.moveTo(source.x, source.y);
-  context.lineWidth = 0.5;
-  context.lineTo(target.x, target.y);
-  context.strokeStyle = '#D6D3D1';
-  context.stroke();
-};
-
-const drawNode = (
-  context: CanvasRenderingContext2D,
-  node: NodeDatum,
-  scale: number
-) => {
-  if (!node.x || !node.y) {
-    return;
-  }
-  context.save();
-
-  // Draw node
-  context.beginPath();
-  context.moveTo(node.x + node.radius, node.y);
-  context.arc(node.x, node.y, node.radius, 0, 2 * Math.PI);
-  // Fill node color
-  context.fillStyle = '#A8A29E';
-  context.fill();
-  // Add node text
-  if (scale > 3) {
-    context.globalAlpha = 1;
-  } else if (scale > 2) {
-    context.globalAlpha = 0.8;
-  } else {
-    context.globalAlpha = 0;
-  }
-  context.fillStyle = '#57534E';
-  context.font = `4px ${defaultTheme.fontFamily.sans.join(', ')}`;
-
-  const lines = getLines(context, node.name, 50);
-  let yPos = node.y + node.radius + 5;
-  for (const line of lines) {
-    const textWidth = context.measureText(line).width;
-    context.fillText(line, node.x - textWidth / 2, yPos);
-    yPos += 5;
-  }
-
-  context.restore();
 };
 
 const getLines = (
