@@ -17,7 +17,7 @@ export default function Home() {
             <Link href="/">
               <a className="text-xl">Notabase</a>
             </Link>
-            <div className="space-x-6">
+            <div className="flex items-center space-x-6">
               <a
                 href="https://github.com/churichard/notabase"
                 target="_blank"
@@ -25,8 +25,12 @@ export default function Home() {
               >
                 GitHub
               </a>
+              <div className="h-5 border-l" />
               <Link href="/login">
                 <a>Sign in</a>
+              </Link>
+              <Link href="/signup">
+                <a className="font-medium btn">Get started</a>
               </Link>
             </div>
           </div>
