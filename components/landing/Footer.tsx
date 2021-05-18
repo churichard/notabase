@@ -18,7 +18,15 @@ export default function Footer(props: Props) {
         </div>
         <div className="flex flex-wrap flex-1 lg:justify-end">
           <div className="flex flex-col mt-8 space-y-2 lg:mt-0">
-            <p className="font-medium">Community</p>
+            <p className="font-medium">Connect</p>
+            <a
+              href="mailto:hello@notabase.io"
+              className="text-gray-700"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Contact
+            </a>
             <a
               href="https://github.com/churichard/notabase"
               className="text-gray-700"
