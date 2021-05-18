@@ -13,7 +13,7 @@ export default function Home() {
       </Head>
       <div className="flex flex-col min-h-screen bg-gray-50">
         <div className="flex-1">
-          <div className="container flex items-center justify-between px-6 py-6">
+          <div className="container flex items-center justify-between px-6 py-6 space-x-6 text-gray-900">
             <Link href="/">
               <a className="text-xl">Notabase</a>
             </Link>
