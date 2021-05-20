@@ -20,12 +20,11 @@ export default function FindOrCreateModal(props: Props) {
     >
       <Dialog.Overlay className="fixed inset-0 z-10 bg-black opacity-30" />
       <div className="flex justify-center mt-32">
-        <div className="z-20 mx-auto bg-white rounded shadow-popover">
-          <FindOrCreateInput
-            ref={inputRef}
-            onOptionClick={() => setIsOpen(false)}
-          />
-        </div>
+        <FindOrCreateInput
+          ref={inputRef}
+          onOptionClick={() => setIsOpen(false)}
+          className="z-20 w-screen max-w-screen-sm mx-6 bg-white rounded shadow-popover"
+        />
       </div>
     </Dialog>
   );

@@ -6,7 +6,7 @@ import React, {
   useState,
 } from 'react';
 import { useRouter } from 'next/router';
-import { IconFilePlus, TablerIcon } from '@tabler/icons';
+import { IconFilePlus, IconSearch, TablerIcon } from '@tabler/icons';
 import upsertNote from 'lib/api/upsertNote';
 import { useAuth } from 'utils/useAuth';
 import useNoteSearch from 'utils/useNoteSearch';
@@ -25,11 +25,12 @@ type Option = {
 };
 
 type Props = {
-  onOptionClick: () => void;
+  onOptionClick?: () => void;
+  className?: string;
 };
 
 function FindOrCreateInput(props: Props, ref: ForwardedRef<HTMLInputElement>) {
-  const { onOptionClick: onOptionClickCallback } = props;
+  const { onOptionClick: onOptionClickCallback, className } = props;
   const { user } = useAuth();
   const router = useRouter();
 
@@ -80,7 +81,7 @@ function FindOrCreateInput(props: Props, ref: ForwardedRef<HTMLInputElement>) {
     }
     setSelectedOptionIndex(0);
     setInputText('');
-    onOptionClickCallback();
+    onOptionClickCallback?.();
   };
 
   const onKeyDown = useCallback(
@@ -102,26 +103,29 @@ function FindOrCreateInput(props: Props, ref: ForwardedRef<HTMLInputElement>) {
   );
 
   return (
-    <div className="w-176">
-      <input
-        ref={ref}
-        type="text"
-        className={`w-full p-4 text-xl border-none rounded-tl rounded-tr focus:ring-0 ${
-          options.length <= 0 ? 'rounded-bl rounded-br' : null
-        }`}
-        placeholder="Find an existing note or create a new note"
-        value={inputText}
-        onChange={(e) => setInputText(e.target.value)}
-        onKeyDown={onKeyDown}
-        onKeyPress={(event) => {
-          if (event.key === 'Enter') {
-            event.preventDefault();
-            onOptionClick(options[selectedOptionIndex]);
-          }
-        }}
-      />
+    <div className={className}>
+      <div className="flex items-center w-full">
+        <IconSearch className="ml-4 text-gray-500" size={20} />
+        <input
+          ref={ref}
+          type="text"
+          className={`w-full py-4 px-2 text-xl border-none rounded-tl rounded-tr focus:ring-0 ${
+            options.length <= 0 ? 'rounded-bl rounded-br' : ''
+          }`}
+          placeholder="Find an existing note or create a new note"
+          value={inputText}
+          onChange={(e) => setInputText(e.target.value)}
+          onKeyDown={onKeyDown}
+          onKeyPress={(event) => {
+            if (event.key === 'Enter') {
+              event.preventDefault();
+              onOptionClick(options[selectedOptionIndex]);
+            }
+          }}
+        />
+      </div>
       {options.length > 0 ? (
-        <div className="w-full bg-white rounded-bl rounded-br">
+        <div className="w-full bg-white border-t rounded-bl rounded-br">
           {options.map((option, index) => (
             <OptionItem
               key={option.id}
