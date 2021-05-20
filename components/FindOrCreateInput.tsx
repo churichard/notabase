@@ -1,4 +1,10 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, {
+  ForwardedRef,
+  forwardRef,
+  useCallback,
+  useMemo,
+  useState,
+} from 'react';
 import { useRouter } from 'next/router';
 import { IconFilePlus, TablerIcon } from '@tabler/icons';
 import upsertNote from 'lib/api/upsertNote';
@@ -18,10 +24,14 @@ type Option = {
   icon?: TablerIcon;
 };
 
-export default function SidebarInput() {
+type Props = {
+  onOptionClick: () => void;
+};
+
+function FindOrCreateInput(props: Props, ref: ForwardedRef<HTMLInputElement>) {
+  const { onOptionClick: onOptionClickCallback } = props;
   const { user } = useAuth();
   const router = useRouter();
-  const [isInputFocused, setIsInputFocused] = useState(false);
 
   const [inputText, setInputText] = useState('');
   const [selectedOptionIndex, setSelectedOptionIndex] = useState<number>(0);
@@ -70,6 +80,7 @@ export default function SidebarInput() {
     }
     setSelectedOptionIndex(0);
     setInputText('');
+    onOptionClickCallback();
   };
 
   const onKeyDown = useCallback(
@@ -91,11 +102,14 @@ export default function SidebarInput() {
   );
 
   return (
-    <div className="relative mx-6 my-2">
+    <div className="w-176">
       <input
+        ref={ref}
         type="text"
-        className="w-full input"
-        placeholder="Find or create note"
+        className={`w-full p-4 text-xl border-none rounded-tl rounded-tr focus:ring-0 ${
+          options.length <= 0 ? 'rounded-bl rounded-br' : null
+        }`}
+        placeholder="Find an existing note or create a new note"
         value={inputText}
         onChange={(e) => setInputText(e.target.value)}
         onKeyDown={onKeyDown}
@@ -105,11 +119,9 @@ export default function SidebarInput() {
             onOptionClick(options[selectedOptionIndex]);
           }
         }}
-        onFocus={() => setIsInputFocused(true)}
-        onBlur={() => setIsInputFocused(false)}
       />
-      {options.length > 0 && isInputFocused ? (
-        <div className="absolute z-10 bg-white border rounded shadow-popover w-96">
+      {options.length > 0 ? (
+        <div className="w-full bg-white rounded-bl rounded-br">
           {options.map((option, index) => (
             <OptionItem
               key={option.id}
@@ -134,7 +146,7 @@ const OptionItem = (props: OptionProps) => {
   const { option, isSelected, onClick } = props;
   return (
     <button
-      className={`flex flex-row w-full items-center px-4 py-1 text-gray-800 hover:bg-gray-100 active:bg-gray-200 ${
+      className={`flex flex-row w-full items-center px-4 py-2 text-gray-800 hover:bg-gray-100 active:bg-gray-200 ${
         isSelected ? 'bg-gray-100' : ''
       }`}
       onClick={onClick}
@@ -148,3 +160,5 @@ const OptionItem = (props: OptionProps) => {
     </button>
   );
 };
+
+export default forwardRef(FindOrCreateInput);

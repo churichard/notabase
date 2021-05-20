@@ -8,15 +8,15 @@ import {
   IconSelector,
   IconTrash,
   IconAffiliate,
+  IconSearch,
 } from '@tabler/icons';
 import { useAtom } from 'jotai';
 import { usePopper } from 'react-popper';
 import { Note } from 'types/supabase';
 import { useAuth } from 'utils/useAuth';
-import { openNotesAtom } from 'lib/state';
+import { isFindOrCreateModalOpen, openNotesAtom } from 'lib/state';
 import deleteNote from 'lib/api/deleteNote';
 import useBacklinks from 'editor/useBacklinks';
-import SidebarInput from './SidebarInput';
 import Portal from './Portal';
 
 type Props = {
@@ -25,12 +25,22 @@ type Props = {
 
 export default function Sidebar(props: Props) {
   const { notes } = props;
+  const [, setIsModalOpen] = useAtom(isFindOrCreateModalOpen);
   const router = useRouter();
   const queryNoteId = router.query.id;
 
   return (
-    <div className="flex flex-col flex-none w-64 h-full border-r border-gray-100 bg-gray-50">
+    <div className="flex flex-col flex-none w-64 h-full border-r bg-gray-50">
       <Header />
+      <SidebarItem>
+        <button
+          className="flex items-center w-full px-6 py-1 text-left"
+          onClick={() => setIsModalOpen((isOpen) => !isOpen)}
+        >
+          <IconSearch className="mr-1 text-gray-800" size={20} />
+          <span>Find or create note</span>
+        </button>
+      </SidebarItem>
       <SidebarItem isHighlighted={router.pathname.includes('/app/graph')}>
         <Link href="/app/graph">
           <a className="flex items-center px-6 py-1">
@@ -39,8 +49,8 @@ export default function Sidebar(props: Props) {
           </a>
         </Link>
       </SidebarItem>
-      <SidebarInput />
-      <div className="flex flex-col mt-2 overflow-x-hidden overflow-y-auto">
+      <div className="mt-3 border-b" />
+      <div className="flex flex-col overflow-x-hidden overflow-y-auto">
         {notes && notes.length > 0 ? (
           notes.map((note) => (
             <NoteLink

@@ -1,10 +1,10 @@
 import React from 'react';
-import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import Router from 'next/router';
 import { ToastContainer } from 'react-toastify';
 import NProgress from 'nprogress';
 import { ProvideAuth } from 'utils/useAuth';
+import type { AppProps } from 'next/app';
 import 'styles/styles.css';
 import 'styles/nprogress.css';
 import 'react-toastify/dist/ReactToastify.css';

@@ -6,3 +6,6 @@ import { Note } from 'types/supabase';
 export const openNotesAtom = atom<
   { note: Note; ref: MutableRefObject<HTMLElement | null> }[]
 >([]);
+
+// Stores whether the find or create modal is open
+export const isFindOrCreateModalOpen = atom<boolean>(false);
