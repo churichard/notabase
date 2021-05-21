@@ -49,8 +49,7 @@ export default function Sidebar(props: Props) {
           </a>
         </Link>
       </SidebarItem>
-      <div className="mt-3 border-b" />
-      <div className="flex flex-col overflow-x-hidden overflow-y-auto">
+      <div className="flex flex-col mt-3 overflow-x-hidden overflow-y-auto">
         {notes && notes.length > 0 ? (
           notes.map((note) => (
             <NoteLink
