@@ -99,7 +99,6 @@ function useBacklinksCache(notes: Note[], noteId: string) {
 
   const getBacklinks = useCallback(
     (cache: BacklinkCache, compute: () => Backlink[]) => {
-      console.log('hi');
       if (cache.backlinks && !cache.shouldRecompute) {
         return cache.backlinks;
       }
