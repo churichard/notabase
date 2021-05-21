@@ -122,8 +122,7 @@ export default function Editor(props: Props) {
     (event: KeyboardEvent<HTMLDivElement>) => {
       // Handle keyboard shortcuts for adding marks
       for (const { hotkey, callback } of hotkeys) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        if (isHotkey(hotkey, event as any)) {
+        if (isHotkey(hotkey, event.nativeEvent)) {
           event.preventDefault();
           callback();
         }
