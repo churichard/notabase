@@ -66,7 +66,7 @@ export default function Home() {
               <div className="max-w-3xl mx-auto">
                 <p className="pt-4 text-lg leading-loose text-gray-700 md:pt-8 md:text-xl md:leading-loose">
                   Your brain stores information as a network, not as a
-                  collection of files and folders. In Notabase, you make
+                  collection of files and folders. With Notabase, you make
                   <span className="text-primary-600">
                     {' '}
                     [[connections]]
