@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
+import usePrevious from 'utils/usePrevious';
 
 type Props = {
   className?: string;
@@ -9,7 +10,7 @@ type Props = {
 export default function Title(props: Props) {
   const { className, value, onChange } = props;
   const titleRef = useRef<HTMLDivElement | null>(null);
-  const [prevTitle, setPrevTitle] = useState<string | null>(null);
+  const prevTitle = usePrevious(titleRef.current?.textContent);
 
   const emitChange = () => {
     if (!titleRef.current) {
@@ -19,12 +20,11 @@ export default function Title(props: Props) {
     if (onChange && title !== prevTitle) {
       onChange(title);
     }
-    setPrevTitle(title);
   };
 
   // Set the initial title
   useEffect(() => {
-    if (!titleRef.current) {
+    if (!titleRef.current || titleRef.current.textContent) {
       return;
     }
     titleRef.current.textContent = value;
