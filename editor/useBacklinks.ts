@@ -28,8 +28,8 @@ export type Backlink = {
 type ReturnType = {
   linkedBacklinks: Backlink[];
   unlinkedBacklinks: Backlink[];
-  updateBacklinks: (newTitle: string) => void;
-  deleteBacklinks: () => void;
+  updateBacklinks: (newTitle: string) => Promise<void>;
+  deleteBacklinks: () => Promise<void>;
 };
 
 export default function useBacklinks(noteId: string) {
@@ -42,12 +42,9 @@ export default function useBacklinks(noteId: string) {
 
   const state = useMemo(() => {
     const state = {
-      updateBacklinks: (newTitle: string) => {
-        updateBacklinks(newTitle, noteId, getLinkedBacklinks());
-      },
-      deleteBacklinks: () => {
-        deleteBacklinks(noteId, getLinkedBacklinks());
-      },
+      updateBacklinks: (newTitle: string) =>
+        updateBacklinks(newTitle, noteId, getLinkedBacklinks()),
+      deleteBacklinks: () => deleteBacklinks(noteId, getLinkedBacklinks()),
     };
     // Backlinks are not computed until they are retrieved
     Object.defineProperties(state, {
