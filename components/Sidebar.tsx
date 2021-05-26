@@ -10,6 +10,7 @@ import {
   IconAffiliate,
   IconSearch,
   IconMail,
+  IconMessage,
 } from '@tabler/icons';
 import { useAtom } from 'jotai';
 import { usePopper } from 'react-popper';
@@ -80,6 +81,21 @@ const Header = () => {
           <IconSelector size={18} className="text-gray-500" />
         </Menu.Button>
         <Menu.Items className="absolute z-10 w-56 bg-white rounded left-6 top-full shadow-popover">
+          <Menu.Item>
+            {({ active }) => (
+              <a
+                className={`flex w-full items-center px-4 py-2 text-left text-gray-800 ${
+                  active ? 'bg-gray-100' : ''
+                }`}
+                href="https://8z3pisyojx8.typeform.com/to/tXt36EQM"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <IconMessage size={18} className="mr-1" />
+                <span>Give feedback</span>
+              </a>
+            )}
+          </Menu.Item>
           <Menu.Item>
             {({ active }) => (
               <a
