@@ -40,6 +40,12 @@ export default function MyApp({ Component, pageProps }: AppProps) {
           sizes="16x16"
           href="/favicon-16x16.png"
         />
+        <script
+          async
+          defer
+          data-domain="notabase.io"
+          src="https://plausible.io/js/plausible.js"
+        ></script>
       </Head>
       <ProvideAuth>
         <Component {...pageProps} />
