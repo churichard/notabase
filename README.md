@@ -16,7 +16,7 @@ Notabase is currently in alpha.
 
 - Seamlessly navigate and browse through your notes side-by-side
 - WYSIWYG editor with markdown support makes it easy to edit notes
-- Linked references let you see other notes that reference a specific note
+- Linked/unlinked references let you see other notes that reference a specific note
 - Your notes are synced to the cloud and can be accessed on any device
 - Use the graph view to analyze your knowledge graph
 - Offline support (coming soon)
