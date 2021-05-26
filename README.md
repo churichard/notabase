@@ -22,7 +22,7 @@ Notabase is currently in alpha.
 - Offline support (coming soon)
 - Open source, allowing community involvement and transparent development
 
-## Self-hosting
+## Self-hosting / running locally
 
 Notabase is currently focused on the hosted experience, but it is possible for you to self-host it as well. Here's a list of steps that you need to take to get it running locally (not tested):
 
