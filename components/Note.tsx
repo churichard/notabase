@@ -14,7 +14,7 @@ import { withHistory } from 'slate-history';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
 import Title from 'components/editor/Title';
-import { Note as NoteType } from 'types/supabase';
+import { Note as NoteType, PartialNoteWithRequiredId } from 'types/supabase';
 import useBacklinks from 'editor/useBacklinks';
 import withBlockBreakout from 'editor/plugins/withBlockBreakout';
 import withAutoMarkdown from 'editor/plugins/withAutoMarkdown';
@@ -89,8 +89,8 @@ function Note(props: Props, ref: ForwardedRef<HTMLDivElement>) {
   );
 
   const handleNoteUpdate = useCallback(
-    async (id: string, note: Partial<NoteType>) => {
-      const { error } = await updateNote(id, note);
+    async (note: PartialNoteWithRequiredId) => {
+      const { error } = await updateNote(note);
 
       if (error) {
         switch (error.code) {
@@ -121,7 +121,7 @@ function Note(props: Props, ref: ForwardedRef<HTMLDivElement>) {
 
   // Save the note in the database if it changes and it hasn't been saved yet
   useEffect(() => {
-    const newNote: Partial<NoteType> = {};
+    const newNote: PartialNoteWithRequiredId = { id: currentNote.id };
     if (!syncState.isContentSynced) {
       newNote.content = currentNote.content;
     }
@@ -129,9 +129,9 @@ function Note(props: Props, ref: ForwardedRef<HTMLDivElement>) {
       newNote.title = currentNote.title;
     }
 
-    if (Object.keys(newNote).length !== 0) {
+    if (newNote.title || newNote.content) {
       const handler = setTimeout(
-        () => handleNoteUpdate(currentNote.id, newNote),
+        () => handleNoteUpdate(newNote),
         SYNC_DEBOUNCE_MS
       );
       return () => clearTimeout(handler);

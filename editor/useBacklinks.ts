@@ -279,16 +279,9 @@ const updateBacklinks = async (
   }
 
   // Make sure backlinks are updated locally
-  store.getState().setNotes((notes) => {
-    const newNotes = [...notes];
-    for (const newNote of updateData) {
-      const index = notes.findIndex((note) => note.id === newNote.id);
-      if (index >= 0) {
-        newNotes[index] = { ...newNotes[index], ...newNote };
-      }
-    }
-    return newNotes;
-  });
+  for (const newNote of updateData) {
+    store.getState().updateNote(newNote);
+  }
 
   // It would be better if we could consolidate the update requests into one request
   // See https://github.com/supabase/supabase-js/issues/156
@@ -341,16 +334,9 @@ const deleteBacklinks = async (noteId: string, backlinks: Backlink[]) => {
   }
 
   // Make sure backlinks are updated locally
-  store.getState().setNotes((notes) => {
-    const newNotes = [...notes];
-    for (const newNote of updateData) {
-      const index = notes.findIndex((note) => note.id === newNote.id);
-      if (index >= 0) {
-        newNotes[index] = { ...newNotes[index], ...newNote };
-      }
-    }
-    return newNotes;
-  });
+  for (const newNote of updateData) {
+    store.getState().updateNote(newNote);
+  }
 
   // It would be better if we could consolidate the update requests into one request
   // See https://github.com/supabase/supabase-js/issues/156
