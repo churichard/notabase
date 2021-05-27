@@ -6,7 +6,7 @@ import { createClient } from '@supabase/supabase-js';
 import AppLayout from 'components/AppLayout';
 import Note from 'components/Note';
 import { Note as NoteType } from 'types/supabase';
-import { useStore } from 'lib/state';
+import { useStore } from 'lib/store';
 
 type Props = {
   initialNotes: Array<NoteType>;
