@@ -97,7 +97,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
   // Get notes from database
   const { data: notes } = await supabase
     .from<NoteType>('notes')
-    .select('id, title')
+    .select('id, title, content')
     .eq('user_id', user.id)
     .order('title');
 
@@ -114,12 +114,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
   }
 
   // Get the main note
-  const { data: mainNote } = await supabase
-    .from<NoteType>('notes')
-    .select('id, title, content')
-    .eq('user_id', user.id)
-    .eq('id', noteId)
-    .single();
+  const mainNote = notes?.find((note) => note.id === noteId) ?? null;
 
   // Get stacked notes
   const stackQuery = query.stack;
@@ -132,17 +127,9 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
       stackedNoteIds.push(...stackQuery);
     }
 
-    const { data } = await supabase
-      .from<NoteType>('notes')
-      .select('id, title, content')
-      .eq('user_id', user.id)
-      .in('id', stackedNoteIds);
-
-    // Make sure stacked notes are sorted in the same order as in the query param
-    stackedNotes =
-      data?.sort((n1, n2) => {
-        return stackedNoteIds.indexOf(n1.id) - stackedNoteIds.indexOf(n2.id);
-      }) ?? null;
+    stackedNotes = stackedNoteIds
+      .map((noteId) => notes?.find((note) => note.id === noteId))
+      .filter((note): note is NoteType => !!note); // can't use filter(Boolean) because of https://github.com/microsoft/TypeScript/issues/16655
   }
 
   return {

@@ -1,8 +1,7 @@
-import { mutate } from 'swr';
+import { store } from 'lib/store';
 import supabase from 'lib/supabase';
 import { Note } from 'types/supabase';
-import { NOTE_TITLES_KEY } from './useNoteTitles';
-import { NOTES_KEY } from './useNotes';
+import { caseInsensitiveStringCompare } from 'utils/string';
 
 export default async function updateNote(id: string, note: Partial<Note>) {
   const response = await supabase
@@ -12,11 +11,19 @@ export default async function updateNote(id: string, note: Partial<Note>) {
     .single();
 
   if (note.title && !response.error) {
-    mutate(NOTE_TITLES_KEY); // Update note title in sidebar
-  }
-
-  if (note.content && !response.error) {
-    mutate(NOTES_KEY); // Update notes (for updating backlinks in other open notes)
+    // Update note title in sidebar
+    store.getState().setNotes((notes) => {
+      const index = notes.findIndex((note) => note.id === id);
+      if (index >= 0) {
+        const newNotes = [...notes];
+        newNotes[index] = { ...newNotes[index], ...note };
+        return newNotes.sort((n1, n2) =>
+          caseInsensitiveStringCompare(n1.title, n2.title)
+        );
+      } else {
+        return notes;
+      }
+    });
   }
 
   return response;

@@ -43,7 +43,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
   // Get notes from database
   const { data: notes } = await supabase
     .from<Note>('notes')
-    .select('id, title')
+    .select('id, title, content')
     .eq('user_id', user.id)
     .order('title');
 
