@@ -1,29 +1,17 @@
 import { store } from 'lib/store';
 import supabase from 'lib/supabase';
-import { Note } from 'types/supabase';
-import { caseInsensitiveStringCompare } from 'utils/string';
+import { Note, PartialNoteWithRequiredId } from 'types/supabase';
 
-export default async function updateNote(id: string, note: Partial<Note>) {
+export default async function updateNote(note: PartialNoteWithRequiredId) {
   const response = await supabase
     .from<Note>('notes')
     .update(note)
-    .eq('id', id)
+    .eq('id', note.id)
     .single();
 
-  if (note.title && !response.error) {
-    // Update note title in sidebar
-    store.getState().setNotes((notes) => {
-      const index = notes.findIndex((note) => note.id === id);
-      if (index >= 0) {
-        const newNotes = [...notes];
-        newNotes[index] = { ...newNotes[index], ...note };
-        return newNotes.sort((n1, n2) =>
-          caseInsensitiveStringCompare(n1.title, n2.title)
-        );
-      } else {
-        return notes;
-      }
-    });
+  if (!response.error) {
+    // Update note title in sidebar and backlinks in other open notes
+    store.getState().updateNote(note);
   }
 
   return response;
