@@ -1,4 +1,11 @@
-import React, { ReactNode, useCallback, useRef, useState } from 'react';
+import React, {
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  useCallback,
+  useRef,
+  useState,
+} from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { Menu } from '@headlessui/react';
@@ -22,16 +29,11 @@ import Portal from './Portal';
 
 type Props = {
   notes?: Array<Pick<Note, 'id' | 'title'>>;
+  setIsFindOrCreateModalOpen: Dispatch<SetStateAction<boolean>>;
 };
 
 export default function Sidebar(props: Props) {
-  const { notes } = props;
-  const isFindOrCreateModalOpen = useStore(
-    (state) => state.isFindOrCreateModalOpen
-  );
-  const setIsFindOrCreateModalOpen = useStore(
-    (state) => state.setIsFindOrCreateModalOpen
-  );
+  const { notes, setIsFindOrCreateModalOpen } = props;
   const router = useRouter();
   const queryNoteId = router.query.id;
 
@@ -41,7 +43,7 @@ export default function Sidebar(props: Props) {
       <SidebarItem>
         <button
           className="flex items-center w-full px-6 py-1 text-left"
-          onClick={() => setIsFindOrCreateModalOpen(!isFindOrCreateModalOpen)}
+          onClick={() => setIsFindOrCreateModalOpen((isOpen) => !isOpen)}
         >
           <IconSearch className="mr-1 text-gray-800" size={20} />
           <span>Find or create note</span>
