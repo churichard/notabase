@@ -1,9 +1,8 @@
 import { createRef, useCallback } from 'react';
 import { useRouter } from 'next/router';
-import { useAtom } from 'jotai';
 import { useAuth } from 'utils/useAuth';
 import { useCurrentNote } from 'utils/useCurrentNote';
-import { openNotesAtom } from 'lib/state';
+import { useStore } from 'lib/state';
 import supabase from 'lib/supabase';
 import { Note } from 'types/supabase';
 
@@ -11,7 +10,8 @@ export default function useOnNoteLinkClick() {
   const { user } = useAuth();
   const router = useRouter();
   const currentNote = useCurrentNote();
-  const [openNotes, setOpenNotes] = useAtom(openNotesAtom);
+  const openNotes = useStore((state) => state.openNotes);
+  const setOpenNotes = useStore((state) => state.setOpenNotes);
 
   const onClick = useCallback(
     async (noteId: string) => {
@@ -69,16 +69,8 @@ export default function useOnNoteLinkClick() {
 
         // Add note to open notes and scroll it into view
         const ref = createRef<HTMLElement | null>();
-        await setOpenNotes((notes) => {
-          const newNotes = [...notes];
-          // Replace the notes after the current note with the new note
-          newNotes.splice(
-            currentNoteIndex + 1,
-            notes.length - currentNoteIndex,
-            { note: stackedNote, ref }
-          );
-          return newNotes;
-        });
+        const newNote = { note: stackedNote, ref };
+        setOpenNotes([newNote], currentNoteIndex + 1);
         ref.current?.scrollIntoView(scrollOptions);
       }
     },
