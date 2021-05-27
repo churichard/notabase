@@ -29,7 +29,6 @@
     "slate": "^0.63.0",
     "slate-history": "^0.62.0",
     "slate-react": "^0.63.0",
-    "swr": "^0.5.6",
     "tailwindcss": "^2.1.2",
     "uuid": "^8.3.2",
     "zustand": "^3.5.1"

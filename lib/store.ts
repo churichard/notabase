@@ -1,16 +1,34 @@
 import { MutableRefObject } from 'react';
 import create from 'zustand';
+import createVanilla from 'zustand/vanilla';
 import { Note } from 'types/supabase';
 
 type OpenNote = { note: Note; ref: MutableRefObject<HTMLElement | null> };
+
 type Store = {
+  notes: Note[];
+  setNotes: (value: Note[] | ((value: Note[]) => Note[])) => void;
   openNotes: OpenNote[];
   setOpenNotes: (openNotes: OpenNote[], index?: number) => void;
 };
 
-export const useStore = create<Store>((set) => ({
+export const store = createVanilla<Store>((set) => ({
   /**
-   * Stores the notes that are open, including the main note and the stacked notes
+   * An array of saved notes
+   */
+  notes: [],
+  setNotes: (value: Note[] | ((value: Note[]) => Note[])) => {
+    if (typeof value === 'function') {
+      set((state) => ({ notes: value(state.notes) }));
+    } else {
+      set({ notes: value });
+    }
+  },
+  /**
+   * Sets the notes
+   */
+  /**
+   * The notes that have their content visible, including the main note and the stacked notes
    */
   openNotes: [],
   /**
@@ -28,3 +46,5 @@ export const useStore = create<Store>((set) => ({
     });
   },
 }));
+
+export const useStore = create(store);

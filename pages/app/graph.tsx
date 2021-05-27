@@ -5,9 +5,9 @@ import { createEditor, Editor, Element, Node } from 'slate';
 import { createClient } from '@supabase/supabase-js';
 import { Note } from 'types/supabase';
 import AppLayout from 'components/AppLayout';
-import useNotes from 'lib/api/useNotes';
 import { ElementType, NoteLink } from 'types/slate';
 import ForceGraph, { GraphData } from 'components/ForceGraph';
+import { useStore } from 'lib/store';
 
 type Props = {
   initialNotes: Array<Note>;
@@ -15,7 +15,7 @@ type Props = {
 
 export default function Graph(props: Props) {
   const { initialNotes } = props;
-  const { data: notes = [] } = useNotes();
+  const notes = useStore((state) => state.notes);
 
   // Set graph dimensions
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -107,7 +107,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
   // Get notes from database
   const { data: notes } = await supabase
     .from<Note>('notes')
-    .select('id, title')
+    .select('id, title, content')
     .eq('user_id', user.id)
     .order('title');
 

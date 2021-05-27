@@ -1,12 +1,21 @@
-import { mutate } from 'swr';
+import { store } from 'lib/store';
 import supabase from 'lib/supabase';
 import { Note } from 'types/supabase';
-import { NOTE_TITLES_KEY } from './useNoteTitles';
 
 export default async function deleteNote(id: string) {
   const response = await supabase.from<Note>('notes').delete().eq('id', id);
 
-  mutate(NOTE_TITLES_KEY); // Update note titles in sidebar
+  // Update note titles in sidebar
+  store.getState().setNotes((notes) => {
+    const index = notes.findIndex((note) => note.id === id);
+    if (index >= 0) {
+      const newNotes = [...notes];
+      newNotes.splice(index, 1);
+      return newNotes;
+    } else {
+      return notes;
+    }
+  });
 
   return response;
 }

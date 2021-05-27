@@ -1,6 +1,6 @@
 import React, { ReactNode, useEffect, useMemo, useState } from 'react';
 import isHotkey from 'is-hotkey';
-import useNoteTitles from 'lib/api/useNoteTitles';
+import { useStore } from 'lib/store';
 import { Note } from 'types/supabase';
 import Sidebar from './Sidebar';
 import FindOrCreateModal from './FindOrCreateModal';
@@ -13,8 +13,14 @@ type Props = {
 
 export default function AppLayout(props: Props) {
   const { children, initialNotes, className } = props;
-  const { data: notes } = useNoteTitles({ initialData: initialNotes });
   const [isFindOrCreateModalOpen, setIsFindOrCreateModalOpen] = useState(false);
+
+  const notes = useStore((state) => state.notes);
+  const setNotes = useStore((state) => state.setNotes);
+
+  useEffect(() => {
+    setNotes(initialNotes);
+  }, [initialNotes, setNotes]);
 
   const hotkeys = useMemo(
     () => [

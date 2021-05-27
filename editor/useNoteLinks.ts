@@ -2,8 +2,8 @@ import { useCallback, useEffect } from 'react';
 import { Descendant, Editor, Range, Transforms } from 'slate';
 import { v4 as uuidv4 } from 'uuid';
 import { ElementType, NoteLink } from 'types/slate';
+import { useStore } from 'lib/store';
 import upsertNote from 'lib/api/upsertNote';
-import useNoteTitles from 'lib/api/useNoteTitles';
 import { useAuth } from 'utils/useAuth';
 import { deleteText } from './transforms';
 
@@ -13,7 +13,7 @@ export default function useNoteLinks(
   editorValue: Descendant[]
 ) {
   const { user } = useAuth();
-  const { data: notes = [] } = useNoteTitles();
+  const notes = useStore((state) => state.notes);
 
   const handleNoteLinks = useCallback(async () => {
     if (!user) {

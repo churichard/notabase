@@ -9,12 +9,11 @@ import {
   Transforms,
 } from 'slate';
 import produce from 'immer';
-import { mutate } from 'swr';
 import { ElementType } from 'types/slate';
 import { Note } from 'types/supabase';
-import useNotes, { NOTES_KEY } from 'lib/api/useNotes';
 import supabase from 'lib/supabase';
 import usePrevious from 'utils/usePrevious';
+import { store, useStore } from 'lib/store';
 
 export type Backlink = {
   id: string;
@@ -33,7 +32,7 @@ type ReturnType = {
 };
 
 export default function useBacklinks(noteId: string) {
-  const { data: notes = [] } = useNotes();
+  const notes = useStore((state) => state.notes);
 
   const { getLinkedBacklinks, getUnlinkedBacklinks } = useBacklinksCache(
     notes,
@@ -224,7 +223,7 @@ const updateBacklinks = async (
   noteId: string,
   backlinks: Backlink[]
 ) => {
-  const updateData = [];
+  const updateData: Pick<Note, 'id' | 'content'>[] = [];
   for (const backlink of backlinks) {
     // TODO: this can still result in a race condition if the content is updated elsewhere
     // after we get the note and before we update the backlinks.
@@ -279,6 +278,18 @@ const updateBacklinks = async (
     });
   }
 
+  // Make sure backlinks are updated locally
+  store.getState().setNotes((notes) => {
+    const newNotes = [...notes];
+    for (const newNote of updateData) {
+      const index = notes.findIndex((note) => note.id === newNote.id);
+      if (index >= 0) {
+        newNotes[index] = { ...newNotes[index], ...newNote };
+      }
+    }
+    return newNotes;
+  });
+
   // It would be better if we could consolidate the update requests into one request
   // See https://github.com/supabase/supabase-js/issues/156
   const promises = [];
@@ -291,15 +302,13 @@ const updateBacklinks = async (
     );
   }
   await Promise.all(promises);
-
-  mutate(NOTES_KEY); // Make sure backlinks are updated
 };
 
 /**
  * Deletes the backlinks on each backlinked note and replaces them with the link text.
  */
 const deleteBacklinks = async (noteId: string, backlinks: Backlink[]) => {
-  const updateData = [];
+  const updateData: Pick<Note, 'id' | 'content'>[] = [];
   for (const backlink of backlinks) {
     // TODO: this can still result in a race condition if the content is updated elsewhere
     // after we get the note and before we update the backlinks.
@@ -331,6 +340,18 @@ const deleteBacklinks = async (noteId: string, backlinks: Backlink[]) => {
     });
   }
 
+  // Make sure backlinks are updated locally
+  store.getState().setNotes((notes) => {
+    const newNotes = [...notes];
+    for (const newNote of updateData) {
+      const index = notes.findIndex((note) => note.id === newNote.id);
+      if (index >= 0) {
+        newNotes[index] = { ...newNotes[index], ...newNote };
+      }
+    }
+    return newNotes;
+  });
+
   // It would be better if we could consolidate the update requests into one request
   // See https://github.com/supabase/supabase-js/issues/156
   const promises = [];
@@ -343,6 +364,4 @@ const deleteBacklinks = async (noteId: string, backlinks: Backlink[]) => {
     );
   }
   await Promise.all(promises);
-
-  mutate(NOTES_KEY); // Make sure backlinks are updated
 };
