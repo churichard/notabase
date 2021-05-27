@@ -1,8 +1,7 @@
 import React, { ReactNode, useEffect, useMemo } from 'react';
-import { useAtom } from 'jotai';
 import isHotkey from 'is-hotkey';
 import useNoteTitles from 'lib/api/useNoteTitles';
-import { isFindOrCreateModalOpen } from 'lib/state';
+import { useStore } from 'lib/state';
 import { Note } from 'types/supabase';
 import Sidebar from './Sidebar';
 import FindOrCreateModal from './FindOrCreateModal';
@@ -16,16 +15,21 @@ type Props = {
 export default function AppLayout(props: Props) {
   const { children, initialNotes, className } = props;
   const { data: notes } = useNoteTitles({ initialData: initialNotes });
-  const [isModalOpen, setIsModalOpen] = useAtom(isFindOrCreateModalOpen);
+  const isFindOrCreateModalOpen = useStore(
+    (state) => state.isFindOrCreateModalOpen
+  );
+  const setIsFindOrCreateModalOpen = useStore(
+    (state) => state.setIsFindOrCreateModalOpen
+  );
 
   const hotkeys = useMemo(
     () => [
       {
         hotkey: 'mod+p',
-        callback: () => setIsModalOpen((isOpen) => !isOpen),
+        callback: () => setIsFindOrCreateModalOpen(!isFindOrCreateModalOpen),
       },
     ],
-    [setIsModalOpen]
+    [isFindOrCreateModalOpen, setIsFindOrCreateModalOpen]
   );
 
   useEffect(() => {
@@ -46,7 +50,10 @@ export default function AppLayout(props: Props) {
     <div className={`flex h-screen ${className}`}>
       <Sidebar notes={notes} />
       {children}
-      <FindOrCreateModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} />
+      <FindOrCreateModal
+        isOpen={isFindOrCreateModalOpen}
+        setIsOpen={setIsFindOrCreateModalOpen}
+      />
     </div>
   );
 }

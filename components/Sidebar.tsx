@@ -12,11 +12,10 @@ import {
   IconMail,
   IconMessage,
 } from '@tabler/icons';
-import { useAtom } from 'jotai';
 import { usePopper } from 'react-popper';
 import { Note } from 'types/supabase';
 import { useAuth } from 'utils/useAuth';
-import { isFindOrCreateModalOpen, openNotesAtom } from 'lib/state';
+import { useStore } from 'lib/state';
 import deleteNote from 'lib/api/deleteNote';
 import useBacklinks from 'editor/useBacklinks';
 import Portal from './Portal';
@@ -27,7 +26,12 @@ type Props = {
 
 export default function Sidebar(props: Props) {
   const { notes } = props;
-  const [, setIsModalOpen] = useAtom(isFindOrCreateModalOpen);
+  const isFindOrCreateModalOpen = useStore(
+    (state) => state.isFindOrCreateModalOpen
+  );
+  const setIsFindOrCreateModalOpen = useStore(
+    (state) => state.setIsFindOrCreateModalOpen
+  );
   const router = useRouter();
   const queryNoteId = router.query.id;
 
@@ -37,7 +41,7 @@ export default function Sidebar(props: Props) {
       <SidebarItem>
         <button
           className="flex items-center w-full px-6 py-1 text-left"
-          onClick={() => setIsModalOpen((isOpen) => !isOpen)}
+          onClick={() => setIsFindOrCreateModalOpen(!isFindOrCreateModalOpen)}
         >
           <IconSearch className="mr-1 text-gray-800" size={20} />
           <span>Find or create note</span>
@@ -179,7 +183,7 @@ const NoteLinkDropdown = (props: NoteLinkDropdownProps) => {
   const { note } = props;
   const router = useRouter();
   const { deleteBacklinks } = useBacklinks(note.id);
-  const [openNotes] = useAtom(openNotesAtom);
+  const openNotes = useStore((state) => state.openNotes);
 
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [popperElement, setPopperElement] =

@@ -3,11 +3,10 @@ import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
 import { createClient } from '@supabase/supabase-js';
-import { useAtom } from 'jotai';
 import AppLayout from 'components/AppLayout';
 import Note from 'components/Note';
 import { Note as NoteType } from 'types/supabase';
-import { openNotesAtom } from 'lib/state';
+import { useStore } from 'lib/state';
 
 type Props = {
   initialNotes: Array<NoteType>;
@@ -17,7 +16,8 @@ type Props = {
 
 export default function NotePage(props: Props) {
   const { initialNotes, mainNote, initialStackedNotes } = props;
-  const [openNotes, setOpenNotes] = useAtom(openNotesAtom);
+  const openNotes = useStore((state) => state.openNotes);
+  const setOpenNotes = useStore((state) => state.setOpenNotes);
 
   useEffect(() => {
     const openNotes = [];

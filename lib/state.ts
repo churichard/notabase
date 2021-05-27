@@ -1,11 +1,41 @@
 import { MutableRefObject } from 'react';
-import { atom } from 'jotai';
+import create from 'zustand';
 import { Note } from 'types/supabase';
 
-// Stores the notes that are open, including the main note and the stacked notes
-export const openNotesAtom = atom<
-  { note: Note; ref: MutableRefObject<HTMLElement | null> }[]
->([]);
+type OpenNote = { note: Note; ref: MutableRefObject<HTMLElement | null> };
+type Store = {
+  openNotes: OpenNote[];
+  setOpenNotes: (openNotes: OpenNote[], index?: number) => void;
+  isFindOrCreateModalOpen: boolean;
+  setIsFindOrCreateModalOpen: (isFindOrCreateModalOpen: boolean) => void;
+};
 
-// Stores whether the find or create modal is open
-export const isFindOrCreateModalOpen = atom<boolean>(false);
+export const useStore = create<Store>((set) => ({
+  /**
+   * Stores the notes that are open, including the main note and the stacked notes
+   */
+  openNotes: [],
+  /**
+   * Replaces the open notes at the given index (0 by default)
+   */
+  setOpenNotes: (newOpenNotes: OpenNote[], index?: number) => {
+    set((state) => {
+      if (!index) {
+        return { openNotes: newOpenNotes };
+      }
+      // Replace the notes after the current note with the new note
+      const newNotes = [...state.openNotes];
+      newNotes.splice(index, state.openNotes.length - index, ...newOpenNotes);
+      return { openNotes: newNotes };
+    });
+  },
+  /**
+   * Stores whether the find or create modal is open
+   */
+  isFindOrCreateModalOpen: false,
+  /**
+   * Sets isFindOrCreateModalOpen
+   */
+  setIsFindOrCreateModalOpen: (isFindOrCreateModalOpen: boolean) =>
+    set({ isFindOrCreateModalOpen }),
+}));

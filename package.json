@@ -19,7 +19,6 @@
     "fuse.js": "^6.4.6",
     "immer": "^9.0.2",
     "is-hotkey": "^0.2.0",
-    "jotai": "^0.16.7",
     "next": "^10.2.3",
     "nprogress": "^0.2.0",
     "postcss": "^8.3.0",
@@ -32,7 +31,8 @@
     "slate-react": "^0.63.0",
     "swr": "^0.5.6",
     "tailwindcss": "^2.1.2",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "zustand": "^3.5.1"
   },
   "devDependencies": {
     "@types/d3": "^6.7.0",
