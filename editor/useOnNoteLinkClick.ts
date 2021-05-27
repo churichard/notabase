@@ -2,7 +2,7 @@ import { createRef, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import { useAuth } from 'utils/useAuth';
 import { useCurrentNote } from 'utils/useCurrentNote';
-import { useStore } from 'lib/state';
+import { useStore } from 'lib/store';
 import supabase from 'lib/supabase';
 import { Note } from 'types/supabase';
 

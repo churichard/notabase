@@ -22,7 +22,7 @@ import {
 import { usePopper } from 'react-popper';
 import { Note } from 'types/supabase';
 import { useAuth } from 'utils/useAuth';
-import { useStore } from 'lib/state';
+import { useStore } from 'lib/store';
 import deleteNote from 'lib/api/deleteNote';
 import useBacklinks from 'editor/useBacklinks';
 import Portal from './Portal';
