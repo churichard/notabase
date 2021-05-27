@@ -6,8 +6,6 @@ type OpenNote = { note: Note; ref: MutableRefObject<HTMLElement | null> };
 type Store = {
   openNotes: OpenNote[];
   setOpenNotes: (openNotes: OpenNote[], index?: number) => void;
-  isFindOrCreateModalOpen: boolean;
-  setIsFindOrCreateModalOpen: (isFindOrCreateModalOpen: boolean) => void;
 };
 
 export const useStore = create<Store>((set) => ({
@@ -29,13 +27,4 @@ export const useStore = create<Store>((set) => ({
       return { openNotes: newNotes };
     });
   },
-  /**
-   * Stores whether the find or create modal is open
-   */
-  isFindOrCreateModalOpen: false,
-  /**
-   * Sets isFindOrCreateModalOpen
-   */
-  setIsFindOrCreateModalOpen: (isFindOrCreateModalOpen: boolean) =>
-    set({ isFindOrCreateModalOpen }),
 }));
