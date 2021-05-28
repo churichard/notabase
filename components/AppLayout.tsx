@@ -1,7 +1,9 @@
 import React, { ReactNode, useEffect, useMemo, useState } from 'react';
 import isHotkey from 'is-hotkey';
 import { useStore } from 'lib/store';
+import supabase from 'lib/supabase';
 import { Note } from 'types/supabase';
+import { useAuth } from 'utils/useAuth';
 import Sidebar from './Sidebar';
 import FindOrCreateModal from './FindOrCreateModal';
 
@@ -13,14 +15,42 @@ type Props = {
 
 export default function AppLayout(props: Props) {
   const { children, initialNotes, className } = props;
+  const { user } = useAuth();
   const [isFindOrCreateModalOpen, setIsFindOrCreateModalOpen] = useState(false);
 
   const notes = useStore((state) => state.notes);
   const setNotes = useStore((state) => state.setNotes);
+  const upsertNote = useStore((state) => state.upsertNote);
+  const updateNote = useStore((state) => state.updateNote);
+  const deleteNote = useStore((state) => state.deleteNote);
 
   useEffect(() => {
     setNotes(initialNotes);
   }, [initialNotes, setNotes]);
+
+  useEffect(() => {
+    if (!user) {
+      return;
+    }
+
+    // Subscribe to changes on the notes table for the logged in user
+    const subscription = supabase
+      .from<Note>(`notes:user_id=eq.${user.id}`)
+      .on('*', (payload) => {
+        if (payload.eventType === 'INSERT') {
+          upsertNote(payload.new);
+        } else if (payload.eventType === 'UPDATE') {
+          updateNote(payload.new);
+        } else if (payload.eventType === 'DELETE') {
+          deleteNote(payload.old.id);
+        }
+      })
+      .subscribe();
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [user, upsertNote, updateNote, deleteNote]);
 
   const hotkeys = useMemo(
     () => [
