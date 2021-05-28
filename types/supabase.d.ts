@@ -1,4 +1,5 @@
 import { Descendant } from 'slate';
+import type { PickPartial } from 'utils/types';
 
 export type User = {
   id: string;
@@ -10,9 +11,6 @@ export type Note = {
   content: Descendant[];
   title: string;
 };
-
-type PickPartial<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>> &
-  Partial<Pick<T, K>>;
 
 export type PartialNoteWithRequiredId = PickPartial<
   Note,
