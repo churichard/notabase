@@ -1,8 +1,8 @@
 import React from 'react';
-import { GetServerSideProps } from 'next';
+import type { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import { createClient } from '@supabase/supabase-js';
-import { Note } from 'types/supabase';
+import type { Note } from 'types/supabase';
 import AppLayout from 'components/AppLayout';
 
 type Props = {

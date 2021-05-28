@@ -1,12 +1,8 @@
-import { Editor, Element, Transforms, Range, Point, Text, Path } from 'slate';
+import type { Path } from 'slate';
+import { Editor, Element, Transforms, Range, Point, Text } from 'slate';
 import { v4 as uuidv4 } from 'uuid';
-import {
-  ElementType,
-  ExternalLink,
-  ListElement,
-  Mark,
-  NoteLink,
-} from 'types/slate';
+import type { ExternalLink, ListElement, NoteLink } from 'types/slate';
+import { ElementType, Mark } from 'types/slate';
 import { isMark } from 'editor/formatting';
 import isUrl from 'utils/isUrl';
 import { store } from 'lib/store';

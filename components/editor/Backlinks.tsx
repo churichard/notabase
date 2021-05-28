@@ -1,6 +1,7 @@
 import React from 'react';
 import { useCurrentNote } from 'utils/useCurrentNote';
-import useBacklinks, { Backlink } from 'editor/useBacklinks';
+import type { Backlink } from 'editor/useBacklinks';
+import useBacklinks from 'editor/useBacklinks';
 import useOnNoteLinkClick from 'editor/useOnNoteLinkClick';
 
 type Props = {

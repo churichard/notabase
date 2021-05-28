@@ -1,12 +1,9 @@
-import React, {
-  KeyboardEvent,
-  MouseEvent,
-  useCallback,
-  useMemo,
-  useState,
-} from 'react';
-import { Range, Editor as SlateEditor, Descendant, Transforms } from 'slate';
-import { Editable, ReactEditor, RenderLeafProps, Slate } from 'slate-react';
+import type { KeyboardEvent, MouseEvent } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
+import type { Descendant } from 'slate';
+import { Range, Editor as SlateEditor, Transforms } from 'slate';
+import type { RenderLeafProps } from 'slate-react';
+import { Editable, ReactEditor, Slate } from 'slate-react';
 import { isHotkey } from 'is-hotkey';
 import {
   handleIndent,

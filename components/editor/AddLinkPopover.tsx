@@ -1,13 +1,9 @@
-import React, {
-  useMemo,
-  useRef,
-  useState,
-  MouseEvent,
-  useCallback,
-} from 'react';
+import type { MouseEvent } from 'react';
+import React, { useMemo, useRef, useState, useCallback } from 'react';
 import { Transforms } from 'slate';
 import { ReactEditor, useSlate } from 'slate-react';
-import { IconUnlink, IconLink, IconFilePlus, TablerIcon } from '@tabler/icons';
+import type { TablerIcon } from '@tabler/icons';
+import { IconUnlink, IconLink, IconFilePlus } from '@tabler/icons';
 import { v4 as uuidv4 } from 'uuid';
 import upsertNote from 'lib/api/upsertNote';
 import {
@@ -20,7 +16,7 @@ import { useAuth } from 'utils/useAuth';
 import useNoteSearch from 'utils/useNoteSearch';
 import { caseInsensitiveStringEqual } from 'utils/string';
 import Popover from './Popover';
-import { AddLinkPopoverState } from './Editor';
+import type { AddLinkPopoverState } from './Editor';
 
 enum OptionType {
   NOTE,

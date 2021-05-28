@@ -1,12 +1,12 @@
+import type { ReactNode } from 'react';
 import React, {
   useState,
   useEffect,
   useContext,
   createContext,
-  ReactNode,
   useCallback,
 } from 'react';
-import { User, GoTrueClient } from '@supabase/supabase-js';
+import type { User, GoTrueClient } from '@supabase/supabase-js';
 import { useRouter } from 'next/router';
 import supabase from 'lib/supabase';
 

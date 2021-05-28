@@ -1,13 +1,9 @@
-import React, {
-  useMemo,
-  useState,
-  MouseEvent,
-  useCallback,
-  useEffect,
-} from 'react';
+import type { MouseEvent } from 'react';
+import React, { useMemo, useState, useCallback, useEffect } from 'react';
 import { Editor, Range } from 'slate';
 import { useSlate } from 'slate-react';
-import { IconFilePlus, TablerIcon } from '@tabler/icons';
+import type { TablerIcon } from '@tabler/icons';
+import { IconFilePlus } from '@tabler/icons';
 import { v4 as uuidv4 } from 'uuid';
 import upsertNote from 'lib/api/upsertNote';
 import { insertNoteLink } from 'editor/formatting';

@@ -1,7 +1,9 @@
-import React, { ReactNode } from 'react';
-import { RenderElementProps } from 'slate-react';
+import type { ReactNode } from 'react';
+import React from 'react';
+import type { RenderElementProps } from 'slate-react';
 import Tippy from '@tippyjs/react';
-import { ElementType, ExternalLink, NoteLink } from 'types/slate';
+import type { ExternalLink, NoteLink } from 'types/slate';
+import { ElementType } from 'types/slate';
 import useOnNoteLinkClick from 'editor/useOnNoteLinkClick';
 
 export default function EditorElement({

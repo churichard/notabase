@@ -1,16 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react';
-import {
-  createEditor,
-  Descendant,
-  Editor,
-  Element,
-  Node,
-  Path,
-  Transforms,
-} from 'slate';
+import type { Descendant, Path } from 'slate';
+import { createEditor, Editor, Element, Node, Transforms } from 'slate';
 import produce from 'immer';
 import { ElementType } from 'types/slate';
-import { Note } from 'types/supabase';
+import type { Note } from 'types/supabase';
 import supabase from 'lib/supabase';
 import usePrevious from 'utils/usePrevious';
 import { store, useStore } from 'lib/store';

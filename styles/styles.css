@@ -16,13 +16,13 @@
   }
 
   .link {
-    @apply text-primary-600 underline
+    @apply underline text-primary-600;
   }
 }
 
 :root {
   /* This is used for the spinner and progress bar */
-  --color-primary-500: #10B981;
+  --color-primary-500: #10b981;
 }
 
 ::-webkit-scrollbar {
@@ -32,9 +32,9 @@
 
 /* Track */
 ::-webkit-scrollbar-track {
-  @apply bg-gray-100; 
+  @apply bg-gray-100;
 }
- 
+
 /* Handle */
 ::-webkit-scrollbar-thumb {
   @apply bg-gray-300;

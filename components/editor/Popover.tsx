@@ -1,7 +1,8 @@
-import React, { ReactNode, useEffect, useState } from 'react';
-import { Range } from 'slate';
+import type { ReactNode } from 'react';
+import React, { useEffect, useState } from 'react';
+import type { Range } from 'slate';
 import { ReactEditor, useSlate } from 'slate-react';
-import { Placement, VirtualElement } from '@popperjs/core';
+import type { Placement, VirtualElement } from '@popperjs/core';
 import { usePopper } from 'react-popper';
 import Portal from 'components/Portal';
 import useOnClickOutside from 'utils/useOnClickOutside';
@@ -24,12 +25,10 @@ export default function Popover(props: Props) {
   } = props;
   const editor = useSlate();
 
-  const [referenceElement, setReferenceElement] = useState<
-    Element | VirtualElement | null
-  >(null);
-  const [popperElement, setPopperElement] = useState<HTMLDivElement | null>(
-    null
-  );
+  const [referenceElement, setReferenceElement] =
+    useState<Element | VirtualElement | null>(null);
+  const [popperElement, setPopperElement] =
+    useState<HTMLDivElement | null>(null);
   const { styles, attributes } = usePopper(referenceElement, popperElement, {
     placement,
     modifiers: [

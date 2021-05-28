@@ -1,13 +1,5 @@
-import {
-  Node,
-  Editor,
-  Element,
-  Transforms,
-  Range,
-  Text,
-  Path,
-  Point,
-} from 'slate';
+import type { Point } from 'slate';
+import { Node, Editor, Element, Transforms, Range, Text, Path } from 'slate';
 import { isListType } from 'editor/formatting';
 import { ElementType } from 'types/slate';
 

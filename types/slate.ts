@@ -1,6 +1,6 @@
-import { BaseEditor, Descendant } from 'slate';
-import { ReactEditor } from 'slate-react';
-import { HistoryEditor } from 'slate-history';
+import type { BaseEditor, Descendant } from 'slate';
+import type { ReactEditor } from 'slate-react';
+import type { HistoryEditor } from 'slate-history';
 
 export type NotabaseEditor = BaseEditor & ReactEditor & HistoryEditor;
 

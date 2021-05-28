@@ -1,11 +1,6 @@
 import { Editor, Element, Transforms, Range, Text, Node } from 'slate';
-import {
-  ElementType,
-  ExternalLink,
-  NoteLink,
-  ListElement,
-  Mark,
-} from 'types/slate';
+import type { ExternalLink, NoteLink, ListElement } from 'types/slate';
+import { ElementType, Mark } from 'types/slate';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const isMark = (type: any): type is Mark => {

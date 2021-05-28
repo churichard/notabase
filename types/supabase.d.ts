@@ -1,5 +1,4 @@
-import { Descendant } from 'slate';
-import type { PickPartial } from 'utils/types';
+import type { Descendant } from 'slate';
 
 export type User = {
   id: string;
@@ -11,8 +10,3 @@ export type Note = {
   content: Descendant[];
   title: string;
 };
-
-export type PartialNoteWithRequiredId = PickPartial<
-  Note,
-  'user_id' | 'content' | 'title'
->;

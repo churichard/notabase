@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "env TAILWIND_MODE=watch NODE_ENV=development next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "lint": "eslint . --ext .tsx,.ts",
+    "prettier": "prettier --write ."
   },
   "dependencies": {
     "@headlessui/react": "^1.2.0",

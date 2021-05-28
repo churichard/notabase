@@ -1,8 +1,9 @@
-import React, { ReactNode, useEffect, useMemo, useState } from 'react';
+import type { ReactNode } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import isHotkey from 'is-hotkey';
 import { useStore } from 'lib/store';
 import supabase from 'lib/supabase';
-import { Note } from 'types/supabase';
+import type { Note } from 'types/supabase';
 import { useAuth } from 'utils/useAuth';
 import Sidebar from './Sidebar';
 import FindOrCreateModal from './FindOrCreateModal';

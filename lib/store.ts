@@ -1,8 +1,9 @@
-import { MutableRefObject } from 'react';
+import type { MutableRefObject } from 'react';
 import create from 'zustand';
 import createVanilla from 'zustand/vanilla';
-import { Note, PartialNoteWithRequiredId } from 'types/supabase';
+import type { Note } from 'types/supabase';
 import { caseInsensitiveStringCompare } from 'utils/string';
+import type { NoteUpdate } from './api/updateNote';
 
 type OpenNote = { note: Note; ref: MutableRefObject<HTMLElement | null> };
 
@@ -10,7 +11,7 @@ type Store = {
   notes: Note[];
   setNotes: (value: Note[] | ((value: Note[]) => Note[])) => void;
   upsertNote: (note: Note) => void;
-  updateNote: (note: PartialNoteWithRequiredId) => void;
+  updateNote: (note: NoteUpdate) => void;
   deleteNote: (noteId: string) => void;
   openNotes: OpenNote[];
   setOpenNotes: (openNotes: OpenNote[], index?: number) => void;
@@ -48,7 +49,7 @@ export const store = createVanilla<Store>((set, get) => ({
       };
     });
   },
-  updateNote: (note: PartialNoteWithRequiredId) => {
+  updateNote: (note: NoteUpdate) => {
     const notes = get().notes;
     const index = notes.findIndex((n) => n.id === note.id);
 

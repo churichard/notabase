@@ -1,12 +1,14 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { GetServerSideProps } from 'next';
+import type { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import { createEditor, Editor, Element, Node } from 'slate';
 import { createClient } from '@supabase/supabase-js';
-import { Note } from 'types/supabase';
+import type { Note } from 'types/supabase';
 import AppLayout from 'components/AppLayout';
-import { ElementType, NoteLink } from 'types/slate';
-import ForceGraph, { GraphData } from 'components/ForceGraph';
+import type { NoteLink } from 'types/slate';
+import { ElementType } from 'types/slate';
+import type { GraphData } from 'components/ForceGraph';
+import ForceGraph from 'components/ForceGraph';
 import { useStore } from 'lib/store';
 
 type Props = {

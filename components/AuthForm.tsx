@@ -1,4 +1,5 @@
-import React, { FormEvent, useCallback, useState } from 'react';
+import type { FormEvent } from 'react';
+import React, { useCallback, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useAuth } from 'utils/useAuth';
 
@@ -12,10 +13,8 @@ export default function AuthForm(props: Props) {
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [
-    showEmailConfirmationMessage,
-    setShowEmailConfirmationMessage,
-  ] = useState(false);
+  const [showEmailConfirmationMessage, setShowEmailConfirmationMessage] =
+    useState(false);
 
   const onSubmit = useCallback(
     async (event: FormEvent<HTMLFormElement>) => {

@@ -1,5 +1,5 @@
+import type { ForwardedRef } from 'react';
 import React, {
-  ForwardedRef,
   forwardRef,
   useCallback,
   useEffect,
@@ -8,18 +8,20 @@ import React, {
   useState,
 } from 'react';
 import dynamic from 'next/dynamic';
-import { createEditor, Descendant, Transforms } from 'slate';
+import type { Descendant } from 'slate';
+import { createEditor, Transforms } from 'slate';
 import { withReact } from 'slate-react';
 import { withHistory } from 'slate-history';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
 import Title from 'components/editor/Title';
-import { Note as NoteType, PartialNoteWithRequiredId } from 'types/supabase';
+import type { Note as NoteType } from 'types/supabase';
 import useBacklinks from 'editor/useBacklinks';
 import withBlockBreakout from 'editor/plugins/withBlockBreakout';
 import withAutoMarkdown from 'editor/plugins/withAutoMarkdown';
 import withLinks from 'editor/plugins/withLinks';
 import withDeleteBackwardWorkaround from 'editor/plugins/withDeleteBackwardWorkaround';
+import type { NoteUpdate } from 'lib/api/updateNote';
 import updateNote from 'lib/api/updateNote';
 import { ProvideCurrentNote } from 'utils/useCurrentNote';
 import Backlinks from './editor/Backlinks';
@@ -89,7 +91,7 @@ function Note(props: Props, ref: ForwardedRef<HTMLDivElement>) {
   );
 
   const handleNoteUpdate = useCallback(
-    async (note: PartialNoteWithRequiredId) => {
+    async (note: NoteUpdate) => {
       const { error } = await updateNote(note);
 
       if (error) {
@@ -121,7 +123,7 @@ function Note(props: Props, ref: ForwardedRef<HTMLDivElement>) {
 
   // Save the note in the database if it changes and it hasn't been saved yet
   useEffect(() => {
-    const newNote: PartialNoteWithRequiredId = { id: currentNote.id };
+    const newNote: NoteUpdate = { id: currentNote.id };
     if (!syncState.isContentSynced) {
       newNote.content = currentNote.content;
     }

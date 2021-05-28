@@ -1,11 +1,5 @@
-import React, {
-  Dispatch,
-  ReactNode,
-  SetStateAction,
-  useCallback,
-  useRef,
-  useState,
-} from 'react';
+import type { Dispatch, ReactNode, SetStateAction } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { Menu } from '@headlessui/react';
@@ -20,7 +14,7 @@ import {
   IconMessage,
 } from '@tabler/icons';
 import { usePopper } from 'react-popper';
-import { Note } from 'types/supabase';
+import type { Note } from 'types/supabase';
 import { useAuth } from 'utils/useAuth';
 import { useStore } from 'lib/store';
 import deleteNote from 'lib/api/deleteNote';

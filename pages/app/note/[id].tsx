@@ -1,11 +1,11 @@
 import React, { createRef, useEffect } from 'react';
-import { GetServerSideProps } from 'next';
+import type { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
 import { createClient } from '@supabase/supabase-js';
 import AppLayout from 'components/AppLayout';
 import Note from 'components/Note';
-import { Note as NoteType } from 'types/supabase';
+import type { Note as NoteType } from 'types/supabase';
 import { useStore } from 'lib/store';
 
 type Props = {

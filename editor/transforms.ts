@@ -1,4 +1,5 @@
-import { Editor, Transforms, Path } from 'slate';
+import type { Editor, Path } from 'slate';
+import { Transforms } from 'slate';
 
 // Deletes `length` characters at the specified path and offset
 export const deleteText = (

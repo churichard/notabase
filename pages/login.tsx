@@ -1,5 +1,5 @@
 import React from 'react';
-import { GetServerSideProps } from 'next';
+import type { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
 import { createClient } from '@supabase/supabase-js';
@@ -29,20 +29,19 @@ export default function Login() {
   );
 }
 
-export const getServerSideProps: GetServerSideProps<
-  Record<string, never>
-> = async ({ req }) => {
-  // Create admin supabase client on server
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL ?? '',
-    process.env.SUPABASE_SERVICE_KEY ?? ''
-  );
+export const getServerSideProps: GetServerSideProps<Record<string, never>> =
+  async ({ req }) => {
+    // Create admin supabase client on server
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL ?? '',
+      process.env.SUPABASE_SERVICE_KEY ?? ''
+    );
 
-  // Get authed user
-  const { user } = await supabase.auth.api.getUserByCookie(req);
-  if (user) {
-    return { props: {}, redirect: { destination: '/app', permanent: false } };
-  }
+    // Get authed user
+    const { user } = await supabase.auth.api.getUserByCookie(req);
+    if (user) {
+      return { props: {}, redirect: { destination: '/app', permanent: false } };
+    }
 
-  return { props: {} };
-};
+    return { props: {} };
+  };

@@ -4,7 +4,7 @@ import { useAuth } from 'utils/useAuth';
 import { useCurrentNote } from 'utils/useCurrentNote';
 import { useStore } from 'lib/store';
 import supabase from 'lib/supabase';
-import { Note } from 'types/supabase';
+import type { Note } from 'types/supabase';
 
 export default function useOnNoteLinkClick() {
   const { user } = useAuth();

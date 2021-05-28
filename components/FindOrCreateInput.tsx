@@ -1,12 +1,8 @@
-import React, {
-  ForwardedRef,
-  forwardRef,
-  useCallback,
-  useMemo,
-  useState,
-} from 'react';
+import type { ForwardedRef } from 'react';
+import React, { forwardRef, useCallback, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
-import { IconFilePlus, IconSearch, TablerIcon } from '@tabler/icons';
+import type { TablerIcon } from '@tabler/icons';
+import { IconFilePlus, IconSearch } from '@tabler/icons';
 import upsertNote from 'lib/api/upsertNote';
 import { useAuth } from 'utils/useAuth';
 import useNoteSearch from 'utils/useNoteSearch';

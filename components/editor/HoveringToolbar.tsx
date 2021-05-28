@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { useSlate } from 'slate-react';
+import type { TablerIcon } from '@tabler/icons';
 import {
   IconBold,
   IconItalic,
@@ -12,7 +13,6 @@ import {
   IconList,
   IconListNumbers,
   IconLink,
-  TablerIcon,
 } from '@tabler/icons';
 import {
   toggleMark,
@@ -22,7 +22,7 @@ import {
 } from 'editor/formatting';
 import { ElementType, Mark } from 'types/slate';
 import Popover from './Popover';
-import { AddLinkPopoverState } from './Editor';
+import type { AddLinkPopoverState } from './Editor';
 
 type Props = {
   setAddLinkPopoverState: (state: AddLinkPopoverState) => void;

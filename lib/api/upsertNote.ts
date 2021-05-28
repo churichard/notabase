@@ -1,11 +1,11 @@
 import { store } from 'lib/store';
 import supabase from 'lib/supabase';
-import { Note } from 'types/supabase';
+import type { Note } from 'types/supabase';
 import type { PickPartial } from 'types/utils';
 
-type UpsertNote = PickPartial<Note, 'id' | 'content'>;
+type NoteUpsert = PickPartial<Note, 'id' | 'content'>;
 
-export default async function upsertNote(note: UpsertNote) {
+export default async function upsertNote(note: NoteUpsert) {
   const { data } = await supabase
     .from<Note>('notes')
     .upsert(note, { onConflict: 'user_id, title' })
