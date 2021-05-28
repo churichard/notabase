@@ -48,7 +48,7 @@ export const store = createVanilla<Store>((set, get) => ({
       };
     });
   },
-  updateNote: (note: Partial<Note>) => {
+  updateNote: (note: PartialNoteWithRequiredId) => {
     const notes = get().notes;
     const index = notes.findIndex((n) => n.id === note.id);
 

@@ -14,7 +14,6 @@ import {
   isElementActive,
   toggleMark,
 } from 'editor/formatting';
-import useNoteLinks from 'editor/useNoteLinks';
 import { ElementType, Mark } from 'types/slate';
 import HoveringToolbar from './HoveringToolbar';
 import AddLinkPopover from './AddLinkPopover';
@@ -36,7 +35,6 @@ type Props = {
 
 export default function Editor(props: Props) {
   const { className, editor, value, setValue } = props;
-  useNoteLinks(editor, value);
 
   const renderElement = useCallback(
     (props) => <EditorElement {...props} />,

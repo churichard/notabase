@@ -1,7 +1,17 @@
 import { Editor, Element, Transforms, Range, Point, Text, Path } from 'slate';
-import { ElementType, ExternalLink, ListElement, Mark } from 'types/slate';
+import { v4 as uuidv4 } from 'uuid';
+import {
+  ElementType,
+  ExternalLink,
+  ListElement,
+  Mark,
+  NoteLink,
+} from 'types/slate';
 import { isMark } from 'editor/formatting';
 import isUrl from 'utils/isUrl';
+import { store } from 'lib/store';
+import upsertNote from 'lib/api/upsertNote';
+import supabase from 'lib/supabase';
 
 const BLOCK_SHORTCUTS: Array<
   | {
@@ -32,7 +42,7 @@ const BLOCK_SHORTCUTS: Array<
 
 const INLINE_SHORTCUTS: Array<{
   match: RegExp;
-  type: Mark | ElementType.ExternalLink;
+  type: Mark | ElementType.ExternalLink | ElementType.NoteLink;
 }> = [
   { match: /(?:^|\s)(\*\*)([^*]+)(\*\*)/, type: Mark.Bold },
   { match: /(?:^|\s)(__)([^_]+)(__)/, type: Mark.Bold },
@@ -40,6 +50,7 @@ const INLINE_SHORTCUTS: Array<{
   { match: /(?:^|\s)(_)([^_]+)(_)/, type: Mark.Italic },
   { match: /(?:^|\s)(`)(.+)(`)/, type: Mark.Code },
   { match: /(?:^|\s)(\[)(.+)(\]\()(.+)(\))/, type: ElementType.ExternalLink },
+  { match: /(?:^|\s)(\[\[)(.+)(\]\])/, type: ElementType.NoteLink },
 ];
 
 // Add auto-markdown formatting shortcuts
@@ -181,6 +192,58 @@ const withAutoMarkdown = (editor: Editor) => {
           children: [],
         };
         Transforms.wrapNodes(editor, link, { at: linkTextRange, split: true });
+
+        return;
+      } else if (type === ElementType.NoteLink) {
+        const [, startMark, noteTitle, endMark] = result;
+        const endMarkLength = endMark.length - 1; // The last character is not in the editor
+
+        // Delete the ending mark
+        deleteText(editor, selectionPath, endOfSelection, endMarkLength);
+        endOfSelection -= endMarkLength;
+
+        // Delete the start mark
+        deleteText(
+          editor,
+          selectionPath,
+          endOfSelection - noteTitle.length,
+          startMark.length
+        );
+        endOfSelection -= startMark.length;
+
+        // Get or generate note id
+        let noteId;
+        const notes = store.getState().notes;
+        const matchingNote = notes.find((note) => note.title === noteTitle);
+        if (matchingNote) {
+          noteId = matchingNote.id;
+        } else {
+          const userId = supabase.auth.user()?.id;
+          noteId = uuidv4();
+          if (userId) {
+            upsertNote({ id: noteId, user_id: userId, title: noteTitle });
+          }
+        }
+
+        // Wrap text in a link
+        const noteTitleRange = {
+          anchor: { path: selectionPath, offset: endOfSelection },
+          focus: {
+            path: selectionPath,
+            offset: endOfSelection - noteTitle.length,
+          },
+        };
+        const link: NoteLink = {
+          type: ElementType.NoteLink,
+          noteId,
+          noteTitle,
+          isTextTitle: true,
+          children: [],
+        };
+        Transforms.wrapNodes(editor, link, {
+          at: noteTitleRange,
+          split: true,
+        });
 
         return;
       }
