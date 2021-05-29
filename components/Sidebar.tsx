@@ -1,5 +1,5 @@
-import type { Dispatch, ReactNode, SetStateAction } from 'react';
 import React, { useCallback, useRef, useState } from 'react';
+import type { Dispatch, ReactNode, SetStateAction } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { Menu } from '@headlessui/react';
@@ -29,7 +29,7 @@ type Props = {
 export default function Sidebar(props: Props) {
   const { setIsFindOrCreateModalOpen } = props;
   const notes = useStore((state) =>
-    state.notes.sort((n1, n2) =>
+    [...state.notes].sort((n1, n2) =>
       caseInsensitiveStringCompare(n1.title, n2.title)
     )
   );
