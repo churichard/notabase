@@ -4,9 +4,10 @@ import Head from 'next/head';
 import { createClient } from '@supabase/supabase-js';
 import type { Note } from 'types/supabase';
 import AppLayout from 'components/AppLayout';
+import type { Notes } from 'lib/store';
 
 type Props = {
-  initialNotes: Array<Note>;
+  initialNotes: Notes;
 };
 
 export default function AppHome(props: Props) {
@@ -56,5 +57,13 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
     };
   }
 
-  return { props: { initialNotes: notes ?? [] } };
+  return {
+    props: {
+      initialNotes:
+        notes?.reduce<Record<Note['id'], Note>>((acc, note) => {
+          acc[note.id] = note;
+          return acc;
+        }, {}) ?? {},
+    },
+  };
 };

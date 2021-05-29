@@ -9,10 +9,11 @@ import type { NoteLink } from 'types/slate';
 import { ElementType } from 'types/slate';
 import type { GraphData } from 'components/ForceGraph';
 import ForceGraph from 'components/ForceGraph';
+import type { Notes } from 'lib/store';
 import { useStore } from 'lib/store';
 
 type Props = {
-  initialNotes: Array<Note>;
+  initialNotes: Notes;
 };
 
 export default function Graph(props: Props) {
@@ -40,7 +41,7 @@ export default function Graph(props: Props) {
   // Compute graph data
   const graphData: GraphData = useMemo(() => {
     const data: GraphData = { nodes: [], links: [] };
-    for (const note of notes) {
+    for (const note of Object.values(notes)) {
       const editor = createEditor();
       editor.children = note.content;
 
@@ -113,7 +114,15 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
     .eq('user_id', user.id)
     .order('title');
 
-  return { props: { initialNotes: notes ?? [] } };
+  return {
+    props: {
+      initialNotes:
+        notes?.reduce<Record<Note['id'], Note>>((acc, note) => {
+          acc[note.id] = note;
+          return acc;
+        }, {}) ?? {},
+    },
+  };
 };
 
 const getRadius = (numOfLinks: number) => {
