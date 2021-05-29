@@ -13,9 +13,11 @@ const immer =
   (set, get, api) =>
     config((fn) => set(produce<T>(fn)), get, api);
 
+export type Notes = Record<Note['id'], Note>;
+
 export type Store = {
-  notes: Note[];
-  setNotes: (value: Note[] | ((value: Note[]) => Note[])) => void;
+  notes: Notes;
+  setNotes: (value: Notes | ((value: Notes) => Notes)) => void;
   upsertNote: (note: Note) => void;
   updateNote: (note: NoteUpdate) => void;
   deleteNote: (noteId: string) => void;
@@ -28,11 +30,11 @@ export const store = createVanilla<Store>(
     /**
      * An array of saved notes
      */
-    notes: [],
+    notes: {},
     /**
      * Sets the notes
      */
-    setNotes: (value: Note[] | ((value: Note[]) => Note[])) => {
+    setNotes: (value: Notes | ((value: Notes) => Notes)) => {
       if (typeof value === 'function') {
         set((state) => {
           state.notes = value(state.notes);
@@ -48,12 +50,10 @@ export const store = createVanilla<Store>(
      */
     upsertNote: (note: Note) => {
       set((state) => {
-        const index = state.notes.findIndex((n) => n.id === note.id);
-
-        if (index >= 0) {
-          state.notes[index] = { ...state.notes[index], ...note };
+        if (state.notes[note.id]) {
+          state.notes[note.id] = { ...state.notes[note.id], ...note };
         } else {
-          state.notes.push(note);
+          state.notes[note.id] = note;
         }
       });
     },
@@ -62,10 +62,8 @@ export const store = createVanilla<Store>(
      */
     updateNote: (note: NoteUpdate) => {
       set((state) => {
-        const index = state.notes.findIndex((n) => n.id === note.id);
-
-        if (index >= 0) {
-          state.notes[index] = { ...state.notes[index], ...note };
+        if (state.notes[note.id]) {
+          state.notes[note.id] = { ...state.notes[note.id], ...note };
         }
       });
     },
@@ -74,10 +72,7 @@ export const store = createVanilla<Store>(
      */
     deleteNote: (noteId: string) => {
       set((state) => {
-        const index = state.notes.findIndex((note) => note.id === noteId);
-        if (index >= 0) {
-          state.notes.splice(index, 1);
-        }
+        delete state.notes[noteId];
       });
     },
     /**

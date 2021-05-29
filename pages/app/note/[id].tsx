@@ -7,11 +7,12 @@ import { createClient } from '@supabase/supabase-js';
 import AppLayout from 'components/AppLayout';
 import Note from 'components/Note';
 import type { Note as NoteType } from 'types/supabase';
+import type { Notes } from 'lib/store';
 import { useStore } from 'lib/store';
 import usePrevious from 'utils/usePrevious';
 
 type Props = {
-  initialNotes: Array<NoteType>;
+  initialNotes: Notes;
 };
 
 export default function NotePage(props: Props) {
@@ -29,7 +30,7 @@ export default function NotePage(props: Props) {
   const openNotes = useMemo(
     () =>
       openNoteIds
-        .map((openNoteId) => notes.find((note) => note.id === openNoteId))
+        .map((openNoteId) => notes[openNoteId])
         .filter((openNote): openNote is NoteType => !!openNote),
     [openNoteIds, notes]
   );
@@ -137,5 +138,13 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
     .eq('user_id', user.id)
     .order('title');
 
-  return { props: { initialNotes: notes ?? [] } };
+  return {
+    props: {
+      initialNotes:
+        notes?.reduce<Record<NoteType['id'], NoteType>>((acc, note) => {
+          acc[note.id] = note;
+          return acc;
+        }, {}) ?? {},
+    },
+  };
 };

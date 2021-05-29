@@ -6,6 +6,7 @@ import { ElementType } from 'types/slate';
 import type { Note } from 'types/supabase';
 import supabase from 'lib/supabase';
 import usePrevious from 'utils/usePrevious';
+import type { Notes } from 'lib/store';
 import { store, useStore } from 'lib/store';
 
 export type Backlink = {
@@ -60,7 +61,7 @@ type BacklinkCache = {
   shouldRecompute: boolean;
 };
 
-function useBacklinksCache(notes: Note[], noteId: string) {
+function useBacklinksCache(notes: Notes, noteId: string) {
   const linkedCache = useRef<BacklinkCache>({
     backlinks: [],
     shouldRecompute: true,
@@ -72,11 +73,6 @@ function useBacklinksCache(notes: Note[], noteId: string) {
 
   const previousNotes = usePrevious(notes);
   const previousNoteId = usePrevious(noteId);
-
-  const noteTitle = useMemo(
-    () => notes.find((note) => note.id === noteId)?.title,
-    [notes, noteId]
-  );
 
   useEffect(() => {
     // Only recompute backlinks if the props have changed
@@ -105,7 +101,7 @@ function useBacklinksCache(notes: Note[], noteId: string) {
       ),
     getUnlinkedBacklinks: () =>
       getBacklinks(unlinkedCache.current, () =>
-        computeUnlinkedBacklinks(notes, noteTitle)
+        computeUnlinkedBacklinks(notes, notes[noteId].title)
       ),
   };
 }
@@ -114,9 +110,9 @@ function useBacklinksCache(notes: Note[], noteId: string) {
  * Searches the notes array for note links to the given noteId
  * and returns an array of the matches.
  */
-const computeLinkedBacklinks = (notes: Note[], noteId: string): Backlink[] => {
+const computeLinkedBacklinks = (notes: Notes, noteId: string): Backlink[] => {
   const result: Backlink[] = [];
-  for (const note of notes) {
+  for (const note of Object.values(notes)) {
     const matches = computeLinkedMatches(note.content, noteId);
     if (matches.length > 0) {
       result.push({
@@ -134,7 +130,7 @@ const computeLinkedBacklinks = (notes: Note[], noteId: string): Backlink[] => {
  * and returns an array of the matches.
  */
 const computeUnlinkedBacklinks = (
-  notes: Note[],
+  notes: Notes,
   noteTitle: string | undefined
 ): Backlink[] => {
   if (!noteTitle) {
@@ -142,7 +138,7 @@ const computeUnlinkedBacklinks = (
   }
 
   const result: Backlink[] = [];
-  for (const note of notes) {
+  for (const note of Object.values(notes)) {
     if (note.title === noteTitle) {
       // We skip getting unlinked backlinks if the note titles are the same
       continue;

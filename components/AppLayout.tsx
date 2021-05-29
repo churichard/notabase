@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import React, { useEffect, useMemo, useState } from 'react';
 import isHotkey from 'is-hotkey';
+import type { Notes } from 'lib/store';
 import { useStore } from 'lib/store';
 import supabase from 'lib/supabase';
 import type { Note } from 'types/supabase';
@@ -10,7 +11,7 @@ import FindOrCreateModal from './FindOrCreateModal';
 
 type Props = {
   children: ReactNode;
-  initialNotes: Array<Note>;
+  initialNotes: Notes;
   className?: string;
 };
 

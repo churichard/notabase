@@ -210,7 +210,9 @@ const withAutoMarkdown = (editor: Editor) => {
         // Get or generate note id
         let noteId;
         const notes = store.getState().notes;
-        const matchingNote = notes.find((note) => note.title === noteTitle);
+        const matchingNote = Object.values(notes).find(
+          (note) => note.title === noteTitle
+        );
         if (matchingNote) {
           noteId = matchingNote.id;
         } else {

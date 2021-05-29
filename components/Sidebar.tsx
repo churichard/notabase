@@ -29,7 +29,7 @@ type Props = {
 export default function Sidebar(props: Props) {
   const { setIsFindOrCreateModalOpen } = props;
   const notes = useStore((state) =>
-    [...state.notes].sort((n1, n2) =>
+    Object.values(state.notes).sort((n1, n2) =>
       caseInsensitiveStringCompare(n1.title, n2.title)
     )
   );
