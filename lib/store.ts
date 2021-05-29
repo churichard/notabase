@@ -1,13 +1,7 @@
-import type { MutableRefObject } from 'react';
 import create from 'zustand';
 import createVanilla from 'zustand/vanilla';
 import type { Note } from 'types/supabase';
 import type { NoteUpdate } from './api/updateNote';
-
-type OpenNote = {
-  id: Note['id'];
-  ref: MutableRefObject<HTMLElement | null>;
-};
 
 export type Store = {
   notes: Note[];
@@ -15,8 +9,8 @@ export type Store = {
   upsertNote: (note: Note) => void;
   updateNote: (note: NoteUpdate) => void;
   deleteNote: (noteId: string) => void;
-  openNotes: OpenNote[];
-  setOpenNotes: (openNotes: OpenNote[], index?: number) => void;
+  openNoteIds: Note['id'][];
+  setOpenNoteIds: (openNoteIds: Note['id'][], index?: number) => void;
 };
 
 export const store = createVanilla<Store>((set, get) => ({
@@ -72,21 +66,21 @@ export const store = createVanilla<Store>((set, get) => ({
     }
   },
   /**
-   * The notes that have their content visible, including the main note and the stacked notes
+   * The note ids that have their content visible, including the main note and the stacked notes
    */
-  openNotes: [],
+  openNoteIds: [],
   /**
-   * Replaces the open notes at the given index (0 by default)
+   * Replaces the open note ids at the given index (0 by default)
    */
-  setOpenNotes: (newOpenNotes: OpenNote[], index?: number) => {
+  setOpenNoteIds: (newOpenNoteIds: Note['id'][], index?: number) => {
     if (!index) {
-      set({ openNotes: newOpenNotes });
+      set({ openNoteIds: newOpenNoteIds });
       return;
     }
     // Replace the notes after the current note with the new note
-    const openNotes = get().openNotes;
-    openNotes.splice(index, openNotes.length - index, ...newOpenNotes);
-    set({ openNotes });
+    const openNoteIds = get().openNoteIds;
+    openNoteIds.splice(index, openNoteIds.length - index, ...newOpenNoteIds);
+    set({ openNoteIds });
   },
 }));
 

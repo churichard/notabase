@@ -1,33 +1,33 @@
-import { createRef, useCallback } from 'react';
+import { useCallback } from 'react';
 import { useRouter } from 'next/router';
 import { useAuth } from 'utils/useAuth';
 import { useCurrentNote } from 'utils/useCurrentNote';
 import { useStore } from 'lib/store';
 
-const SCROLL_OPTIONS: ScrollIntoViewOptions = {
-  behavior: 'smooth',
-  inline: 'center',
-};
-
 export default function useOnNoteLinkClick() {
   const { user } = useAuth();
   const router = useRouter();
   const currentNote = useCurrentNote();
-  const openNotes = useStore((state) => state.openNotes);
-  const setOpenNotes = useStore((state) => state.setOpenNotes);
+  const openNoteIds = useStore((state) => state.openNoteIds);
+  const setOpenNoteIds = useStore((state) => state.setOpenNoteIds);
 
   const onClick = useCallback(
     (noteId: string) => {
       // If the note is already open, scroll it into view
-      const openNote = openNotes.find(({ id }) => id === noteId);
-      if (openNote) {
-        openNote.ref.current?.scrollIntoView(SCROLL_OPTIONS);
+      const openNoteId = openNoteIds.find(
+        (openNoteId) => openNoteId === noteId
+      );
+      if (openNoteId) {
+        document.getElementById(openNoteId)?.scrollIntoView({
+          behavior: 'smooth',
+          inline: 'center',
+        });
         return;
       }
 
-      // If the note is not open: fetch it, add it to the open notes, and scroll it into view
-      const currentNoteIndex = openNotes.findIndex(
-        ({ id }) => id === currentNote.id
+      // If the note is not open, add it to the open note ids
+      const currentNoteIndex = openNoteIds.findIndex(
+        (openNoteId) => openNoteId === currentNote.id
       );
       if (currentNoteIndex < 0 || !user) {
         return;
@@ -59,13 +59,10 @@ export default function useOnNoteLinkClick() {
         { shallow: true }
       );
 
-      // Add note to open notes and scroll it into view
-      const ref = createRef<HTMLElement | null>();
-      const newNote = { id: noteId, ref };
-      setOpenNotes([newNote], currentNoteIndex + 1);
-      ref.current?.scrollIntoView(SCROLL_OPTIONS); // TODO: fix scroll into view
+      // Add note to open note ids
+      setOpenNoteIds([noteId], currentNoteIndex + 1);
     },
-    [user, router, currentNote.id, openNotes, setOpenNotes]
+    [user, router, currentNote.id, openNoteIds, setOpenNoteIds]
   );
 
   return onClick;

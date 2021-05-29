@@ -177,6 +177,7 @@ function Note(props: Props, ref: ForwardedRef<HTMLDivElement>) {
   return (
     <ProvideCurrentNote value={currentNote}>
       <div
+        id={currentNote.id}
         ref={(node) => {
           noteRef.current = node;
           if (typeof ref === 'function') {
