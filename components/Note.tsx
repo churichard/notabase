@@ -9,7 +9,7 @@ import React, {
 } from 'react';
 import dynamic from 'next/dynamic';
 import type { Descendant } from 'slate';
-import { createEditor, Transforms } from 'slate';
+import { createEditor } from 'slate';
 import { withReact } from 'slate-react';
 import { withHistory } from 'slate-history';
 import { toast } from 'react-toastify';
@@ -21,6 +21,7 @@ import withBlockBreakout from 'editor/plugins/withBlockBreakout';
 import withAutoMarkdown from 'editor/plugins/withAutoMarkdown';
 import withLinks from 'editor/plugins/withLinks';
 import withDeleteBackwardWorkaround from 'editor/plugins/withDeleteBackwardWorkaround';
+import type { Store } from 'lib/store';
 import type { NoteUpdate } from 'lib/api/updateNote';
 import updateNote from 'lib/api/updateNote';
 import { ProvideCurrentNote } from 'utils/useCurrentNote';
@@ -37,11 +38,12 @@ const Editor = dynamic(() => import('components/editor/Editor'), {
 });
 
 type Props = {
-  initialNote: NoteType;
+  currentNote: NoteType;
+  setCurrentNote: Store['updateNote'];
 };
 
 function Note(props: Props, ref: ForwardedRef<HTMLDivElement>) {
-  const { initialNote } = props;
+  const { currentNote, setCurrentNote } = props;
   const router = useRouter();
   const noteRef = useRef<HTMLDivElement | null>(null);
 
@@ -54,7 +56,6 @@ function Note(props: Props, ref: ForwardedRef<HTMLDivElement>) {
       ),
     []
   );
-  const [currentNote, setCurrentNote] = useState<NoteType>(initialNote);
 
   const [syncState, setSyncState] = useState<{
     isTitleSynced: boolean;
@@ -73,21 +74,21 @@ function Note(props: Props, ref: ForwardedRef<HTMLDivElement>) {
   const onTitleChange = useCallback(
     (title: string) => {
       if (currentNote.title !== title) {
-        setCurrentNote((note) => ({ ...note, title }));
+        setCurrentNote({ id: currentNote.id, title });
         setSyncState((syncState) => ({ ...syncState, isTitleSynced: false }));
       }
     },
-    [currentNote.title]
+    [currentNote.id, currentNote.title, setCurrentNote]
   );
 
   const setEditorValue = useCallback(
     (content: Descendant[]) => {
       if (currentNote.content !== content) {
-        setCurrentNote((note) => ({ ...note, content }));
+        setCurrentNote({ id: currentNote.id, content });
         setSyncState((syncState) => ({ ...syncState, isContentSynced: false }));
       }
     },
-    [currentNote.content]
+    [currentNote.id, currentNote.content, setCurrentNote]
   );
 
   const handleNoteUpdate = useCallback(
@@ -146,19 +147,6 @@ function Note(props: Props, ref: ForwardedRef<HTMLDivElement>) {
     currentNote.title,
     handleNoteUpdate,
   ]);
-
-  // Update the current note if the note id has changed
-  useEffect(() => {
-    // If the note id has changed
-    if (initialNote.id !== currentNote.id) {
-      // Deselect any current selection
-      Transforms.deselect(editor);
-      // Scroll to the top of the note
-      noteRef.current?.scrollTo(0, 0);
-      // Reset the note contents
-      setCurrentNote(initialNote);
-    }
-  }, [editor, initialNote, currentNote.id]);
 
   // Prompt the user with a dialog box about unsaved changes if they navigate away
   useEffect(() => {

@@ -2,12 +2,14 @@ import type { MutableRefObject } from 'react';
 import create from 'zustand';
 import createVanilla from 'zustand/vanilla';
 import type { Note } from 'types/supabase';
-import { caseInsensitiveStringCompare } from 'utils/string';
 import type { NoteUpdate } from './api/updateNote';
 
-type OpenNote = { note: Note; ref: MutableRefObject<HTMLElement | null> };
+type OpenNote = {
+  id: Note['id'];
+  ref: MutableRefObject<HTMLElement | null>;
+};
 
-type Store = {
+export type Store = {
   notes: Note[];
   setNotes: (value: Note[] | ((value: Note[]) => Note[])) => void;
   upsertNote: (note: Note) => void;
@@ -22,6 +24,9 @@ export const store = createVanilla<Store>((set, get) => ({
    * An array of saved notes
    */
   notes: [],
+  /**
+   * Sets the notes
+   */
   setNotes: (value: Note[] | ((value: Note[]) => Note[])) => {
     if (typeof value === 'function') {
       set((state) => ({ notes: value(state.notes) }));
@@ -29,51 +34,43 @@ export const store = createVanilla<Store>((set, get) => ({
       set({ notes: value });
     }
   },
+  /**
+   * If the note id exists, then update the note. Otherwise, insert it
+   */
   upsertNote: (note: Note) => {
-    set((state) => {
-      const notes = state.notes;
-      const index = notes.findIndex((n) => n.id === note.id);
+    const notes = get().notes;
+    const index = notes.findIndex((n) => n.id === note.id);
 
-      const newNotes = [...notes];
-      if (index >= 0) {
-        newNotes[index] = { ...newNotes[index], ...note };
-      } else {
-        newNotes.push(note);
-      }
-      newNotes.sort((n1, n2) =>
-        caseInsensitiveStringCompare(n1.title, n2.title)
-      );
-
-      return {
-        notes: newNotes,
-      };
-    });
+    if (index >= 0) {
+      notes[index] = { ...notes[index], ...note };
+    } else {
+      notes.push(note);
+    }
+    set({ notes });
   },
+  /**
+   * Update the given note
+   */
   updateNote: (note: NoteUpdate) => {
     const notes = get().notes;
     const index = notes.findIndex((n) => n.id === note.id);
 
     if (index >= 0) {
-      const newNotes = [...notes];
-      newNotes[index] = { ...newNotes[index], ...note };
-      newNotes.sort((n1, n2) =>
-        caseInsensitiveStringCompare(n1.title, n2.title)
-      );
-      set({ notes: newNotes });
+      notes[index] = { ...notes[index], ...note };
+      set({ notes });
     }
   },
+  /**
+   * Delete the note with the given noteId
+   */
   deleteNote: (noteId: string) => {
     const notes = get().notes;
     const index = notes.findIndex((note) => note.id === noteId);
     if (index >= 0) {
-      const newNotes = [...notes];
-      newNotes.splice(index, 1);
-      set({ notes: newNotes });
+      notes.splice(index, 1);
+      set({ notes });
     }
   },
-  /**
-   * Sets the notes
-   */
   /**
    * The notes that have their content visible, including the main note and the stacked notes
    */
@@ -82,15 +79,14 @@ export const store = createVanilla<Store>((set, get) => ({
    * Replaces the open notes at the given index (0 by default)
    */
   setOpenNotes: (newOpenNotes: OpenNote[], index?: number) => {
-    set((state) => {
-      if (!index) {
-        return { openNotes: newOpenNotes };
-      }
-      // Replace the notes after the current note with the new note
-      const newNotes = [...state.openNotes];
-      newNotes.splice(index, state.openNotes.length - index, ...newOpenNotes);
-      return { openNotes: newNotes };
-    });
+    if (!index) {
+      set({ openNotes: newOpenNotes });
+      return;
+    }
+    // Replace the notes after the current note with the new note
+    const openNotes = get().openNotes;
+    openNotes.splice(index, openNotes.length - index, ...newOpenNotes);
+    set({ openNotes });
   },
 }));
 

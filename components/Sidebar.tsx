@@ -16,18 +16,23 @@ import {
 import { usePopper } from 'react-popper';
 import type { Note } from 'types/supabase';
 import { useAuth } from 'utils/useAuth';
+import { caseInsensitiveStringCompare } from 'utils/string';
 import { useStore } from 'lib/store';
 import deleteNote from 'lib/api/deleteNote';
 import useBacklinks from 'editor/useBacklinks';
 import Portal from './Portal';
 
 type Props = {
-  notes?: Array<Pick<Note, 'id' | 'title'>>;
   setIsFindOrCreateModalOpen: Dispatch<SetStateAction<boolean>>;
 };
 
 export default function Sidebar(props: Props) {
-  const { notes, setIsFindOrCreateModalOpen } = props;
+  const { setIsFindOrCreateModalOpen } = props;
+  const notes = useStore((state) =>
+    state.notes.sort((n1, n2) =>
+      caseInsensitiveStringCompare(n1.title, n2.title)
+    )
+  );
   const router = useRouter();
   const queryNoteId = router.query.id;
 
@@ -194,9 +199,7 @@ const NoteLinkDropdown = (props: NoteLinkDropdownProps) => {
     await deleteNote(note.id);
     await deleteBacklinks();
 
-    if (
-      openNotes.findIndex((openNote) => openNote.note.id === note.id) !== -1
-    ) {
+    if (openNotes.findIndex((openNote) => openNote.id === note.id) !== -1) {
       // Redirect if one of the notes that was deleted was open
       router.push('/app');
     }
