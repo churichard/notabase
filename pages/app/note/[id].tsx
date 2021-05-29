@@ -3,6 +3,7 @@ import React, { createRef, useEffect } from 'react';
 import type { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { createClient } from '@supabase/supabase-js';
 import AppLayout from 'components/AppLayout';
 import Note from 'components/Note';
@@ -16,12 +17,14 @@ type OpenNoteWithContent = {
 
 type Props = {
   initialNotes: Array<NoteType>;
-  mainNote: NoteType | null;
-  initialStackedNotes: Array<NoteType> | null;
 };
 
 export default function NotePage(props: Props) {
-  const { initialNotes, mainNote, initialStackedNotes } = props;
+  const { initialNotes } = props;
+  const {
+    query: { id: noteId, stack: stackQuery },
+  } = useRouter();
+
   const openNotes = useStore((state) =>
     state.openNotes
       .map((openNote) => ({
@@ -34,6 +37,29 @@ export default function NotePage(props: Props) {
   const updateNote = useStore((state) => state.updateNote);
 
   useEffect(() => {
+    if (!noteId || typeof noteId !== 'string') {
+      return;
+    }
+
+    // Get the main note
+    const mainNote = initialNotes?.find((note) => note.id === noteId);
+
+    // Get stacked notes
+    let stackedNotes: NoteType[] | null = null;
+    if (stackQuery) {
+      const stackedNoteIds: string[] = [];
+      if (typeof stackQuery === 'string') {
+        stackedNoteIds.push(stackQuery);
+      } else {
+        stackedNoteIds.push(...stackQuery);
+      }
+
+      stackedNotes = stackedNoteIds
+        .map((noteId) => initialNotes?.find((note) => note.id === noteId))
+        .filter((note): note is NoteType => !!note); // can't use filter(Boolean) because of https://github.com/microsoft/TypeScript/issues/16655
+    }
+
+    // Populate open notes
     const openNotes = [];
     if (mainNote) {
       openNotes.push({
@@ -41,22 +67,22 @@ export default function NotePage(props: Props) {
         ref: createRef<HTMLElement | null>(),
       });
     }
-    if (initialStackedNotes) {
+    if (stackedNotes) {
       openNotes.push(
-        ...initialStackedNotes.map((note) => ({
+        ...stackedNotes.map((note) => ({
           id: note.id,
           ref: createRef<HTMLElement | null>(),
         }))
       );
     }
     setOpenNotes(openNotes);
-  }, [setOpenNotes, mainNote, initialStackedNotes]);
+  }, [initialNotes, setOpenNotes, noteId, stackQuery]);
 
-  if (!mainNote) {
+  if (!noteId || typeof noteId !== 'string') {
     return (
       <>
         <Head>
-          <title>Notabase</title>
+          <title>Not Found | Notabase</title>
         </Head>
         <div className="flex flex-col items-center justify-center h-screen">
           <p className="text-2xl">
@@ -73,7 +99,9 @@ export default function NotePage(props: Props) {
   return (
     <>
       <Head>
-        <title>{mainNote.title}</title>
+        <title>
+          {openNotes.length > 0 ? openNotes[0].note.title : 'Notabase'}
+        </title>
       </Head>
       <AppLayout initialNotes={initialNotes}>
         <div className="flex overflow-x-auto divide-x">
@@ -95,7 +123,6 @@ export default function NotePage(props: Props) {
 
 export const getServerSideProps: GetServerSideProps<Props> = async ({
   req,
-  query,
 }) => {
   // Create admin supabase client on server
   const supabase = createClient(
@@ -116,42 +143,5 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
     .eq('user_id', user.id)
     .order('title');
 
-  // Validate id query param
-  const noteId = query.id;
-  if (!noteId || typeof noteId !== 'string') {
-    return {
-      props: {
-        initialNotes: notes ?? [],
-        mainNote: null,
-        initialStackedNotes: null,
-      },
-    };
-  }
-
-  // Get the main note
-  const mainNote = notes?.find((note) => note.id === noteId) ?? null;
-
-  // Get stacked notes
-  const stackQuery = query.stack;
-  let stackedNotes: NoteType[] | null = null;
-  if (stackQuery) {
-    const stackedNoteIds: string[] = [];
-    if (typeof stackQuery === 'string') {
-      stackedNoteIds.push(stackQuery);
-    } else {
-      stackedNoteIds.push(...stackQuery);
-    }
-
-    stackedNotes = stackedNoteIds
-      .map((noteId) => notes?.find((note) => note.id === noteId))
-      .filter((note): note is NoteType => !!note); // can't use filter(Boolean) because of https://github.com/microsoft/TypeScript/issues/16655
-  }
-
-  return {
-    props: {
-      initialNotes: notes ?? [],
-      mainNote,
-      initialStackedNotes: stackedNotes,
-    },
-  };
+  return { props: { initialNotes: notes ?? [] } };
 };
