@@ -1,5 +1,4 @@
-import type { MutableRefObject } from 'react';
-import React, { createRef, useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import type { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
@@ -9,11 +8,7 @@ import AppLayout from 'components/AppLayout';
 import Note from 'components/Note';
 import type { Note as NoteType } from 'types/supabase';
 import { useStore } from 'lib/store';
-
-type OpenNoteWithContent = {
-  note: NoteType;
-  ref: MutableRefObject<HTMLElement | null>;
-};
+import usePrevious from 'utils/usePrevious';
 
 type Props = {
   initialNotes: Array<NoteType>;
@@ -25,27 +20,28 @@ export default function NotePage(props: Props) {
     query: { id: noteId, stack: stackQuery },
   } = useRouter();
 
-  const openNotes = useStore((state) =>
-    state.openNotes
-      .map((openNote) => ({
-        note: state.notes.find((note) => note.id === openNote.id),
-        ref: openNote.ref,
-      }))
-      .filter((openNote): openNote is OpenNoteWithContent => !!openNote.note)
-  );
-  const setOpenNotes = useStore((state) => state.setOpenNotes);
+  const notes = useStore((state) => state.notes);
+  const openNoteIds = useStore((state) => state.openNoteIds);
+  const setOpenNoteIds = useStore((state) => state.setOpenNoteIds);
   const updateNote = useStore((state) => state.updateNote);
+
+  const prevOpenNoteIds = usePrevious(openNoteIds);
+  const openNotes = useMemo(
+    () =>
+      openNoteIds
+        .map((openNoteId) => notes.find((note) => note.id === openNoteId))
+        .filter((openNote): openNote is NoteType => !!openNote),
+    [openNoteIds, notes]
+  );
 
   useEffect(() => {
     if (!noteId || typeof noteId !== 'string') {
       return;
     }
 
-    // Get the main note
-    const mainNote = initialNotes?.find((note) => note.id === noteId);
+    const openNoteIds = [];
+    openNoteIds.push(noteId);
 
-    // Get stacked notes
-    let stackedNotes: NoteType[] | null = null;
     if (stackQuery) {
       const stackedNoteIds: string[] = [];
       if (typeof stackQuery === 'string') {
@@ -53,30 +49,31 @@ export default function NotePage(props: Props) {
       } else {
         stackedNoteIds.push(...stackQuery);
       }
-
-      stackedNotes = stackedNoteIds
-        .map((noteId) => initialNotes?.find((note) => note.id === noteId))
-        .filter((note): note is NoteType => !!note); // can't use filter(Boolean) because of https://github.com/microsoft/TypeScript/issues/16655
+      openNoteIds.push(...stackedNoteIds);
     }
 
-    // Populate open notes
-    const openNotes = [];
-    if (mainNote) {
-      openNotes.push({
-        id: mainNote.id,
-        ref: createRef<HTMLElement | null>(),
-      });
+    setOpenNoteIds(openNoteIds);
+  }, [initialNotes, setOpenNoteIds, noteId, stackQuery]);
+
+  useEffect(() => {
+    // Scroll the last open note into view if:
+    // 1. The last open note has changed
+    // 2. prevOpenNoteIds has length > 0 (ensures that this is not the first render)
+    if (
+      openNoteIds.length > 0 &&
+      prevOpenNoteIds &&
+      prevOpenNoteIds.length > 0 &&
+      openNoteIds[openNoteIds.length - 1] !==
+        prevOpenNoteIds[prevOpenNoteIds.length - 1]
+    ) {
+      document
+        .getElementById(openNoteIds[openNoteIds.length - 1])
+        ?.scrollIntoView({
+          behavior: 'smooth',
+          inline: 'center',
+        });
     }
-    if (stackedNotes) {
-      openNotes.push(
-        ...stackedNotes.map((note) => ({
-          id: note.id,
-          ref: createRef<HTMLElement | null>(),
-        }))
-      );
-    }
-    setOpenNotes(openNotes);
-  }, [initialNotes, setOpenNotes, noteId, stackQuery]);
+  }, [openNoteIds, prevOpenNoteIds]);
 
   if (!noteId || typeof noteId !== 'string') {
     return (
@@ -99,17 +96,14 @@ export default function NotePage(props: Props) {
   return (
     <>
       <Head>
-        <title>
-          {openNotes.length > 0 ? openNotes[0].note.title : 'Notabase'}
-        </title>
+        <title>{openNotes.length > 0 ? openNotes[0].title : 'Notabase'}</title>
       </Head>
       <AppLayout initialNotes={initialNotes}>
         <div className="flex overflow-x-auto divide-x">
           {openNotes.length > 0
-            ? openNotes.map(({ note, ref }) => (
+            ? openNotes.map((note) => (
                 <Note
                   key={note.id}
-                  ref={(node) => (ref.current = node)}
                   currentNote={note}
                   setCurrentNote={updateNote}
                 />

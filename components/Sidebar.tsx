@@ -184,7 +184,7 @@ const NoteLinkDropdown = (props: NoteLinkDropdownProps) => {
   const { note } = props;
   const router = useRouter();
   const { deleteBacklinks } = useBacklinks(note.id);
-  const openNotes = useStore((state) => state.openNotes);
+  const openNoteIds = useStore((state) => state.openNoteIds);
 
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [popperElement, setPopperElement] =
@@ -199,11 +199,11 @@ const NoteLinkDropdown = (props: NoteLinkDropdownProps) => {
     await deleteNote(note.id);
     await deleteBacklinks();
 
-    if (openNotes.findIndex((openNote) => openNote.id === note.id) !== -1) {
+    if (openNoteIds.findIndex((openNoteId) => openNoteId === note.id) !== -1) {
       // Redirect if one of the notes that was deleted was open
       router.push('/app');
     }
-  }, [router, note.id, openNotes, deleteBacklinks]);
+  }, [router, note.id, openNoteIds, deleteBacklinks]);
 
   return (
     <div ref={containerRef}>
