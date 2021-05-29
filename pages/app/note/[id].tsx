@@ -1,3 +1,4 @@
+import type { MutableRefObject } from 'react';
 import React, { createRef, useEffect } from 'react';
 import type { GetServerSideProps } from 'next';
 import Head from 'next/head';
@@ -8,6 +9,11 @@ import Note from 'components/Note';
 import type { Note as NoteType } from 'types/supabase';
 import { useStore } from 'lib/store';
 
+type OpenNoteWithContent = {
+  note: NoteType;
+  ref: MutableRefObject<HTMLElement | null>;
+};
+
 type Props = {
   initialNotes: Array<NoteType>;
   mainNote: NoteType | null;
@@ -16,21 +22,29 @@ type Props = {
 
 export default function NotePage(props: Props) {
   const { initialNotes, mainNote, initialStackedNotes } = props;
-  const openNotes = useStore((state) => state.openNotes);
+  const openNotes = useStore((state) =>
+    state.openNotes
+      .map((openNote) => ({
+        note: state.notes.find((note) => note.id === openNote.id),
+        ref: openNote.ref,
+      }))
+      .filter((openNote): openNote is OpenNoteWithContent => !!openNote.note)
+  );
   const setOpenNotes = useStore((state) => state.setOpenNotes);
+  const updateNote = useStore((state) => state.updateNote);
 
   useEffect(() => {
     const openNotes = [];
     if (mainNote) {
       openNotes.push({
-        note: mainNote,
+        id: mainNote.id,
         ref: createRef<HTMLElement | null>(),
       });
     }
     if (initialStackedNotes) {
       openNotes.push(
         ...initialStackedNotes.map((note) => ({
-          note,
+          id: note.id,
           ref: createRef<HTMLElement | null>(),
         }))
       );
@@ -68,7 +82,8 @@ export default function NotePage(props: Props) {
                 <Note
                   key={note.id}
                   ref={(node) => (ref.current = node)}
-                  initialNote={note}
+                  currentNote={note}
+                  setCurrentNote={updateNote}
                 />
               ))
             : null}
