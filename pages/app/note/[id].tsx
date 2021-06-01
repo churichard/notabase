@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect } from 'react';
 import type { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
@@ -8,7 +8,7 @@ import AppLayout from 'components/AppLayout';
 import Note from 'components/Note';
 import type { Note as NoteType } from 'types/supabase';
 import type { Notes } from 'lib/store';
-import { useStore } from 'lib/store';
+import { useStore, shallowIsEqual, deepIsEqual } from 'lib/store';
 import usePrevious from 'utils/usePrevious';
 
 type Props = {
@@ -21,19 +21,19 @@ export default function NotePage(props: Props) {
     query: { id: noteId, stack: stackQuery },
   } = useRouter();
 
-  const notes = useStore((state) => state.notes);
-  const openNoteIds = useStore((state) => state.openNoteIds);
+  const openNoteIds = useStore((state) => state.openNoteIds, shallowIsEqual);
   const setOpenNoteIds = useStore((state) => state.setOpenNoteIds);
   const updateNote = useStore((state) => state.updateNote);
 
-  const prevOpenNoteIds = usePrevious(openNoteIds);
-  const openNotes = useMemo(
-    () =>
-      openNoteIds
-        .map((openNoteId) => notes[openNoteId])
+  const openNotes = useStore(
+    (state) =>
+      state.openNoteIds
+        .map((openNoteId) => state.notes[openNoteId])
         .filter((openNote): openNote is NoteType => !!openNote),
-    [openNoteIds, notes]
+    deepIsEqual
   );
+
+  const prevOpenNoteIds = usePrevious(openNoteIds);
 
   useEffect(() => {
     if (!noteId || typeof noteId !== 'string') {

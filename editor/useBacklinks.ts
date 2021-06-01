@@ -7,7 +7,7 @@ import type { Note } from 'types/supabase';
 import supabase from 'lib/supabase';
 import usePrevious from 'utils/usePrevious';
 import type { Notes } from 'lib/store';
-import { store, useStore } from 'lib/store';
+import { store, useStore, deepIsEqual } from 'lib/store';
 
 export type Backlink = {
   id: string;
@@ -26,7 +26,7 @@ type ReturnType = {
 };
 
 export default function useBacklinks(noteId: string) {
-  const notes = useStore((state) => state.notes);
+  const notes = useStore((state) => state.notes, deepIsEqual);
 
   const { getLinkedBacklinks, getUnlinkedBacklinks } = useBacklinksCache(
     notes,
