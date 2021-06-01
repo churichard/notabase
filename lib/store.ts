@@ -6,6 +6,9 @@ import type { Draft } from 'immer';
 import type { Note } from 'types/supabase';
 import type { NoteUpdate } from './api/updateNote';
 
+export { default as shallowIsEqual } from 'zustand/shallow';
+export { default as deepIsEqual } from 'lodash.isequal';
+
 const immer =
   <T extends State>(
     config: StateCreator<T, (fn: (draft: Draft<T>) => void) => void>

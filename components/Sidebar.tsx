@@ -17,7 +17,7 @@ import { usePopper } from 'react-popper';
 import type { Note } from 'types/supabase';
 import { useAuth } from 'utils/useAuth';
 import { caseInsensitiveStringCompare } from 'utils/string';
-import { useStore } from 'lib/store';
+import { deepIsEqual, useStore } from 'lib/store';
 import deleteNote from 'lib/api/deleteNote';
 import useBacklinks from 'editor/useBacklinks';
 import Portal from './Portal';
@@ -28,10 +28,12 @@ type Props = {
 
 export default function Sidebar(props: Props) {
   const { setIsFindOrCreateModalOpen } = props;
-  const notes = useStore((state) =>
-    Object.values(state.notes).sort((n1, n2) =>
-      caseInsensitiveStringCompare(n1.title, n2.title)
-    )
+  const notes = useStore(
+    (state) =>
+      Object.values(state.notes)
+        .map((note) => ({ id: note.id, title: note.title }))
+        .sort((n1, n2) => caseInsensitiveStringCompare(n1.title, n2.title)),
+    deepIsEqual
   );
   const router = useRouter();
   const queryNoteId = router.query.id;
