@@ -126,7 +126,7 @@ export default function ForceGraph(props: Props) {
         context.globalAlpha = 0;
       }
       context.fillStyle = colors.warmGray[600];
-      context.font = `4px ${defaultTheme.fontFamily.sans.join(', ')}`;
+      context.font = `4px ${defaultTheme.fontFamily?.sans.join(', ')}`;
 
       const lines = getLines(context, node.name, 50);
       let yPos = node.y + node.radius + 5;
