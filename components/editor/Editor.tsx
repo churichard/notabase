@@ -155,7 +155,7 @@ export default function Editor(props: Props) {
         if (!node) return;
         const element = node.parentElement;
         if (!element) return;
-        element.scrollIntoView({ block: 'nearest' });
+        element.scrollIntoView({ block: 'end' });
       } catch (e) {
         /**
          * Empty catch. Do nothing if there is an error.
