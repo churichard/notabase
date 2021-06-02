@@ -41,9 +41,8 @@ export default function useBacklinks(noteId: string) {
 
   const state = useMemo(() => {
     const state = {
-      updateBacklinks: (newTitle: string) =>
-        updateBacklinks(newTitle, noteId, getLinkedBacklinks()),
-      deleteBacklinks: () => deleteBacklinks(noteId, getLinkedBacklinks()),
+      updateBacklinks: (newTitle: string) => updateBacklinks(newTitle, noteId),
+      deleteBacklinks: () => deleteBacklinks(noteId),
     };
     // Backlinks are not computed until they are retrieved
     Object.defineProperties(state, {
@@ -213,28 +212,20 @@ const computeUnlinkedMatches = (nodes: Descendant[], noteTitle: string) => {
  * Updates the link properties of the backlinks on each backlinked note when the
  * current note title has changed.
  */
-const updateBacklinks = async (
-  newTitle: string,
-  noteId: string,
-  backlinks: Backlink[]
-) => {
+const updateBacklinks = async (newTitle: string, noteId: string) => {
+  const notes = store.getState().notes;
+  const backlinks = computeLinkedBacklinks(notes, noteId);
   const updateData: Pick<Note, 'id' | 'content'>[] = [];
+
   for (const backlink of backlinks) {
-    // TODO: this can still result in a race condition if the content is updated elsewhere
-    // after we get the note and before we update the backlinks.
-    const { data: note } = await supabase
-      .from<Note>('notes')
-      .select('id, content')
-      .eq('id', backlink.id)
-      .single();
+    const note = notes[backlink.id];
 
     if (!note) {
       continue;
     }
 
-    const matches = computeLinkedMatches(note.content, noteId); // Compute matches for the db note
     let newBacklinkContent = note.content;
-    for (const match of matches) {
+    for (const match of backlink.matches) {
       newBacklinkContent = produce(newBacklinkContent, (draftState) => {
         // Path should not be empty
         const path = match.path;
@@ -295,16 +286,13 @@ const updateBacklinks = async (
 /**
  * Deletes the backlinks on each backlinked note and replaces them with the link text.
  */
-const deleteBacklinks = async (noteId: string, backlinks: Backlink[]) => {
+const deleteBacklinks = async (noteId: string) => {
+  const notes = store.getState().notes;
+  const backlinks = computeLinkedBacklinks(notes, noteId);
   const updateData: Pick<Note, 'id' | 'content'>[] = [];
+
   for (const backlink of backlinks) {
-    // TODO: this can still result in a race condition if the content is updated elsewhere
-    // after we get the note and before we update the backlinks.
-    const { data: note } = await supabase
-      .from<Note>('notes')
-      .select('id, content')
-      .eq('id', backlink.id)
-      .single();
+    const note = notes[backlink.id];
 
     if (!note) {
       continue;
