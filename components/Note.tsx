@@ -8,7 +8,7 @@ import React, {
   useState,
 } from 'react';
 import dynamic from 'next/dynamic';
-import type { Descendant } from 'slate';
+import type { Descendant, Editor as SlateEditor } from 'slate';
 import { createEditor } from 'slate';
 import { withReact } from 'slate-react';
 import { withHistory } from 'slate-history';
@@ -47,15 +47,15 @@ function Note(props: Props, ref: ForwardedRef<HTMLDivElement>) {
   const router = useRouter();
   const noteRef = useRef<HTMLDivElement | null>(null);
 
-  const editor = useMemo(
-    () =>
-      withDeleteBackwardWorkaround(
-        withAutoMarkdown(
-          withBlockBreakout(withLinks(withHistory(withReact(createEditor()))))
-        )
-      ),
-    []
-  );
+  const editorRef = useRef<SlateEditor>();
+  if (!editorRef.current) {
+    editorRef.current = withDeleteBackwardWorkaround(
+      withAutoMarkdown(
+        withBlockBreakout(withLinks(withHistory(withReact(createEditor()))))
+      )
+    );
+  }
+  const editor = editorRef.current;
 
   const [syncState, setSyncState] = useState<{
     isTitleSynced: boolean;
