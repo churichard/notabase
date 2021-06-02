@@ -12,7 +12,7 @@ export default function Footer(props: Props) {
         <div>
           <p className="font-medium">Notabase</p>
           <p className="text-gray-700">
-            An open-source personal knowledge base for non-linear thinking.
+            A personal knowledge base for networked thinking.
           </p>
           <p className="text-gray-700">Currently in alpha.</p>
         </div>

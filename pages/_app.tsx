@@ -20,7 +20,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
       <Head>
         <meta
           name="description"
-          content="Notabase is an open source personal knowledge base focused on non-linear thinking and ease-of-use."
+          content="Notabase is a personal knowledge base for networked thinking. It's powerful, easy-to-use, and open source."
         />
         <link rel="icon" href="/favicon.ico" />
         <link

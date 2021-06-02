@@ -1,6 +1,6 @@
 # Notabase
 
-[Notabase](https://notabase.io) is a personal knowledge base for non-linear thinking.
+[Notabase](https://notabase.io) is a personal knowledge base for networked thinking.
 
 It lets you connect knowledge and form ideas by linking notes together. These links allow you to traverse your notes like webpages and find connections that you never would have thought of otherwise. Think of it as a personal Wikipedia for your brain that you can edit and browse as you like. As you add more notes, it gets more powerful!
 
