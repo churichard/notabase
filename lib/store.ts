@@ -6,8 +6,8 @@ import type { Draft } from 'immer';
 import type { Note } from 'types/supabase';
 import type { NoteUpdate } from './api/updateNote';
 
-export { default as shallowIsEqual } from 'zustand/shallow';
-export { default as deepIsEqual } from 'lodash.isequal';
+export { default as shallowEqual } from 'zustand/shallow';
+export { default as deepEqual } from 'fast-deep-equal';
 
 const immer =
   <T extends State>(

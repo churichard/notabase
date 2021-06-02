@@ -8,7 +8,7 @@ import AppLayout from 'components/AppLayout';
 import Note from 'components/Note';
 import type { Note as NoteType } from 'types/supabase';
 import type { Notes } from 'lib/store';
-import { useStore, shallowIsEqual, deepIsEqual } from 'lib/store';
+import { useStore, shallowEqual, deepEqual } from 'lib/store';
 import usePrevious from 'utils/usePrevious';
 
 type Props = {
@@ -21,7 +21,7 @@ export default function NotePage(props: Props) {
     query: { id: noteId, stack: stackQuery },
   } = useRouter();
 
-  const openNoteIds = useStore((state) => state.openNoteIds, shallowIsEqual);
+  const openNoteIds = useStore((state) => state.openNoteIds, shallowEqual);
   const setOpenNoteIds = useStore((state) => state.setOpenNoteIds);
   const updateNote = useStore((state) => state.updateNote);
 
@@ -30,7 +30,7 @@ export default function NotePage(props: Props) {
       state.openNoteIds
         .map((openNoteId) => state.notes[openNoteId])
         .filter((openNote): openNote is NoteType => !!openNote),
-    deepIsEqual
+    deepEqual
   );
 
   const prevOpenNoteIds = usePrevious(openNoteIds);

@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import Fuse from 'fuse.js';
-import { deepIsEqual, useStore } from 'lib/store';
+import { deepEqual, useStore } from 'lib/store';
 
 export default function useNoteSearch(searchText: string) {
   const notes = useStore(
@@ -9,7 +9,7 @@ export default function useNoteSearch(searchText: string) {
         id: note.id,
         title: note.title,
       })),
-    deepIsEqual
+    deepEqual
   );
   const fuse = useMemo(() => new Fuse(notes, { keys: ['title'] }), [notes]);
   const searchResults = useMemo(
