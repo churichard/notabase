@@ -24,12 +24,6 @@ module.exports = {
   plugins: ['react', '@typescript-eslint', 'import'],
   rules: {
     '@typescript-eslint/explicit-module-boundary-types': 'off',
-    '@typescript-eslint/consistent-type-imports': [
-      'error',
-      {
-        prefer: 'type-imports',
-      },
-    ],
     'import/no-named-as-default': 'off',
     'import/order': [
       'error',
