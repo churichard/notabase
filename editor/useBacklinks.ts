@@ -8,6 +8,9 @@ import supabase from 'lib/supabase';
 import usePrevious from 'utils/usePrevious';
 import type { Notes } from 'lib/store';
 import { store, useStore, deepIsEqual } from 'lib/store';
+import useDebounce from 'utils/useDebounce';
+
+const DEBOUNCE_MS = 1000;
 
 export type Backlink = {
   id: string;
@@ -26,7 +29,10 @@ type ReturnType = {
 };
 
 export default function useBacklinks(noteId: string) {
-  const notes = useStore((state) => state.notes, deepIsEqual);
+  const notes = useDebounce(
+    useStore((state) => state.notes, deepIsEqual),
+    DEBOUNCE_MS
+  );
 
   const { getLinkedBacklinks, getUnlinkedBacklinks } = useBacklinksCache(
     notes,
