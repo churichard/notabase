@@ -7,20 +7,13 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import dynamic from 'next/dynamic';
-import type { Descendant, Editor as SlateEditor } from 'slate';
-import { createEditor } from 'slate';
-import { withReact } from 'slate-react';
-import { withHistory } from 'slate-history';
+import type { Descendant } from 'slate';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
+import Editor from 'components/editor/Editor';
 import Title from 'components/editor/Title';
 import type { Note as NoteType } from 'types/supabase';
 import useBacklinks from 'editor/useBacklinks';
-import withBlockBreakout from 'editor/plugins/withBlockBreakout';
-import withAutoMarkdown from 'editor/plugins/withAutoMarkdown';
-import withLinks from 'editor/plugins/withLinks';
-import withDeleteBackwardWorkaround from 'editor/plugins/withDeleteBackwardWorkaround';
 import type { Store } from 'lib/store';
 import type { NoteUpdate } from 'lib/api/updateNote';
 import updateNote from 'lib/api/updateNote';
@@ -32,11 +25,6 @@ const SYNC_DEBOUNCE_MS = 1000;
 const CHECK_VIOLATION_ERROR_CODE = '23514';
 const UNIQUE_VIOLATION_ERROR_CODE = '23505';
 
-// Workaround for Slate bug when hot reloading: https://github.com/ianstormtaylor/slate/issues/3621
-const Editor = dynamic(() => import('components/editor/Editor'), {
-  ssr: false,
-});
-
 type Props = {
   currentNote: NoteType;
   setCurrentNote: Store['updateNote'];
@@ -46,16 +34,6 @@ function Note(props: Props, ref: ForwardedRef<HTMLDivElement>) {
   const { currentNote, setCurrentNote } = props;
   const router = useRouter();
   const noteRef = useRef<HTMLDivElement | null>(null);
-
-  const editorRef = useRef<SlateEditor>();
-  if (!editorRef.current) {
-    editorRef.current = withDeleteBackwardWorkaround(
-      withAutoMarkdown(
-        withBlockBreakout(withLinks(withHistory(withReact(createEditor()))))
-      )
-    );
-  }
-  const editor = editorRef.current;
 
   const [syncState, setSyncState] = useState<{
     isTitleSynced: boolean;
@@ -196,7 +174,6 @@ function Note(props: Props, ref: ForwardedRef<HTMLDivElement>) {
           />
           <Editor
             className="flex-1 px-12 pt-2 pb-12"
-            editor={editor}
             value={currentNote.content}
             setValue={setEditorValue}
           />

@@ -1,9 +1,10 @@
 import type { KeyboardEvent, MouseEvent } from 'react';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useRef, useCallback, useMemo, useState } from 'react';
 import type { Descendant } from 'slate';
-import { Range, Editor as SlateEditor, Transforms } from 'slate';
+import { createEditor, Range, Editor as SlateEditor, Transforms } from 'slate';
 import type { RenderLeafProps } from 'slate-react';
-import { Editable, ReactEditor, Slate } from 'slate-react';
+import { withReact, Editable, ReactEditor, Slate } from 'slate-react';
+import { withHistory } from 'slate-history';
 import { isHotkey } from 'is-hotkey';
 import {
   handleIndent,
@@ -11,6 +12,10 @@ import {
   isElementActive,
   toggleMark,
 } from 'editor/formatting';
+import withDeleteBackwardWorkaround from 'editor/plugins/withDeleteBackwardWorkaround';
+import withAutoMarkdown from 'editor/plugins/withAutoMarkdown';
+import withBlockBreakout from 'editor/plugins/withBlockBreakout';
+import withLinks from 'editor/plugins/withLinks';
 import { ElementType, Mark } from 'types/slate';
 import HoveringToolbar from './HoveringToolbar';
 import AddLinkPopover from './AddLinkPopover';
@@ -25,13 +30,22 @@ export type AddLinkPopoverState = {
 
 type Props = {
   className?: string;
-  editor: SlateEditor;
   value: Descendant[];
   setValue: (value: Descendant[]) => void;
 };
 
 export default function Editor(props: Props) {
-  const { className, editor, value, setValue } = props;
+  const { className, value, setValue } = props;
+
+  const editorRef = useRef<SlateEditor>();
+  if (!editorRef.current) {
+    editorRef.current = withDeleteBackwardWorkaround(
+      withAutoMarkdown(
+        withBlockBreakout(withLinks(withHistory(withReact(createEditor()))))
+      )
+    );
+  }
+  const editor = editorRef.current;
 
   const renderElement = useCallback(
     (props) => <EditorElement {...props} />,
