@@ -10,7 +10,7 @@ import { ElementType } from 'types/slate';
 import type { GraphData } from 'components/ForceGraph';
 import ForceGraph from 'components/ForceGraph';
 import type { Notes } from 'lib/store';
-import { useStore, deepIsEqual } from 'lib/store';
+import { useStore, deepEqual } from 'lib/store';
 
 type Props = {
   initialNotes: Notes;
@@ -18,7 +18,7 @@ type Props = {
 
 export default function Graph(props: Props) {
   const { initialNotes } = props;
-  const notes = useStore((state) => state.notes, deepIsEqual);
+  const notes = useStore((state) => state.notes, deepEqual);
 
   // Set graph dimensions
   const containerRef = useRef<HTMLDivElement | null>(null);

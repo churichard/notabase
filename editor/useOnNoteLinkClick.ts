@@ -2,13 +2,13 @@ import { useCallback } from 'react';
 import { useRouter } from 'next/router';
 import { useAuth } from 'utils/useAuth';
 import { useCurrentNote } from 'utils/useCurrentNote';
-import { shallowIsEqual, useStore } from 'lib/store';
+import { shallowEqual, useStore } from 'lib/store';
 
 export default function useOnNoteLinkClick() {
   const { user } = useAuth();
   const router = useRouter();
   const currentNote = useCurrentNote();
-  const openNoteIds = useStore((state) => state.openNoteIds, shallowIsEqual);
+  const openNoteIds = useStore((state) => state.openNoteIds, shallowEqual);
   const setOpenNoteIds = useStore((state) => state.setOpenNoteIds);
 
   const onClick = useCallback(

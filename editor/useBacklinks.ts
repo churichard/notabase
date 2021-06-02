@@ -7,7 +7,7 @@ import type { Note } from 'types/supabase';
 import supabase from 'lib/supabase';
 import usePrevious from 'utils/usePrevious';
 import type { Notes } from 'lib/store';
-import { store, useStore, deepIsEqual } from 'lib/store';
+import { store, useStore, deepEqual } from 'lib/store';
 import useDebounce from 'utils/useDebounce';
 
 const DEBOUNCE_MS = 1000;
@@ -30,7 +30,7 @@ type ReturnType = {
 
 export default function useBacklinks(noteId: string) {
   const notes = useDebounce(
-    useStore((state) => state.notes, deepIsEqual),
+    useStore((state) => state.notes, deepEqual),
     DEBOUNCE_MS
   );
 
