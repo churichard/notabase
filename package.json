@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint . --ext .tsx,.ts",
-    "prettier": "prettier --write ."
+    "prettier": "prettier --write .",
+    "analyze": "env ANALYZE=true next build"
   },
   "dependencies": {
     "@headlessui/react": "^1.2.0",
@@ -37,6 +38,7 @@
     "zustand": "^3.5.1"
   },
   "devDependencies": {
+    "@next/bundle-analyzer": "^10.2.3",
     "@types/d3": "^6.7.0",
     "@types/node": "^15.6.2",
     "@types/nprogress": "^0.2.0",
