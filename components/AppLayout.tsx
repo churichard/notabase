@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import React, { useEffect, useMemo, useState } from 'react';
 import isHotkey from 'is-hotkey';
 import type { Notes } from 'lib/store';
-import { useStore } from 'lib/store';
+import { useStore, store } from 'lib/store';
 import supabase from 'lib/supabase';
 import type { Note } from 'types/supabase';
 import { useAuth } from 'utils/useAuth';
@@ -41,7 +41,11 @@ export default function AppLayout(props: Props) {
         if (payload.eventType === 'INSERT') {
           upsertNote(payload.new);
         } else if (payload.eventType === 'UPDATE') {
-          updateNote(payload.new);
+          // Don't update the note if it is currently open
+          const openNoteIds = store.getState().openNoteIds;
+          if (!openNoteIds.includes(payload.new.id)) {
+            updateNote(payload.new);
+          }
         } else if (payload.eventType === 'DELETE') {
           deleteNote(payload.old.id);
         }
