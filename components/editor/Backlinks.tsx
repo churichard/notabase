@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { createEditor, Descendant, Editor, Path } from 'slate';
 import { Editable, Slate, withReact } from 'slate-react';
 import { useCurrentNote } from 'utils/useCurrentNote';
@@ -18,20 +24,35 @@ export default function Backlinks(props: Props) {
   const currentNote = useCurrentNote();
   const { linkedBacklinks, unlinkedBacklinks } = useBacklinks(currentNote.id);
 
+  const numOfLinkedMatches = useMemo(
+    () => getNumOfMatches(linkedBacklinks),
+    [linkedBacklinks]
+  );
+  const numOfUnlinkedMatches = useMemo(
+    () => getNumOfMatches(unlinkedBacklinks),
+    [unlinkedBacklinks]
+  );
+
   return (
     <div className={`bg-gray-50 rounded py-4 ${className}`}>
       <BacklinkNoteBlock
-        title={`${linkedBacklinks.length} Linked References`}
+        title={`${numOfLinkedMatches} Linked References`}
         backlinks={linkedBacklinks}
       />
       <BacklinkNoteBlock
-        title={`${unlinkedBacklinks.length} Unlinked References`}
+        title={`${numOfUnlinkedMatches} Unlinked References`}
         backlinks={unlinkedBacklinks}
         className="pt-2"
       />
     </div>
   );
 }
+
+const getNumOfMatches = (backlinks: Backlink[]) =>
+  backlinks.reduce(
+    (numOfMatches, backlink) => numOfMatches + backlink.matches.length,
+    0
+  );
 
 type BacklinkNoteBlockProps = {
   title: string;
