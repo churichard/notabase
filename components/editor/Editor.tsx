@@ -2,7 +2,6 @@ import type { KeyboardEvent, MouseEvent } from 'react';
 import React, { useRef, useCallback, useMemo, useState } from 'react';
 import type { Descendant } from 'slate';
 import { createEditor, Range, Editor as SlateEditor, Transforms } from 'slate';
-import type { RenderLeafProps } from 'slate-react';
 import { withReact, Editable, ReactEditor, Slate } from 'slate-react';
 import { withHistory } from 'slate-history';
 import { isHotkey } from 'is-hotkey';
@@ -20,6 +19,7 @@ import { ElementType, Mark } from 'types/slate';
 import HoveringToolbar from './HoveringToolbar';
 import AddLinkPopover from './AddLinkPopover';
 import EditorElement from './EditorElement';
+import EditorLeaf from './EditorLeaf';
 import LinkAutocompletePopover from './LinkAutocompletePopover';
 
 export type AddLinkPopoverState = {
@@ -51,7 +51,7 @@ export default function Editor(props: Props) {
     (props) => <EditorElement {...props} />,
     []
   );
-  const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
+  const renderLeaf = useCallback((props) => <EditorLeaf {...props} />, []);
 
   const [addLinkPopoverState, setAddLinkPopoverState] =
     useState<AddLinkPopoverState>({
@@ -212,27 +212,3 @@ export default function Editor(props: Props) {
     </Slate>
   );
 }
-
-const Leaf = ({ attributes, children, leaf }: RenderLeafProps) => {
-  if (leaf.bold) {
-    children = <span className="font-semibold">{children}</span>;
-  }
-
-  if (leaf.code) {
-    children = (
-      <code className="p-0.5 bg-gray-200 rounded text-primary-800">
-        {children}
-      </code>
-    );
-  }
-
-  if (leaf.italic) {
-    children = <em>{children}</em>;
-  }
-
-  if (leaf.underline) {
-    children = <u>{children}</u>;
-  }
-
-  return <span {...attributes}>{children}</span>;
-};

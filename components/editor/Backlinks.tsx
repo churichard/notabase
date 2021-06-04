@@ -1,8 +1,13 @@
-import React from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { createEditor, Descendant, Editor, Path } from 'slate';
+import { Editable, Slate, withReact } from 'slate-react';
 import { useCurrentNote } from 'utils/useCurrentNote';
 import type { Backlink } from 'editor/useBacklinks';
 import useBacklinks from 'editor/useBacklinks';
 import useOnNoteLinkClick from 'editor/useOnNoteLinkClick';
+import withLinks from 'editor/plugins/withLinks';
+import EditorElement from './EditorElement';
+import EditorLeaf from './EditorLeaf';
 
 type Props = {
   className: string;
@@ -15,11 +20,11 @@ export default function Backlinks(props: Props) {
 
   return (
     <div className={`bg-gray-50 rounded py-4 ${className}`}>
-      <BacklinkBlock
+      <BacklinkNoteBlock
         title={`${linkedBacklinks.length} Linked References`}
         backlinks={linkedBacklinks}
       />
-      <BacklinkBlock
+      <BacklinkNoteBlock
         title={`${unlinkedBacklinks.length} Unlinked References`}
         backlinks={unlinkedBacklinks}
         className="pt-2"
@@ -28,13 +33,13 @@ export default function Backlinks(props: Props) {
   );
 }
 
-type BacklinkBlockProps = {
+type BacklinkNoteBlockProps = {
   title: string;
   backlinks: Backlink[];
   className?: string;
 };
 
-const BacklinkBlock = (props: BacklinkBlockProps) => {
+const BacklinkNoteBlock = (props: BacklinkNoteBlockProps) => {
   const { title, backlinks, className } = props;
   const onNoteLinkClick = useOnNoteLinkClick();
   return (
@@ -51,20 +56,51 @@ const BacklinkBlock = (props: BacklinkBlockProps) => {
               <span className="block text-sm text-gray-800">
                 {backlink.title}
               </span>
-              {backlink.matches.map((match, index) => {
-                return (
-                  <span
-                    key={index}
-                    className="block my-1 text-xs text-gray-600 break-words"
-                  >
-                    {match.context}
-                  </span>
-                );
-              })}
+              {backlink.matches.map((match, index) => (
+                <BacklinkMatchBlock key={index} match={match} />
+              ))}
             </button>
           ))}
         </div>
       ) : null}
     </div>
+  );
+};
+
+type BacklinkMatchBlockProps = {
+  match: { context: Descendant; path: Path };
+};
+
+const BacklinkMatchBlock = (props: BacklinkMatchBlockProps) => {
+  const { match } = props;
+
+  const editorRef = useRef<Editor>();
+  if (!editorRef.current) {
+    editorRef.current = withLinks(withReact(createEditor()));
+  }
+  const editor = editorRef.current;
+
+  const renderElement = useCallback(
+    (props) => <EditorElement {...props} />,
+    []
+  );
+  const renderLeaf = useCallback((props) => <EditorLeaf {...props} />, []);
+
+  const [value, setValue] = useState<Descendant[]>([match.context]);
+
+  useEffect(() => {
+    setValue([match.context]);
+  }, [match.context]);
+
+  return (
+    <span className="block my-1 text-xs text-gray-600 break-words">
+      <Slate editor={editor} value={value} onChange={setValue}>
+        <Editable
+          renderElement={renderElement}
+          renderLeaf={renderLeaf}
+          readOnly
+        />
+      </Slate>
+    </span>
   );
 };
