@@ -16,7 +16,7 @@ export type Backlink = {
   id: string;
   title: string;
   matches: Array<{
-    context: string;
+    context: Descendant;
     path: Path;
   }>;
 };
@@ -177,7 +177,9 @@ const computeLinkedMatches = (nodes: Descendant[], noteId: string) => {
   const result: Backlink['matches'] = [];
   for (const [, path] of matchingElements) {
     const parent = Node.parent(editor, path);
-    result.push({ context: Node.string(parent), path });
+    if (!Editor.isEditor(parent)) {
+      result.push({ context: parent, path });
+    }
   }
   return result;
 };
@@ -197,13 +199,16 @@ const computeUnlinkedMatches = (nodes: Descendant[], noteTitle: string) => {
     at: [],
     mode: 'lowest',
     match: (n) =>
+      !Editor.isEditor(n) &&
       Element.isElement(n) &&
       Node.string(n).toLowerCase().includes(noteTitle.toLowerCase()),
   });
 
   const result: Backlink['matches'] = [];
   for (const [node, path] of matchingElements) {
-    result.push({ context: Node.string(node), path });
+    if (!Editor.isEditor(node)) {
+      result.push({ context: node, path });
+    }
   }
   return result;
 };
