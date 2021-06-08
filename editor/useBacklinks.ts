@@ -1,8 +1,16 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react';
-import type { Descendant, Path } from 'slate';
-import { createEditor, Editor, Element, Node, Transforms } from 'slate';
+import {
+  createEditor,
+  Editor,
+  Element,
+  Node,
+  Transforms,
+  Descendant,
+  Path,
+  Text,
+} from 'slate';
 import produce from 'immer';
-import { ElementType } from 'types/slate';
+import { ElementType, FormattedText } from 'types/slate';
 import type { Note } from 'types/supabase';
 import supabase from 'lib/supabase';
 import usePrevious from 'utils/usePrevious';
@@ -12,13 +20,16 @@ import useDebounce from 'utils/useDebounce';
 
 const DEBOUNCE_MS = 1000;
 
+export type BacklinkMatch = {
+  lineElement: Element;
+  linePath: Path;
+  path: Path;
+};
+
 export type Backlink = {
   id: string;
   title: string;
-  matches: Array<{
-    context: Descendant;
-    path: Path;
-  }>;
+  matches: Array<BacklinkMatch>;
 };
 
 type ReturnType = {
@@ -176,9 +187,13 @@ const computeLinkedMatches = (nodes: Descendant[], noteId: string) => {
 
   const result: Backlink['matches'] = [];
   for (const [, path] of matchingElements) {
-    const parent = Node.parent(editor, path);
-    if (!Editor.isEditor(parent)) {
-      result.push({ context: parent, path });
+    const block = Editor.above<Element>(editor, {
+      at: path,
+      match: (n) => Editor.isBlock(editor, n),
+    });
+    if (block) {
+      const [lineElement, linePath] = block;
+      result.push({ lineElement, linePath, path });
     }
   }
   return result;
@@ -194,20 +209,22 @@ const computeUnlinkedMatches = (nodes: Descendant[], noteTitle: string) => {
     match: (n) => Element.isElement(n) && n.type === ElementType.NoteLink,
   });
 
-  // Find elements that have noteTitle in them
-  const matchingElements = Editor.nodes(editor, {
+  // Find leaves that have noteTitle in them
+  const matchingLeaves = Editor.nodes<FormattedText>(editor, {
     at: [],
-    mode: 'lowest',
     match: (n) =>
-      !Editor.isEditor(n) &&
-      Element.isElement(n) &&
-      Node.string(n).toLowerCase().includes(noteTitle.toLowerCase()),
+      Text.isText(n) && n.text.toLowerCase().includes(noteTitle.toLowerCase()),
   });
 
   const result: Backlink['matches'] = [];
-  for (const [node, path] of matchingElements) {
-    if (!Editor.isEditor(node)) {
-      result.push({ context: node, path });
+  for (const [, path] of matchingLeaves) {
+    const block = Editor.above<Element>(editor, {
+      at: path,
+      match: (n) => Editor.isBlock(editor, n),
+    });
+    if (block) {
+      const [lineElement, linePath] = block;
+      result.push({ lineElement, linePath, path });
     }
   }
   return result;
