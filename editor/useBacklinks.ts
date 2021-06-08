@@ -185,12 +185,14 @@ const computeLinkedMatches = (nodes: Descendant[], noteId: string) => {
       !!Node.string(n), // We ignore note links with empty link text
   });
 
-  const result: Backlink['matches'] = [];
+  const result: BacklinkMatch[] = [];
   for (const [, path] of matchingElements) {
+    // Get the line element
     const block = Editor.above<Element>(editor, {
       at: path,
       match: (n) => Editor.isBlock(editor, n),
     });
+
     if (block) {
       const [lineElement, linePath] = block;
       result.push({ lineElement, linePath, path });
@@ -203,12 +205,6 @@ const computeUnlinkedMatches = (nodes: Descendant[], noteTitle: string) => {
   const editor = createEditor();
   editor.children = nodes;
 
-  // Remove note links
-  Transforms.removeNodes(editor, {
-    at: [],
-    match: (n) => Element.isElement(n) && n.type === ElementType.NoteLink,
-  });
-
   // Find leaves that have noteTitle in them
   const matchingLeaves = Editor.nodes<FormattedText>(editor, {
     at: [],
@@ -216,12 +212,20 @@ const computeUnlinkedMatches = (nodes: Descendant[], noteTitle: string) => {
       Text.isText(n) && n.text.toLowerCase().includes(noteTitle.toLowerCase()),
   });
 
-  const result: Backlink['matches'] = [];
+  const result: BacklinkMatch[] = [];
   for (const [, path] of matchingLeaves) {
+    // Skip matches that are part of a note link (those are linked matches)
+    const [parent] = Editor.parent(editor, path);
+    if (Element.isElement(parent) && parent.type === ElementType.NoteLink) {
+      continue;
+    }
+
+    // Get the line element
     const block = Editor.above<Element>(editor, {
       at: path,
       match: (n) => Editor.isBlock(editor, n),
     });
+
     if (block) {
       const [lineElement, linePath] = block;
       result.push({ lineElement, linePath, path });
