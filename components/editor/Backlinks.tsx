@@ -5,10 +5,10 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { createEditor, Descendant, Editor, Path } from 'slate';
+import { createEditor, Descendant, Editor } from 'slate';
 import { Editable, Slate, withReact } from 'slate-react';
 import { useCurrentNote } from 'utils/useCurrentNote';
-import type { Backlink } from 'editor/useBacklinks';
+import type { Backlink, BacklinkMatch } from 'editor/useBacklinks';
 import useBacklinks from 'editor/useBacklinks';
 import useOnNoteLinkClick from 'editor/useOnNoteLinkClick';
 import withLinks from 'editor/plugins/withLinks';
@@ -35,11 +35,11 @@ export default function Backlinks(props: Props) {
 
   return (
     <div className={`bg-gray-50 rounded py-4 ${className}`}>
-      <BacklinkNoteBlock
+      <BacklinkReferences
         title={`${numOfLinkedMatches} Linked References`}
         backlinks={linkedBacklinks}
       />
-      <BacklinkNoteBlock
+      <BacklinkReferences
         title={`${numOfUnlinkedMatches} Unlinked References`}
         backlinks={unlinkedBacklinks}
         className="pt-2"
@@ -54,33 +54,22 @@ const getNumOfMatches = (backlinks: Backlink[]) =>
     0
   );
 
-type BacklinkNoteBlockProps = {
+type BacklinkReferencesProps = {
   title: string;
   backlinks: Backlink[];
   className?: string;
 };
 
-const BacklinkNoteBlock = (props: BacklinkNoteBlockProps) => {
+const BacklinkReferences = (props: BacklinkReferencesProps) => {
   const { title, backlinks, className } = props;
-  const onNoteLinkClick = useOnNoteLinkClick();
+
   return (
     <div className={className}>
       <p className="px-4 text-lg text-gray-800">{title}</p>
       {backlinks.length > 0 ? (
         <div className="mx-2 mt-2">
           {backlinks.map((backlink) => (
-            <button
-              key={backlink.id}
-              className="block w-full p-2 text-left rounded hover:bg-gray-200 active:bg-gray-300"
-              onClick={() => onNoteLinkClick(backlink.id)}
-            >
-              <span className="block text-sm text-gray-800">
-                {backlink.title}
-              </span>
-              {backlink.matches.map((match, index) => (
-                <BacklinkMatchBlock key={index} match={match} />
-              ))}
-            </button>
+            <BacklinkNoteBlock key={backlink.id} backlink={backlink} />
           ))}
         </div>
       ) : null}
@@ -88,8 +77,45 @@ const BacklinkNoteBlock = (props: BacklinkNoteBlockProps) => {
   );
 };
 
+type BacklinkNoteBlockProps = {
+  backlink: Backlink;
+};
+
+const BacklinkNoteBlock = (props: BacklinkNoteBlockProps) => {
+  const { backlink } = props;
+  const onNoteLinkClick = useOnNoteLinkClick();
+
+  const matches = useMemo(() => {
+    const matches: Array<BacklinkMatch> = [];
+    const paths: Record<string, boolean> = {};
+
+    for (const match of backlink.matches) {
+      const pathKey = match.linePath.toString();
+      if (!paths[pathKey]) {
+        matches.push(match);
+        paths[pathKey] = true;
+      }
+    }
+
+    return matches;
+  }, [backlink]);
+
+  return (
+    <button
+      key={backlink.id}
+      className="block w-full p-2 text-left rounded hover:bg-gray-200 active:bg-gray-300"
+      onClick={() => onNoteLinkClick(backlink.id)}
+    >
+      <span className="block text-sm text-gray-800">{backlink.title}</span>
+      {matches.map((match, index) => (
+        <BacklinkMatchBlock key={index} match={match} />
+      ))}
+    </button>
+  );
+};
+
 type BacklinkMatchBlockProps = {
-  match: { context: Descendant; path: Path };
+  match: BacklinkMatch;
 };
 
 const BacklinkMatchBlock = (props: BacklinkMatchBlockProps) => {
@@ -107,11 +133,11 @@ const BacklinkMatchBlock = (props: BacklinkMatchBlockProps) => {
   );
   const renderLeaf = useCallback((props) => <EditorLeaf {...props} />, []);
 
-  const [value, setValue] = useState<Descendant[]>([match.context]);
+  const [value, setValue] = useState<Descendant[]>([match.lineElement]);
 
   useEffect(() => {
-    setValue([match.context]);
-  }, [match.context]);
+    setValue([match.lineElement]);
+  }, [match.lineElement]);
 
   return (
     <span className="block my-1 text-xs text-gray-600 break-words">
