@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { memo, useEffect, useRef } from 'react';
 import usePrevious from 'utils/usePrevious';
 
 type Props = {
@@ -7,7 +7,7 @@ type Props = {
   onChange: (value: string) => void;
 };
 
-export default function Title(props: Props) {
+function Title(props: Props) {
   const { className, value, onChange } = props;
   const titleRef = useRef<HTMLDivElement | null>(null);
   const prevTitle = usePrevious(titleRef.current?.textContent);
@@ -64,3 +64,5 @@ export default function Title(props: Props) {
     </>
   );
 }
+
+export default memo(Title);
