@@ -4,11 +4,10 @@ import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
 import Editor from 'components/editor/Editor';
 import Title from 'components/editor/Title';
-import type { Note as NoteType } from 'types/supabase';
 import useBacklinks from 'editor/useBacklinks';
-import type { Store } from 'lib/store';
+import { deepEqual, useStore } from 'lib/store';
 import type { NoteUpdate } from 'lib/api/updateNote';
-import updateNote from 'lib/api/updateNote';
+import updateDbNote from 'lib/api/updateNote';
 import { ProvideCurrentNote } from 'utils/useCurrentNote';
 import Backlinks from './editor/Backlinks';
 import NoteHeader from './editor/NoteHeader';
@@ -19,13 +18,15 @@ const CHECK_VIOLATION_ERROR_CODE = '23514';
 const UNIQUE_VIOLATION_ERROR_CODE = '23505';
 
 type Props = {
-  currentNote: NoteType;
-  setCurrentNote: Store['updateNote'];
+  noteId: string;
 };
 
 export default function Note(props: Props) {
-  const { currentNote, setCurrentNote } = props;
+  const { noteId } = props;
   const router = useRouter();
+
+  const note = useStore((state) => state.notes[noteId], deepEqual);
+  const updateNote = useStore((state) => state.updateNote);
 
   const [syncState, setSyncState] = useState<{
     isTitleSynced: boolean;
@@ -39,31 +40,31 @@ export default function Note(props: Props) {
     [syncState]
   );
 
-  const { updateBacklinks } = useBacklinks(currentNote.id);
+  const { updateBacklinks } = useBacklinks(note.id);
 
   const onTitleChange = useCallback(
     (title: string) => {
-      if (currentNote.title !== title) {
-        setCurrentNote({ id: currentNote.id, title });
+      if (note.title !== title) {
+        updateNote({ id: note.id, title });
         setSyncState((syncState) => ({ ...syncState, isTitleSynced: false }));
       }
     },
-    [currentNote.id, currentNote.title, setCurrentNote]
+    [note.id, note.title, updateNote]
   );
 
   const setEditorValue = useCallback(
     (content: Descendant[]) => {
-      if (currentNote.content !== content) {
-        setCurrentNote({ id: currentNote.id, content });
+      if (note.content !== content) {
+        updateNote({ id: note.id, content });
         setSyncState((syncState) => ({ ...syncState, isContentSynced: false }));
       }
     },
-    [currentNote.id, currentNote.content, setCurrentNote]
+    [note.id, note.content, updateNote]
   );
 
   const handleNoteUpdate = useCallback(
     async (note: NoteUpdate) => {
-      const { error } = await updateNote(note);
+      const { error } = await updateDbNote(note);
 
       if (error) {
         switch (error.code) {
@@ -94,12 +95,12 @@ export default function Note(props: Props) {
 
   // Save the note in the database if it changes and it hasn't been saved yet
   useEffect(() => {
-    const newNote: NoteUpdate = { id: currentNote.id };
+    const newNote: NoteUpdate = { id: note.id };
     if (!syncState.isContentSynced) {
-      newNote.content = currentNote.content;
+      newNote.content = note.content;
     }
     if (!syncState.isTitleSynced) {
-      newNote.title = currentNote.title;
+      newNote.title = note.title;
     }
 
     if (newNote.title || newNote.content) {
@@ -112,9 +113,9 @@ export default function Note(props: Props) {
   }, [
     syncState.isContentSynced,
     syncState.isTitleSynced,
-    currentNote.id,
-    currentNote.content,
-    currentNote.title,
+    note.id,
+    note.content,
+    note.title,
     handleNoteUpdate,
   ]);
 
@@ -145,22 +146,19 @@ export default function Note(props: Props) {
   }, [router, isSynced]);
 
   return (
-    <ProvideCurrentNote value={currentNote}>
-      <div
-        id={currentNote.id}
-        className="flex flex-col flex-shrink-0 border-r w-176"
-      >
+    <ProvideCurrentNote value={note}>
+      <div id={note.id} className="flex flex-col flex-shrink-0 border-r w-176">
         <NoteHeader />
         <div className="flex flex-col flex-1 overflow-y-auto">
           <div className="flex flex-col flex-1">
             <Title
               className="px-12 pt-12 pb-1"
-              value={currentNote.title}
+              value={note.title}
               onChange={onTitleChange}
             />
             <Editor
               className="flex-1 px-12 pt-2 pb-12"
-              value={currentNote.content}
+              value={note.content}
               setValue={setEditorValue}
             />
           </div>

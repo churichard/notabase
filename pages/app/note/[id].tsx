@@ -8,7 +8,7 @@ import AppLayout from 'components/AppLayout';
 import Note from 'components/Note';
 import type { Note as NoteType } from 'types/supabase';
 import type { Notes } from 'lib/store';
-import { useStore, shallowEqual, deepEqual } from 'lib/store';
+import { useStore, shallowEqual } from 'lib/store';
 import usePrevious from 'utils/usePrevious';
 
 type Props = {
@@ -23,17 +23,14 @@ export default function NotePage(props: Props) {
 
   const openNoteIds = useStore((state) => state.openNoteIds, shallowEqual);
   const setOpenNoteIds = useStore((state) => state.setOpenNoteIds);
-  const updateNote = useStore((state) => state.updateNote);
-
-  const openNotes = useStore(
-    (state) =>
-      state.openNoteIds
-        .map((openNoteId) => state.notes[openNoteId])
-        .filter((openNote): openNote is NoteType => !!openNote),
-    deepEqual
-  );
-
   const prevOpenNoteIds = usePrevious(openNoteIds);
+
+  const pageTitle = useStore((state) => {
+    if (!noteId || typeof noteId !== 'string' || !state.notes[noteId]) {
+      return 'Notabase';
+    }
+    return state.notes[noteId].title;
+  });
 
   useEffect(() => {
     if (!noteId || typeof noteId !== 'string') {
@@ -54,7 +51,7 @@ export default function NotePage(props: Props) {
     }
 
     setOpenNoteIds(openNoteIds);
-  }, [initialNotes, setOpenNoteIds, noteId, stackQuery]);
+  }, [setOpenNoteIds, noteId, stackQuery]);
 
   useEffect(() => {
     // Scroll the last open note into view if:
@@ -97,18 +94,12 @@ export default function NotePage(props: Props) {
   return (
     <>
       <Head>
-        <title>{openNotes.length > 0 ? openNotes[0].title : 'Notabase'}</title>
+        <title>{pageTitle}</title>
       </Head>
       <AppLayout initialNotes={initialNotes}>
         <div className="flex overflow-x-auto">
-          {openNotes.length > 0
-            ? openNotes.map((note) => (
-                <Note
-                  key={note.id}
-                  currentNote={note}
-                  setCurrentNote={updateNote}
-                />
-              ))
+          {openNoteIds.length > 0
+            ? openNoteIds.map((noteId) => <Note key={noteId} noteId={noteId} />)
             : null}
         </div>
       </AppLayout>
