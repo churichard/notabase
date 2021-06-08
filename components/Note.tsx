@@ -1,12 +1,4 @@
-import type { ForwardedRef } from 'react';
-import React, {
-  forwardRef,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import type { Descendant } from 'slate';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
@@ -19,6 +11,7 @@ import type { NoteUpdate } from 'lib/api/updateNote';
 import updateNote from 'lib/api/updateNote';
 import { ProvideCurrentNote } from 'utils/useCurrentNote';
 import Backlinks from './editor/Backlinks';
+import NoteHeader from './editor/NoteHeader';
 
 const SYNC_DEBOUNCE_MS = 1000;
 
@@ -30,10 +23,9 @@ type Props = {
   setCurrentNote: Store['updateNote'];
 };
 
-function Note(props: Props, ref: ForwardedRef<HTMLDivElement>) {
+export default function Note(props: Props) {
   const { currentNote, setCurrentNote } = props;
   const router = useRouter();
-  const noteRef = useRef<HTMLDivElement | null>(null);
 
   const [syncState, setSyncState] = useState<{
     isTitleSynced: boolean;
@@ -156,32 +148,25 @@ function Note(props: Props, ref: ForwardedRef<HTMLDivElement>) {
     <ProvideCurrentNote value={currentNote}>
       <div
         id={currentNote.id}
-        ref={(node) => {
-          noteRef.current = node;
-          if (typeof ref === 'function') {
-            ref(node);
-          } else if (ref) {
-            ref.current = node;
-          }
-        }}
-        className="flex flex-col flex-shrink-0 overflow-y-auto w-176"
+        className="flex flex-col flex-shrink-0 border-r w-176"
       >
-        <div className="flex flex-col flex-1">
-          <Title
-            className="px-12 pt-12 pb-1"
-            value={currentNote.title}
-            onChange={onTitleChange}
-          />
-          <Editor
-            className="flex-1 px-12 pt-2 pb-12"
-            value={currentNote.content}
-            setValue={setEditorValue}
-          />
+        <NoteHeader />
+        <div className="flex flex-col flex-1 overflow-y-auto">
+          <div className="flex flex-col flex-1">
+            <Title
+              className="px-12 pt-12 pb-1"
+              value={currentNote.title}
+              onChange={onTitleChange}
+            />
+            <Editor
+              className="flex-1 px-12 pt-2 pb-12"
+              value={currentNote.content}
+              setValue={setEditorValue}
+            />
+          </div>
+          <Backlinks className="mx-8 mb-12" />
         </div>
-        <Backlinks className="mx-8 mb-12" />
       </div>
     </ProvideCurrentNote>
   );
 }
-
-export default forwardRef<HTMLDivElement, Props>(Note);

@@ -173,17 +173,18 @@ const NoteLink = (props: NoteLinkProps) => {
           {note.title}
         </a>
       </Link>
-      <NoteLinkDropdown note={note} />
+      <NoteLinkDropdown note={note} className="hidden group-hover:block" />
     </SidebarItem>
   );
 };
 
 type NoteLinkDropdownProps = {
   note: Pick<Note, 'id' | 'title'>;
+  className?: string;
 };
 
 const NoteLinkDropdown = (props: NoteLinkDropdownProps) => {
-  const { note } = props;
+  const { note, className } = props;
   const router = useRouter();
   const { deleteBacklinks } = useBacklinks(note.id);
   const openNoteIds = useStore((state) => state.openNoteIds);
@@ -212,7 +213,9 @@ const NoteLinkDropdown = (props: NoteLinkDropdownProps) => {
       <Menu>
         {({ open }) => (
           <>
-            <Menu.Button className="hidden py-1 rounded group-hover:block hover:bg-gray-300 active:bg-gray-400">
+            <Menu.Button
+              className={`py-1 rounded hover:bg-gray-300 active:bg-gray-400 ${className}`}
+            >
               <IconDots className="text-gray-800" />
             </Menu.Button>
             {open && (
