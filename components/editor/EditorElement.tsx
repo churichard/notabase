@@ -6,51 +6,80 @@ import type { ExternalLink, NoteLink } from 'types/slate';
 import { ElementType } from 'types/slate';
 import useOnNoteLinkClick from 'editor/useOnNoteLinkClick';
 
-export default function EditorElement({
-  attributes,
-  children,
-  element,
-}: RenderElementProps) {
+type Props = {
+  omitVerticalSpacing: boolean;
+} & RenderElementProps;
+
+export default function EditorElement(props: Props) {
+  const { omitVerticalSpacing, attributes, children, element } = props;
+
   switch (element.type) {
     case ElementType.HeadingOne:
       return (
-        <h1 className="my-3 text-2xl font-semibold" {...attributes}>
+        <h1
+          className={`text-2xl font-semibold ${
+            omitVerticalSpacing ? '' : 'my-3'
+          }`}
+          {...attributes}
+        >
           {children}
         </h1>
       );
     case ElementType.HeadingTwo:
       return (
-        <h2 className="my-3 text-xl font-semibold" {...attributes}>
+        <h2
+          className={`text-xl font-semibold ${
+            omitVerticalSpacing ? '' : 'my-3'
+          }`}
+          {...attributes}
+        >
           {children}
         </h2>
       );
     case ElementType.HeadingThree:
       return (
-        <h3 className="my-3 text-lg font-semibold" {...attributes}>
+        <h3
+          className={`text-lg font-semibold ${
+            omitVerticalSpacing ? '' : 'my-3'
+          }`}
+          {...attributes}
+        >
           {children}
         </h3>
       );
     case ElementType.ListItem:
       return (
-        <li className="pl-1 my-2" {...attributes}>
+        <li
+          className={`pl-1 ${omitVerticalSpacing ? '' : 'my-2'}`}
+          {...attributes}
+        >
           {children}
         </li>
       );
     case ElementType.BulletedList:
       return (
-        <ul className="my-2 ml-8 list-disc" {...attributes}>
+        <ul
+          className={`ml-8 list-disc ${omitVerticalSpacing ? '' : 'my-2'}`}
+          {...attributes}
+        >
           {children}
         </ul>
       );
     case ElementType.NumberedList:
       return (
-        <ol className="my-2 ml-8 list-decimal" {...attributes}>
+        <ol
+          className={`ml-8 list-decimal ${omitVerticalSpacing ? '' : 'my-2'}`}
+          {...attributes}
+        >
           {children}
         </ol>
       );
     case ElementType.Blockquote:
       return (
-        <blockquote className="pl-4 my-3 border-l-4" {...attributes}>
+        <blockquote
+          className={`pl-4 border-l-4 ${omitVerticalSpacing ? '' : 'my-3'}`}
+          {...attributes}
+        >
           {children}
         </blockquote>
       );
@@ -68,7 +97,7 @@ export default function EditorElement({
       );
     default:
       return (
-        <p className="my-3" {...attributes}>
+        <p className={omitVerticalSpacing ? '' : 'my-3'} {...attributes}>
           {children}
         </p>
       );
