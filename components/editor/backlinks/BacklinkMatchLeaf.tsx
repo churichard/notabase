@@ -4,21 +4,24 @@ import EditorElement from '../EditorElement';
 import EditorLeaf from '../EditorLeaf';
 import { ReadOnlyEditor } from '../ReadOnlyEditor';
 
-type BacklinkMatchBlockProps = {
+type BacklinkMatchLeafProps = {
   match: BacklinkMatch;
+  className?: string;
 };
 
-const BacklinkMatchBlock = (props: BacklinkMatchBlockProps) => {
-  const { match } = props;
+const BacklinkMatchLeaf = (props: BacklinkMatchLeafProps) => {
+  const { match, className } = props;
 
   const renderElement = useCallback(
-    (props) => <EditorElement {...props} />,
+    (props) => <EditorElement omitVerticalSpacing={true} {...props} />,
     []
   );
   const renderLeaf = useCallback((props) => <EditorLeaf {...props} />, []);
 
   return (
-    <span className="block my-1 text-xs text-gray-600 break-words">
+    <span
+      className={`block text-xs text-gray-600 bg-gray-50 rounded p-2 w-full break-words ${className}`}
+    >
       <ReadOnlyEditor
         value={[match.lineElement]}
         renderElement={renderElement}
@@ -28,4 +31,4 @@ const BacklinkMatchBlock = (props: BacklinkMatchBlockProps) => {
   );
 };
 
-export default memo(BacklinkMatchBlock);
+export default memo(BacklinkMatchLeaf);
