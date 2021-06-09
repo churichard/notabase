@@ -13,13 +13,14 @@ const BacklinkNoteBlock = (props: BacklinkNoteBlockProps) => {
 
   const matches = useMemo(() => {
     const matches: Array<BacklinkMatch> = [];
-    const paths: Record<string, boolean> = {};
+    const linePaths: Record<string, boolean> = {};
 
+    // Only keep matches with unique line paths
     for (const match of backlink.matches) {
-      const pathKey = match.linePath.toString();
-      if (!paths[pathKey]) {
+      const linePathKey = match.linePath.toString();
+      if (!linePaths[linePathKey]) {
         matches.push(match);
-        paths[pathKey] = true;
+        linePaths[linePathKey] = true;
       }
     }
 

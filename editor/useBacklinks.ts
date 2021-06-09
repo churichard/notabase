@@ -213,7 +213,7 @@ const computeUnlinkedMatches = (nodes: Descendant[], noteTitle: string) => {
   });
 
   const result: BacklinkMatch[] = [];
-  for (const [, path] of matchingLeaves) {
+  for (const [node, path] of matchingLeaves) {
     // Skip matches that are part of a note link (those are linked matches)
     const [parent] = Editor.parent(editor, path);
     if (Element.isElement(parent) && parent.type === ElementType.NoteLink) {
@@ -228,7 +228,13 @@ const computeUnlinkedMatches = (nodes: Descendant[], noteTitle: string) => {
 
     if (block) {
       const [lineElement, linePath] = block;
-      result.push({ lineElement, linePath, path });
+      // We calculate the number of matches in the string and push for each one
+      // This ensures that the calculated number of unlinked matches is accurate
+      const re = new RegExp(noteTitle, 'g');
+      const numOfMatches = (node.text.match(re) ?? []).length;
+      for (let i = 0; i < numOfMatches; i++) {
+        result.push({ lineElement, linePath, path });
+      }
     }
   }
   return result;
