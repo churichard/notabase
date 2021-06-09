@@ -9,7 +9,7 @@ import { deepEqual, useStore } from 'lib/store';
 import type { NoteUpdate } from 'lib/api/updateNote';
 import updateDbNote from 'lib/api/updateNote';
 import { ProvideCurrentNote } from 'utils/useCurrentNote';
-import Backlinks from './editor/Backlinks';
+import Backlinks from './editor/backlinks/Backlinks';
 import NoteHeader from './editor/NoteHeader';
 
 const SYNC_DEBOUNCE_MS = 1000;
