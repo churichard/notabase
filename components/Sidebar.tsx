@@ -12,6 +12,7 @@ import {
   IconSearch,
   IconMail,
   IconMessage,
+  IconChevronsLeft,
 } from '@tabler/icons';
 import { usePopper } from 'react-popper';
 import type { Note } from 'types/supabase';
@@ -77,14 +78,21 @@ export default function Sidebar(props: Props) {
 
 const Header = () => {
   const { user, signOut } = useAuth();
+  const setIsSidebarOpen = useStore((state) => state.setIsSidebarOpen);
   return (
     <div className="relative">
       <Menu>
-        <Menu.Button className="flex items-center justify-between w-full px-6 py-3 text-left text-gray-800 hover:bg-gray-200 active:bg-gray-300">
+        <Menu.Button className="flex items-center justify-between w-full py-3 pl-6 text-left text-gray-800 hover:bg-gray-200 active:bg-gray-300">
           <div className="flex items-center flex-1">
             <span className="mr-1 font-medium">Notabase</span>
             <IconSelector size={18} className="text-gray-500" />
           </div>
+          <span
+            className="p-1 mr-2 rounded hover:bg-gray-300 active:bg-gray-400"
+            onClick={() => setIsSidebarOpen(false)}
+          >
+            <IconChevronsLeft className="text-gray-500" />
+          </span>
         </Menu.Button>
         <Menu.Items className="absolute z-10 w-56 bg-white rounded left-6 top-full shadow-popover">
           <p className="px-4 py-2 overflow-hidden text-xs text-gray-600 overflow-ellipsis">
@@ -217,9 +225,9 @@ const NoteLinkDropdown = (props: NoteLinkDropdownProps) => {
         {({ open }) => (
           <>
             <Menu.Button
-              className={`py-1 rounded hover:bg-gray-300 active:bg-gray-400 ${className}`}
+              className={`p-1 rounded hover:bg-gray-300 active:bg-gray-400 ${className}`}
             >
-              <IconDots className="text-gray-800" />
+              <IconDots className="text-gray-600" />
             </Menu.Button>
             {open && (
               <Portal>

@@ -26,6 +26,8 @@ export type Store = {
   deleteNote: (noteId: string) => void;
   openNoteIds: Note['id'][];
   setOpenNoteIds: (openNoteIds: Note['id'][], index?: number) => void;
+  isSidebarOpen: boolean;
+  setIsSidebarOpen: (value: boolean | ((value: boolean) => boolean)) => void;
 };
 
 export const store = createVanilla<Store>(
@@ -100,6 +102,18 @@ export const store = createVanilla<Store>(
           ...newOpenNoteIds
         );
       });
+    },
+    isSidebarOpen: true,
+    setIsSidebarOpen: (value: boolean | ((value: boolean) => boolean)) => {
+      if (typeof value === 'function') {
+        set((state) => {
+          state.isSidebarOpen = value(state.isSidebarOpen);
+        });
+      } else {
+        set((state) => {
+          state.isSidebarOpen = value;
+        });
+      }
     },
   }))
 );

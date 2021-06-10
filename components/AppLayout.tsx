@@ -20,6 +20,7 @@ export default function AppLayout(props: Props) {
   const { user } = useAuth();
   const [isFindOrCreateModalOpen, setIsFindOrCreateModalOpen] = useState(false);
 
+  const isSidebarOpen = useStore((state) => state.isSidebarOpen);
   const setNotes = useStore((state) => state.setNotes);
   const upsertNote = useStore((state) => state.upsertNote);
   const updateNote = useStore((state) => state.updateNote);
@@ -83,7 +84,9 @@ export default function AppLayout(props: Props) {
 
   return (
     <div className={`flex h-screen ${className}`}>
-      <Sidebar setIsFindOrCreateModalOpen={setIsFindOrCreateModalOpen} />
+      {isSidebarOpen ? (
+        <Sidebar setIsFindOrCreateModalOpen={setIsFindOrCreateModalOpen} />
+      ) : null}
       {children}
       <FindOrCreateModal
         isOpen={isFindOrCreateModalOpen}

@@ -1,15 +1,21 @@
 import React, { useCallback, useRef, useState } from 'react';
 import { Menu } from '@headlessui/react';
-import { IconDots, IconFileExport } from '@tabler/icons';
+import { IconDots, IconFileExport, IconMenu2 } from '@tabler/icons';
 import { usePopper } from 'react-popper';
 import { saveAs } from 'file-saver';
 import Portal from 'components/Portal';
 import { useCurrentNote } from 'utils/useCurrentNote';
-import { store } from 'lib/store';
+import { store, useStore } from 'lib/store';
 import serialize from 'editor/serialize';
 
 export default function NoteHeader() {
   const currentNote = useCurrentNote();
+
+  const isSidebarButtonVisible = useStore(
+    (state) => !state.isSidebarOpen && state.openNoteIds?.[0] === currentNote.id
+  );
+  const setIsSidebarOpen = useStore((state) => state.setIsSidebarOpen);
+
   const menuButtonRef = useRef<HTMLDivElement | null>(null);
   const [popperElement, setPopperElement] = useState<HTMLDivElement | null>(
     null
@@ -32,13 +38,23 @@ export default function NoteHeader() {
   }, [currentNote.id]);
 
   return (
-    <div className="w-full px-4 py-1 text-right bg-white">
+    <div className="flex items-center justify-between w-full px-4 py-1 text-right bg-white">
+      <div>
+        {isSidebarButtonVisible ? (
+          <button
+            className="p-1 rounded hover:bg-gray-300 active:bg-gray-400"
+            onClick={() => setIsSidebarOpen(true)}
+          >
+            <IconMenu2 className="text-gray-600" />
+          </button>
+        ) : null}
+      </div>
       <Menu>
         {({ open }) => (
           <>
-            <Menu.Button className="py-1 rounded hover:bg-gray-300 active:bg-gray-400">
+            <Menu.Button className="p-1 rounded hover:bg-gray-300 active:bg-gray-400">
               <div ref={menuButtonRef}>
-                <IconDots className="text-gray-800" />
+                <IconDots className="text-gray-600" />
               </div>
             </Menu.Button>
             {open && (
