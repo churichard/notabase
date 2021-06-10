@@ -81,17 +81,19 @@ const Header = () => {
     <div className="relative">
       <Menu>
         <Menu.Button className="flex items-center justify-between w-full px-6 py-3 text-left text-gray-800 hover:bg-gray-200 active:bg-gray-300">
-          <div>
-            <p className="font-medium">Notabase</p>
-            <p className="text-sm">{user?.email}</p>
+          <div className="flex items-center flex-1">
+            <span className="mr-1 font-medium">Notabase</span>
+            <IconSelector size={18} className="text-gray-500" />
           </div>
-          <IconSelector size={18} className="text-gray-500" />
         </Menu.Button>
         <Menu.Items className="absolute z-10 w-56 bg-white rounded left-6 top-full shadow-popover">
+          <p className="px-4 py-2 overflow-hidden text-xs text-gray-600 overflow-ellipsis">
+            {user?.email}
+          </p>
           <Menu.Item>
             {({ active }) => (
               <a
-                className={`flex w-full items-center px-4 py-2 text-left text-gray-800 ${
+                className={`flex w-full items-center px-4 py-2 text-left text-gray-800 text-sm ${
                   active ? 'bg-gray-100' : ''
                 }`}
                 href="https://8z3pisyojx8.typeform.com/to/tXt36EQM"
@@ -106,7 +108,7 @@ const Header = () => {
           <Menu.Item>
             {({ active }) => (
               <a
-                className={`flex w-full items-center px-4 py-2 text-left text-gray-800 ${
+                className={`flex w-full items-center px-4 py-2 text-left text-gray-800 text-sm ${
                   active ? 'bg-gray-100' : ''
                 }`}
                 href="mailto:hello@notabase.io"
@@ -121,7 +123,7 @@ const Header = () => {
           <Menu.Item>
             {({ active }) => (
               <button
-                className={`flex w-full items-center px-4 py-2 text-left text-gray-800 ${
+                className={`flex w-full items-center px-4 py-2 text-left text-gray-800 text-sm ${
                   active ? 'bg-gray-100' : ''
                 }`}
                 onClick={() => signOut()}
@@ -190,8 +192,9 @@ const NoteLinkDropdown = (props: NoteLinkDropdownProps) => {
   const openNoteIds = useStore((state) => state.openNoteIds);
 
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const [popperElement, setPopperElement] =
-    useState<HTMLDivElement | null>(null);
+  const [popperElement, setPopperElement] = useState<HTMLDivElement | null>(
+    null
+  );
   const { styles, attributes } = usePopper(
     containerRef.current,
     popperElement,
