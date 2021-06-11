@@ -81,16 +81,15 @@ export default function Home() {
           <div className="py-16 md:py-32">
             <div className="container px-6">
               <h2 className="text-3xl font-medium text-center md:text-4xl">
-                Write in rich text, in real-time
+                Write in rich text as you type
               </h2>
               <div className="max-w-3xl mx-auto">
                 <p className="pt-4 text-lg leading-loose text-gray-700 md:pt-8 md:text-xl md:leading-loose">
                   You don&apos;t need to be an expert at markdown to be
-                  productive with Notabase. With a formatting menu and keyboard
-                  shortcuts, you can format your text however you&apos;d like.
-                  Of course, if you&apos;d prefer to write markdown, you can do
-                  that too. Everything is converted <i>effortlessly</i> into{' '}
-                  <b>rich text</b> as you{' '}
+                  productive with Notabase. With a formatting menu, keyboard
+                  shortcuts, and auto-markdown support, you can format your text
+                  however you&apos;d like. Everything is converted{' '}
+                  <i>effortlessly</i> into <b>rich text</b> as you{' '}
                   <code className="p-0.5 bg-gray-200 rounded text-primary-800">
                     type
                   </code>
@@ -115,11 +114,11 @@ export default function Home() {
                   >
                     open source software
                   </a>
-                  , which means development happens transparently. You can
-                  personally help make the product better by contributing code,
-                  reporting bugs, or providing community support. And if the
-                  product ever shuts down, the source code is public, so anyone
-                  can build on top of it and host it themselves.
+                  , which means development happens transparently. The entire
+                  community makes the product better by contributing code,
+                  reporting bugs, or providing support. And since the source
+                  code is public, anyone can build on top of it or host it
+                  themselves.
                 </p>
               </div>
             </div>
