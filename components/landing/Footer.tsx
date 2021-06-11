@@ -36,20 +36,20 @@ export default function Footer(props: Props) {
               GitHub
             </a>
             <a
-              href="https://github.com/churichard/notabase/discussions"
-              className="text-gray-700"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Forum
-            </a>
-            <a
               href="https://twitter.com/notabase"
               className="text-gray-700"
               target="_blank"
               rel="noopener noreferrer"
             >
               Twitter
+            </a>
+            <a
+              href="https://discord.gg/BQKNRu7nv5"
+              className="text-gray-700"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Discord
             </a>
           </div>
         </div>
