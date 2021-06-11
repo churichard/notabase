@@ -118,6 +118,7 @@ function FindOrCreateInput(props: Props, ref: ForwardedRef<HTMLInputElement>) {
               onOptionClick(options[selectedOptionIndex]);
             }
           }}
+          autoFocus
         />
       </div>
       {options.length > 0 ? (

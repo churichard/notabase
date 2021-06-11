@@ -1,11 +1,11 @@
-import type { ReactNode } from 'react';
 import React, { useEffect, useMemo, useState } from 'react';
-import isHotkey from 'is-hotkey';
+import type { ReactNode } from 'react';
 import type { Notes } from 'lib/store';
 import { useStore, store } from 'lib/store';
 import supabase from 'lib/supabase';
 import type { Note } from 'types/supabase';
 import { useAuth } from 'utils/useAuth';
+import useHotkeys from 'utils/useHotkeys';
 import Sidebar from './Sidebar';
 import FindOrCreateModal from './FindOrCreateModal';
 
@@ -67,20 +67,7 @@ export default function AppLayout(props: Props) {
     ],
     [setIsFindOrCreateModalOpen]
   );
-
-  useEffect(() => {
-    const handleKeyboardShortcuts = (event: KeyboardEvent) => {
-      for (const { hotkey, callback } of hotkeys) {
-        if (isHotkey(hotkey, event)) {
-          event.preventDefault();
-          callback();
-        }
-      }
-    };
-    document.addEventListener('keydown', handleKeyboardShortcuts);
-    return () =>
-      document.removeEventListener('keydown', handleKeyboardShortcuts);
-  }, [hotkeys]);
+  useHotkeys(hotkeys);
 
   return (
     <div className={`flex h-screen ${className}`}>
@@ -88,10 +75,9 @@ export default function AppLayout(props: Props) {
         <Sidebar setIsFindOrCreateModalOpen={setIsFindOrCreateModalOpen} />
       ) : null}
       {children}
-      <FindOrCreateModal
-        isOpen={isFindOrCreateModalOpen}
-        setIsOpen={setIsFindOrCreateModalOpen}
-      />
+      {isFindOrCreateModalOpen ? (
+        <FindOrCreateModal setIsOpen={setIsFindOrCreateModalOpen} />
+      ) : null}
     </div>
   );
 }
