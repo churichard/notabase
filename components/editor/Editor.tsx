@@ -169,7 +169,10 @@ export default function Editor(props: Props) {
         if (!node) return;
         const element = node.parentElement;
         if (!element) return;
-        element.scrollIntoView({ block: 'end' });
+        // Only scroll element into view if it is not visible
+        if (!isElementInViewport(element)) {
+          element.scrollIntoView({ block: 'nearest' });
+        }
       } catch (e) {
         /**
          * Empty catch. Do nothing if there is an error.
@@ -212,3 +215,14 @@ export default function Editor(props: Props) {
     </Slate>
   );
 }
+
+const isElementInViewport = (el: Element) => {
+  const rect = el.getBoundingClientRect();
+  return (
+    rect.top >= 0 &&
+    rect.left >= 0 &&
+    rect.bottom <=
+      (window.innerHeight || document.documentElement.clientHeight) &&
+    rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+  );
+};
