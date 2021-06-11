@@ -18,7 +18,7 @@ import { usePopper } from 'react-popper';
 import type { Note } from 'types/supabase';
 import { useAuth } from 'utils/useAuth';
 import { caseInsensitiveStringCompare } from 'utils/string';
-import { deepEqual, useStore } from 'lib/store';
+import { deepEqual, store, useStore } from 'lib/store';
 import deleteNote from 'lib/api/deleteNote';
 import useBacklinks from 'editor/useBacklinks';
 import Portal from './Portal';
@@ -213,9 +213,13 @@ const NoteLinkDropdown = (props: NoteLinkDropdownProps) => {
     await deleteNote(note.id);
     await deleteBacklinks();
 
-    if (openNoteIds.findIndex((openNoteId) => openNoteId === note.id) !== -1) {
+    const deletedNoteIndex = openNoteIds.findIndex(
+      (openNoteId) => openNoteId === note.id
+    );
+    if (deletedNoteIndex !== -1) {
       // Redirect if one of the notes that was deleted was open
-      router.push('/app');
+      const newNoteId = Object.keys(store.getState().notes)[0];
+      router.push(`/app/note/${newNoteId}`, undefined, { shallow: true });
     }
   }, [router, note.id, openNoteIds, deleteBacklinks]);
 

@@ -153,9 +153,9 @@ export default function Note(props: Props) {
 
   if (!note) {
     return (
-      <p className="flex items-center justify-center h-full border-r w-176">
-        Whoops&mdash;it doesn&apos;t look like this note exists!
-      </p>
+      <div className="flex items-center justify-center flex-shrink-0 h-full border-r w-176">
+        <p>Whoops&mdash;it doesn&apos;t look like this note exists!</p>
+      </div>
     );
   }
 
