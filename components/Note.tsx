@@ -9,6 +9,7 @@ import { deepEqual, useStore } from 'lib/store';
 import type { NoteUpdate } from 'lib/api/updateNote';
 import updateDbNote from 'lib/api/updateNote';
 import { ProvideCurrentNote } from 'utils/useCurrentNote';
+import { Note as NoteType } from 'types/supabase';
 import Backlinks from './editor/backlinks/Backlinks';
 import NoteHeader from './editor/NoteHeader';
 
@@ -25,7 +26,10 @@ export default function Note(props: Props) {
   const { noteId } = props;
   const router = useRouter();
 
-  const note = useStore((state) => state.notes[noteId], deepEqual);
+  const note = useStore<NoteType | undefined>(
+    (state) => state.notes[noteId],
+    deepEqual
+  );
   const updateNote = useStore((state) => state.updateNote);
 
   const [syncState, setSyncState] = useState<{
@@ -40,26 +44,26 @@ export default function Note(props: Props) {
     [syncState]
   );
 
-  const { updateBacklinks } = useBacklinks(note.id);
+  const { updateBacklinks } = useBacklinks(noteId);
 
   const onTitleChange = useCallback(
     (title: string) => {
-      if (note.title !== title) {
+      if (note && note.title !== title) {
         updateNote({ id: note.id, title });
         setSyncState((syncState) => ({ ...syncState, isTitleSynced: false }));
       }
     },
-    [note.id, note.title, updateNote]
+    [note, updateNote]
   );
 
   const setEditorValue = useCallback(
     (content: Descendant[]) => {
-      if (note.content !== content) {
+      if (note && note.content !== content) {
         updateNote({ id: note.id, content });
         setSyncState((syncState) => ({ ...syncState, isContentSynced: false }));
       }
     },
-    [note.id, note.content, updateNote]
+    [note, updateNote]
   );
 
   const handleNoteUpdate = useCallback(
@@ -95,6 +99,10 @@ export default function Note(props: Props) {
 
   // Save the note in the database if it changes and it hasn't been saved yet
   useEffect(() => {
+    if (!note) {
+      return;
+    }
+
     const newNote: NoteUpdate = { id: note.id };
     if (!syncState.isContentSynced) {
       newNote.content = note.content;
@@ -113,9 +121,7 @@ export default function Note(props: Props) {
   }, [
     syncState.isContentSynced,
     syncState.isTitleSynced,
-    note.id,
-    note.content,
-    note.title,
+    note,
     handleNoteUpdate,
   ]);
 
@@ -144,6 +150,14 @@ export default function Note(props: Props) {
       router.events.off('routeChangeStart', handleBrowseAway);
     };
   }, [router, isSynced]);
+
+  if (!note) {
+    return (
+      <p className="flex items-center justify-center h-full border-r w-176">
+        Whoops&mdash;it doesn&apos;t look like this note exists!
+      </p>
+    );
+  }
 
   return (
     <ProvideCurrentNote value={note}>
