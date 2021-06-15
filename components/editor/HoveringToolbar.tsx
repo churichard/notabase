@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { useSlate } from 'slate-react';
 import type { TablerIcon } from '@tabler/icons';
 import {

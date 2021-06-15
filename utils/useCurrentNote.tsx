@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import React, { useContext, createContext } from 'react';
+import { useContext, createContext } from 'react';
 
 type CurrentNote = {
   id: string;

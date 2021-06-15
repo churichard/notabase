@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { useCurrentNote } from 'utils/useCurrentNote';
 import type { Backlink, BacklinkMatch } from 'editor/useBacklinks';
 import useBacklinks from 'editor/useBacklinks';

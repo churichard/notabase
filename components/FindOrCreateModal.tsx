@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import useHotkeys from 'utils/useHotkeys';
 import FindOrCreateInput from './FindOrCreateInput';
 

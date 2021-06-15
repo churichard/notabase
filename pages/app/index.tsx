@@ -1,4 +1,3 @@
-import React from 'react';
 import type { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import { createClient } from '@supabase/supabase-js';

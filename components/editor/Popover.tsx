@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { Range } from 'slate';
 import { ReactEditor, useSlate } from 'slate-react';
 import type { Placement, VirtualElement } from '@popperjs/core';
@@ -25,10 +25,12 @@ export default function Popover(props: Props) {
   } = props;
   const editor = useSlate();
 
-  const [referenceElement, setReferenceElement] =
-    useState<Element | VirtualElement | null>(null);
-  const [popperElement, setPopperElement] =
-    useState<HTMLDivElement | null>(null);
+  const [referenceElement, setReferenceElement] = useState<
+    Element | VirtualElement | null
+  >(null);
+  const [popperElement, setPopperElement] = useState<HTMLDivElement | null>(
+    null
+  );
   const { styles, attributes } = usePopper(referenceElement, popperElement, {
     placement,
     modifiers: [

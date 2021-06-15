@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { Menu } from '@headlessui/react';
 import { IconDots, IconFileExport, IconMenu2 } from '@tabler/icons';
 import { usePopper } from 'react-popper';

@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react';
-import React from 'react';
 import type { RenderElementProps } from 'slate-react';
 import Tippy from '@tippyjs/react';
 import type { ExternalLink, NoteLink } from 'types/slate';

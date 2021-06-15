@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import { Fragment, ReactNode } from 'react';
 import { Descendant, Element as SlateElement } from 'slate';
 import { RenderElementProps, RenderLeafProps } from 'slate-react';
 import { FormattedText } from 'types/slate';
@@ -58,7 +58,7 @@ function Element(props: ElementProps) {
   const { element, renderElement, renderLeaf } = props;
 
   return (
-    <React.Fragment>
+    <>
       {renderElement({
         attributes: { 'data-slate-node': 'element', ref: undefined },
         children: (
@@ -70,7 +70,7 @@ function Element(props: ElementProps) {
         ),
         element,
       })}
-    </React.Fragment>
+    </>
   );
 }
 
@@ -83,13 +83,13 @@ function Leaf(props: LeafProps) {
   const { leaf, renderLeaf } = props;
 
   return (
-    <React.Fragment>
+    <>
       {renderLeaf({
         attributes: { 'data-slate-leaf': true },
         children: <span>{leaf.text}</span>,
         leaf,
         text: leaf,
       })}
-    </React.Fragment>
+    </>
   );
 }

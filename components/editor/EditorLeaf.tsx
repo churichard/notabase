@@ -1,4 +1,3 @@
-import React from 'react';
 import { RenderLeafProps } from 'slate-react';
 
 const EditorLeaf = ({ attributes, children, leaf }: RenderLeafProps) => {

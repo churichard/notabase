@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 import { Backlink } from 'editor/useBacklinks';
 import useOnNoteLinkClick from 'editor/useOnNoteLinkClick';
 

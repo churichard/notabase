@@ -1,5 +1,5 @@
 import type { KeyboardEvent, MouseEvent } from 'react';
-import React, { useRef, useCallback, useMemo, useState } from 'react';
+import { useRef, useCallback, useMemo, useState } from 'react';
 import type { Descendant } from 'slate';
 import { createEditor, Range, Editor as SlateEditor, Transforms } from 'slate';
 import { withReact, Editable, ReactEditor, Slate } from 'slate-react';

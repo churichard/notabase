@@ -1,5 +1,5 @@
 import type { MouseEvent } from 'react';
-import React, { useMemo, useRef, useState, useCallback } from 'react';
+import { useMemo, useRef, useState, useCallback } from 'react';
 import { Transforms } from 'slate';
 import { ReactEditor, useSlate } from 'slate-react';
 import type { TablerIcon } from '@tabler/icons';

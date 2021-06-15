@@ -1,5 +1,5 @@
 import type { FormEvent } from 'react';
-import React, { useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useAuth } from 'utils/useAuth';
 

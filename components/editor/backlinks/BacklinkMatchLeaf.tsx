@@ -1,4 +1,4 @@
-import React, { memo, useCallback } from 'react';
+import { memo, useCallback } from 'react';
 import { BacklinkMatch } from 'editor/useBacklinks';
 import EditorElement from '../EditorElement';
 import EditorLeaf from '../EditorLeaf';

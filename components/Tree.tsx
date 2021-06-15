@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback, ReactNode } from 'react';
+import { useState, useMemo, useCallback, ReactNode } from 'react';
 import TreeNode from './TreeNode';
 
 type TreeNode = {

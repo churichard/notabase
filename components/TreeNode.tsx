@@ -1,4 +1,4 @@
-import React, { memo, useMemo } from 'react';
+import { memo, useMemo } from 'react';
 import { IconCaretDown, IconCaretRight } from '@tabler/icons';
 import { FlattenedTreeNode } from './Tree';
 
