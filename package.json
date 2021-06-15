@@ -24,7 +24,7 @@
     "fuse.js": "^6.4.6",
     "immer": "^9.0.3",
     "is-hotkey": "^0.2.0",
-    "next": "^10.2.3",
+    "next": "^11.0.0",
     "nprogress": "^0.2.0",
     "postcss": "^8.3.0",
     "react": "17.0.2",
@@ -39,7 +39,7 @@
     "zustand": "^3.5.2"
   },
   "devDependencies": {
-    "@next/bundle-analyzer": "^10.2.3",
+    "@next/bundle-analyzer": "^11.0.0",
     "@types/d3": "^6.7.0",
     "@types/file-saver": "^2.0.2",
     "@types/node": "^15.12.2",
