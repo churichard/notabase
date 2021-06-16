@@ -3,10 +3,12 @@ import { Menu } from '@headlessui/react';
 import { IconDots, IconFileExport, IconMenu2 } from '@tabler/icons';
 import { usePopper } from 'react-popper';
 import { saveAs } from 'file-saver';
+import JSZip from 'jszip';
 import Portal from 'components/Portal';
 import { useCurrentNote } from 'utils/useCurrentNote';
 import { store, useStore } from 'lib/store';
 import serialize from 'editor/serialize';
+import { Note } from 'types/supabase';
 
 export default function NoteHeader() {
   const currentNote = useCurrentNote();
@@ -28,14 +30,20 @@ export default function NoteHeader() {
 
   const onExportClick = useCallback(async () => {
     const note = store.getState().notes[currentNote.id];
-    const serializedContent = `# ${note.title}\n\n${note.content
-      .map((n) => serialize(n))
-      .join('')}`;
-    const blob = new Blob([serializedContent], {
-      type: 'text/markdown;charset=utf-8',
-    });
-    saveAs(blob, `${note.title}.md`);
+    saveAs(getNoteAsBlob(note), `${note.title}.md`);
   }, [currentNote.id]);
+
+  const onExportAllClick = useCallback(async () => {
+    const zip = new JSZip();
+
+    const notes = Object.values(store.getState().notes);
+    for (const note of notes) {
+      zip.file(`${note.title}.md`, getNoteAsBlob(note));
+    }
+
+    const zipContent = await zip.generateAsync({ type: 'blob' });
+    saveAs(zipContent, 'notabase-export.zip');
+  }, []);
 
   return (
     <div className="flex items-center justify-between w-full px-4 py-1 text-right bg-white">
@@ -61,7 +69,7 @@ export default function NoteHeader() {
               <Portal>
                 <Menu.Items
                   ref={setPopperElement}
-                  className="z-10 bg-white rounded w-52 shadow-popover"
+                  className="z-10 bg-white rounded shadow-popover"
                   static
                   style={styles.popper}
                   {...attributes.popper}
@@ -75,7 +83,20 @@ export default function NoteHeader() {
                         onClick={onExportClick}
                       >
                         <IconFileExport size={18} className="mr-1" />
-                        <span>Export to markdown</span>
+                        <span>Export to Markdown</span>
+                      </button>
+                    )}
+                  </Menu.Item>
+                  <Menu.Item>
+                    {({ active }) => (
+                      <button
+                        className={`flex w-full items-center px-4 py-2 text-left text-gray-800 ${
+                          active ? 'bg-gray-100' : ''
+                        }`}
+                        onClick={onExportAllClick}
+                      >
+                        <IconFileExport size={18} className="mr-1" />
+                        <span>Export all to Markdown</span>
                       </button>
                     )}
                   </Menu.Item>
@@ -88,3 +109,14 @@ export default function NoteHeader() {
     </div>
   );
 }
+
+const getSerializedNote = (note: Note) =>
+  `# ${note.title}\n\n${note.content.map((n) => serialize(n)).join('')}`;
+
+const getNoteAsBlob = (note: Note) => {
+  const serializedContent = getSerializedNote(note);
+  const blob = new Blob([serializedContent], {
+    type: 'text/markdown;charset=utf-8',
+  });
+  return blob;
+};
