@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "env TAILWIND_MODE=watch NODE_ENV=development next dev",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint . --ext .tsx,.ts",
@@ -27,7 +27,7 @@
     "jszip": "^3.6.0",
     "next": "^11.0.0",
     "nprogress": "^0.2.0",
-    "postcss": "^8.3.4",
+    "postcss": "^8.3.5",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-popper": "^2.2.5",
@@ -35,7 +35,7 @@
     "slate": "^0.63.0",
     "slate-history": "^0.62.0",
     "slate-react": "^0.65.2",
-    "tailwindcss": "^2.1.4",
+    "tailwindcss": "^2.2.0",
     "uuid": "^8.3.2",
     "zustand": "^3.5.2"
   },
@@ -47,7 +47,7 @@
     "@types/nprogress": "^0.2.0",
     "@types/react": "^17.0.11",
     "@types/react-dom": "^17.0.7",
-    "@types/tailwindcss": "^2.0.5",
+    "@types/tailwindcss": "^2.0.6",
     "@types/uuid": "^8.3.0",
     "@typescript-eslint/eslint-plugin": "^4.27.0",
     "@typescript-eslint/parser": "^4.27.0",
@@ -59,6 +59,6 @@
     "eslint-plugin-react": "^7.24.0",
     "eslint-plugin-react-hooks": "^4.2.0",
     "prettier": "2.3.1",
-    "typescript": "^4.3.2"
+    "typescript": "^4.3.3"
   }
 }

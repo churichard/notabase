@@ -26,7 +26,7 @@ export default function NotePage(props: Props) {
   const prevOpenNoteIds = usePrevious(openNoteIds);
 
   const pageTitle = useStore((state) => {
-    if (!noteId || typeof noteId !== 'string' || !state.notes[noteId]) {
+    if (!noteId || typeof noteId !== 'string' || !state.notes[noteId]?.title) {
       return 'Notabase';
     }
     return state.notes[noteId].title;
