@@ -9,6 +9,8 @@ import useHotkeys from 'utils/useHotkeys';
 import Sidebar from './Sidebar';
 import FindOrCreateModal from './FindOrCreateModal';
 
+const SM_BREAKPOINT = 640;
+
 type Props = {
   children: ReactNode;
   initialNotes: Notes;
@@ -21,6 +23,7 @@ export default function AppLayout(props: Props) {
   const [isFindOrCreateModalOpen, setIsFindOrCreateModalOpen] = useState(false);
 
   const isSidebarOpen = useStore((state) => state.isSidebarOpen);
+  const setIsSidebarOpen = useStore((state) => state.setIsSidebarOpen);
   const setNotes = useStore((state) => state.setNotes);
   const upsertNote = useStore((state) => state.upsertNote);
   const updateNote = useStore((state) => state.updateNote);
@@ -28,7 +31,11 @@ export default function AppLayout(props: Props) {
 
   useEffect(() => {
     setNotes(initialNotes);
-  }, [initialNotes, setNotes]);
+
+    if (window.innerWidth <= SM_BREAKPOINT) {
+      setIsSidebarOpen(false);
+    }
+  }, [initialNotes, setNotes, setIsSidebarOpen]);
 
   useEffect(() => {
     if (!user) {
