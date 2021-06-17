@@ -5,10 +5,11 @@ import { useRouter } from 'next/router';
 import Editor from 'components/editor/Editor';
 import Title from 'components/editor/Title';
 import useBacklinks from 'editor/useBacklinks';
-import { deepEqual, useStore } from 'lib/store';
+import { deepEqual, store, useStore } from 'lib/store';
 import type { NoteUpdate } from 'lib/api/updateNote';
 import updateDbNote from 'lib/api/updateNote';
 import { ProvideCurrentNote } from 'utils/useCurrentNote';
+import { caseInsensitiveStringEqual } from 'utils/string';
 import { Note as NoteType } from 'types/supabase';
 import Backlinks from './editor/backlinks/Backlinks';
 import NoteHeader from './editor/NoteHeader';
@@ -32,6 +33,9 @@ export default function Note(props: Props) {
   );
   const updateNote = useStore((state) => state.updateNote);
 
+  // Having a separate note title state makes it so that the title can be a "staging" area
+  // where it is possible for it to be empty, yet have the actual note title be something like "Untitled"
+  const [noteTitle, setNoteTitle] = useState(note?.title ?? '');
   const [syncState, setSyncState] = useState<{
     isTitleSynced: boolean;
     isContentSynced: boolean;
@@ -49,8 +53,18 @@ export default function Note(props: Props) {
   const onTitleChange = useCallback(
     (title: string) => {
       if (note && note.title !== title) {
-        updateNote({ id: note.id, title });
-        setSyncState((syncState) => ({ ...syncState, isTitleSynced: false }));
+        setNoteTitle(title);
+        // Only update note title in storage if there isn't already a note with that title
+        const newTitle = title || getUntitledTitle(note.id);
+        const notesArr = Object.values(store.getState().notes);
+        if (notesArr.findIndex((note) => note.title === title) === -1) {
+          updateNote({ id: note.id, title: newTitle });
+          setSyncState((syncState) => ({ ...syncState, isTitleSynced: false }));
+        } else {
+          toast.error(
+            `There's already a note called ${title}. Please use a different title.`
+          );
+        }
       }
     },
     [note, updateNote]
@@ -167,7 +181,7 @@ export default function Note(props: Props) {
           <div className="flex flex-col flex-1">
             <Title
               className="px-12 pt-12 pb-1"
-              value={note.title}
+              value={noteTitle}
               onChange={onTitleChange}
             />
             <Editor
@@ -182,3 +196,24 @@ export default function Note(props: Props) {
     </ProvideCurrentNote>
   );
 }
+
+// Get a unique "Untitled" title, ignoring the specified noteId.
+const getUntitledTitle = (noteId: string) => {
+  const title = 'Untitled';
+
+  const getResult = () => (suffix > 0 ? `${title} ${suffix}` : title);
+
+  let suffix = 0;
+  const notesArr = Object.values(store.getState().notes);
+  while (
+    notesArr.findIndex(
+      (note) =>
+        note.id !== noteId &&
+        caseInsensitiveStringEqual(note.title, getResult())
+    ) > -1
+  ) {
+    suffix += 1;
+  }
+
+  return getResult();
+};
