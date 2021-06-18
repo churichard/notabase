@@ -97,7 +97,7 @@ export default function NotePage(props: Props) {
         <title>{pageTitle}</title>
       </Head>
       <AppLayout initialNotes={initialNotes}>
-        <div className="flex overflow-x-auto">
+        <div className="flex flex-1 overflow-x-auto">
           {openNoteIds.length > 0
             ? openNoteIds.map((noteId) => <Note key={noteId} noteId={noteId} />)
             : null}
