@@ -17,7 +17,7 @@ Notabase is currently in alpha.
 
 ## Features
 
-- Seamlessly navigate and browse through your notes side-by-side
+- Browse through your notes with sliding window mode (similar to [Andy's working notes](https://notes.andymatuschak.org/About_these_notes))
 - WYSIWYG editor with markdown support makes it easy to edit notes
 - Linked/unlinked references let you see other notes that reference a specific note
 - Your notes are synced to the cloud and can be accessed on any device
