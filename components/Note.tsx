@@ -177,7 +177,7 @@ export default function Note(props: Props) {
     <ProvideCurrentNote value={note}>
       <div
         id={note.id}
-        className="flex flex-col flex-shrink-0 w-full border-r md:w-128 lg:w-176"
+        className="flex flex-col flex-shrink-0 w-full bg-white md:w-128 lg:w-176"
       >
         <NoteHeader />
         <div className="flex flex-col flex-1 overflow-y-auto">

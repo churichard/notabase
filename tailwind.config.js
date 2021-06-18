@@ -18,7 +18,7 @@ module.exports = {
     colors: {
       ...colors,
       primary: colors.emerald,
-      gray: colors.warmGray,
+      gray: colors.trueGray,
     },
     boxShadow: {
       ...defaultTheme.boxShadow,
