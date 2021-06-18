@@ -9,6 +9,7 @@ import type { NoteLink } from 'types/slate';
 import { ElementType } from 'types/slate';
 import type { GraphData } from 'components/ForceGraph';
 import ForceGraph from 'components/ForceGraph';
+import GraphHeader from 'components/GraphHeader';
 import type { Notes } from 'lib/store';
 import { useStore, deepEqual } from 'lib/store';
 
@@ -80,6 +81,7 @@ export default function Graph(props: Props) {
       </Head>
       <AppLayout initialNotes={initialNotes} className="max-w-screen">
         <div ref={containerRef} className="flex-1">
+          <GraphHeader />
           <ForceGraph
             data={graphData}
             width={dimensions.width}
