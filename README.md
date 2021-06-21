@@ -9,7 +9,7 @@ It lets you connect knowledge and form ideas by linking notes together. These li
 
 It is inspired by note-taking apps such as Notion, Obsidian, Typora, and Roam Research.
 
-https://user-images.githubusercontent.com/4218237/118325487-62d46180-b4b8-11eb-950a-5cdabdd52821.mp4
+https://user-images.githubusercontent.com/4218237/122793125-b08a7980-d26f-11eb-805b-eeea6a96ee8a.mp4
 
 ## Status
 
