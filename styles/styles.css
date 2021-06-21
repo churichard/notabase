@@ -16,7 +16,7 @@
   }
 
   .link {
-    @apply underline text-primary-600;
+    @apply underline cursor-pointer text-primary-600;
   }
 }
 
