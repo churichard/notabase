@@ -13,7 +13,7 @@ https://user-images.githubusercontent.com/4218237/122793125-b08a7980-d26f-11eb-8
 
 ## Status
 
-Notabase is currently in alpha.
+Notabase is currently in alpha. It is under active development.
 
 ## Features
 
