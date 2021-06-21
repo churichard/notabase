@@ -14,11 +14,15 @@ const EditorLeaf = ({ attributes, children, leaf }: RenderLeafProps) => {
   }
 
   if (leaf.italic) {
-    children = <em>{children}</em>;
+    children = <em className="italic">{children}</em>;
   }
 
   if (leaf.underline) {
-    children = <u>{children}</u>;
+    children = <u className="underline">{children}</u>;
+  }
+
+  if (leaf.strikethrough) {
+    children = <s className="line-through">{children}</s>;
   }
 
   return <span {...attributes}>{children}</span>;

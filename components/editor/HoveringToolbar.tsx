@@ -5,6 +5,7 @@ import {
   IconBold,
   IconItalic,
   IconUnderline,
+  IconStrikethrough,
   IconCode,
   IconH1,
   IconH2,
@@ -38,6 +39,7 @@ export default function HoveringToolbar(props: Props) {
       <FormatButton format={Mark.Bold} />
       <FormatButton format={Mark.Italic} />
       <FormatButton format={Mark.Underline} />
+      <FormatButton format={Mark.Strikethrough} />
       <FormatButton format={Mark.Code} className="border-r" />
       <BlockButton format={ElementType.HeadingOne} />
       <BlockButton format={ElementType.HeadingTwo} />
@@ -95,6 +97,8 @@ const FormatButton = ({ format, className = '' }: FormatButtonProps) => {
         return IconItalic;
       case Mark.Underline:
         return IconUnderline;
+      case Mark.Strikethrough:
+        return IconStrikethrough;
       case Mark.Code:
         return IconCode;
       default:

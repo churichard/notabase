@@ -22,6 +22,7 @@ export enum Mark {
   Italic = 'italic',
   Code = 'code',
   Underline = 'underline',
+  Strikethrough = 'strikethrough',
 }
 
 export type ParagraphElement = {
