@@ -28,6 +28,8 @@ export type Store = {
   setOpenNoteIds: (openNoteIds: Note['id'][], index?: number) => void;
   isSidebarOpen: boolean;
   setIsSidebarOpen: (value: boolean | ((value: boolean) => boolean)) => void;
+  isPageStackingOn: boolean;
+  setIsPageStackingOn: (value: boolean | ((value: boolean) => boolean)) => void;
 };
 
 export const store = createVanilla<Store>(
@@ -112,6 +114,18 @@ export const store = createVanilla<Store>(
       } else {
         set((state) => {
           state.isSidebarOpen = value;
+        });
+      }
+    },
+    isPageStackingOn: true,
+    setIsPageStackingOn: (value: boolean | ((value: boolean) => boolean)) => {
+      if (typeof value === 'function') {
+        set((state) => {
+          state.isPageStackingOn = value(state.isPageStackingOn);
+        });
+      } else {
+        set((state) => {
+          state.isPageStackingOn = value;
         });
       }
     },

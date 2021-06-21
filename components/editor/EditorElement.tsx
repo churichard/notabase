@@ -1,9 +1,11 @@
-import type { ReactNode } from 'react';
+import { ReactNode } from 'react';
 import type { RenderElementProps } from 'slate-react';
 import Tippy from '@tippyjs/react';
+import Link from 'next/link';
 import type { ExternalLink, NoteLink } from 'types/slate';
 import { ElementType } from 'types/slate';
 import useOnNoteLinkClick from 'editor/useOnNoteLinkClick';
+import { useStore } from 'lib/store';
 
 type Props = {
   omitVerticalSpacing: boolean;
@@ -112,16 +114,27 @@ type NoteLinkElementProps = {
 const NoteLinkElement = (props: NoteLinkElementProps) => {
   const { element, children, attributes } = props;
   const onNoteLinkClick = useOnNoteLinkClick();
+  const isPageStackingOn = useStore((state) => state.isPageStackingOn);
 
   return (
     <Tippy content={element.noteTitle} duration={0} placement="bottom">
-      <span
-        className="underline cursor-pointer text-primary-600"
-        onClick={() => onNoteLinkClick(element.noteId)}
-        {...attributes}
-      >
-        {children}
-      </span>
+      {isPageStackingOn ? (
+        <span
+          className="cursor-pointer link"
+          onClick={() => onNoteLinkClick(element.noteId)}
+          {...attributes}
+        >
+          {children}
+        </span>
+      ) : (
+        <span>
+          <Link href={`/app/note/${element.noteId}`}>
+            <a className="link" {...attributes}>
+              {children}
+            </a>
+          </Link>
+        </span>
+      )}
     </Tippy>
   );
 };

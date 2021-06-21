@@ -24,6 +24,7 @@ export default function AppLayout(props: Props) {
 
   const isSidebarOpen = useStore((state) => state.isSidebarOpen);
   const setIsSidebarOpen = useStore((state) => state.setIsSidebarOpen);
+  const setIsPageStackingOn = useStore((state) => state.setIsPageStackingOn);
   const setNotes = useStore((state) => state.setNotes);
   const upsertNote = useStore((state) => state.upsertNote);
   const updateNote = useStore((state) => state.updateNote);
@@ -34,8 +35,9 @@ export default function AppLayout(props: Props) {
 
     if (window.innerWidth <= SM_BREAKPOINT) {
       setIsSidebarOpen(false);
+      setIsPageStackingOn(false);
     }
-  }, [initialNotes, setNotes, setIsSidebarOpen]);
+  }, [initialNotes, setNotes, setIsSidebarOpen, setIsPageStackingOn]);
 
   useEffect(() => {
     if (!user) {

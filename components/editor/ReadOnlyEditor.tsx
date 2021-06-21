@@ -1,4 +1,4 @@
-import { Fragment, ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { Descendant, Element as SlateElement } from 'slate';
 import { RenderElementProps, RenderLeafProps } from 'slate-react';
 import { FormattedText } from 'types/slate';
