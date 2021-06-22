@@ -40,7 +40,7 @@
     "zustand": "^3.5.2"
   },
   "devDependencies": {
-    "@next/bundle-analyzer": "^11.0.0",
+    "@next/bundle-analyzer": "^11.0.1",
     "@types/d3": "^6.7.1",
     "@types/file-saver": "^2.0.2",
     "@types/node": "^15.12.4",
