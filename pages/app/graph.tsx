@@ -12,6 +12,7 @@ import ForceGraph from 'components/ForceGraph';
 import GraphHeader from 'components/GraphHeader';
 import type { Notes } from 'lib/store';
 import { useStore, deepEqual } from 'lib/store';
+import ErrorBoundary from 'components/ErrorBoundary';
 
 type Props = {
   initialNotes: Notes;
@@ -80,15 +81,17 @@ export default function Graph(props: Props) {
         <title>Graph View | Notabase</title>
       </Head>
       <AppLayout initialNotes={initialNotes} className="max-w-screen">
-        <div ref={containerRef} className="flex-1">
-          <GraphHeader />
-          <ForceGraph
-            data={graphData}
-            width={dimensions.width}
-            height={dimensions.height}
-            className="absolute"
-          />
-        </div>
+        <ErrorBoundary>
+          <div ref={containerRef} className="flex-1">
+            <GraphHeader />
+            <ForceGraph
+              data={graphData}
+              width={dimensions.width}
+              height={dimensions.height}
+              className="absolute"
+            />
+          </div>
+        </ErrorBoundary>
       </AppLayout>
     </>
   );

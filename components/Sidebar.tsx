@@ -22,6 +22,7 @@ import { deepEqual, store, useStore } from 'lib/store';
 import deleteNote from 'lib/api/deleteNote';
 import useBacklinks from 'editor/useBacklinks';
 import Portal from './Portal';
+import ErrorBoundary from './ErrorBoundary';
 
 type Props = {
   setIsFindOrCreateModalOpen: Dispatch<SetStateAction<boolean>>;
@@ -224,43 +225,45 @@ const NoteLinkDropdown = (props: NoteLinkDropdownProps) => {
   }, [router, note.id, openNoteIds, deleteBacklinks]);
 
   return (
-    <div ref={containerRef}>
-      <Menu>
-        {({ open }) => (
-          <>
-            <Menu.Button
-              className={`p-1 rounded hover:bg-gray-300 active:bg-gray-400 ${className}`}
-            >
-              <IconDots className="text-gray-600" />
-            </Menu.Button>
-            {open && (
-              <Portal>
-                <Menu.Items
-                  ref={setPopperElement}
-                  className="z-10 w-48 bg-white rounded shadow-popover"
-                  static
-                  style={styles.popper}
-                  {...attributes.popper}
-                >
-                  <Menu.Item>
-                    {({ active }) => (
-                      <button
-                        className={`flex w-full items-center px-4 py-2 text-left text-gray-800 ${
-                          active ? 'bg-gray-100' : ''
-                        }`}
-                        onClick={onDeleteClick}
-                      >
-                        <IconTrash size={18} className="mr-1" />
-                        <span>Delete</span>
-                      </button>
-                    )}
-                  </Menu.Item>
-                </Menu.Items>
-              </Portal>
-            )}
-          </>
-        )}
-      </Menu>
-    </div>
+    <ErrorBoundary>
+      <div ref={containerRef}>
+        <Menu>
+          {({ open }) => (
+            <>
+              <Menu.Button
+                className={`p-1 rounded hover:bg-gray-300 active:bg-gray-400 ${className}`}
+              >
+                <IconDots className="text-gray-600" />
+              </Menu.Button>
+              {open && (
+                <Portal>
+                  <Menu.Items
+                    ref={setPopperElement}
+                    className="z-10 w-48 bg-white rounded shadow-popover"
+                    static
+                    style={styles.popper}
+                    {...attributes.popper}
+                  >
+                    <Menu.Item>
+                      {({ active }) => (
+                        <button
+                          className={`flex w-full items-center px-4 py-2 text-left text-gray-800 ${
+                            active ? 'bg-gray-100' : ''
+                          }`}
+                          onClick={onDeleteClick}
+                        >
+                          <IconTrash size={18} className="mr-1" />
+                          <span>Delete</span>
+                        </button>
+                      )}
+                    </Menu.Item>
+                  </Menu.Items>
+                </Portal>
+              )}
+            </>
+          )}
+        </Menu>
+      </div>
+    </ErrorBoundary>
   );
 };

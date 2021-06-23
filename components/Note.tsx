@@ -166,9 +166,13 @@ export default function Note(props: Props) {
     };
   }, [router, isSynced]);
 
+  const noteContainerClassName =
+    'flex flex-col flex-shrink-0 w-full bg-white border-r-0 md:border-r md:w-128 lg:w-176';
+  const errorContainerClassName = `${noteContainerClassName} items-center justify-center h-full`;
+
   if (!note) {
     return (
-      <div className="flex items-center justify-center flex-shrink-0 h-full bg-white border-r w-176">
+      <div className={errorContainerClassName}>
         <p>Whoops&mdash;it doesn&apos;t look like this note exists!</p>
       </div>
     );
@@ -177,16 +181,13 @@ export default function Note(props: Props) {
   return (
     <ErrorBoundary
       fallback={
-        <div className="flex items-center justify-center flex-shrink-0 h-full bg-white border-r w-176">
+        <div className={errorContainerClassName}>
           <p>An unexpected error occurred when rendering this note.</p>
         </div>
       }
     >
       <ProvideCurrentNote value={note}>
-        <div
-          id={note.id}
-          className="flex flex-col flex-shrink-0 w-full bg-white border-r-0 md:border-r md:w-128 lg:w-176"
-        >
+        <div id={note.id} className={noteContainerClassName}>
           <NoteHeader />
           <div className="flex flex-col flex-1 overflow-y-auto">
             <div className="flex flex-col flex-1">
