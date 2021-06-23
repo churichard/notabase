@@ -75,19 +75,18 @@ export default function LinkAutocompletePopover() {
       return null;
     }
 
-    const { anchor } = selection;
+    try {
+      const { anchor } = selection;
 
-    const elementStart = Editor.start(editor, anchor.path);
-    const elementRange = { anchor, focus: elementStart };
-    const elementText = Editor.string(editor, elementRange);
+      const elementStart = Editor.start(editor, anchor.path);
+      const elementRange = { anchor, focus: elementStart };
+      const elementText = Editor.string(editor, elementRange);
 
-    const result = elementText.match(REGEX);
-
-    if (!result) {
+      const result = elementText.match(REGEX);
+      return result ?? null;
+    } catch (e) {
       return null;
     }
-
-    return result;
   }, [editor]);
 
   useEffect(() => {
