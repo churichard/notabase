@@ -1,10 +1,10 @@
-import { Editor, Element, Node, Range, Transforms } from 'slate';
+import { Editor, Range, Transforms } from 'slate';
 import isUrl from 'utils/isUrl';
 import { insertExternalLink } from 'editor/formatting';
 import { ElementType } from 'types/slate';
 
 const withLinks = (editor: Editor) => {
-  const { insertData, insertText, isInline, normalizeNode } = editor;
+  const { insertData, insertText, isInline } = editor;
 
   editor.isInline = (element) => {
     return element.type === ElementType.ExternalLink ||
@@ -53,28 +53,6 @@ const withLinks = (editor: Editor) => {
     } else {
       insertData(data);
     }
-  };
-
-  editor.normalizeNode = (entry) => {
-    const [node, path] = entry;
-
-    // Remove links with no text
-    if (Element.isElement(node)) {
-      for (const [child, childPath] of Node.children(editor, path)) {
-        if (
-          Element.isElement(child) &&
-          (child.type === ElementType.NoteLink ||
-            child.type === ElementType.ExternalLink) &&
-          !Node.string(child)
-        ) {
-          Transforms.unwrapNodes(editor, { at: childPath });
-          return;
-        }
-      }
-    }
-
-    // Fall back to the original `normalizeNode` to enforce other constraints.
-    normalizeNode(entry);
   };
 
   return editor;
