@@ -44,7 +44,7 @@ const INLINE_SHORTCUTS: Array<{
   { match: /(?:^|\s)(__)([^_]+)(__)/, type: Mark.Bold },
   { match: /(?:^|\s)(\*)([^*]+)(\*)/, type: Mark.Italic },
   { match: /(?:^|\s)(_)([^_]+)(_)/, type: Mark.Italic },
-  { match: /(?:^|\s)(`)(.+)(`)/, type: Mark.Code },
+  { match: /(?:^|\s)(`)([^`]+)(`)/, type: Mark.Code },
   { match: /(?:^|\s)(~~)([^~]+)(~~)/, type: Mark.Strikethrough },
   { match: /(?:^|\s)(\[)(.+)(\]\()(.+)(\))/, type: ElementType.ExternalLink },
   { match: /(?:^|\s)(\[\[)(.+)(\]\])/, type: ElementType.NoteLink },
