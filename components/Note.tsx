@@ -13,6 +13,7 @@ import { caseInsensitiveStringEqual } from 'utils/string';
 import { Note as NoteType } from 'types/supabase';
 import Backlinks from './editor/backlinks/Backlinks';
 import NoteHeader from './editor/NoteHeader';
+import ErrorBoundary from './ErrorBoundary';
 
 const SYNC_DEBOUNCE_MS = 1000;
 
@@ -167,36 +168,44 @@ export default function Note(props: Props) {
 
   if (!note) {
     return (
-      <div className="flex items-center justify-center flex-shrink-0 h-full border-r w-176">
+      <div className="flex items-center justify-center flex-shrink-0 h-full bg-white border-r w-176">
         <p>Whoops&mdash;it doesn&apos;t look like this note exists!</p>
       </div>
     );
   }
 
   return (
-    <ProvideCurrentNote value={note}>
-      <div
-        id={note.id}
-        className="flex flex-col flex-shrink-0 w-full bg-white border-r-0 md:border-r md:w-128 lg:w-176"
-      >
-        <NoteHeader />
-        <div className="flex flex-col flex-1 overflow-y-auto">
-          <div className="flex flex-col flex-1">
-            <Title
-              className="px-12 pt-12 pb-1"
-              value={noteTitle}
-              onChange={onTitleChange}
-            />
-            <Editor
-              className="flex-1 px-12 pt-2 pb-12"
-              value={note.content}
-              setValue={setEditorValue}
-            />
-          </div>
-          <Backlinks className="mx-8 mb-12" />
+    <ErrorBoundary
+      fallback={
+        <div className="flex items-center justify-center flex-shrink-0 h-full bg-white border-r w-176">
+          <p>An unexpected error occurred when rendering this note.</p>
         </div>
-      </div>
-    </ProvideCurrentNote>
+      }
+    >
+      <ProvideCurrentNote value={note}>
+        <div
+          id={note.id}
+          className="flex flex-col flex-shrink-0 w-full bg-white border-r-0 md:border-r md:w-128 lg:w-176"
+        >
+          <NoteHeader />
+          <div className="flex flex-col flex-1 overflow-y-auto">
+            <div className="flex flex-col flex-1">
+              <Title
+                className="px-12 pt-12 pb-1"
+                value={noteTitle}
+                onChange={onTitleChange}
+              />
+              <Editor
+                className="flex-1 px-12 pt-2 pb-12"
+                value={note.content}
+                setValue={setEditorValue}
+              />
+            </div>
+            <Backlinks className="mx-8 mb-12" />
+          </div>
+        </div>
+      </ProvideCurrentNote>
+    </ErrorBoundary>
   );
 }
 
