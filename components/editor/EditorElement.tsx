@@ -87,7 +87,7 @@ export default function EditorElement(props: Props) {
     case ElementType.CodeBlock:
       return (
         <code
-          className={`block p-2 bg-gray-200 rounded text-primary-800 ${
+          className={`block p-2 bg-gray-100 rounded text-primary-800 ${
             omitVerticalSpacing ? '' : 'my-3'
           }`}
           {...attributes}
