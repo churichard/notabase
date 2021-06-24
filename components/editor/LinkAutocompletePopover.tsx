@@ -1,6 +1,6 @@
 import type { MouseEvent } from 'react';
 import { useMemo, useState, useCallback, useEffect } from 'react';
-import { Editor, Range } from 'slate';
+import { Editor, Range, Transforms } from 'slate';
 import { useSlate } from 'slate-react';
 import type { TablerIcon } from '@tabler/icons';
 import { IconFilePlus } from '@tabler/icons';
@@ -129,11 +129,13 @@ export default function LinkAutocompletePopover() {
       if (option.type === OptionType.NOTE) {
         // Insert a link to an existing note with the note title as the link text
         insertNoteLink(editor, option.id, option.text);
+        Transforms.move(editor, { distance: 1, unit: 'offset' }); // Focus after the note link
       } else if (option.type === OptionType.NEW_NOTE) {
         // Add a new note and insert a link to it with the note title as the link text
         const noteId = uuidv4();
         insertNoteLink(editor, noteId, linkText);
         upsertNote({ id: noteId, user_id: user.id, title: linkText });
+        Transforms.move(editor, { distance: 1, unit: 'offset' }); // Focus after the note link
       } else {
         throw new Error(`Option type ${option.type} is not supported`);
       }
@@ -141,16 +143,6 @@ export default function LinkAutocompletePopover() {
       hidePopover();
     },
     [editor, user, hidePopover, linkText, getRegexResult]
-  );
-
-  const onKeyPress = useCallback(
-    (event) => {
-      if (event.key === 'Enter') {
-        event.preventDefault();
-        onOptionClick(options[selectedOptionIndex]);
-      }
-    },
-    [onOptionClick, options, selectedOptionIndex]
   );
 
   const onKeyDown = useCallback(
@@ -166,22 +158,25 @@ export default function LinkAutocompletePopover() {
         setSelectedOptionIndex((index) => {
           return index >= options.length - 1 ? 0 : index + 1;
         });
+      } else if (event.key === 'Enter') {
+        // We need both preventDefault and stopPropagation to prevent an enter being added
+        event.preventDefault();
+        event.stopPropagation();
+        onOptionClick(options[selectedOptionIndex]);
       }
     },
-    [options.length]
+    [onOptionClick, options, selectedOptionIndex]
   );
 
   useEffect(() => {
     if (isVisible) {
-      document.addEventListener('keydown', onKeyDown);
-      document.addEventListener('keypress', onKeyPress);
+      document.addEventListener('keydown', onKeyDown, true);
 
       return () => {
-        document.removeEventListener('keydown', onKeyDown);
-        document.removeEventListener('keypress', onKeyPress);
+        document.removeEventListener('keydown', onKeyDown, true);
       };
     }
-  }, [isVisible, onKeyDown, onKeyPress, options.length]);
+  }, [isVisible, onKeyDown]);
 
   return isVisible ? (
     <Popover
