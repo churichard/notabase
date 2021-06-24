@@ -15,6 +15,7 @@ export enum ElementType {
   Blockquote = 'block-quote',
   ExternalLink = 'link',
   NoteLink = 'note-link',
+  CodeBlock = 'code-block',
 }
 
 export enum Mark {
@@ -80,6 +81,11 @@ export type NoteLink = {
   children: FormattedText[];
 };
 
+export type CodeBlock = {
+  type: ElementType.CodeBlock;
+  children: Descendant[];
+};
+
 export type NotabaseElement =
   | ParagraphElement
   | HeadingOneElement
@@ -90,7 +96,8 @@ export type NotabaseElement =
   | NumberedList
   | Blockquote
   | ExternalLink
-  | NoteLink;
+  | NoteLink
+  | CodeBlock;
 
 export type ListElement = BulletedList | NumberedList;
 

@@ -14,6 +14,7 @@ import {
   IconList,
   IconListNumbers,
   IconLink,
+  IconBraces,
 } from '@tabler/icons';
 import {
   toggleMark,
@@ -47,6 +48,7 @@ export default function HoveringToolbar(props: Props) {
       <BlockButton format={ElementType.BulletedList} />
       <BlockButton format={ElementType.NumberedList} />
       <BlockButton format={ElementType.Blockquote} />
+      <BlockButton format={ElementType.CodeBlock} />
     </Popover>
   );
 }
@@ -139,6 +141,8 @@ const BlockButton = ({ format, className = '' }: BlockButtonProps) => {
         return IconListNumbers;
       case ElementType.Blockquote:
         return IconBlockquote;
+      case ElementType.CodeBlock:
+        return IconBraces;
       default:
         throw new Error(`Format ${format} is not a valid format`);
     }
