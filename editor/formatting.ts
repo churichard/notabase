@@ -74,6 +74,8 @@ export const handleIndent = (editor: Editor) => {
       type: ElementType.NumberedList,
       children: [],
     });
+  } else if (isElementActive(editor, ElementType.CodeBlock)) {
+    Transforms.insertText(editor, '\t');
   }
 };
 
@@ -98,6 +100,14 @@ export const handleUnindent = (editor: Editor) => {
         !Editor.isEditor(n) && Element.isElement(n) && isListType(n.type),
       split: true,
     });
+  }
+};
+
+export const handleEnter = (editor: Editor) => {
+  if (isElementActive(editor, ElementType.CodeBlock)) {
+    Transforms.insertText(editor, '\n');
+  } else {
+    editor.insertBreak();
   }
 };
 

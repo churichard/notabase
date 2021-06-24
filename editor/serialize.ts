@@ -130,10 +130,8 @@ export default function serialize(
       // happen
       return `> ${children}\n\n`;
 
-    // case nodeTypes.code_block:
-    //   return `\`\`\`${
-    //     (chunk as BlockType).language || ''
-    //   }\n${children}\n\`\`\`\n`;
+    case ElementType.CodeBlock:
+      return `\`\`\`\n${children}\n\`\`\`\n`;
 
     case ElementType.NoteLink: {
       const noteLink = chunk as NoteLink;

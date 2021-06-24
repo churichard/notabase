@@ -84,6 +84,17 @@ export default function EditorElement(props: Props) {
           {children}
         </blockquote>
       );
+    case ElementType.CodeBlock:
+      return (
+        <code
+          className={`block p-2 bg-gray-100 rounded text-primary-800 ${
+            omitVerticalSpacing ? '' : 'my-3'
+          }`}
+          {...attributes}
+        >
+          {children}
+        </code>
+      );
     case ElementType.ExternalLink:
       return (
         <ExternalLinkElement element={element} attributes={attributes}>

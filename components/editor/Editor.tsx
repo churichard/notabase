@@ -6,6 +6,7 @@ import { withReact, Editable, ReactEditor, Slate } from 'slate-react';
 import { withHistory } from 'slate-history';
 import { isHotkey } from 'is-hotkey';
 import {
+  handleEnter,
   handleIndent,
   handleUnindent,
   isElementActive,
@@ -123,8 +124,16 @@ export default function Editor(props: Props) {
         callback: () => handleUnindent(editor),
       },
       {
+        hotkey: 'enter',
+        callback: () => handleEnter(editor),
+      },
+      {
         hotkey: 'shift+enter',
         callback: () => Transforms.insertText(editor, '\n'),
+      },
+      {
+        hotkey: 'mod+enter',
+        callback: () => editor.insertBreak(),
       },
     ],
     [editor, setAddLinkPopoverState]
