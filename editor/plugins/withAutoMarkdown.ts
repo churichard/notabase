@@ -235,7 +235,6 @@ const withAutoMarkdown = (editor: Editor) => {
           type: ElementType.NoteLink,
           noteId,
           noteTitle,
-          isTextTitle: true,
           children: [],
         };
         Transforms.wrapNodes(editor, link, {

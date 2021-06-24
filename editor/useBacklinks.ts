@@ -282,8 +282,8 @@ const updateBacklinks = async (newTitle: string, noteId: string) => {
         // Update noteTitle property on the node
         linkNode.noteTitle = newTitle;
 
-        // If isTextTitle is true, then the link text should always be equal to the note title
-        if (linkNode.isTextTitle) {
+        // If there is no custom text, then the link text should be the same as the note title
+        if (!linkNode.customText) {
           for (const linkNodeChild of linkNode.children) {
             linkNodeChild.text = newTitle;
           }

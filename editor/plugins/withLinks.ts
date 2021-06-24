@@ -4,13 +4,17 @@ import { insertExternalLink } from 'editor/formatting';
 import { ElementType } from 'types/slate';
 
 const withLinks = (editor: Editor) => {
-  const { insertData, insertText, isInline } = editor;
+  const { insertData, insertText, isInline, isVoid } = editor;
 
   editor.isInline = (element) => {
     return element.type === ElementType.ExternalLink ||
       element.type === ElementType.NoteLink
       ? true
       : isInline(element);
+  };
+
+  editor.isVoid = (element) => {
+    return element.type === ElementType.NoteLink ? true : isVoid(element);
   };
 
   editor.insertText = (text) => {

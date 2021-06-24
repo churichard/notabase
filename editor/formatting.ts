@@ -182,7 +182,7 @@ export const insertNoteLink = (
     type: ElementType.NoteLink,
     noteId,
     noteTitle,
-    isTextTitle: isCollapsed,
+    customText: !isCollapsed ? Editor.string(editor, selection) : undefined,
     children: isCollapsed ? [{ text: noteTitle }] : [],
   };
   wrapLink(editor, link);
