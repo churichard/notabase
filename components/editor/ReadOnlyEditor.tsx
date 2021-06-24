@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import { Descendant, Element as SlateElement } from 'slate';
 import { RenderElementProps, RenderLeafProps } from 'slate-react';
-import { FormattedText } from 'types/slate';
+import { ElementType, FormattedText } from 'types/slate';
 
 type Props = {
   value: Descendant[];
@@ -37,7 +37,7 @@ const Children = (props: ChildrenProps) => {
               key={i}
               element={child}
               renderElement={renderElement}
-              renderLeaf={renderLeaf}
+              renderLeaf={!isVoid(child) ? renderLeaf : () => null}
             />
           );
         } else {
@@ -93,3 +93,7 @@ function Leaf(props: LeafProps) {
     </>
   );
 }
+
+const isVoid = (element: SlateElement) => {
+  return element.type === ElementType.NoteLink;
+};

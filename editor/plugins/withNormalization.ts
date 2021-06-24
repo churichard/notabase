@@ -2,7 +2,7 @@ import { Editor, Element, Node, Selection, Text, Transforms } from 'slate';
 import { Mark } from 'types/slate';
 
 const withNormalization = (editor: Editor) => {
-  const { normalizeNode, isInline } = editor;
+  const { normalizeNode } = editor;
 
   editor.normalizeNode = (entry) => {
     const [node, path] = entry;
@@ -14,7 +14,8 @@ const withNormalization = (editor: Editor) => {
       for (const [child, childPath] of Node.children(editor, path)) {
         if (
           Element.isElement(child) &&
-          isInline(child) &&
+          editor.isInline(child) &&
+          !editor.isVoid(child) &&
           !Node.string(child)
         ) {
           Transforms.unwrapNodes(editor, { at: childPath });

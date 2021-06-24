@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import type { RenderElementProps } from 'slate-react';
+import { RenderElementProps, useFocused, useSelected } from 'slate-react';
 import Tippy from '@tippyjs/react';
 import Link from 'next/link';
 import type { ExternalLink, NoteLink } from 'types/slate';
@@ -87,7 +87,7 @@ export default function EditorElement(props: Props) {
     case ElementType.CodeBlock:
       return (
         <code
-          className={`block p-2 bg-gray-100 rounded text-primary-800 ${
+          className={`block p-2 bg-gray-100 border border-gray-200 rounded ${
             omitVerticalSpacing ? '' : 'my-3'
           }`}
           {...attributes}
@@ -126,21 +126,29 @@ const NoteLinkElement = (props: NoteLinkElementProps) => {
   const { element, children, attributes } = props;
   const onNoteLinkClick = useOnNoteLinkClick();
   const isPageStackingOn = useStore((state) => state.isPageStackingOn);
+  const selected = useSelected();
+  const focused = useFocused();
+  const className = `p-1 rounded text-primary-600 cursor-pointer bg-gray-100 hover:bg-gray-200 active:bg-gray-300 ${
+    selected && focused ? 'bg-blue-100' : ''
+  }`;
 
   return (
     <Tippy content={element.noteTitle} duration={0} placement="bottom">
       {isPageStackingOn ? (
         <span
-          className="link"
+          className={className}
           onClick={() => onNoteLinkClick(element.noteId)}
+          contentEditable={false}
           {...attributes}
         >
+          {element.noteTitle}
           {children}
         </span>
       ) : (
         <span>
           <Link href={`/app/note/${element.noteId}`}>
-            <a className="link" {...attributes}>
+            <a className={className} contentEditable={false} {...attributes}>
+              {element.noteTitle}
               {children}
             </a>
           </Link>

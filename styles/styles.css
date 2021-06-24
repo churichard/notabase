@@ -16,7 +16,7 @@
   }
 
   .link {
-    @apply underline cursor-pointer text-primary-600;
+    @apply cursor-pointer text-primary-600 hover:text-primary-800;
   }
 }
 

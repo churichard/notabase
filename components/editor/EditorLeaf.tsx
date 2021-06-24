@@ -7,7 +7,7 @@ const EditorLeaf = ({ attributes, children, leaf }: RenderLeafProps) => {
 
   if (leaf.code) {
     children = (
-      <code className="p-1 bg-gray-100 rounded text-primary-800">
+      <code className="p-1 bg-gray-100 border border-gray-200 rounded">
         {children}
       </code>
     );
