@@ -10,6 +10,7 @@ import {
   handleIndent,
   handleUnindent,
   isElementActive,
+  toggleElement,
   toggleMark,
 } from 'editor/formatting';
 import withDeleteBackwardWorkaround from 'editor/plugins/withDeleteBackwardWorkaround';
@@ -97,8 +98,44 @@ export default function Editor(props: Props) {
         callback: () => toggleMark(editor, Mark.Underline),
       },
       {
-        hotkey: 'mod+e',
+        hotkey: 'mod+`',
         callback: () => toggleMark(editor, Mark.Code),
+      },
+      {
+        hotkey: 'mod+shift+s',
+        callback: () => toggleMark(editor, Mark.Strikethrough),
+      },
+      {
+        hotkey: 'mod+shift+1',
+        callback: () => toggleElement(editor, ElementType.HeadingOne),
+      },
+      {
+        hotkey: 'mod+shift+2',
+        callback: () => toggleElement(editor, ElementType.HeadingTwo),
+      },
+      {
+        hotkey: 'mod+shift+3',
+        callback: () => toggleElement(editor, ElementType.HeadingThree),
+      },
+      {
+        hotkey: 'mod+shift+4',
+        callback: () => toggleElement(editor, ElementType.BulletedList),
+      },
+      {
+        hotkey: 'mod+shift+5',
+        callback: () => toggleElement(editor, ElementType.NumberedList),
+      },
+      {
+        hotkey: 'mod+shift+6',
+        callback: () => toggleElement(editor, ElementType.Blockquote),
+      },
+      {
+        hotkey: 'mod+shift+7',
+        callback: () => toggleElement(editor, ElementType.CodeBlock),
+      },
+      {
+        hotkey: 'mod+shift+9',
+        callback: () => toggleElement(editor, ElementType.Paragraph),
       },
       {
         hotkey: 'mod+k',
