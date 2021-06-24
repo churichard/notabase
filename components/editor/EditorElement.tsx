@@ -141,14 +141,14 @@ const NoteLinkElement = (props: NoteLinkElementProps) => {
           contentEditable={false}
           {...attributes}
         >
-          {element.noteTitle}
+          {element.customText ?? element.noteTitle}
           {children}
         </span>
       ) : (
         <span>
           <Link href={`/app/note/${element.noteId}`}>
             <a className={className} contentEditable={false} {...attributes}>
-              {element.noteTitle}
+              {element.customText ?? element.noteTitle}
               {children}
             </a>
           </Link>

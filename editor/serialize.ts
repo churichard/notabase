@@ -132,9 +132,9 @@ export default function serialize(
 
     case ElementType.NoteLink: {
       const noteLink = chunk as NoteLink;
-      return noteLink.isTextTitle
-        ? `[[${children}]]`
-        : `[${children}]([[${noteLink.noteTitle}]])`;
+      return noteLink.customText
+        ? `[${noteLink.customText}]([[${noteLink.noteTitle}]])`
+        : `[[${noteLink.noteTitle}]]`;
     }
     case ElementType.ExternalLink:
       return `[${children}](${(chunk as ExternalLink).url || ''})`;

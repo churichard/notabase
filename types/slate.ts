@@ -76,8 +76,7 @@ export type NoteLink = {
   type: ElementType.NoteLink;
   noteId: string;
   noteTitle: string;
-  // True when the note link text should always be the same as the note title, false if there is custom text
-  isTextTitle: boolean;
+  customText?: string;
   children: FormattedText[];
 };
 
