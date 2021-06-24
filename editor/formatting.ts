@@ -122,6 +122,7 @@ const unwrapLink = (editor: Editor) => {
       !Editor.isEditor(n) &&
       Element.isElement(n) &&
       (n.type === ElementType.ExternalLink || n.type === ElementType.NoteLink),
+    voids: true,
   });
 };
 
