@@ -29,10 +29,7 @@ import {
   NoteLink,
 } from 'types/slate';
 
-type LeafType = FormattedText & {
-  strikeThrough?: boolean;
-  parentType?: string;
-};
+type LeafType = FormattedText & { parentType?: string };
 
 type BlockType = Element & { parentType?: string };
 
@@ -93,7 +90,7 @@ export default function serialize(
   // "Text foo bar **baz**" resulting in "**Text foo bar **baz****"
   // which is invalid markup and can mess everything up
   if (children !== BREAK_TAG && isLeafNode(chunk)) {
-    if (chunk.strikeThrough && chunk.bold && chunk.italic) {
+    if (chunk.strikethrough && chunk.bold && chunk.italic) {
       children = retainWhitespaceAndFormat(children, '~~***');
     } else if (chunk.bold && chunk.italic) {
       children = retainWhitespaceAndFormat(children, '***');
@@ -106,7 +103,7 @@ export default function serialize(
         children = retainWhitespaceAndFormat(children, '_');
       }
 
-      if (chunk.strikeThrough) {
+      if (chunk.strikethrough) {
         children = retainWhitespaceAndFormat(children, '~~');
       }
 
@@ -183,7 +180,7 @@ function retainWhitespaceAndFormat(string: string, format: string) {
   // children will be mutated
   const children = frozenString;
 
-  // We reverse the right side formatting, to properly handle bold/italic and strikeThrough
+  // We reverse the right side formatting, to properly handle bold/italic and strikethrough
   // formats, so we can create ~~***FooBar***~~
   const fullFormat = `${format}${children}${reverseStr(format)}`;
 
@@ -194,7 +191,7 @@ function retainWhitespaceAndFormat(string: string, format: string) {
   }
 
   // if we do have whitespace, let's add our formatting around our trimmed string
-  // We reverse the right side formatting, to properly handle bold/italic and strikeThrough
+  // We reverse the right side formatting, to properly handle bold/italic and strikethrough
   // formats, so we can create ~~***FooBar***~~
   const formattedString = format + children + reverseStr(format);
 
