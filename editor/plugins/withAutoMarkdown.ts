@@ -21,19 +21,20 @@ const BLOCK_SHORTCUTS: Array<
     }
 > = [
   {
-    match: /^(\*|-|\+)$/,
+    match: /^(\*|-|\+) $/,
     type: ElementType.ListItem,
     listType: ElementType.BulletedList,
   }, // match *, -, or +
   {
-    match: /^([0-9]+\.)$/,
+    match: /^([0-9]+\.) $/,
     type: ElementType.ListItem,
     listType: ElementType.NumberedList,
   }, // match numbered lists
-  { match: /^>$/, type: ElementType.Blockquote },
-  { match: /^#$/, type: ElementType.HeadingOne },
-  { match: /^##$/, type: ElementType.HeadingTwo },
-  { match: /^###$/, type: ElementType.HeadingThree },
+  { match: /^> $/, type: ElementType.Blockquote },
+  { match: /^# $/, type: ElementType.HeadingOne },
+  { match: /^## $/, type: ElementType.HeadingTwo },
+  { match: /^### $/, type: ElementType.HeadingThree },
+  { match: /^```$/, type: ElementType.CodeBlock },
 ];
 
 const INLINE_SHORTCUTS: Array<{
@@ -65,40 +66,38 @@ const withAutoMarkdown = (editor: Editor) => {
     const { anchor } = selection;
 
     // Handle shortcuts at the beginning of a line
-    if (text === ' ') {
-      const block = Editor.above(editor, {
-        match: (n) => Editor.isBlock(editor, n),
-      });
-      const path = block ? block[1] : [];
-      const lineStart = Editor.start(editor, path);
-      const beforeRange = { anchor, focus: lineStart };
-      const beforeText = Editor.string(editor, beforeRange);
+    const block = Editor.above(editor, {
+      match: (n) => Editor.isBlock(editor, n),
+    });
+    const path = block ? block[1] : [];
+    const lineStart = Editor.start(editor, path);
+    const beforeRange = { anchor, focus: lineStart };
+    const beforeText = Editor.string(editor, beforeRange) + text;
 
-      // Handle block shortcuts
-      for (const shortcut of BLOCK_SHORTCUTS) {
-        if (beforeText.match(shortcut.match)) {
-          Transforms.select(editor, beforeRange);
-          Transforms.delete(editor);
-          Transforms.setNodes(
-            editor,
-            { type: shortcut.type },
-            { match: (n) => Editor.isBlock(editor, n) }
-          );
+    // Handle block shortcuts
+    for (const shortcut of BLOCK_SHORTCUTS) {
+      if (beforeText.match(shortcut.match)) {
+        Transforms.select(editor, beforeRange);
+        Transforms.delete(editor);
+        Transforms.setNodes(
+          editor,
+          { type: shortcut.type },
+          { match: (n) => Editor.isBlock(editor, n) }
+        );
 
-          if (shortcut.type === ElementType.ListItem) {
-            const list: ListElement = {
-              type: shortcut.listType,
-              children: [],
-            };
-            Transforms.wrapNodes(editor, list, {
-              match: (n) =>
-                !Editor.isEditor(n) &&
-                Element.isElement(n) &&
-                n.type === ElementType.ListItem,
-            });
-          }
-          return;
+        if (shortcut.type === ElementType.ListItem) {
+          const list: ListElement = {
+            type: shortcut.listType,
+            children: [],
+          };
+          Transforms.wrapNodes(editor, list, {
+            match: (n) =>
+              !Editor.isEditor(n) &&
+              Element.isElement(n) &&
+              n.type === ElementType.ListItem,
+          });
         }
+        return;
       }
     }
 
