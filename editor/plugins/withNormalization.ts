@@ -12,6 +12,9 @@ const withNormalization = (editor: Editor) => {
       const markArr = Object.values(Mark);
 
       for (const [child, childPath] of Node.children(editor, path)) {
+        let normalized = false;
+
+        // Inline, non-void elements with no text should be unwrapped
         if (
           Element.isElement(child) &&
           editor.isInline(child) &&
@@ -19,17 +22,19 @@ const withNormalization = (editor: Editor) => {
           !Node.string(child)
         ) {
           Transforms.unwrapNodes(editor, { at: childPath });
-          if (!isAtLineEnd(editor, editor.selection)) {
-            // This ensures the selection doesn't move to the previous line
-            Transforms.move(editor, { distance: 1, unit: 'offset' });
-          }
-          return;
-        } else if (
+          normalized = true;
+        }
+        // Text elements with no text and a mark should have their mark unset
+        else if (
           Text.isText(child) &&
           !Node.string(child) &&
           markArr.some((mark) => !!child[mark])
         ) {
           Transforms.unsetNodes(editor, markArr, { at: childPath });
+          normalized = true;
+        }
+
+        if (normalized) {
           if (!isAtLineEnd(editor, editor.selection)) {
             // This ensures the selection doesn't move to the previous line
             Transforms.move(editor, { distance: 1, unit: 'offset' });

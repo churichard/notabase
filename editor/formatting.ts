@@ -183,7 +183,7 @@ export const insertNoteLink = (
     noteId,
     noteTitle,
     customText: !isCollapsed ? Editor.string(editor, selection) : undefined,
-    children: [],
+    children: [{ text: '' }],
   };
   wrapLink(editor, link);
 };
