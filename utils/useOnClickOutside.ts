@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 export default function useOnClickOutside(
   element: Element | null,
-  handler?: (event: Event) => void
+  handler?: () => void
 ) {
   useEffect(() => {
     if (!element || !handler) {
@@ -15,7 +15,7 @@ export default function useOnClickOutside(
         return;
       }
 
-      handler(event);
+      handler();
     };
 
     document.addEventListener('mousedown', listener);

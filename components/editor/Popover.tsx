@@ -1,28 +1,22 @@
-import type { ReactNode } from 'react';
-import { useEffect, useState } from 'react';
+import { ReactNode, useMemo, useEffect, useState } from 'react';
 import type { Range } from 'slate';
 import { ReactEditor, useSlate } from 'slate-react';
 import type { Placement, VirtualElement } from '@popperjs/core';
 import { usePopper } from 'react-popper';
 import Portal from 'components/Portal';
 import useOnClickOutside from 'utils/useOnClickOutside';
+import useHotkeys from 'utils/useHotkeys';
 
 type Props = {
   children: ReactNode;
   className?: string;
   placement?: Placement;
   selection?: Range;
-  onClickOutside?: (event: Event) => void; // Called when mouse is clicked outside the popover
+  onClose?: () => void;
 };
 
 export default function Popover(props: Props) {
-  const {
-    children,
-    className = '',
-    placement,
-    selection,
-    onClickOutside,
-  } = props;
+  const { children, className = '', placement, selection, onClose } = props;
   const editor = useSlate();
 
   const [referenceElement, setReferenceElement] = useState<
@@ -39,7 +33,18 @@ export default function Popover(props: Props) {
       { name: 'computeStyles', options: { gpuAcceleration: false } },
     ],
   });
-  useOnClickOutside(popperElement, onClickOutside);
+  useOnClickOutside(popperElement, onClose);
+
+  const hotkeys = useMemo(
+    () => [
+      {
+        hotkey: 'esc',
+        callback: () => onClose?.(),
+      },
+    ],
+    [onClose]
+  );
+  useHotkeys(hotkeys);
 
   // Update popover reference element when the editor changes
   useEffect(() => {

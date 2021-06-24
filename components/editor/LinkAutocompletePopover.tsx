@@ -187,7 +187,7 @@ export default function LinkAutocompletePopover() {
     <Popover
       placement="bottom"
       className="flex flex-col w-96"
-      onClickOutside={hidePopover}
+      onClose={hidePopover}
     >
       {options.map((option, index) => (
         <OptionItem

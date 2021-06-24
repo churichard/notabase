@@ -92,46 +92,51 @@ export default function AddLinkPopover(props: Props) {
     return result;
   }, [addLinkPopoverState.isLink, searchResults, linkText]);
 
-  const hidePopover = useCallback(
-    () =>
-      setAddLinkPopoverState({
-        isVisible: false,
-        selection: undefined,
-        isLink: false,
-      }),
-    [setAddLinkPopoverState]
-  );
+  const hidePopover = useCallback(() => {
+    if (!addLinkPopoverState.selection) {
+      return;
+    }
+
+    Transforms.select(editor, addLinkPopoverState.selection); // Restore the editor selection
+    ReactEditor.focus(editor); // Focus the editor
+    setAddLinkPopoverState({
+      isVisible: false,
+      selection: undefined,
+      isLink: false,
+    });
+  }, [editor, addLinkPopoverState, setAddLinkPopoverState]);
 
   const onOptionClick = useCallback(
     async (option?: Option) => {
-      if (!addLinkPopoverState.selection || !option || !user) {
+      if (!option || !user) {
         return;
       }
 
-      Transforms.select(editor, addLinkPopoverState.selection); // Restore the editor selection
+      // Restore selection and hide popover
+      hidePopover();
 
       if (option.type === OptionType.NOTE) {
         // Insert a link to an existing note with the note title as the link text
         insertNoteLink(editor, option.id, option.text);
+        Transforms.move(editor, { distance: 1, unit: 'offset' }); // Focus after the note link
       } else if (option.type === OptionType.URL) {
         // Insert a link to a url
         insertExternalLink(editor, linkText);
+        Transforms.move(editor, { distance: 1, unit: 'offset' }); // Focus after the note link
       } else if (option.type === OptionType.NEW_NOTE) {
         // Add a new note and insert a link to it with the note title as the link text
         const noteId = uuidv4();
         insertNoteLink(editor, noteId, linkText);
         upsertNote({ id: noteId, user_id: user.id, title: linkText });
+        Transforms.move(editor, { distance: 1, unit: 'offset' }); // Focus after the note link
       } else if (option.type === OptionType.REMOVE_LINK) {
         // Remove the link
         removeLink(editor);
       } else {
         throw new Error(`Option type ${option.type} is not supported`);
       }
-
-      ReactEditor.focus(editor); // Focus the editor
-      hidePopover();
     },
-    [editor, user, addLinkPopoverState.selection, hidePopover, linkText]
+    [editor, user, hidePopover, linkText]
   );
 
   const onKeyDown = useCallback(
@@ -157,7 +162,7 @@ export default function AddLinkPopover(props: Props) {
       selection={addLinkPopoverState.selection}
       placement="bottom"
       className="flex flex-col pt-4 pb-2 w-96"
-      onClickOutside={hidePopover}
+      onClose={hidePopover}
     >
       <input
         ref={inputRef}
