@@ -37,9 +37,17 @@ const BLOCK_SHORTCUTS: Array<
   { match: /^```$/, type: ElementType.CodeBlock },
 ];
 
+enum CustomInlineShortcuts {
+  CustomNoteLink = 'custom-note-link',
+}
+
 const INLINE_SHORTCUTS: Array<{
   match: RegExp;
-  type: Mark | ElementType.ExternalLink | ElementType.NoteLink;
+  type:
+    | Mark
+    | CustomInlineShortcuts
+    | ElementType.ExternalLink
+    | ElementType.NoteLink;
 }> = [
   { match: /(?:^|\s)(\*\*)([^*]+)(\*\*)/, type: Mark.Bold },
   { match: /(?:^|\s)(__)([^_]+)(__)/, type: Mark.Bold },
@@ -47,6 +55,10 @@ const INLINE_SHORTCUTS: Array<{
   { match: /(?:^|\s)(_)([^_]+)(_)/, type: Mark.Italic },
   { match: /(?:^|\s)(`)([^`]+)(`)/, type: Mark.Code },
   { match: /(?:^|\s)(~~)([^~]+)(~~)/, type: Mark.Strikethrough },
+  {
+    match: /(?:^|\s)(\[)(.+)(\]\(\[\[)(.+)(\]\]\))/,
+    type: CustomInlineShortcuts.CustomNoteLink,
+  },
   { match: /(?:^|\s)(\[)(.+)(\]\()(.+)(\))/, type: ElementType.ExternalLink },
   { match: /(?:^|\s)(\[\[)(.+)(\]\])/, type: ElementType.NoteLink },
 ];
@@ -241,6 +253,60 @@ const withAutoMarkdown = (editor: Editor) => {
           at: noteTitleRange,
           split: true,
         });
+        Transforms.move(editor, { unit: 'offset' });
+
+        return;
+      } else if (type === CustomInlineShortcuts.CustomNoteLink) {
+        const [, startMark, linkText, middleMark, noteTitle, endMark] = result;
+        const endMarkLength = endMark.length - 1; // The last character is not in the editor
+
+        // Delete the middle mark, note title, and end mark
+        const endLength = middleMark.length + noteTitle.length + endMarkLength;
+        deleteText(editor, selectionPath, endOfSelection, endLength);
+        endOfSelection -= endLength;
+
+        // Delete the start mark
+        deleteText(
+          editor,
+          selectionPath,
+          endOfSelection - linkText.length,
+          startMark.length
+        );
+        endOfSelection -= startMark.length;
+
+        // Get or generate note id
+        let noteId;
+        const notes = store.getState().notes;
+        const matchingNote = Object.values(notes).find(
+          (note) => note.title === noteTitle
+        );
+        if (matchingNote) {
+          noteId = matchingNote.id;
+        } else {
+          const userId = supabase.auth.user()?.id;
+          noteId = uuidv4();
+          if (userId) {
+            upsertNote({ id: noteId, user_id: userId, title: noteTitle });
+          }
+        }
+
+        // Wrap text in a link
+        const linkTextRange = {
+          anchor: { path: selectionPath, offset: endOfSelection },
+          focus: {
+            path: selectionPath,
+            offset: endOfSelection - linkText.length,
+          },
+        };
+        const link: NoteLink = {
+          type: ElementType.NoteLink,
+          noteId,
+          noteTitle,
+          customText: linkText,
+          children: [],
+        };
+        Transforms.wrapNodes(editor, link, { at: linkTextRange, split: true });
+        Transforms.move(editor, { unit: 'offset' });
 
         return;
       }
