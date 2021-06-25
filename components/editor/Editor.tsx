@@ -18,6 +18,7 @@ import withAutoMarkdown from 'editor/plugins/withAutoMarkdown';
 import withBlockBreakout from 'editor/plugins/withBlockBreakout';
 import withLinks from 'editor/plugins/withLinks';
 import withNormalization from 'editor/plugins/withNormalization';
+import withCustomDeleteBackward from 'editor/plugins/withCustomDeleteBackward';
 import { ElementType, Mark } from 'types/slate';
 import HoveringToolbar from './HoveringToolbar';
 import AddLinkPopover from './AddLinkPopover';
@@ -43,9 +44,11 @@ export default function Editor(props: Props) {
   const editorRef = useRef<SlateEditor>();
   if (!editorRef.current) {
     editorRef.current = withNormalization(
-      withDeleteBackwardWorkaround(
-        withAutoMarkdown(
-          withBlockBreakout(withLinks(withHistory(withReact(createEditor()))))
+      withCustomDeleteBackward(
+        withDeleteBackwardWorkaround(
+          withAutoMarkdown(
+            withBlockBreakout(withLinks(withHistory(withReact(createEditor()))))
+          )
         )
       )
     );

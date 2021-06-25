@@ -6,6 +6,8 @@ const withDeleteBackwardWorkaround = (editor: Editor) => {
   const { deleteBackward } = editor;
 
   // Workaround from https://github.com/ianstormtaylor/slate/issues/3408
+  // Basically, prevents a list item on the previous line from getting converted into a paragraph
+  // and being nested in a bulleted/numbered list.
   editor.deleteBackward = (...args) => {
     deleteBackward(...args);
 
