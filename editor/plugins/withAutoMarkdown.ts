@@ -66,7 +66,7 @@ const INLINE_SHORTCUTS: Array<{
 
 // Add auto-markdown formatting shortcuts
 const withAutoMarkdown = (editor: Editor) => {
-  const { deleteBackward, insertText } = editor;
+  const { insertText } = editor;
 
   editor.insertText = (text) => {
     const { selection } = editor;
@@ -91,34 +91,6 @@ const withAutoMarkdown = (editor: Editor) => {
     }
 
     insertText(text);
-  };
-
-  editor.deleteBackward = (...args) => {
-    const { selection } = editor;
-
-    if (selection && Range.isCollapsed(selection)) {
-      const match = Editor.above(editor, {
-        match: (n) => Editor.isBlock(editor, n),
-      });
-
-      if (match) {
-        const [block, path] = match;
-        const start = Editor.start(editor, path);
-
-        if (
-          !Editor.isEditor(block) &&
-          Element.isElement(block) &&
-          block.type !== ElementType.Paragraph &&
-          block.type !== ElementType.ListItem &&
-          Point.equals(selection.anchor, start)
-        ) {
-          Transforms.setNodes(editor, { type: ElementType.Paragraph });
-          return;
-        }
-      }
-
-      deleteBackward(...args);
-    }
   };
 
   return editor;
