@@ -1,5 +1,5 @@
 import type { Point } from 'slate';
-import { Node, Editor, Element, Transforms, Range, Text, Path } from 'slate';
+import { Editor, Element, Transforms, Range, Text, Path } from 'slate';
 import { isListType } from 'editor/formatting';
 import { ElementType } from 'types/slate';
 
@@ -22,7 +22,13 @@ const withBlockBreakout = (editor: Editor) => {
     const block = Editor.above(editor, {
       match: (n) => Editor.isBlock(editor, n),
     });
-    const path = block ? block[1] : [];
+
+    if (!block) {
+      insertBreak();
+      return;
+    }
+
+    const [lineElement, path] = block;
 
     const lineStart = Editor.start(editor, path);
     const lineEnd = Editor.end(editor, path);
@@ -31,8 +37,6 @@ const withBlockBreakout = (editor: Editor) => {
 
     const isAtLineStart = Editor.isStart(editor, anchor, path);
     const isAtLineEnd = Editor.isEnd(editor, anchor, path);
-
-    const lineElement = Node.descendant(editor, path);
 
     if (!Element.isElement(lineElement)) {
       insertBreak();

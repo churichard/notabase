@@ -17,16 +17,20 @@ const withCustomDeleteBackward = (editor: Editor) => {
       return;
     }
 
-    const [node, path] = block;
+    const [lineElement, path] = block;
     const isAtLineStart = Editor.isStart(editor, selection.anchor, path);
 
     // The selection is at the start of the line
-    if (isAtLineStart) {
+    if (
+      isAtLineStart &&
+      Element.isElement(lineElement) &&
+      lineElement.type !== ElementType.Paragraph
+    ) {
       // Convert to paragraph
       Transforms.setNodes(editor, { type: ElementType.Paragraph });
 
       // If it is a list item, unwrap the list
-      if (Element.isElement(node) && node.type === ElementType.ListItem) {
+      if (lineElement.type === ElementType.ListItem) {
         Transforms.unwrapNodes(editor, {
           match: (n) =>
             !Editor.isEditor(n) && Element.isElement(n) && isListType(n.type),
