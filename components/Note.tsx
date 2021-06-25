@@ -58,7 +58,11 @@ export default function Note(props: Props) {
         // Only update note title in storage if there isn't already a note with that title
         const newTitle = title || getUntitledTitle(note.id);
         const notesArr = Object.values(store.getState().notes);
-        if (notesArr.findIndex((note) => note.title === title) === -1) {
+        if (
+          notesArr.findIndex((note) =>
+            caseInsensitiveStringEqual(note.title, title)
+          ) === -1
+        ) {
           updateNote({ id: note.id, title: newTitle });
           setSyncState((syncState) => ({ ...syncState, isTitleSynced: false }));
         } else {

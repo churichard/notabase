@@ -17,6 +17,7 @@ import usePrevious from 'utils/usePrevious';
 import type { Notes } from 'lib/store';
 import { store, useStore, deepEqual } from 'lib/store';
 import useDebounce from 'utils/useDebounce';
+import { caseInsensitiveStringEqual } from 'utils/string';
 
 const DEBOUNCE_MS = 1000;
 
@@ -155,7 +156,7 @@ const computeUnlinkedBacklinks = (
 
   const result: Backlink[] = [];
   for (const note of Object.values(notes)) {
-    if (note.title === noteTitle) {
+    if (caseInsensitiveStringEqual(note.title, noteTitle)) {
       // We skip getting unlinked backlinks if the note titles are the same
       continue;
     }
