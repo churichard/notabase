@@ -8,6 +8,7 @@ import isUrl from 'utils/isUrl';
 import { store } from 'lib/store';
 import upsertNote from 'lib/api/upsertNote';
 import supabase from 'lib/supabase';
+import { caseInsensitiveStringEqual } from 'utils/string';
 
 const BLOCK_SHORTCUTS: Array<
   | {
@@ -128,7 +129,7 @@ const handleBlockShortcuts = (
   editor: Editor,
   selectionAnchor: Point,
   textToInsert: string
-) => {
+): boolean => {
   const block = Editor.above(editor, {
     match: (n) => Editor.isBlock(editor, n),
   });
@@ -167,11 +168,12 @@ const handleBlockShortcuts = (
   return false;
 };
 
+// Returns true if an inline shortcut was found and handled; otherwise, returns false.
 const handleInlineShortcuts = (
   editor: Editor,
   selectionAnchor: Point,
   textToInsert: string
-) => {
+): boolean => {
   const elementStart = Editor.start(editor, selectionAnchor.path);
   const elementRange = { anchor: selectionAnchor, focus: elementStart };
   const insertedElementText = Editor.string(editor, elementRange);
@@ -186,71 +188,36 @@ const handleInlineShortcuts = (
       continue;
     }
 
-    const selectionPath = selectionAnchor.path;
-    let endOfSelection = selectionAnchor.offset;
     if (isMark(type)) {
       const [, startMark, textToFormat, endMark] = result;
-      const endMarkLength = endMark.length - 1; // The last character is not in the editor
 
-      // Delete the ending mark
-      deleteText(editor, selectionPath, endOfSelection, endMarkLength);
-      endOfSelection -= endMarkLength;
-
-      // Delete the start mark
-      deleteText(
-        editor,
-        selectionPath,
-        endOfSelection - textToFormat.length,
-        startMark.length
-      );
-      endOfSelection -= startMark.length;
+      const textRange = deleteMarkup(editor, selectionAnchor, {
+        startMark: startMark.length,
+        text: textToFormat.length,
+        endMark: endMark.length - 1, // The last character is not in the editor
+      });
 
       // Add formatting mark to the text to format
-      const textToFormatRange = {
-        anchor: { path: selectionPath, offset: endOfSelection },
-        focus: {
-          path: selectionPath,
-          offset: endOfSelection - textToFormat.length,
-        },
-      };
       Transforms.setNodes(
         editor,
         { [type]: true },
-        { at: textToFormatRange, match: (n) => Text.isText(n), split: true }
+        { at: textRange, match: (n) => Text.isText(n), split: true }
       );
       Editor.removeMark(editor, type);
 
       return true;
     } else if (type === ElementType.ExternalLink) {
       const [, startMark, linkText, middleMark, linkUrl, endMark] = result;
-      const endMarkLength = endMark.length - 1; // The last character is not in the editor
 
       if (!isUrl(linkUrl)) {
         return false;
       }
 
-      // Delete the middle mark, link url, and end mark
-      const endLength = middleMark.length + linkUrl.length + endMarkLength;
-      deleteText(editor, selectionPath, endOfSelection, endLength);
-      endOfSelection -= endLength;
-
-      // Delete the start mark
-      deleteText(
-        editor,
-        selectionPath,
-        endOfSelection - linkText.length,
-        startMark.length
-      );
-      endOfSelection -= startMark.length;
-
-      // Wrap text in a link
-      const linkTextRange = {
-        anchor: { path: selectionPath, offset: endOfSelection },
-        focus: {
-          path: selectionPath,
-          offset: endOfSelection - linkText.length,
-        },
-      };
+      const linkTextRange = deleteMarkup(editor, selectionAnchor, {
+        startMark: startMark.length,
+        text: linkText.length,
+        endMark: middleMark.length + linkUrl.length + endMark.length - 1, // The last character is not in the editor
+      });
       const link: ExternalLink = {
         type: ElementType.ExternalLink,
         url: linkUrl,
@@ -261,45 +228,16 @@ const handleInlineShortcuts = (
       return true;
     } else if (type === ElementType.NoteLink) {
       const [, startMark, noteTitle, endMark] = result;
-      const endMarkLength = endMark.length - 1; // The last character is not in the editor
-
-      // Delete the ending mark
-      deleteText(editor, selectionPath, endOfSelection, endMarkLength);
-      endOfSelection -= endMarkLength;
-
-      // Delete the start mark
-      deleteText(
-        editor,
-        selectionPath,
-        endOfSelection - noteTitle.length,
-        startMark.length
-      );
-      endOfSelection -= startMark.length;
 
       // Get or generate note id
-      let noteId;
-      const notes = store.getState().notes;
-      const matchingNote = Object.values(notes).find(
-        (note) => note.title === noteTitle
-      );
-      if (matchingNote) {
-        noteId = matchingNote.id;
-      } else {
-        const userId = supabase.auth.user()?.id;
-        noteId = uuidv4();
-        if (userId) {
-          upsertNote({ id: noteId, user_id: userId, title: noteTitle });
-        }
-      }
+      const noteId = getOrCreateNoteId(noteTitle);
 
       // Wrap text in a link
-      const noteTitleRange = {
-        anchor: { path: selectionPath, offset: endOfSelection },
-        focus: {
-          path: selectionPath,
-          offset: endOfSelection - noteTitle.length,
-        },
-      };
+      const noteTitleRange = deleteMarkup(editor, selectionAnchor, {
+        startMark: startMark.length,
+        text: noteTitle.length,
+        endMark: endMark.length - 1, // The last character is not in the editor
+      });
       const link: NoteLink = {
         type: ElementType.NoteLink,
         noteId,
@@ -315,46 +253,16 @@ const handleInlineShortcuts = (
       return true;
     } else if (type === CustomInlineShortcuts.CustomNoteLink) {
       const [, startMark, linkText, middleMark, noteTitle, endMark] = result;
-      const endMarkLength = endMark.length - 1; // The last character is not in the editor
-
-      // Delete the middle mark, note title, and end mark
-      const endLength = middleMark.length + noteTitle.length + endMarkLength;
-      deleteText(editor, selectionPath, endOfSelection, endLength);
-      endOfSelection -= endLength;
-
-      // Delete the start mark
-      deleteText(
-        editor,
-        selectionPath,
-        endOfSelection - linkText.length,
-        startMark.length
-      );
-      endOfSelection -= startMark.length;
 
       // Get or generate note id
-      let noteId;
-      const notes = store.getState().notes;
-      const matchingNote = Object.values(notes).find(
-        (note) => note.title === noteTitle
-      );
-      if (matchingNote) {
-        noteId = matchingNote.id;
-      } else {
-        const userId = supabase.auth.user()?.id;
-        noteId = uuidv4();
-        if (userId) {
-          upsertNote({ id: noteId, user_id: userId, title: noteTitle });
-        }
-      }
+      const noteId = getOrCreateNoteId(noteTitle);
 
       // Wrap text in a link
-      const linkTextRange = {
-        anchor: { path: selectionPath, offset: endOfSelection },
-        focus: {
-          path: selectionPath,
-          offset: endOfSelection - linkText.length,
-        },
-      };
+      const linkTextRange = deleteMarkup(editor, selectionAnchor, {
+        startMark: startMark.length,
+        text: linkText.length,
+        endMark: middleMark.length + noteTitle.length + endMark.length - 1, // The last character is not in the editor
+      });
       const link: NoteLink = {
         type: ElementType.NoteLink,
         noteId,
@@ -370,6 +278,67 @@ const handleInlineShortcuts = (
   }
 
   return false;
+};
+
+// If the normalized note title exists, then returns the existing note id.
+// Otherwise, creates a new note id.
+const getOrCreateNoteId = (noteTitle: string): string => {
+  let noteId;
+
+  const notes = store.getState().notes;
+  const matchingNote = Object.values(notes).find((note) =>
+    caseInsensitiveStringEqual(note.title, noteTitle)
+  );
+
+  if (matchingNote) {
+    noteId = matchingNote.id;
+  } else {
+    const userId = supabase.auth.user()?.id;
+    noteId = uuidv4();
+    if (userId) {
+      upsertNote({ id: noteId, user_id: userId, title: noteTitle });
+    }
+  }
+
+  return noteId;
+};
+
+// Deletes beginning and ending markup and returns the range of the text in the middle
+const deleteMarkup = (
+  editor: Editor,
+  selectionAnchor: Point,
+  lengths: { startMark: number; text: number; endMark: number }
+): Range => {
+  const {
+    startMark: startMarkLength,
+    text: textLength,
+    endMark: endMarkLength,
+  } = lengths;
+
+  const selectionPath = selectionAnchor.path;
+  let endOfSelection = selectionAnchor.offset;
+
+  // Delete the ending mark
+  deleteText(editor, selectionPath, endOfSelection, endMarkLength);
+  endOfSelection -= endMarkLength;
+
+  // Delete the start mark
+  deleteText(
+    editor,
+    selectionPath,
+    endOfSelection - textLength,
+    startMarkLength
+  );
+  endOfSelection -= startMarkLength;
+
+  // Return range of the text to format
+  return {
+    anchor: { path: selectionPath, offset: endOfSelection },
+    focus: {
+      path: selectionPath,
+      offset: endOfSelection - textLength,
+    },
+  };
 };
 
 // Deletes `length` characters at the specified path and offset
