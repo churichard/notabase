@@ -12,6 +12,7 @@ module.exports = {
     },
     spacing: {
       ...defaultTheme.spacing,
+      0.25: '0.0625rem',
       128: '32rem',
       176: '44rem',
     },

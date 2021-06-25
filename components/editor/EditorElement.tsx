@@ -128,7 +128,7 @@ const NoteLinkElement = (props: NoteLinkElementProps) => {
   const isPageStackingOn = useStore((state) => state.isPageStackingOn);
   const selected = useSelected();
   const focused = useFocused();
-  const className = `p-1 rounded text-primary-600 cursor-pointer bg-gray-100 hover:bg-gray-200 active:bg-gray-300 ${
+  const className = `p-0.25 rounded text-primary-600 cursor-pointer bg-gray-100 hover:bg-gray-200 active:bg-gray-300 ${
     selected && focused ? 'bg-blue-100' : ''
   }`;
 
