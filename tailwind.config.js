@@ -32,5 +32,5 @@ module.exports = {
   //   display: ['responsive', 'group-hover'],
   //   extend: {},
   // },
-  plugins: [require('@tailwindcss/forms')],
+  plugins: [require('@tailwindcss/typography'), require('@tailwindcss/forms')],
 };
