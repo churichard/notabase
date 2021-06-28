@@ -1,6 +1,7 @@
 import Head from 'next/head';
 import Link from 'next/link';
 import Footer from 'components/landing/Footer';
+import Navbar from 'components/landing/Navbar';
 
 export default function Home() {
   return (
@@ -12,27 +13,7 @@ export default function Home() {
       </Head>
       <div className="flex flex-col min-h-screen bg-gray-50">
         <div className="flex-1">
-          <div className="container flex items-center justify-between px-6 py-6 space-x-6 text-gray-900">
-            <Link href="/">
-              <a className="text-xl">Notabase</a>
-            </Link>
-            <div className="flex items-center space-x-6">
-              <a
-                href="https://github.com/churichard/notabase"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                GitHub
-              </a>
-              <div className="h-5 border-l" />
-              <Link href="/login">
-                <a>Sign in</a>
-              </Link>
-              <Link href="/signup">
-                <a className="font-medium btn">Get started</a>
-              </Link>
-            </div>
-          </div>
+          <Navbar />
           <div className="py-16 md:py-32">
             <div className="container px-6 text-center">
               <h1 className="text-5xl font-medium md:text-6xl">
