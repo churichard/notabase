@@ -41,7 +41,7 @@ export default function SidebarNotes(props: SidebarNotesProps) {
             />
           ))
         ) : (
-          <p className="px-6 text-gray-500">No notes yet</p>
+          <p className="px-6 my-2 text-gray-500">No notes yet</p>
         )}
       </div>
     </ErrorBoundary>
