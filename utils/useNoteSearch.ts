@@ -2,10 +2,6 @@ import { useMemo } from 'react';
 import Fuse from 'fuse.js';
 import { deepEqual, useStore } from 'lib/store';
 
-export type NoteSearchMatch = Fuse.FuseResultMatch;
-
-export const TEXT_KEY = 'content.children.text';
-
 type NoteSearchOptions = {
   numOfResults?: number;
   searchContent?: boolean;
@@ -28,7 +24,7 @@ export default function useNoteSearch(
   );
 
   const keys = useMemo(
-    () => (searchContent ? [TEXT_KEY] : ['title']),
+    () => (searchContent ? ['content.children.text'] : ['title']),
     [searchContent]
   );
   const fuse = useMemo(
