@@ -6,7 +6,7 @@ import supabase from 'lib/supabase';
 import type { Note } from 'types/supabase';
 import { useAuth } from 'utils/useAuth';
 import useHotkeys from 'utils/useHotkeys';
-import Sidebar from './Sidebar';
+import Sidebar from './sidebar/Sidebar';
 import FindOrCreateModal from './FindOrCreateModal';
 
 const SM_BREAKPOINT = 640;
