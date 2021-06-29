@@ -40,7 +40,7 @@ function FindOrCreateInput(props: Props, ref: ForwardedRef<HTMLInputElement>) {
     if (
       inputText &&
       (searchResults.length <= 0 ||
-        !caseInsensitiveStringEqual(inputText, searchResults[0].title))
+        !caseInsensitiveStringEqual(inputText, searchResults[0].item.title))
     ) {
       result.push({
         id: 'NEW_NOTE',
@@ -51,10 +51,10 @@ function FindOrCreateInput(props: Props, ref: ForwardedRef<HTMLInputElement>) {
     }
     // Show notes that match `inputText`
     result.push(
-      ...searchResults.map((note) => ({
-        id: note.id,
+      ...searchResults.map((result) => ({
+        id: result.item.id,
         type: OptionType.NOTE,
-        text: note.title,
+        text: result.item.title,
       }))
     );
     return result;
@@ -99,8 +99,8 @@ function FindOrCreateInput(props: Props, ref: ForwardedRef<HTMLInputElement>) {
   );
 
   return (
-    <div className={className}>
-      <div className="flex items-center w-full">
+    <div className={`flex flex-col ${className}`}>
+      <div className="flex items-center flex-shrink-0 w-full">
         <IconSearch className="ml-4 text-gray-500" size={20} />
         <input
           ref={ref}
@@ -122,7 +122,7 @@ function FindOrCreateInput(props: Props, ref: ForwardedRef<HTMLInputElement>) {
         />
       </div>
       {options.length > 0 ? (
-        <div className="w-full bg-white border-t rounded-bl rounded-br">
+        <div className="flex-1 w-full overflow-y-auto bg-white border-t rounded-bl rounded-br">
           {options.map((option, index) => (
             <OptionItem
               key={option.id}

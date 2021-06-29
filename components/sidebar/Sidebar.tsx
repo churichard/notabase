@@ -49,7 +49,10 @@ export default function Sidebar(props: Props) {
           </a>
         </Link>
       </SidebarItem>
-      <SidebarContent currentNoteId={currentNoteId} />
+      <SidebarContent
+        className="flex-1 mt-3 overflow-x-hidden overflow-y-auto"
+        currentNoteId={currentNoteId}
+      />
     </div>
   );
 }

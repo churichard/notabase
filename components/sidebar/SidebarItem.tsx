@@ -11,7 +11,7 @@ export default function SidebarItem(props: SidebarItemProps) {
   return (
     <div
       className={`w-full text-gray-800 hover:bg-gray-200 active:bg-gray-300 ${className} ${
-        isHighlighted ? 'bg-gray-200' : 'bg-gray-50'
+        isHighlighted ? 'bg-gray-200' : ''
       }`}
     >
       {children}
