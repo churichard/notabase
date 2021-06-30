@@ -25,7 +25,7 @@ const TreeNode = (props: NodeProps) => {
 
   return (
     <div
-      className={`flex items-center ${
+      className={`flex items-center select-none ${
         node.showArrow ? 'hover:cursor-pointer' : ''
       }`}
       style={{ paddingLeft: `${leftPadding}px` }}
