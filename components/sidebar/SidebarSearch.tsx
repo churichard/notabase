@@ -1,7 +1,7 @@
 import { memo, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 import Highlighter from 'react-highlight-words';
-import useNoteSearch from 'utils/useNoteSearch';
+import useNoteSearch, { NoteBlock } from 'utils/useNoteSearch';
 import useDebounce from 'utils/useDebounce';
 import ErrorBoundary from '../ErrorBoundary';
 import Tree from '../Tree';
@@ -31,6 +31,11 @@ export default function SidebarSearch(props: Props) {
             noteId={result.item.id}
             text={match.value ?? ''}
             searchQuery={searchQuery}
+            block={
+              result.item.blocks && match.refIndex !== undefined
+                ? result.item.blocks[match.refIndex]
+                : undefined
+            }
           />
         ),
         showArrow: false,
@@ -86,24 +91,28 @@ type SidebarSearchLeafProps = {
   noteId: string;
   text: string;
   searchQuery: string;
+  block?: NoteBlock;
 };
 
 const SidebarSearchLeaf = memo(function SidebarSearchLeaf(
   props: SidebarSearchLeafProps
 ) {
-  const { noteId, text, searchQuery } = props;
+  const { noteId, text, searchQuery, block } = props;
   const router = useRouter();
   return (
     <button
       className={`w-full text-left rounded px-1 py-2 text-gray-800 hover:bg-gray-200 active:bg-gray-300`}
-      onClick={() => router.push(`/app/note/${noteId}`)}
+      onClick={() => {
+        const hash = block ? `#${block.path}` : '';
+        router.push(`/app/note/${noteId}${hash}`);
+      }}
     >
       <Highlighter
         className="block text-xs text-gray-600 break-words"
         highlightClassName="bg-yellow-200"
         searchWords={[searchQuery]}
         autoEscape={true}
-        textToHighlight={text ?? ''}
+        textToHighlight={text}
       />
     </button>
   );

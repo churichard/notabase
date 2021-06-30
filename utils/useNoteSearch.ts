@@ -4,12 +4,12 @@ import { createEditor, Descendant, Editor, Node, Path } from 'slate';
 import { Notes, store } from 'lib/store';
 import withLinks from 'editor/plugins/withLinks';
 
-type FlattenedContent = { text: string; path: Path }[];
+export type NoteBlock = { text: string; path: Path };
 
 type FuseDatum = {
   id: string;
   title: string;
-  flattenedContent?: FlattenedContent;
+  blocks?: NoteBlock[];
 };
 
 type NoteSearchOptions = {
@@ -34,7 +34,7 @@ export default function useNoteSearch({
 // Initializes Fuse
 const initFuse = (notes: Notes, searchContent: boolean) => {
   const fuseData = getFuseData(notes, searchContent);
-  const keys = searchContent ? ['flattenedContent.text'] : ['title'];
+  const keys = searchContent ? ['blocks.text'] : ['title'];
   return new Fuse(fuseData, {
     keys,
     ...(searchContent
@@ -45,17 +45,17 @@ const initFuse = (notes: Notes, searchContent: boolean) => {
 
 // Returns the data that should be passed in when instantiating the Fuse client.
 const getFuseData = (notes: Notes, searchContent: boolean): FuseDatum[] => {
-  return Object.values(notes).map((note) => ({
-    id: note.id,
-    title: note.title,
-    ...(searchContent
-      ? { flattenedContent: flattenContent(note.content) }
-      : {}),
-  }));
+  return Object.values(notes).map(
+    (note): FuseDatum => ({
+      id: note.id,
+      title: note.title,
+      ...(searchContent ? { blocks: flattenContent(note.content) } : {}),
+    })
+  );
 };
 
 // Flatten the content into individual lines
-const flattenContent = (content: Descendant[]): FlattenedContent => {
+const flattenContent = (content: Descendant[]): NoteBlock[] => {
   const editor = withLinks(createEditor());
   editor.children = content;
 
