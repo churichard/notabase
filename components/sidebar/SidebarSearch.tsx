@@ -17,29 +17,26 @@ export default function SidebarSearch(props: Props) {
   const [inputText, setInputText] = useState('');
 
   const [searchQuery, setSearchQuery] = useDebounce(inputText, DEBOUNCE_MS);
-  const searchResults = useNoteSearch(searchQuery, {
-    searchContent: true,
-  });
+  const search = useNoteSearch({ searchContent: true });
 
-  const searchResultsData = useMemo(
-    () =>
-      searchResults.map((result) => ({
-        id: result.item.id,
-        labelNode: <SidebarSearchBranch text={result.item.title} />,
-        children: result.matches?.map((match, index) => ({
-          id: `${result.item.id}-${index}`,
-          labelNode: (
-            <SidebarSearchLeaf
-              noteId={result.item.id}
-              text={match.value ?? ''}
-              searchQuery={searchQuery}
-            />
-          ),
-          showArrow: false,
-        })),
+  const searchResultsData = useMemo(() => {
+    const searchResults = search(searchQuery);
+    return searchResults.map((result) => ({
+      id: result.item.id,
+      labelNode: <SidebarSearchBranch text={result.item.title} />,
+      children: result.matches?.map((match, index) => ({
+        id: `${result.item.id}-${index}`,
+        labelNode: (
+          <SidebarSearchLeaf
+            noteId={result.item.id}
+            text={match.value ?? ''}
+            searchQuery={searchQuery}
+          />
+        ),
+        showArrow: false,
       })),
-    [searchQuery, searchResults]
-  );
+    }));
+  }, [search, searchQuery]);
 
   return (
     <ErrorBoundary>
@@ -59,7 +56,7 @@ export default function SidebarSearch(props: Props) {
           autoFocus
         />
         <div className="flex-1 overflow-y-auto">
-          {!searchQuery || searchResults.length > 0 ? (
+          {!searchQuery || searchResultsData.length > 0 ? (
             <Tree className="px-1" data={searchResultsData} />
           ) : (
             <p className="px-4 text-gray-600">No results found.</p>

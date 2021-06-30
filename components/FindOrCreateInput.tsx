@@ -32,7 +32,10 @@ function FindOrCreateInput(props: Props, ref: ForwardedRef<HTMLInputElement>) {
 
   const [inputText, setInputText] = useState('');
   const [selectedOptionIndex, setSelectedOptionIndex] = useState<number>(0);
-  const searchResults = useNoteSearch(inputText);
+
+  const search = useNoteSearch();
+  const searchResults = useMemo(() => search(inputText), [search, inputText]);
+
   const options = useMemo(() => {
     const result: Array<Option> = [];
     // Show new note option if there isn't already a note called `inputText`

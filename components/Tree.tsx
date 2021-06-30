@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, ReactNode } from 'react';
+import { useState, useMemo, useCallback, ReactNode, memo } from 'react';
 import TreeNode from './TreeNode';
 
 type TreeNode = {
@@ -22,7 +22,7 @@ type Props = {
   className?: string;
 };
 
-export default function Tree(props: Props) {
+function Tree(props: Props) {
   const { data, className } = props;
   const [closedNodeIds, setClosedNodeIds] = useState<string[]>([]);
 
@@ -76,3 +76,5 @@ export default function Tree(props: Props) {
     </div>
   );
 }
+
+export default memo(Tree);
