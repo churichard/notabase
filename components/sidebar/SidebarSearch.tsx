@@ -43,7 +43,7 @@ export default function SidebarSearch(props: Props) {
           autoFocus
         />
         <div className="flex-1 overflow-y-auto">
-          {searchResults.length > 0 ? (
+          {!debouncedInputText || searchResults.length > 0 ? (
             searchResults.map((result, index) => (
               <button
                 key={index}
