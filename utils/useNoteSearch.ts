@@ -35,10 +35,15 @@ export default function useNoteSearch({
 const initFuse = (notes: Notes, searchContent: boolean) => {
   const fuseData = getFuseData(notes, searchContent);
   const keys = searchContent ? ['blocks.text'] : ['title'];
-  return new Fuse(fuseData, {
+  return new Fuse<FuseDatum>(fuseData, {
     keys,
     ...(searchContent
-      ? { includeMatches: true, ignoreLocation: true, threshold: 0 }
+      ? {
+          includeMatches: true,
+          ignoreLocation: true,
+          threshold: 0,
+          sortFn: (a, b) => a.idx - b.idx,
+        }
       : { threshold: 0.1 }),
   });
 };

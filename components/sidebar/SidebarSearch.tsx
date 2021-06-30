@@ -1,6 +1,7 @@
 import { memo, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 import Highlighter from 'react-highlight-words';
+import Fuse from 'fuse.js';
 import useNoteSearch, { NoteBlock } from 'utils/useNoteSearch';
 import useDebounce from 'utils/useDebounce';
 import ErrorBoundary from '../ErrorBoundary';
@@ -24,22 +25,24 @@ export default function SidebarSearch(props: Props) {
     return searchResults.map((result) => ({
       id: result.item.id,
       labelNode: <SidebarSearchBranch text={result.item.title} />,
-      children: result.matches?.map((match, index) => ({
-        id: `${result.item.id}-${index}`,
-        labelNode: (
-          <SidebarSearchLeaf
-            noteId={result.item.id}
-            text={match.value ?? ''}
-            searchQuery={searchQuery}
-            block={
-              result.item.blocks && match.refIndex !== undefined
-                ? result.item.blocks[match.refIndex]
-                : undefined
-            }
-          />
-        ),
-        showArrow: false,
-      })),
+      children: result.matches
+        ? [...result.matches].sort(matchSort).map((match, index) => ({
+            id: `${result.item.id}-${index}`,
+            labelNode: (
+              <SidebarSearchLeaf
+                noteId={result.item.id}
+                text={match.value ?? ''}
+                searchQuery={searchQuery}
+                block={
+                  result.item.blocks && match.refIndex !== undefined
+                    ? result.item.blocks[match.refIndex]
+                    : undefined
+                }
+              />
+            ),
+            showArrow: false,
+          }))
+        : undefined,
     }));
   }, [search, searchQuery]);
 
@@ -117,3 +120,15 @@ const SidebarSearchLeaf = memo(function SidebarSearchLeaf(
     </button>
   );
 });
+
+const matchSort = (a: Fuse.FuseResultMatch, b: Fuse.FuseResultMatch) => {
+  if (a.refIndex === undefined && b.refIndex === undefined) {
+    return 0;
+  } else if (a.refIndex === undefined) {
+    return -1;
+  } else if (b.refIndex === undefined) {
+    return 1;
+  } else {
+    return a.refIndex - b.refIndex;
+  }
+};
