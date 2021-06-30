@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { memo, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 import Highlighter from 'react-highlight-words';
 import useNoteSearch from 'utils/useNoteSearch';
 import useDebounce from 'utils/useDebounce';
 import ErrorBoundary from '../ErrorBoundary';
+import Tree from '../Tree';
 
 const DEBOUNCE_MS = 500;
 
@@ -15,15 +16,30 @@ export default function SidebarSearch(props: Props) {
   const { className } = props;
   const [inputText, setInputText] = useState('');
 
-  const [debouncedInputText, setDebouncedInputText] = useDebounce(
-    inputText,
-    DEBOUNCE_MS
-  );
-  const searchResults = useNoteSearch(debouncedInputText, {
+  const [searchQuery, setSearchQuery] = useDebounce(inputText, DEBOUNCE_MS);
+  const searchResults = useNoteSearch(searchQuery, {
     searchContent: true,
   });
 
-  const router = useRouter();
+  const searchResultsData = useMemo(
+    () =>
+      searchResults.map((result) => ({
+        id: result.item.id,
+        labelNode: <SidebarSearchBranch text={result.item.title} />,
+        children: result.matches?.map((match, index) => ({
+          id: `${result.item.id}-${index}`,
+          labelNode: (
+            <SidebarSearchLeaf
+              noteId={result.item.id}
+              text={match.value ?? ''}
+              searchQuery={searchQuery}
+            />
+          ),
+          showArrow: false,
+        })),
+      })),
+    [searchQuery, searchResults]
+  );
 
   return (
     <ErrorBoundary>
@@ -37,34 +53,14 @@ export default function SidebarSearch(props: Props) {
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
               e.preventDefault();
-              setDebouncedInputText(inputText);
+              setSearchQuery(inputText);
             }
           }}
           autoFocus
         />
         <div className="flex-1 overflow-y-auto">
-          {!debouncedInputText || searchResults.length > 0 ? (
-            searchResults.map((result, index) => (
-              <button
-                key={index}
-                className={`w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-200 active:bg-gray-300`}
-                onClick={() => router.push(`/app/note/${result.item.id}`)}
-              >
-                <p className="overflow-hidden overflow-ellipsis whitespace-nowrap">
-                  {result.item.title}
-                </p>
-                {result.matches?.map((match, index) => (
-                  <Highlighter
-                    key={index}
-                    className="block mt-2 text-xs text-gray-600 break-words"
-                    highlightClassName="bg-yellow-200"
-                    searchWords={[debouncedInputText]}
-                    autoEscape={true}
-                    textToHighlight={match.value ?? ''}
-                  />
-                ))}
-              </button>
-            ))
+          {!searchQuery || searchResults.length > 0 ? (
+            <Tree className="px-1" data={searchResultsData} />
           ) : (
             <p className="px-4 text-gray-600">No results found.</p>
           )}
@@ -73,3 +69,45 @@ export default function SidebarSearch(props: Props) {
     </ErrorBoundary>
   );
 }
+
+type SidebarSearchBranchProps = {
+  text: string;
+};
+
+const SidebarSearchBranch = memo(function SidebarSearchBranch(
+  props: SidebarSearchBranchProps
+) {
+  const { text } = props;
+  return (
+    <p className="py-1 overflow-hidden overflow-ellipsis whitespace-nowrap">
+      {text}
+    </p>
+  );
+});
+
+type SidebarSearchLeafProps = {
+  noteId: string;
+  text: string;
+  searchQuery: string;
+};
+
+const SidebarSearchLeaf = memo(function SidebarSearchLeaf(
+  props: SidebarSearchLeafProps
+) {
+  const { noteId, text, searchQuery } = props;
+  const router = useRouter();
+  return (
+    <button
+      className={`w-full text-left rounded px-1 py-2 text-gray-800 hover:bg-gray-200 active:bg-gray-300`}
+      onClick={() => router.push(`/app/note/${noteId}`)}
+    >
+      <Highlighter
+        className="block text-xs text-gray-600 break-words"
+        highlightClassName="bg-yellow-200"
+        searchWords={[searchQuery]}
+        autoEscape={true}
+        textToHighlight={text ?? ''}
+      />
+    </button>
+  );
+});

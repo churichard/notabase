@@ -19,10 +19,11 @@ export type FlattenedTreeNode = {
 
 type Props = {
   data: TreeNode[];
+  className?: string;
 };
 
 export default function Tree(props: Props) {
-  const { data } = props;
+  const { data, className } = props;
   const [closedNodeIds, setClosedNodeIds] = useState<string[]>([]);
 
   const onNodeClick = useCallback(
@@ -64,7 +65,7 @@ export default function Tree(props: Props) {
   }, [data, flattenNode]);
 
   return (
-    <div className="relative flex flex-col">
+    <div className={`relative flex flex-col ${className}`}>
       {flattenedData.map((node, index) => (
         <TreeNode
           key={node.id}

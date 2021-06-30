@@ -20,7 +20,7 @@ const BacklinkMatchLeaf = (props: BacklinkMatchLeafProps) => {
 
   return (
     <span
-      className={`block text-xs text-gray-600 bg-gray-50 rounded p-2 w-full break-words ${className}`}
+      className={`block text-xs text-gray-600 bg-gray-50 rounded p-2 my-1 w-full break-words ${className}`}
     >
       <ReadOnlyEditor
         value={[match.lineElement]}
