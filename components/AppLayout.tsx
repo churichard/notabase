@@ -80,9 +80,10 @@ export default function AppLayout(props: Props) {
 
   return (
     <div className={`flex h-screen ${className}`}>
-      {isSidebarOpen ? (
-        <Sidebar setIsFindOrCreateModalOpen={setIsFindOrCreateModalOpen} />
-      ) : null}
+      <Sidebar
+        className={!isSidebarOpen ? 'hidden' : undefined}
+        setIsFindOrCreateModalOpen={setIsFindOrCreateModalOpen}
+      />
       {children}
       {isFindOrCreateModalOpen ? (
         <FindOrCreateModal setIsOpen={setIsFindOrCreateModalOpen} />

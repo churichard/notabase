@@ -19,10 +19,11 @@ import SidebarContent from './SidebarContent';
 
 type Props = {
   setIsFindOrCreateModalOpen: Dispatch<SetStateAction<boolean>>;
+  className?: string;
 };
 
 export default function Sidebar(props: Props) {
-  const { setIsFindOrCreateModalOpen } = props;
+  const { setIsFindOrCreateModalOpen, className } = props;
   const router = useRouter();
   const currentNoteId = useMemo(() => {
     const id = router.query.id;
@@ -30,7 +31,9 @@ export default function Sidebar(props: Props) {
   }, [router]);
 
   return (
-    <div className="flex flex-col flex-none w-64 h-full border-r bg-gray-50">
+    <div
+      className={`flex flex-col flex-none w-64 h-full border-r bg-gray-50 ${className}`}
+    >
       <Header />
       <SidebarItem>
         <button
