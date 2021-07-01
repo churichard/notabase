@@ -281,7 +281,7 @@ export default function Editor(props: Props) {
       document.addEventListener('click', restoreBgColor, { once: true });
 
       return () => {
-        domNode.style.backgroundColor = originalColor;
+        restoreBgColor();
         document.removeEventListener('click', restoreBgColor);
       };
     } catch (e) {
