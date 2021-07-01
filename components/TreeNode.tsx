@@ -25,14 +25,18 @@ const TreeNode = (props: NodeProps) => {
 
   return (
     <div
-      className={`flex items-center py-1 ${
+      className={`flex items-center select-none ${
         node.showArrow ? 'hover:cursor-pointer' : ''
       }`}
       style={{ paddingLeft: `${leftPadding}px` }}
       onClick={node.showArrow ? () => onClick(node) : undefined}
     >
       {node.showArrow ? (
-        <Icon className="mr-1 text-gray-500" size={16} fill="currentColor" />
+        <Icon
+          className="flex-shrink-0 mr-1 text-gray-500"
+          size={16}
+          fill="currentColor"
+        />
       ) : null}
       {node.labelNode}
     </div>

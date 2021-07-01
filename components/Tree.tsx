@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, ReactNode } from 'react';
+import { useState, useMemo, useCallback, ReactNode, memo } from 'react';
 import TreeNode from './TreeNode';
 
 type TreeNode = {
@@ -19,10 +19,11 @@ export type FlattenedTreeNode = {
 
 type Props = {
   data: TreeNode[];
+  className?: string;
 };
 
-export default function Tree(props: Props) {
-  const { data } = props;
+function Tree(props: Props) {
+  const { data, className } = props;
   const [closedNodeIds, setClosedNodeIds] = useState<string[]>([]);
 
   const onNodeClick = useCallback(
@@ -64,7 +65,7 @@ export default function Tree(props: Props) {
   }, [data, flattenNode]);
 
   return (
-    <div className="relative flex flex-col">
+    <div className={`relative flex flex-col ${className}`}>
       {flattenedData.map((node, index) => (
         <TreeNode
           key={node.id}
@@ -75,3 +76,5 @@ export default function Tree(props: Props) {
     </div>
   );
 }
+
+export default memo(Tree);

@@ -15,7 +15,7 @@ const BacklinkNoteBranch = (props: BacklinkNoteBranchProps) => {
 
   return isPageStackingOn ? (
     <button
-      className="link"
+      className="py-1 link"
       onClick={(e) => {
         e.stopPropagation();
         onNoteLinkClick(backlink.id);
@@ -25,7 +25,7 @@ const BacklinkNoteBranch = (props: BacklinkNoteBranchProps) => {
     </button>
   ) : (
     <Link href={`/app/note/${backlink.id}`}>
-      <a className="link" onClick={(e) => e.stopPropagation()}>
+      <a className="py-1 link" onClick={(e) => e.stopPropagation()}>
         {backlink.title}
       </a>
     </Link>

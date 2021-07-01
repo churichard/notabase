@@ -41,7 +41,7 @@ type ReturnType = {
 };
 
 export default function useBacklinks(noteId: string) {
-  const notes = useDebounce(
+  const [notes] = useDebounce(
     useStore((state) => state.notes, deepEqual),
     DEBOUNCE_MS
   );

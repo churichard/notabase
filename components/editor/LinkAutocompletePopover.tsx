@@ -33,7 +33,10 @@ export default function LinkAutocompletePopover() {
   const [linkText, setLinkText] = useState('');
 
   const [selectedOptionIndex, setSelectedOptionIndex] = useState<number>(0);
-  const searchResults = useNoteSearch(linkText);
+
+  const search = useNoteSearch({ numOfResults: 10 });
+  const searchResults = useMemo(() => search(linkText), [search, linkText]);
+
   const options = useMemo(() => {
     const result: Array<Option> = [];
     if (linkText) {
@@ -41,7 +44,7 @@ export default function LinkAutocompletePopover() {
       // (We assume if there is a note, then it will be the first result)
       if (
         searchResults.length <= 0 ||
-        !caseInsensitiveStringEqual(linkText, searchResults[0].title)
+        !caseInsensitiveStringEqual(linkText, searchResults[0].item.title)
       ) {
         result.push({
           id: 'NEW_NOTE',
@@ -53,10 +56,10 @@ export default function LinkAutocompletePopover() {
     }
     // Show notes that match `linkText`
     result.push(
-      ...searchResults.map((note) => ({
-        id: note.id,
+      ...searchResults.map((result) => ({
+        id: result.item.id,
         type: OptionType.NOTE,
-        text: note.title,
+        text: result.item.title,
       }))
     );
     return result;

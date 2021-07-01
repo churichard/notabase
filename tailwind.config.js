@@ -15,6 +15,8 @@ module.exports = {
       0.25: '0.0625rem',
       128: '32rem',
       176: '44rem',
+      'screen-10': '10vh',
+      'screen-80': '80vh',
     },
     colors: {
       ...colors,
