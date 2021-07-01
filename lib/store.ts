@@ -1,8 +1,7 @@
-import create from 'zustand';
+import create, { State, StateCreator } from 'zustand';
 import createVanilla from 'zustand/vanilla';
-import produce from 'immer';
-import type { State, StateCreator } from 'zustand';
-import type { Draft } from 'immer';
+import produce, { Draft } from 'immer';
+import { Path } from 'slate';
 import type { Note } from 'types/supabase';
 import type { NoteUpdate } from './api/updateNote';
 
@@ -18,14 +17,20 @@ const immer =
 
 export type Notes = Record<Note['id'], Note>;
 
+export type OpenNote = {
+  id: string;
+  highlightedPath?: Path;
+};
+
 export type Store = {
   notes: Notes;
   setNotes: (value: Notes | ((value: Notes) => Notes)) => void;
   upsertNote: (note: Note) => void;
   updateNote: (note: NoteUpdate) => void;
   deleteNote: (noteId: string) => void;
-  openNoteIds: Note['id'][];
-  setOpenNoteIds: (openNoteIds: Note['id'][], index?: number) => void;
+  openNotes: OpenNote[];
+  updateOpenNote: (noteId: string, openNoteUpdate: Partial<OpenNote>) => void;
+  setOpenNotes: (openNotes: OpenNote[], index?: number) => void;
   isSidebarOpen: boolean;
   setIsSidebarOpen: (value: boolean | ((value: boolean) => boolean)) => void;
   isPageStackingOn: boolean;
@@ -83,25 +88,40 @@ export const store = createVanilla<Store>(
       });
     },
     /**
-     * The note ids that have their content visible, including the main note and the stacked notes
+     * The notes that have their content visible, including the main note and the stacked notes
      */
-    openNoteIds: [],
+    openNotes: [],
     /**
-     * Replaces the open note ids at the given index (0 by default)
+     * Updates the open note with the specified noteId.
      */
-    setOpenNoteIds: (newOpenNoteIds: Note['id'][], index?: number) => {
+    updateOpenNote: (noteId: string, openNoteUpdate: Partial<OpenNote>) => {
+      set((state) => {
+        const index = state.openNotes.findIndex((note) => note.id === noteId);
+        if (index < 0) {
+          return;
+        }
+        state.openNotes[index] = {
+          ...state.openNotes[index],
+          ...openNoteUpdate,
+        };
+      });
+    },
+    /**
+     * Replaces the open notes at the given index (0 by default)
+     */
+    setOpenNotes: (newOpenNotes: OpenNote[], index?: number) => {
       if (!index) {
         set((state) => {
-          state.openNoteIds = newOpenNoteIds;
+          state.openNotes = newOpenNotes;
         });
         return;
       }
       // Replace the notes after the current note with the new note
       set((state) => {
-        state.openNoteIds.splice(
+        state.openNotes.splice(
           index,
-          state.openNoteIds.length - index,
-          ...newOpenNoteIds
+          state.openNotes.length - index,
+          ...newOpenNotes
         );
       });
     },

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import type { Descendant } from 'slate';
+import type { Descendant, Path } from 'slate';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
 import Editor from 'components/editor/Editor';
@@ -22,10 +22,11 @@ const UNIQUE_VIOLATION_ERROR_CODE = '23505';
 
 type Props = {
   noteId: string;
+  highlightedPath?: Path;
 };
 
 export default function Note(props: Props) {
-  const { noteId } = props;
+  const { noteId, highlightedPath } = props;
   const router = useRouter();
 
   const note = useStore<NoteType | undefined>(
@@ -204,6 +205,7 @@ export default function Note(props: Props) {
                 className="flex-1 px-12 pt-2 pb-12"
                 value={note.content}
                 setValue={setEditorValue}
+                highlightedPath={highlightedPath}
               />
             </div>
             <Backlinks className="mx-8 mb-12" />
