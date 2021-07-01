@@ -8,7 +8,7 @@ import AppLayout from 'components/AppLayout';
 import Note from 'components/Note';
 import type { Note as NoteType } from 'types/supabase';
 import type { Notes } from 'lib/store';
-import { useStore, shallowEqual } from 'lib/store';
+import { useStore } from 'lib/store';
 import usePrevious from 'utils/usePrevious';
 
 type Props = {
@@ -17,13 +17,14 @@ type Props = {
 
 export default function NotePage(props: Props) {
   const { initialNotes } = props;
+  const router = useRouter();
   const {
     query: { id: noteId, stack: stackQuery },
-  } = useRouter();
+  } = router;
 
-  const openNoteIds = useStore((state) => state.openNoteIds, shallowEqual);
-  const setOpenNoteIds = useStore((state) => state.setOpenNoteIds);
-  const prevOpenNoteIds = usePrevious(openNoteIds);
+  const openNotes = useStore((state) => state.openNotes);
+  const setOpenNotes = useStore((state) => state.setOpenNotes);
+  const prevOpenNotes = usePrevious(openNotes);
 
   const pageTitle = useStore((state) => {
     if (!noteId || typeof noteId !== 'string' || !state.notes[noteId]?.title) {
@@ -37,8 +38,8 @@ export default function NotePage(props: Props) {
       return;
     }
 
-    const openNoteIds = [];
-    openNoteIds.push(noteId);
+    const openNotes = [];
+    openNotes.push({ id: noteId });
 
     if (stackQuery) {
       const stackedNoteIds: string[] = [];
@@ -47,31 +48,31 @@ export default function NotePage(props: Props) {
       } else {
         stackedNoteIds.push(...stackQuery);
       }
-      openNoteIds.push(...stackedNoteIds);
+      openNotes.push(...stackedNoteIds.map((noteId) => ({ id: noteId })));
     }
 
-    setOpenNoteIds(openNoteIds);
-  }, [setOpenNoteIds, noteId, stackQuery]);
+    setOpenNotes(openNotes);
+  }, [setOpenNotes, noteId, stackQuery]);
 
   useEffect(() => {
     // Scroll the last open note into view if:
     // 1. The last open note has changed
-    // 2. prevOpenNoteIds has length > 0 (ensures that this is not the first render)
+    // 2. prevOpenNotes has length > 0 (ensures that this is not the first render)
     if (
-      openNoteIds.length > 0 &&
-      prevOpenNoteIds &&
-      prevOpenNoteIds.length > 0 &&
-      openNoteIds[openNoteIds.length - 1] !==
-        prevOpenNoteIds[prevOpenNoteIds.length - 1]
+      openNotes.length > 0 &&
+      prevOpenNotes &&
+      prevOpenNotes.length > 0 &&
+      openNotes[openNotes.length - 1].id !==
+        prevOpenNotes[prevOpenNotes.length - 1].id
     ) {
       document
-        .getElementById(openNoteIds[openNoteIds.length - 1])
+        .getElementById(openNotes[openNotes.length - 1].id)
         ?.scrollIntoView({
           behavior: 'smooth',
           inline: 'center',
         });
     }
-  }, [openNoteIds, prevOpenNoteIds]);
+  }, [openNotes, prevOpenNotes]);
 
   if (!noteId || typeof noteId !== 'string') {
     return (
@@ -98,8 +99,8 @@ export default function NotePage(props: Props) {
       </Head>
       <AppLayout initialNotes={initialNotes}>
         <div className="flex flex-1 overflow-x-auto bg-gray-50">
-          {openNoteIds.length > 0
-            ? openNoteIds.map((noteId) => <Note key={noteId} noteId={noteId} />)
+          {openNotes.length > 0
+            ? openNotes.map((note) => <Note key={note.id} noteId={note.id} />)
             : null}
         </div>
       </AppLayout>

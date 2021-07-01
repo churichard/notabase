@@ -2,32 +2,30 @@ import { useCallback } from 'react';
 import { useRouter } from 'next/router';
 import { useAuth } from 'utils/useAuth';
 import { useCurrentNote } from 'utils/useCurrentNote';
-import { shallowEqual, useStore } from 'lib/store';
+import { useStore } from 'lib/store';
 
 export default function useOnNoteLinkClick() {
   const { user } = useAuth();
   const router = useRouter();
   const currentNote = useCurrentNote();
-  const openNoteIds = useStore((state) => state.openNoteIds, shallowEqual);
-  const setOpenNoteIds = useStore((state) => state.setOpenNoteIds);
+  const openNotes = useStore((state) => state.openNotes);
+  const setOpenNotes = useStore((state) => state.setOpenNotes);
 
   const onClick = useCallback(
     (noteId: string) => {
       // If the note is already open, scroll it into view
-      const openNoteId = openNoteIds.find(
-        (openNoteId) => openNoteId === noteId
-      );
-      if (openNoteId) {
-        document.getElementById(openNoteId)?.scrollIntoView({
+      const openNote = openNotes.find((openNote) => openNote.id === noteId);
+      if (openNote) {
+        document.getElementById(openNote.id)?.scrollIntoView({
           behavior: 'smooth',
           inline: 'center',
         });
         return;
       }
 
-      // If the note is not open, add it to the open note ids
-      const currentNoteIndex = openNoteIds.findIndex(
-        (openNoteId) => openNoteId === currentNote.id
+      // If the note is not open, add it to the open notes
+      const currentNoteIndex = openNotes.findIndex(
+        (openNote) => openNote.id === currentNote.id
       );
       if (currentNoteIndex < 0 || !user) {
         return;
@@ -59,10 +57,10 @@ export default function useOnNoteLinkClick() {
         { shallow: true }
       );
 
-      // Add note to open note ids
-      setOpenNoteIds([noteId], currentNoteIndex + 1);
+      // Add note to open notes
+      setOpenNotes([{ id: noteId }], currentNoteIndex + 1);
     },
-    [user, router, currentNote.id, openNoteIds, setOpenNoteIds]
+    [user, router, currentNote.id, openNotes, setOpenNotes]
   );
 
   return onClick;
