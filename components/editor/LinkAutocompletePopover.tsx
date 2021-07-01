@@ -34,7 +34,7 @@ export default function LinkAutocompletePopover() {
 
   const [selectedOptionIndex, setSelectedOptionIndex] = useState<number>(0);
 
-  const search = useNoteSearch();
+  const search = useNoteSearch({ numOfResults: 10 });
   const searchResults = useMemo(() => search(linkText), [search, linkText]);
 
   const options = useMemo(() => {

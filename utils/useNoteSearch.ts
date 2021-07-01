@@ -18,7 +18,7 @@ type NoteSearchOptions = {
 };
 
 export default function useNoteSearch({
-  numOfResults = 10,
+  numOfResults = -1,
   searchContent = false,
 }: NoteSearchOptions = {}) {
   const search = useCallback(

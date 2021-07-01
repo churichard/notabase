@@ -33,7 +33,7 @@ function FindOrCreateInput(props: Props, ref: ForwardedRef<HTMLInputElement>) {
   const [inputText, setInputText] = useState('');
   const [selectedOptionIndex, setSelectedOptionIndex] = useState<number>(0);
 
-  const search = useNoteSearch();
+  const search = useNoteSearch({ numOfResults: 10 });
   const searchResults = useMemo(() => search(inputText), [search, inputText]);
 
   const options = useMemo(() => {

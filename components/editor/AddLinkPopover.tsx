@@ -45,7 +45,10 @@ export default function AddLinkPopover(props: Props) {
   const editor = useSlate();
 
   const [selectedOptionIndex, setSelectedOptionIndex] = useState<number>(0);
-  const searchResults = useNoteSearch(linkText);
+
+  const search = useNoteSearch({ numOfResults: 10 });
+  const searchResults = useMemo(() => search(linkText), [search, linkText]);
+
   const options = useMemo(() => {
     const result: Array<Option> = [];
     if (linkText) {
