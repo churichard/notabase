@@ -137,7 +137,10 @@ const NoteLinkElement = (props: NoteLinkElementProps) => {
       {isPageStackingOn ? (
         <span
           className={className}
-          onClick={() => onNoteLinkClick(element.noteId)}
+          onClick={(e) => {
+            e.stopPropagation();
+            onNoteLinkClick(element.noteId);
+          }}
           contentEditable={false}
           {...attributes}
         >
@@ -147,7 +150,12 @@ const NoteLinkElement = (props: NoteLinkElementProps) => {
       ) : (
         <span>
           <Link href={`/app/note/${element.noteId}`}>
-            <a className={className} contentEditable={false} {...attributes}>
+            <a
+              className={className}
+              contentEditable={false}
+              onClick={(e) => e.stopPropagation()}
+              {...attributes}
+            >
               {element.customText ?? element.noteTitle}
               {children}
             </a>
@@ -171,9 +179,11 @@ const ExternalLinkElement = (props: ExternalLinkElementProps) => {
       <a
         className="link"
         href={element.url}
-        onClick={() =>
-          window.open(element.url, '_blank', 'noopener noreferrer')
-        }
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          window.open(element.url, '_blank', 'noopener noreferrer');
+        }}
         {...attributes}
       >
         {children}

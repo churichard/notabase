@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 import { useRouter } from 'next/router';
+import { Path } from 'slate';
 import { useAuth } from 'utils/useAuth';
 import { useCurrentNote } from 'utils/useCurrentNote';
 import { useStore } from 'lib/store';
@@ -9,10 +10,11 @@ export default function useOnNoteLinkClick() {
   const router = useRouter();
   const currentNote = useCurrentNote();
   const openNotes = useStore((state) => state.openNotes);
+  const updateOpenNote = useStore((state) => state.updateOpenNote);
   const setOpenNotes = useStore((state) => state.setOpenNotes);
 
   const onClick = useCallback(
-    (noteId: string) => {
+    (noteId: string, highlightedPath?: Path) => {
       // If the note is already open, scroll it into view
       const openNote = openNotes.find((openNote) => openNote.id === noteId);
       if (openNote) {
@@ -20,6 +22,12 @@ export default function useOnNoteLinkClick() {
           behavior: 'smooth',
           inline: 'center',
         });
+
+        // Update highlighted path
+        if (highlightedPath) {
+          updateOpenNote(openNote.id, { highlightedPath });
+        }
+
         return;
       }
 
@@ -58,9 +66,9 @@ export default function useOnNoteLinkClick() {
       );
 
       // Add note to open notes
-      setOpenNotes([{ id: noteId }], currentNoteIndex + 1);
+      setOpenNotes([{ id: noteId, highlightedPath }], currentNoteIndex + 1);
     },
-    [user, router, currentNote.id, openNotes, setOpenNotes]
+    [user, router, currentNote.id, openNotes, setOpenNotes, updateOpenNote]
   );
 
   return onClick;

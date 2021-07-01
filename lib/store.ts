@@ -17,7 +17,7 @@ const immer =
 
 export type Notes = Record<Note['id'], Note>;
 
-type OpenNote = {
+export type OpenNote = {
   id: string;
   highlightedPath?: Path;
 };
@@ -29,6 +29,7 @@ export type Store = {
   updateNote: (note: NoteUpdate) => void;
   deleteNote: (noteId: string) => void;
   openNotes: OpenNote[];
+  updateOpenNote: (noteId: string, openNoteUpdate: Partial<OpenNote>) => void;
   setOpenNotes: (openNotes: OpenNote[], index?: number) => void;
   isSidebarOpen: boolean;
   setIsSidebarOpen: (value: boolean | ((value: boolean) => boolean)) => void;
@@ -90,6 +91,21 @@ export const store = createVanilla<Store>(
      * The notes that have their content visible, including the main note and the stacked notes
      */
     openNotes: [],
+    /**
+     * Updates the open note with the specified noteId.
+     */
+    updateOpenNote: (noteId: string, openNoteUpdate: Partial<OpenNote>) => {
+      set((state) => {
+        const index = state.openNotes.findIndex((note) => note.id === noteId);
+        if (index < 0) {
+          return;
+        }
+        state.openNotes[index] = {
+          ...state.openNotes[index],
+          ...openNoteUpdate,
+        };
+      });
+    },
     /**
      * Replaces the open notes at the given index (0 by default)
      */

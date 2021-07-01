@@ -4,10 +4,11 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { createClient } from '@supabase/supabase-js';
+import { Path } from 'slate';
 import AppLayout from 'components/AppLayout';
 import Note from 'components/Note';
 import type { Note as NoteType } from 'types/supabase';
-import type { Notes } from 'lib/store';
+import type { Notes, OpenNote } from 'lib/store';
 import { useStore } from 'lib/store';
 import usePrevious from 'utils/usePrevious';
 
@@ -20,9 +21,11 @@ export default function NotePage(props: Props) {
   const router = useRouter();
   const {
     query: { id: noteId, stack: stackQuery },
+    asPath,
   } = router;
 
   const openNotes = useStore((state) => state.openNotes);
+  const updateOpenNote = useStore((state) => state.updateOpenNote);
   const setOpenNotes = useStore((state) => state.setOpenNotes);
   const prevOpenNotes = usePrevious(openNotes);
 
@@ -33,13 +36,18 @@ export default function NotePage(props: Props) {
     return state.notes[noteId].title;
   });
 
+  // Initialize open notes
   useEffect(() => {
-    if (!noteId || typeof noteId !== 'string') {
+    if (
+      !noteId ||
+      typeof noteId !== 'string' ||
+      (openNotes.length > 0 && openNotes[0].id === noteId)
+    ) {
       return;
     }
 
-    const openNotes = [];
-    openNotes.push({ id: noteId });
+    const initialOpenNotes: OpenNote[] = [];
+    initialOpenNotes.push({ id: noteId });
 
     if (stackQuery) {
       const stackedNoteIds: string[] = [];
@@ -48,11 +56,23 @@ export default function NotePage(props: Props) {
       } else {
         stackedNoteIds.push(...stackQuery);
       }
-      openNotes.push(...stackedNoteIds.map((noteId) => ({ id: noteId })));
+      initialOpenNotes.push(
+        ...stackedNoteIds.map((noteId) => ({ id: noteId }))
+      );
     }
 
-    setOpenNotes(openNotes);
-  }, [setOpenNotes, noteId, stackQuery]);
+    setOpenNotes(initialOpenNotes);
+  }, [setOpenNotes, noteId, stackQuery, openNotes, asPath]);
+
+  // Update highlighted path based on url hash
+  useEffect(() => {
+    if (!noteId || typeof noteId !== 'string') {
+      return;
+    }
+    updateOpenNote(noteId, {
+      highlightedPath: getHighlightedPathFromUrl(asPath),
+    });
+  }, [noteId, asPath, updateOpenNote]);
 
   useEffect(() => {
     // Scroll the last open note into view if:
@@ -100,7 +120,13 @@ export default function NotePage(props: Props) {
       <AppLayout initialNotes={initialNotes}>
         <div className="flex flex-1 overflow-x-auto bg-gray-50">
           {openNotes.length > 0
-            ? openNotes.map((note) => <Note key={note.id} noteId={note.id} />)
+            ? openNotes.map((note) => (
+                <Note
+                  key={note.id}
+                  noteId={note.id}
+                  highlightedPath={note.highlightedPath}
+                />
+              ))
             : null}
         </div>
       </AppLayout>
@@ -139,4 +165,22 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
         }, {}) ?? {},
     },
   };
+};
+
+const getHighlightedPathFromUrl = (url: string): Path | undefined => {
+  const arr = url.split('#');
+  if (arr.length <= 1) {
+    return;
+  }
+
+  const hash = arr[arr.length - 1];
+  const path = hash
+    .split(',')
+    .map((pathSegment) => Number.parseInt(pathSegment));
+
+  if (path.some((segment) => Number.isNaN(segment))) {
+    return;
+  }
+
+  return path;
 };

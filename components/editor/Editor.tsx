@@ -17,7 +17,6 @@ import {
 } from 'slate';
 import { withReact, Editable, ReactEditor, Slate } from 'slate-react';
 import { withHistory } from 'slate-history';
-import { useRouter } from 'next/router';
 import { isHotkey } from 'is-hotkey';
 import colors from 'tailwindcss/colors';
 import {
@@ -35,6 +34,8 @@ import withLinks from 'editor/plugins/withLinks';
 import withNormalization from 'editor/plugins/withNormalization';
 import withCustomDeleteBackward from 'editor/plugins/withCustomDeleteBackward';
 import { ElementType, Mark } from 'types/slate';
+import { useStore } from 'lib/store';
+import { useCurrentNote } from 'utils/useCurrentNote';
 import HoveringToolbar from './HoveringToolbar';
 import AddLinkPopover from './AddLinkPopover';
 import EditorElement from './EditorElement';
@@ -51,11 +52,14 @@ type Props = {
   className?: string;
   value: Descendant[];
   setValue: (value: Descendant[]) => void;
+  highlightedPath?: Path;
 };
 
 export default function Editor(props: Props) {
-  const { className, value, setValue } = props;
-  const router = useRouter();
+  const { className, value, setValue, highlightedPath } = props;
+  const currentNote = useCurrentNote();
+
+  const updateOpenNote = useStore((state) => state.updateOpenNote);
 
   const editorRef = useRef<SlateEditor>();
   if (!editorRef.current) {
@@ -250,44 +254,36 @@ export default function Editor(props: Props) {
     [editor]
   );
 
-  // If a path is present as a hash param, then scroll to that path and highlight it
+  // If highlightedPath is defined, highlight the path
   useEffect(() => {
+    if (!highlightedPath) {
+      return;
+    }
+
     try {
-      const arr = router.asPath.split('#');
-      if (arr.length <= 1) {
-        return;
-      }
-
-      const hash = arr[arr.length - 1];
-      const path: Path = hash
-        .split(',')
-        .map((pathSegment) => Number.parseInt(pathSegment));
-
-      if (path.some((segment) => Number.isNaN(segment))) {
-        return;
-      }
-
       // Scroll to line
-      const [node] = SlateEditor.node(editor, path);
+      const [node] = SlateEditor.node(editor, highlightedPath);
       const domNode = ReactEditor.toDOMNode(editor, node);
       domNode.scrollIntoView({ block: 'center' });
 
       // Highlight line, but restore original color if mouse is clicked or component is re-rendered
       const originalColor = domNode.style.backgroundColor;
-      const restoreBgColor = () =>
-        (domNode.style.backgroundColor = originalColor);
+      const removeHighlight = () => {
+        domNode.style.backgroundColor = originalColor;
+        updateOpenNote(currentNote.id, { highlightedPath: undefined });
+      };
 
       domNode.style.backgroundColor = colors.yellow[200];
-      document.addEventListener('click', restoreBgColor, { once: true });
+      domNode.addEventListener('click', removeHighlight, { once: true });
 
       return () => {
-        restoreBgColor();
-        document.removeEventListener('click', restoreBgColor);
+        domNode.style.backgroundColor = originalColor;
+        document.removeEventListener('click', removeHighlight);
       };
     } catch (e) {
       // Do nothing if an error occurs, which sometimes happens if the router changes before the editor does
     }
-  }, [editor, router]);
+  }, [editor, highlightedPath, currentNote.id, updateOpenNote]);
 
   return (
     <Slate
