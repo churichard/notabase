@@ -95,6 +95,15 @@ export default function EditorElement(props: Props) {
           {children}
         </code>
       );
+    case ElementType.ThematicBreak:
+      return (
+        <ThematicBreak
+          className={omitVerticalSpacing ? '' : 'my-3'}
+          attributes={attributes}
+        >
+          {children}
+        </ThematicBreak>
+      );
     case ElementType.ExternalLink:
       return (
         <ExternalLinkElement element={element} attributes={attributes}>
@@ -189,5 +198,27 @@ const ExternalLinkElement = (props: ExternalLinkElementProps) => {
         {children}
       </a>
     </Tippy>
+  );
+};
+
+type ThematicBreakProps = {
+  children: ReactNode;
+  attributes: RenderElementProps['attributes'];
+  className?: string;
+};
+
+const ThematicBreak = (props: ThematicBreakProps) => {
+  const { children, attributes, className } = props;
+  const selected = useSelected();
+  const focused = useFocused();
+  return (
+    <div
+      className={`border-t-2 ${className} ${
+        selected && focused ? 'border-blue-100' : ''
+      }`}
+      {...attributes}
+    >
+      {children}
+    </div>
   );
 };

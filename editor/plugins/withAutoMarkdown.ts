@@ -36,6 +36,7 @@ const BLOCK_SHORTCUTS: Array<
   { match: /^## $/, type: ElementType.HeadingTwo },
   { match: /^### $/, type: ElementType.HeadingThree },
   { match: /^```$/, type: ElementType.CodeBlock },
+  { match: /^---$/, type: ElementType.ThematicBreak },
 ];
 
 enum CustomInlineShortcuts {

@@ -41,7 +41,10 @@ const isLeafNode = (node: BlockType | LeafType): node is LeafType => {
   return Text.isText(node);
 };
 
-const VOID_ELEMENTS: Array<ElementType> = [];
+const VOID_ELEMENTS: Array<ElementType> = [
+  ElementType.NoteLink,
+  ElementType.ThematicBreak,
+];
 
 const BREAK_TAG = '';
 
@@ -161,8 +164,8 @@ export default function serialize(
     case ElementType.Paragraph:
       return `${children}\n\n`;
 
-    // case nodeTypes.thematic_break:
-    //   return `---\n`;
+    case ElementType.ThematicBreak:
+      return `---\n\n`;
 
     default:
       return children;

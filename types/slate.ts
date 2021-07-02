@@ -16,6 +16,7 @@ export enum ElementType {
   ExternalLink = 'link',
   NoteLink = 'note-link',
   CodeBlock = 'code-block',
+  ThematicBreak = 'thematic-break',
 }
 
 export enum Mark {
@@ -85,6 +86,11 @@ export type CodeBlock = {
   children: Descendant[];
 };
 
+export type ThematicBreak = {
+  type: ElementType.ThematicBreak;
+  children: Descendant[];
+};
+
 export type NotabaseElement =
   | ParagraphElement
   | HeadingOneElement
@@ -96,7 +102,8 @@ export type NotabaseElement =
   | Blockquote
   | ExternalLink
   | NoteLink
-  | CodeBlock;
+  | CodeBlock
+  | ThematicBreak;
 
 export type ListElement = BulletedList | NumberedList;
 
