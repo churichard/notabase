@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import type { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
@@ -11,6 +11,7 @@ import type { Note as NoteType } from 'types/supabase';
 import type { Notes, OpenNote } from 'lib/store';
 import { useStore } from 'lib/store';
 import usePrevious from 'utils/usePrevious';
+import { queryParamToArray } from 'utils/url';
 
 type Props = {
   initialNotes: Notes;
@@ -25,7 +26,6 @@ export default function NotePage(props: Props) {
   } = router;
 
   const openNotes = useStore((state) => state.openNotes);
-  const updateOpenNote = useStore((state) => state.updateOpenNote);
   const setOpenNotes = useStore((state) => state.setOpenNotes);
   const prevOpenNotes = usePrevious(openNotes);
 
@@ -36,43 +36,23 @@ export default function NotePage(props: Props) {
     return state.notes[noteId].title;
   });
 
-  // Initialize open notes
-  useEffect(() => {
-    if (
-      !noteId ||
-      typeof noteId !== 'string' ||
-      (openNotes.length > 0 && openNotes[0].id === noteId)
-    ) {
-      return;
-    }
+  const [highlightedPath, setHighlightedPath] = useState<{
+    index: number;
+    path: Path;
+  } | null>(null);
 
-    const initialOpenNotes: OpenNote[] = [];
-    initialOpenNotes.push({ id: noteId });
-
-    if (stackQuery) {
-      const stackedNoteIds: string[] = [];
-      if (typeof stackQuery === 'string') {
-        stackedNoteIds.push(stackQuery);
-      } else {
-        stackedNoteIds.push(...stackQuery);
-      }
-      initialOpenNotes.push(
-        ...stackedNoteIds.map((noteId) => ({ id: noteId }))
-      );
-    }
-
-    setOpenNotes(initialOpenNotes);
-  }, [setOpenNotes, noteId, stackQuery, openNotes, asPath]);
-
-  // Update highlighted path based on url hash
+  // Initialize open notes and highlighted path
   useEffect(() => {
     if (!noteId || typeof noteId !== 'string') {
       return;
     }
-    updateOpenNote(noteId, {
-      highlightedPath: getHighlightedPathFromUrl(asPath),
-    });
-  }, [noteId, asPath, updateOpenNote]);
+
+    const newOpenNoteIds = [noteId, ...queryParamToArray(stackQuery)];
+    const newOpenNotes: OpenNote[] = newOpenNoteIds.map((id) => ({ id }));
+
+    setOpenNotes(newOpenNotes);
+    setHighlightedPath(getHighlightedPath(asPath));
+  }, [setOpenNotes, noteId, stackQuery, asPath]);
 
   useEffect(() => {
     // Scroll the last open note into view if:
@@ -120,11 +100,15 @@ export default function NotePage(props: Props) {
       <AppLayout initialNotes={initialNotes}>
         <div className="flex flex-1 overflow-x-auto bg-gray-50">
           {openNotes.length > 0
-            ? openNotes.map((note) => (
+            ? openNotes.map((note, index) => (
                 <Note
                   key={note.id}
                   noteId={note.id}
-                  highlightedPath={note.highlightedPath}
+                  highlightedPath={
+                    highlightedPath?.index === index
+                      ? highlightedPath.path
+                      : undefined
+                  }
                 />
               ))
             : null}
@@ -167,20 +151,31 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
   };
 };
 
-const getHighlightedPathFromUrl = (url: string): Path | undefined => {
-  const arr = url.split('#');
-  if (arr.length <= 1) {
-    return;
+/**
+ * Takes in a url with a hash parameter formatted like #1-2,3 (where 1 signifies the open note index,
+ * and 2,3 signifies the path to be highlighted). Parses the url and
+ * returns the open note index and the path to be highlighted as an object.
+ */
+const getHighlightedPath = (
+  url: string
+): { index: number; path: Path } | null => {
+  const urlArr = url.split('#');
+  if (urlArr.length <= 1) {
+    return null;
   }
 
-  const hash = arr[arr.length - 1];
-  const path = hash
-    .split(',')
-    .map((pathSegment) => Number.parseInt(pathSegment));
+  const hash = urlArr[urlArr.length - 1];
+  const [strIndex, ...strPath] = hash.split(/[-,]+/);
 
-  if (path.some((segment) => Number.isNaN(segment))) {
-    return;
+  const index = Number.parseInt(strIndex);
+  const path = strPath.map((pathSegment) => Number.parseInt(pathSegment));
+  if (
+    Number.isNaN(index) ||
+    path.length <= 0 ||
+    path.some((segment) => Number.isNaN(segment))
+  ) {
+    return null;
   }
 
-  return path;
+  return { index, path };
 };

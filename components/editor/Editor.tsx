@@ -34,8 +34,6 @@ import withLinks from 'editor/plugins/withLinks';
 import withNormalization from 'editor/plugins/withNormalization';
 import withCustomDeleteBackward from 'editor/plugins/withCustomDeleteBackward';
 import { ElementType, Mark } from 'types/slate';
-import { useStore } from 'lib/store';
-import { useCurrentNote } from 'utils/useCurrentNote';
 import HoveringToolbar from './HoveringToolbar';
 import AddLinkPopover from './AddLinkPopover';
 import EditorElement from './EditorElement';
@@ -57,9 +55,6 @@ type Props = {
 
 export default function Editor(props: Props) {
   const { className, value, setValue, highlightedPath } = props;
-  const currentNote = useCurrentNote();
-
-  const updateOpenNote = useStore((state) => state.updateOpenNote);
 
   const editorRef = useRef<SlateEditor>();
   if (!editorRef.current) {
@@ -268,22 +263,20 @@ export default function Editor(props: Props) {
 
       // Highlight line, but restore original color if mouse is clicked or component is re-rendered
       const originalColor = domNode.style.backgroundColor;
-      const removeHighlight = () => {
-        domNode.style.backgroundColor = originalColor;
-        updateOpenNote(currentNote.id, { highlightedPath: undefined });
-      };
+      const removeHighlight = () =>
+        (domNode.style.backgroundColor = originalColor);
 
       domNode.style.backgroundColor = colors.yellow[200];
       domNode.addEventListener('click', removeHighlight, { once: true });
 
       return () => {
-        domNode.style.backgroundColor = originalColor;
+        removeHighlight();
         document.removeEventListener('click', removeHighlight);
       };
     } catch (e) {
       // Do nothing if an error occurs, which sometimes happens if the router changes before the editor does
     }
-  }, [editor, highlightedPath, currentNote.id, updateOpenNote]);
+  }, [editor, highlightedPath]);
 
   return (
     <Slate

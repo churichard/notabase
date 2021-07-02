@@ -44,7 +44,8 @@ const BacklinkMatchLeaf = (props: BacklinkMatchLeafProps) => {
         if (isPageStackingOn) {
           onNoteLinkClick(noteId, match.linePath);
         } else {
-          router.push(`/app/note/${noteId}#${match.linePath}`);
+          const hash = `#0-${match.linePath}`;
+          router.push(`/app/note/${noteId}${hash}`);
         }
       }}
     >

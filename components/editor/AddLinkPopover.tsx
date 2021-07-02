@@ -11,7 +11,7 @@ import {
   insertNoteLink,
   removeLink,
 } from 'editor/formatting';
-import isUrl from 'utils/isUrl';
+import { isUrl } from 'utils/url';
 import { useAuth } from 'utils/useAuth';
 import useNoteSearch from 'utils/useNoteSearch';
 import { caseInsensitiveStringEqual } from 'utils/string';

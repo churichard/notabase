@@ -1,5 +1,5 @@
 import { Editor, Range, Transforms } from 'slate';
-import isUrl from 'utils/isUrl';
+import { isUrl } from 'utils/url';
 import { insertExternalLink } from 'editor/formatting';
 import { ElementType } from 'types/slate';
 

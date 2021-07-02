@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import type { ExternalLink, ListElement, NoteLink } from 'types/slate';
 import { ElementType, Mark } from 'types/slate';
 import { isMark } from 'editor/formatting';
-import isUrl from 'utils/isUrl';
+import { isUrl } from 'utils/url';
 import { store } from 'lib/store';
 import upsertNote from 'lib/api/upsertNote';
 import supabase from 'lib/supabase';
