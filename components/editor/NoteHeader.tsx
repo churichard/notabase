@@ -14,8 +14,7 @@ export default function NoteHeader() {
   const currentNote = useCurrentNote();
 
   const isSidebarButtonVisible = useStore(
-    (state) =>
-      !state.isSidebarOpen && state.openNotes?.[0].id === currentNote.id
+    (state) => !state.isSidebarOpen && state.openNoteIds?.[0] === currentNote.id
   );
   const setIsSidebarOpen = useStore((state) => state.setIsSidebarOpen);
 

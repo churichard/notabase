@@ -21,7 +21,6 @@ export default function NotePage(props: Props) {
   const router = useRouter();
   const {
     query: { id: noteId, stack: stackQuery },
-    asPath,
   } = router;
 
   const openNoteIds = useStore((state) => state.openNoteIds);
@@ -49,20 +48,23 @@ export default function NotePage(props: Props) {
     const newOpenNoteIds = [noteId, ...queryParamToArray(stackQuery)];
     setOpenNoteIds(newOpenNoteIds);
 
-    const newHighlightedPath = getHighlightedPath(asPath);
+    // We use router.asPath specifically so we handle any route change (even if asPath is the same)
+    const newHighlightedPath = getHighlightedPath(router.asPath);
     setHighlightedPath(newHighlightedPath);
-  }, [setOpenNoteIds, noteId, stackQuery, asPath]);
+  }, [setOpenNoteIds, router, noteId, stackQuery]);
 
   useEffect(() => {
     // Scroll the last open note into view if:
     // 1. The last open note id has changed
     // 2. prevOpenNoteIds has length > 0 (ensures that this is not the first render)
+    // 3. highlightedPath is not set (if it is, scrolling will be handled by the editor component)
     if (
       openNoteIds.length > 0 &&
       prevOpenNoteIds &&
       prevOpenNoteIds.length > 0 &&
       openNoteIds[openNoteIds.length - 1] !==
-        prevOpenNoteIds[prevOpenNoteIds.length - 1]
+        prevOpenNoteIds[prevOpenNoteIds.length - 1] &&
+      !highlightedPath
     ) {
       document
         .getElementById(openNoteIds[openNoteIds.length - 1])
@@ -71,7 +73,7 @@ export default function NotePage(props: Props) {
           inline: 'center',
         });
     }
-  }, [openNoteIds, prevOpenNoteIds]);
+  }, [openNoteIds, prevOpenNoteIds, highlightedPath]);
 
   if (!noteId || typeof noteId !== 'string') {
     return (

@@ -259,7 +259,11 @@ export default function Editor(props: Props) {
       // Scroll to line
       const [node] = SlateEditor.node(editor, highlightedPath);
       const domNode = ReactEditor.toDOMNode(editor, node);
-      domNode.scrollIntoView({ block: 'center' });
+      domNode.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+        inline: 'center',
+      });
 
       // Highlight line, but restore original color if mouse is clicked or component is re-rendered
       const originalColor = domNode.style.backgroundColor;
