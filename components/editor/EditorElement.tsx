@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode, useMemo } from 'react';
 import { RenderElementProps, useFocused, useSelected } from 'slate-react';
 import Tippy from '@tippyjs/react';
 import Link from 'next/link';
@@ -14,13 +14,25 @@ type Props = {
 export default function EditorElement(props: Props) {
   const { omitVerticalSpacing, attributes, children, element } = props;
 
+  const verticalSpacing = useMemo(() => {
+    if (omitVerticalSpacing) {
+      return '';
+    } else if (
+      element.type === ElementType.ListItem ||
+      element.type === ElementType.BulletedList ||
+      element.type === ElementType.NumberedList
+    ) {
+      return 'my-2';
+    } else {
+      return 'my-3';
+    }
+  }, [element.type, omitVerticalSpacing]);
+
   switch (element.type) {
     case ElementType.HeadingOne:
       return (
         <h1
-          className={`text-2xl font-semibold ${
-            omitVerticalSpacing ? '' : 'my-3'
-          }`}
+          className={`text-2xl font-semibold ${verticalSpacing}`}
           {...attributes}
         >
           {children}
@@ -29,9 +41,7 @@ export default function EditorElement(props: Props) {
     case ElementType.HeadingTwo:
       return (
         <h2
-          className={`text-xl font-semibold ${
-            omitVerticalSpacing ? '' : 'my-3'
-          }`}
+          className={`text-xl font-semibold ${verticalSpacing}`}
           {...attributes}
         >
           {children}
@@ -40,9 +50,7 @@ export default function EditorElement(props: Props) {
     case ElementType.HeadingThree:
       return (
         <h3
-          className={`text-lg font-semibold ${
-            omitVerticalSpacing ? '' : 'my-3'
-          }`}
+          className={`text-lg font-semibold ${verticalSpacing}`}
           {...attributes}
         >
           {children}
@@ -50,35 +58,26 @@ export default function EditorElement(props: Props) {
       );
     case ElementType.ListItem:
       return (
-        <li
-          className={`pl-1 ${omitVerticalSpacing ? '' : 'my-2'}`}
-          {...attributes}
-        >
+        <li className={`pl-1 ${verticalSpacing}`} {...attributes}>
           {children}
         </li>
       );
     case ElementType.BulletedList:
       return (
-        <ul
-          className={`ml-8 list-disc ${omitVerticalSpacing ? '' : 'my-2'}`}
-          {...attributes}
-        >
+        <ul className={`ml-8 list-disc ${verticalSpacing}`} {...attributes}>
           {children}
         </ul>
       );
     case ElementType.NumberedList:
       return (
-        <ol
-          className={`ml-8 list-decimal ${omitVerticalSpacing ? '' : 'my-2'}`}
-          {...attributes}
-        >
+        <ol className={`ml-8 list-decimal ${verticalSpacing}`} {...attributes}>
           {children}
         </ol>
       );
     case ElementType.Blockquote:
       return (
         <blockquote
-          className={`pl-4 border-l-4 ${omitVerticalSpacing ? '' : 'my-3'}`}
+          className={`pl-4 border-l-4 ${verticalSpacing}`}
           {...attributes}
         >
           {children}
@@ -87,9 +86,7 @@ export default function EditorElement(props: Props) {
     case ElementType.CodeBlock:
       return (
         <code
-          className={`block p-2 bg-gray-100 border border-gray-200 rounded ${
-            omitVerticalSpacing ? '' : 'my-3'
-          }`}
+          className={`block p-2 bg-gray-100 border border-gray-200 rounded ${verticalSpacing}`}
           {...attributes}
         >
           {children}
@@ -97,10 +94,7 @@ export default function EditorElement(props: Props) {
       );
     case ElementType.ThematicBreak:
       return (
-        <ThematicBreak
-          className={omitVerticalSpacing ? '' : 'my-3'}
-          attributes={attributes}
-        >
+        <ThematicBreak className={verticalSpacing} attributes={attributes}>
           {children}
         </ThematicBreak>
       );
@@ -118,7 +112,7 @@ export default function EditorElement(props: Props) {
       );
     default:
       return (
-        <p className={omitVerticalSpacing ? '' : 'my-3'} {...attributes}>
+        <p className={verticalSpacing} {...attributes}>
           {children}
         </p>
       );
