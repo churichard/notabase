@@ -37,6 +37,7 @@ const BLOCK_SHORTCUTS: Array<
   { match: /^### $/, type: ElementType.HeadingThree },
   { match: /^```$/, type: ElementType.CodeBlock },
   { match: /^---$/, type: ElementType.ThematicBreak },
+  { match: /^\*\*\*$/, type: ElementType.ThematicBreak },
 ];
 
 enum CustomInlineShortcuts {
@@ -132,6 +133,12 @@ const handleBlockShortcuts = (
             !Editor.isEditor(n) &&
             Element.isElement(n) &&
             n.type === ElementType.ListItem,
+        });
+      } else if (shortcut.type === ElementType.ThematicBreak) {
+        // Insert a new paragraph below thematic break
+        Transforms.insertNodes(editor, {
+          type: ElementType.Paragraph,
+          children: [{ text: '' }],
         });
       }
       return true;
