@@ -8,8 +8,7 @@ import { Path } from 'slate';
 import AppLayout from 'components/AppLayout';
 import Note from 'components/Note';
 import type { Note as NoteType } from 'types/supabase';
-import type { Notes, OpenNote } from 'lib/store';
-import { useStore } from 'lib/store';
+import { useStore, Notes } from 'lib/store';
 import usePrevious from 'utils/usePrevious';
 import { queryParamToArray } from 'utils/url';
 
@@ -25,9 +24,9 @@ export default function NotePage(props: Props) {
     asPath,
   } = router;
 
-  const openNotes = useStore((state) => state.openNotes);
-  const setOpenNotes = useStore((state) => state.setOpenNotes);
-  const prevOpenNotes = usePrevious(openNotes);
+  const openNoteIds = useStore((state) => state.openNoteIds);
+  const setOpenNoteIds = useStore((state) => state.setOpenNoteIds);
+  const prevOpenNoteIds = usePrevious(openNoteIds);
 
   const pageTitle = useStore((state) => {
     if (!noteId || typeof noteId !== 'string' || !state.notes[noteId]?.title) {
@@ -48,31 +47,31 @@ export default function NotePage(props: Props) {
     }
 
     const newOpenNoteIds = [noteId, ...queryParamToArray(stackQuery)];
-    const newOpenNotes: OpenNote[] = newOpenNoteIds.map((id) => ({ id }));
+    setOpenNoteIds(newOpenNoteIds);
 
-    setOpenNotes(newOpenNotes);
-    setHighlightedPath(getHighlightedPath(asPath));
-  }, [setOpenNotes, noteId, stackQuery, asPath]);
+    const newHighlightedPath = getHighlightedPath(asPath);
+    setHighlightedPath(newHighlightedPath);
+  }, [setOpenNoteIds, noteId, stackQuery, asPath]);
 
   useEffect(() => {
     // Scroll the last open note into view if:
-    // 1. The last open note has changed
-    // 2. prevOpenNotes has length > 0 (ensures that this is not the first render)
+    // 1. The last open note id has changed
+    // 2. prevOpenNoteIds has length > 0 (ensures that this is not the first render)
     if (
-      openNotes.length > 0 &&
-      prevOpenNotes &&
-      prevOpenNotes.length > 0 &&
-      openNotes[openNotes.length - 1].id !==
-        prevOpenNotes[prevOpenNotes.length - 1].id
+      openNoteIds.length > 0 &&
+      prevOpenNoteIds &&
+      prevOpenNoteIds.length > 0 &&
+      openNoteIds[openNoteIds.length - 1] !==
+        prevOpenNoteIds[prevOpenNoteIds.length - 1]
     ) {
       document
-        .getElementById(openNotes[openNotes.length - 1].id)
+        .getElementById(openNoteIds[openNoteIds.length - 1])
         ?.scrollIntoView({
           behavior: 'smooth',
           inline: 'center',
         });
     }
-  }, [openNotes, prevOpenNotes]);
+  }, [openNoteIds, prevOpenNoteIds]);
 
   if (!noteId || typeof noteId !== 'string') {
     return (
@@ -99,11 +98,11 @@ export default function NotePage(props: Props) {
       </Head>
       <AppLayout initialNotes={initialNotes}>
         <div className="flex flex-1 overflow-x-auto bg-gray-50">
-          {openNotes.length > 0
-            ? openNotes.map((note, index) => (
+          {openNoteIds.length > 0
+            ? openNoteIds.map((noteId, index) => (
                 <Note
-                  key={note.id}
-                  noteId={note.id}
+                  key={noteId}
+                  noteId={noteId}
                   highlightedPath={
                     highlightedPath?.index === index
                       ? highlightedPath.path

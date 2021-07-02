@@ -11,7 +11,7 @@ export default function useOnNoteLinkClick() {
     query: { stack: stackQuery },
   } = router;
   const currentNote = useCurrentNote();
-  const openNotes = useStore((state) => state.openNotes);
+  const openNoteIds = useStore((state) => state.openNoteIds);
   const isPageStackingOn = useStore((state) => state.isPageStackingOn);
 
   const onClick = useCallback(
@@ -19,9 +19,11 @@ export default function useOnNoteLinkClick() {
       /**
        * If the note is already open, scroll it into view
        */
-      const index = openNotes.findIndex((openNote) => openNote.id === noteId);
+      const index = openNoteIds.findIndex(
+        (openNoteId) => openNoteId === noteId
+      );
       if (index > -1) {
-        document.getElementById(openNotes[index].id)?.scrollIntoView({
+        document.getElementById(openNoteIds[index])?.scrollIntoView({
           behavior: 'smooth',
           inline: 'center',
         });
@@ -39,8 +41,8 @@ export default function useOnNoteLinkClick() {
       /**
        * If the note is not open, add it to the open notes
        */
-      const currentNoteIndex = openNotes.findIndex(
-        (openNote) => openNote.id === currentNote.id
+      const currentNoteIndex = openNoteIds.findIndex(
+        (openNoteId) => openNoteId === currentNote.id
       );
       if (currentNoteIndex < 0) {
         return;
@@ -74,7 +76,7 @@ export default function useOnNoteLinkClick() {
         router.push(`/app/note/${noteId}${hash}`);
       }
     },
-    [router, openNotes, currentNote, stackQuery, isPageStackingOn]
+    [router, openNoteIds, currentNote, stackQuery, isPageStackingOn]
   );
 
   return onClick;

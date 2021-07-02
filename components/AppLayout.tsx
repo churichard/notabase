@@ -52,8 +52,8 @@ export default function AppLayout(props: Props) {
           upsertNote(payload.new);
         } else if (payload.eventType === 'UPDATE') {
           // Don't update the note if it is currently open
-          const openNotes = store.getState().openNotes;
-          if (!openNotes.some((openNote) => openNote.id === payload.new.id)) {
+          const openNoteIds = store.getState().openNoteIds;
+          if (!openNoteIds.includes(payload.new.id)) {
             updateNote(payload.new);
           }
         } else if (payload.eventType === 'DELETE') {
