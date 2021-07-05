@@ -7,14 +7,6 @@ export default function Navbar() {
         <a className="text-xl">Notabase</a>
       </Link>
       <div className="flex items-center space-x-6">
-        <a
-          href="https://github.com/churichard/notabase"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          GitHub
-        </a>
-        <div className="h-5 border-l" />
         <Link href="/login">
           <a>Sign in</a>
         </Link>

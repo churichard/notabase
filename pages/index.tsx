@@ -120,7 +120,7 @@ export default function Home() {
           </div>
           <div className="py-16 md:py-32 bg-primary-50">
             <div className="container px-6 text-center">
-              <h2 className="text-4xl font-medium md:text-5xl">
+              <h2 className="text-4xl font-medium leading-tight md:text-5xl md:leading-tight">
                 Networked notes for your research and ideas.
               </h2>
               <p className="pt-6 text-2xl text-gray-700 md:pt-8 md:text-3xl">
