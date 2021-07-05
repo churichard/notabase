@@ -43,8 +43,8 @@ export default function Home() {
               <h2 className="text-3xl font-medium text-center md:text-4xl">
                 Link your knowledge together
               </h2>
-              <div className="max-w-3xl mx-auto">
-                <p className="pt-4 text-lg leading-loose text-gray-700 md:pt-8 md:text-xl md:leading-loose">
+              <div className="max-w-3xl pt-6 mx-auto md:pt-8">
+                <p className="text-lg leading-loose text-gray-700 md:text-xl md:leading-loose">
                   Your brain stores information as a network, not as a
                   collection of files and folders. With Notabase, you make{' '}
                   <b>[[connections]]</b> between notes and organize knowledge
@@ -59,8 +59,8 @@ export default function Home() {
               <h2 className="text-3xl font-medium text-center md:text-4xl">
                 Write in rich text as you type
               </h2>
-              <div className="max-w-3xl mx-auto">
-                <p className="pt-4 text-lg leading-loose text-gray-700 md:pt-8 md:text-xl md:leading-loose">
+              <div className="max-w-3xl pt-6 mx-auto md:pt-8">
+                <p className="text-lg leading-loose text-gray-700 md:text-xl md:leading-loose">
                   You don&apos;t need to be an expert at markdown to be
                   productive with Notabase. With a formatting menu, keyboard
                   shortcuts, and auto-markdown support, you can format your text
@@ -79,8 +79,8 @@ export default function Home() {
               <h2 className="text-3xl font-medium text-center md:text-4xl">
                 Open source
               </h2>
-              <div className="max-w-3xl mx-auto">
-                <p className="pt-4 text-lg leading-loose text-gray-700 md:pt-8 md:text-xl md:leading-loose">
+              <div className="max-w-3xl pt-6 mx-auto md:pt-8">
+                <p className="text-lg leading-loose text-gray-700 md:text-xl md:leading-loose">
                   Notabase is{' '}
                   <a
                     href="https://github.com/churichard/notabase"
@@ -104,12 +104,24 @@ export default function Home() {
               <h2 className="text-3xl font-medium text-center md:text-4xl">
                 Pricing
               </h2>
-              <div className="max-w-3xl mx-auto">
-                <p className="pt-4 text-lg leading-loose text-gray-700 md:pt-8 md:text-xl md:leading-loose">
-                  Notabase is currently in alpha, and is <b>free</b> to use
-                  during this time. In the future, a paid tier will be added in
-                  order to cover the costs of hosting and development (but there
-                  will always be a generous free tier).
+              <div className="max-w-3xl pt-6 mx-auto md:pt-8">
+                <p className="text-lg leading-loose text-gray-700 md:text-xl md:leading-loose">
+                  Notabase is in alpha and is <b>free</b> to use during this
+                  time. In the future, a paid tier will be added to support
+                  Notabase&apos;s development (but there will always be a
+                  generous free tier).
+                </p>
+                <p className="pt-4 text-lg leading-loose text-gray-700 md:text-xl md:leading-loose">
+                  If you&apos;d like to support my work, you can{' '}
+                  <a
+                    href="https://github.com/sponsors/churichard"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="link"
+                  >
+                    sponsor me on GitHub
+                  </a>
+                  .
                 </p>
               </div>
             </div>
