@@ -69,7 +69,10 @@ export default function Footer(props: Props) {
             </a>
           </div>
           <div className="flex flex-col mt-8 space-y-2 lg:mt-0">
-            <p className="font-medium">Legal</p>
+            <p className="font-medium">Company</p>
+            <Link href="/about">
+              <a className="text-gray-700">About</a>
+            </Link>
             <Link href="/privacy">
               <a className="text-gray-700">Privacy</a>
             </Link>
