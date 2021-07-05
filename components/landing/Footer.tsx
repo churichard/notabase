@@ -13,10 +13,9 @@ export default function Footer(props: Props) {
           <Link href="/">
             <a className="font-medium">Notabase</a>
           </Link>
-          <p className="text-gray-700">
+          <p className="pt-1 text-gray-700">
             A personal knowledge base for networked thinking.
           </p>
-          <p className="text-gray-700">Currently in alpha.</p>
         </div>
         <div className="flex flex-wrap flex-1 space-x-16 lg:justify-end">
           <div className="flex flex-col mt-8 space-y-2 lg:mt-0">

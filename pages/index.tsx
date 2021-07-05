@@ -106,10 +106,10 @@ export default function Home() {
               </h2>
               <div className="max-w-3xl mx-auto">
                 <p className="pt-4 text-lg leading-loose text-gray-700 md:pt-8 md:text-xl md:leading-loose">
-                  Notabase is currently <b>free</b> to use while in alpha. In
-                  the future, a paid tier will be added in order to cover the
-                  costs of hosting and development (but there will always be a
-                  generous free tier).
+                  Notabase is currently in alpha, and is <b>free</b> to use
+                  during this time. In the future, a paid tier will be added in
+                  order to cover the costs of hosting and development (but there
+                  will always be a generous free tier).
                 </p>
               </div>
             </div>
