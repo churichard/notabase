@@ -11,6 +11,7 @@ import {
   IconMail,
   IconMessage,
   IconChevronsLeft,
+  IconBrandDiscord,
 } from '@tabler/icons';
 import { useAuth } from 'utils/useAuth';
 import { useStore } from 'lib/store';
@@ -94,6 +95,21 @@ const Header = () => {
               >
                 <IconMessage size={18} className="mr-1" />
                 <span>Give feedback</span>
+              </a>
+            )}
+          </Menu.Item>
+          <Menu.Item>
+            {({ active }) => (
+              <a
+                className={`flex w-full items-center px-4 py-2 text-left text-gray-800 text-sm ${
+                  active ? 'bg-gray-100' : ''
+                }`}
+                href="https://discord.gg/BQKNRu7nv5"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <IconBrandDiscord size={18} className="mr-1" />
+                <span>Join our Discord</span>
               </a>
             )}
           </Menu.Item>
