@@ -27,29 +27,41 @@ export default function Changelog() {
           </a>
           .
         </p>
-        <ChangelogBlock
-          title="July 2, 2021"
-          changes={['Add thematic break / horizontal rule']}
-        />
-        <ChangelogBlock
-          title="July 1, 2021"
-          changes={[
-            'Add searching of note content',
-            'Highlight and scroll to backlink match when clicked',
-          ]}
-        />
-        <ChangelogBlock
-          title="June 30, 2021"
-          changes={['Performance improvements']}
-        />
-        <ChangelogBlock
-          title="June 24, 2021"
-          changes={[
-            'Add code block',
-            'Update the way note links are displayed',
-          ]}
-        />
-        <ChangelogBlock title="June 21, 2021" changes={['Add strikethrough']} />
+        <div className="pt-4 divide-y md:pt-8">
+          <ChangelogBlock
+            title="July 5, 2021"
+            bugFixes={[
+              'Show hovering toolbar when highlighting note link',
+              'Fix bug where pressing enter in a bullet point with only a note link inside deletes the bullet point',
+            ]}
+          />
+          <ChangelogBlock
+            title="July 2, 2021"
+            features={['Add thematic break / horizontal rule']}
+          />
+          <ChangelogBlock
+            title="July 1, 2021"
+            features={[
+              'Add searching of note content',
+              'Highlight and scroll to backlink match when clicked',
+            ]}
+          />
+          <ChangelogBlock
+            title="June 30, 2021"
+            bugFixes={['Performance improvements']}
+          />
+          <ChangelogBlock
+            title="June 24, 2021"
+            features={[
+              'Add code block',
+              'Update the way note links are displayed',
+            ]}
+          />
+          <ChangelogBlock
+            title="June 21, 2021"
+            features={['Add strikethrough']}
+          />
+        </div>
       </div>
       <Footer />
     </>
@@ -58,19 +70,35 @@ export default function Changelog() {
 
 type ChangelogBlockProps = {
   title: string;
-  changes: string[];
+  features?: string[];
+  bugFixes?: string[];
 };
 
 const ChangelogBlock = (props: ChangelogBlockProps) => {
-  const { title, changes } = props;
+  const { title, features, bugFixes } = props;
   return (
-    <div className="pt-8 md:pt-16">
+    <div className="py-4 md:py-8">
       <h2 className="text-2xl font-medium md:text-3xl">{title}</h2>
-      <ul className="mt-4 space-y-1 list-disc list-inside">
-        {changes.map((change, index) => (
-          <li key={index}>{change}</li>
-        ))}
-      </ul>
+      {features && features.length > 0 ? (
+        <>
+          <p className="pt-4 font-medium">Features</p>
+          <ul className="mt-2 ml-5 space-y-1 list-disc">
+            {features.map((feature, index) => (
+              <li key={index}>{feature}</li>
+            ))}
+          </ul>
+        </>
+      ) : null}
+      {bugFixes && bugFixes.length > 0 ? (
+        <>
+          <p className="pt-4 font-medium">Bug Fixes</p>
+          <ul className="mt-2 ml-5 space-y-1 list-disc">
+            {bugFixes.map((bugFix, index) => (
+              <li key={index}>{bugFix}</li>
+            ))}
+          </ul>
+        </>
+      ) : null}
     </div>
   );
 };
