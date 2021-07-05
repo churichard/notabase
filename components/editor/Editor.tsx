@@ -95,7 +95,7 @@ export default function Editor(props: Props) {
       !!selection &&
       ReactEditor.isFocused(editor) &&
       !Range.isCollapsed(selection) &&
-      SlateEditor.string(editor, selection) !== '',
+      SlateEditor.string(editor, selection, { voids: true }) !== '',
     [editor, selection]
   );
   const isToolbarVisible = useMemo(

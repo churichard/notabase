@@ -33,7 +33,7 @@ const withBlockBreakout = (editor: Editor) => {
     const lineStart = Editor.start(editor, path);
     const lineEnd = Editor.end(editor, path);
     const lineRange = { anchor: lineStart, focus: lineEnd };
-    const lineText = Editor.string(editor, lineRange);
+    const lineText = Editor.string(editor, lineRange, { voids: true });
 
     const isAtLineStart = Editor.isStart(editor, anchor, path);
     const isAtLineEnd = Editor.isEnd(editor, anchor, path);
