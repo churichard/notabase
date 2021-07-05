@@ -46,14 +46,10 @@ export default function Home() {
               <div className="max-w-3xl mx-auto">
                 <p className="pt-4 text-lg leading-loose text-gray-700 md:pt-8 md:text-xl md:leading-loose">
                   Your brain stores information as a network, not as a
-                  collection of files and folders. With Notabase, you make
-                  <span className="text-primary-600">
-                    {' '}
-                    [[connections]]
-                  </span>{' '}
-                  between notes and organize knowledge associatively. This lets
-                  you perceive relationships between pieces of knowledge that
-                  may not be apparent in isolation.
+                  collection of files and folders. With Notabase, you make{' '}
+                  <b>[[connections]]</b> between notes and organize knowledge
+                  associatively. This lets you perceive relationships between
+                  pieces of knowledge that may not be apparent in isolation.
                 </p>
               </div>
             </div>
