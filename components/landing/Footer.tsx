@@ -20,6 +20,17 @@ export default function Footer(props: Props) {
         </div>
         <div className="flex flex-wrap flex-1 space-x-16 lg:justify-end">
           <div className="flex flex-col mt-8 space-y-2 lg:mt-0">
+            <p className="font-medium">Product</p>
+            <a
+              href="https://trello.com/b/dpZLRkRR"
+              className="text-gray-700"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Roadmap
+            </a>
+          </div>
+          <div className="flex flex-col mt-8 space-y-2 lg:mt-0">
             <p className="font-medium">Connect</p>
             <a
               href="https://twitter.com/notabase"
