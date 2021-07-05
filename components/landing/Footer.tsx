@@ -21,6 +21,9 @@ export default function Footer(props: Props) {
         <div className="flex flex-wrap flex-1 space-x-16 lg:justify-end">
           <div className="flex flex-col mt-8 space-y-2 lg:mt-0">
             <p className="font-medium">Product</p>
+            <Link href="/changelog">
+              <a className="text-gray-700">Changelog</a>
+            </Link>
             <a
               href="https://trello.com/b/dpZLRkRR"
               className="text-gray-700"
