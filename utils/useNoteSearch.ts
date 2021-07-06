@@ -37,10 +37,10 @@ const initFuse = (notes: Notes, searchContent: boolean) => {
   const keys = searchContent ? ['blocks.text'] : ['title'];
   return new Fuse<FuseDatum>(fuseData, {
     keys,
+    ignoreLocation: true,
     ...(searchContent
       ? {
           includeMatches: true,
-          ignoreLocation: true,
           threshold: 0,
           sortFn: (a, b) => a.idx - b.idx,
         }

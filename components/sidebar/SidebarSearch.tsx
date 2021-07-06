@@ -104,7 +104,7 @@ const SidebarSearchLeaf = memo(function SidebarSearchLeaf(
   const router = useRouter();
   return (
     <button
-      className={`w-full text-left rounded px-1 py-2 text-gray-800 hover:bg-gray-200 active:bg-gray-300`}
+      className="w-full px-1 py-2 text-left text-gray-800 rounded hover:bg-gray-200 active:bg-gray-300"
       onClick={() => {
         const hash = block ? `#0-${block.path}` : '';
         router.push(`/app/note/${noteId}${hash}`);
