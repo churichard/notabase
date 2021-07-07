@@ -172,7 +172,7 @@ export default function Note(props: Props) {
   }, [router, isSynced]);
 
   const noteContainerClassName =
-    'flex flex-col flex-shrink-0 w-full bg-white border-r-0 md:border-r md:w-128 lg:w-176';
+    'flex flex-col flex-shrink-0 md:flex-shrink w-full bg-white';
   const errorContainerClassName = `${noteContainerClassName} items-center justify-center h-full`;
 
   if (!note) {
@@ -194,8 +194,8 @@ export default function Note(props: Props) {
       <ProvideCurrentNote value={note}>
         <div id={note.id} className={noteContainerClassName}>
           <NoteHeader />
-          <div className="flex flex-col flex-1 overflow-y-auto">
-            <div className="flex flex-col flex-1">
+          <div className="flex flex-col flex-1 overflow-x-hidden overflow-y-auto">
+            <div className="flex flex-col flex-1 w-full mx-auto md:w-128 lg:w-160 xl:w-192">
               <Title
                 className="px-12 pt-12 pb-1"
                 value={noteTitle}
@@ -207,8 +207,8 @@ export default function Note(props: Props) {
                 setValue={setEditorValue}
                 highlightedPath={highlightedPath}
               />
+              <Backlinks className="mx-8 mb-12" />
             </div>
-            <Backlinks className="mx-8 mb-12" />
           </div>
         </div>
       </ProvideCurrentNote>
