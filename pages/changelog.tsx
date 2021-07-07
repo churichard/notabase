@@ -13,7 +13,7 @@ export default function Changelog() {
         <h1 className="text-4xl font-medium text-center md:text-5xl">
           Changelog
         </h1>
-        <p className="pt-6">
+        <p className="pt-8">
           This page lists when major features and bug fixes are added to
           Notabase. Note that Notabase is constantly being updated and this page
           may not be comprehensive. For a full list of technical changes, go to{' '}
@@ -27,7 +27,13 @@ export default function Changelog() {
           </a>
           .
         </p>
-        <div className="pt-4 divide-y md:pt-8">
+        <div className="divide-y">
+          <ChangelogBlock
+            title="July 7, 2021"
+            features={[
+              'Horizontally center notes for a more ergonomic experience',
+            ]}
+          />
           <ChangelogBlock
             title="July 5, 2021"
             bugFixes={[
@@ -77,7 +83,7 @@ type ChangelogBlockProps = {
 const ChangelogBlock = (props: ChangelogBlockProps) => {
   const { title, features, bugFixes } = props;
   return (
-    <div className="py-4 md:py-8">
+    <div className="py-8">
       <h2 className="text-2xl font-medium md:text-3xl">{title}</h2>
       {features && features.length > 0 ? (
         <>
