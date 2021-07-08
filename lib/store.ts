@@ -133,7 +133,7 @@ export const store = createVanilla<Store>(
       }
     },
     userSettings: {
-      noteSort: Sort.NameAscending,
+      noteSort: Sort.TitleAscending,
     },
     updateUserSettingByKey:
       (key: keyof UserSettings) => (value: UserSettings[typeof key]) => {

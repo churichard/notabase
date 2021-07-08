@@ -44,7 +44,7 @@ export default function SidebarNotes(props: SidebarNotesProps) {
   const sortedNotes = useMemo(
     () =>
       notes.sort((n1, n2) => {
-        if (noteSort === Sort.NameDescending) {
+        if (noteSort === Sort.TitleDescending) {
           return caseInsensitiveStringCompare(n2.title, n1.title);
         } else {
           return caseInsensitiveStringCompare(n1.title, n2.title);

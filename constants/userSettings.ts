@@ -1,11 +1,11 @@
 export enum Sort {
-  NameAscending = 'NAME_ASCENDING',
-  NameDescending = 'NAME_DESCENDING',
+  TitleAscending = 'TITLE_ASCENDING',
+  TitleDescending = 'TITLE_DESCENDING',
 }
 
 export const ReadableNameBySort = {
-  [Sort.NameAscending]: 'Sort by name (A-Z)',
-  [Sort.NameDescending]: 'Sort by name (Z-A)',
+  [Sort.TitleAscending]: 'Sort by title (A-Z)',
+  [Sort.TitleDescending]: 'Sort by title (Z-A)',
 } as const;
 
 export type UserSettings = {
