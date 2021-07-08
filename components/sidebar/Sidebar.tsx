@@ -42,7 +42,7 @@ export default function Sidebar(props: Props) {
           onClick={() => setIsFindOrCreateModalOpen((isOpen) => !isOpen)}
         >
           <IconSearch className="mr-1 text-gray-800" size={20} />
-          <span>Find or create note</span>
+          <span>Find or Create Note</span>
         </button>
       </SidebarItem>
       <SidebarItem isHighlighted={router.pathname.includes('/app/graph')}>
@@ -56,6 +56,7 @@ export default function Sidebar(props: Props) {
       <SidebarContent
         className="flex-1 mt-3 overflow-x-hidden overflow-y-auto"
         currentNoteId={currentNoteId}
+        setIsFindOrCreateModalOpen={setIsFindOrCreateModalOpen}
       />
     </div>
   );

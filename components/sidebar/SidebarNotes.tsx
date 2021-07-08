@@ -1,4 +1,11 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { Menu } from '@headlessui/react';
@@ -7,6 +14,7 @@ import {
   IconDots,
   IconTrash,
   IconCheck,
+  IconPlus,
 } from '@tabler/icons';
 import { usePopper } from 'react-popper';
 import type { Note } from 'types/supabase';
@@ -22,10 +30,11 @@ import SidebarItem from './SidebarItem';
 type SidebarNotesProps = {
   currentNoteId?: string;
   className?: string;
+  setIsFindOrCreateModalOpen: Dispatch<SetStateAction<boolean>>;
 };
 
 export default function SidebarNotes(props: SidebarNotesProps) {
-  const { currentNoteId, className } = props;
+  const { currentNoteId, className, setIsFindOrCreateModalOpen } = props;
 
   const notes = useStore(
     (state) =>
@@ -56,9 +65,6 @@ export default function SidebarNotes(props: SidebarNotesProps) {
   return (
     <ErrorBoundary>
       <div className={`flex flex-col flex-1 overflow-x-hidden ${className}`}>
-        <div className="flex items-center justify-end">
-          <SortDropdown currentSort={noteSort} setCurrentSort={setNoteSort} />
-        </div>
         <div className="overflow-y-auto">
           {sortedNotes && sortedNotes.length > 0 ? (
             sortedNotes.map((note) => (
@@ -71,6 +77,18 @@ export default function SidebarNotes(props: SidebarNotesProps) {
           ) : (
             <p className="px-6 my-2 text-gray-500">No notes yet</p>
           )}
+        </div>
+        <div className="flex items-center justify-between border-t">
+          <button
+            className="p-1 mx-2 my-1 rounded hover:bg-gray-200 active:bg-gray-300"
+            onClick={() => setIsFindOrCreateModalOpen((isOpen) => !isOpen)}
+          >
+            <IconPlus size={16} className="text-gray-600" />
+          </button>
+          <span className="p-1 mx-2 my-1 text-xs text-gray-500">
+            {notes.length} notes
+          </span>
+          <SortDropdown currentSort={noteSort} setCurrentSort={setNoteSort} />
         </div>
       </div>
     </ErrorBoundary>
@@ -96,7 +114,7 @@ const SortDropdown = (props: SortDropdownProps) => {
   return (
     <Menu>
       <Menu.Button
-        className="p-1 m-1 mr-5 rounded hover:bg-gray-200 active:bg-gray-300"
+        className="p-1 mx-2 my-1 rounded hover:bg-gray-200 active:bg-gray-300"
         ref={buttonRef}
       >
         <IconSortDescending size={16} className="text-gray-600" />
