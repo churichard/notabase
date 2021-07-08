@@ -65,7 +65,7 @@ export default function SidebarNotes(props: SidebarNotesProps) {
   return (
     <ErrorBoundary>
       <div className={`flex flex-col flex-1 overflow-x-hidden ${className}`}>
-        <div className="overflow-y-auto">
+        <div className="flex-1 overflow-y-auto">
           {sortedNotes && sortedNotes.length > 0 ? (
             sortedNotes.map((note) => (
               <NoteLink
@@ -75,7 +75,7 @@ export default function SidebarNotes(props: SidebarNotesProps) {
               />
             ))
           ) : (
-            <p className="px-6 my-2 text-gray-500">No notes yet</p>
+            <p className="px-6 my-2 text-center text-gray-500">No notes yet</p>
           )}
         </div>
         <div className="flex items-center justify-between border-t">
