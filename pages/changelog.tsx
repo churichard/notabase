@@ -29,6 +29,12 @@ export default function Changelog() {
         </p>
         <div className="divide-y">
           <ChangelogBlock
+            title="July 8, 2021"
+            features={[
+              'Add the option to sort notes by ascending or descending order',
+            ]}
+          />
+          <ChangelogBlock
             title="July 7, 2021"
             features={[
               'Horizontally center notes for a more ergonomic experience',

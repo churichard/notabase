@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import { IconFile, IconSearch } from '@tabler/icons';
 import SidebarNotes from './SidebarNotes';
 import SidebarSearch from './SidebarSearch';
@@ -11,19 +11,21 @@ enum SidebarTab {
 type Props = {
   currentNoteId?: string;
   className?: string;
+  setIsFindOrCreateModalOpen: Dispatch<SetStateAction<boolean>>;
 };
 
 export default function SidebarContent(props: Props) {
-  const { currentNoteId, className } = props;
+  const { currentNoteId, className, setIsFindOrCreateModalOpen } = props;
   const [activeTab, setActiveTab] = useState<SidebarTab>(SidebarTab.Notes);
 
   return (
     <div className={`flex flex-col ${className}`}>
       <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
-      <div className="flex flex-col flex-1 overflow-x-hidden overflow-y-auto">
+      <div className="flex flex-col flex-1 overflow-x-hidden">
         <SidebarNotes
           className={activeTab !== SidebarTab.Notes ? 'hidden' : undefined}
           currentNoteId={currentNoteId}
+          setIsFindOrCreateModalOpen={setIsFindOrCreateModalOpen}
         />
         <SidebarSearch
           className={activeTab !== SidebarTab.Search ? 'hidden' : undefined}
