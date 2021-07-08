@@ -2,6 +2,7 @@ import create, { State, StateCreator } from 'zustand';
 import createVanilla from 'zustand/vanilla';
 import produce, { Draft } from 'immer';
 import type { Note } from 'types/supabase';
+import { Sort, UserSettings } from 'constants/userSettings';
 import type { NoteUpdate } from './api/updateNote';
 
 export { default as shallowEqual } from 'zustand/shallow';
@@ -28,6 +29,10 @@ export type Store = {
   setIsSidebarOpen: (value: boolean | ((value: boolean) => boolean)) => void;
   isPageStackingOn: boolean;
   setIsPageStackingOn: (value: boolean | ((value: boolean) => boolean)) => void;
+  userSettings: UserSettings;
+  updateUserSettingByKey: (
+    key: keyof UserSettings
+  ) => (value: UserSettings[typeof key]) => void;
 };
 
 export const store = createVanilla<Store>(
@@ -127,6 +132,15 @@ export const store = createVanilla<Store>(
         });
       }
     },
+    userSettings: {
+      noteSort: Sort.NameAscending,
+    },
+    updateUserSettingByKey:
+      (key: keyof UserSettings) => (value: UserSettings[typeof key]) => {
+        set((state) => {
+          state.userSettings[key] = value;
+        });
+      },
   }))
 );
 

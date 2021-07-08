@@ -14,15 +14,10 @@ import { store, useStore, deepEqual } from 'lib/store';
 import deleteNote from 'lib/api/deleteNote';
 import useBacklinks from 'editor/useBacklinks';
 import { caseInsensitiveStringCompare } from 'utils/string';
+import { ReadableNameBySort, Sort } from 'constants/userSettings';
 import Portal from '../Portal';
 import ErrorBoundary from '../ErrorBoundary';
 import SidebarItem from './SidebarItem';
-
-type SortType = { id: string; name: string };
-const SORTS: readonly SortType[] = [
-  { id: 'Ascending', name: 'Sort by name (A-Z)' },
-  { id: 'Descending', name: 'Sort by name (Z-A)' },
-] as const;
 
 type SidebarNotesProps = {
   currentNoteId?: string;
@@ -41,24 +36,28 @@ export default function SidebarNotes(props: SidebarNotesProps) {
     deepEqual
   );
 
-  const [currentSort, setCurrentSort] = useState<SortType>(SORTS[0]);
+  const noteSort = useStore((state) => state.userSettings.noteSort);
+  const setNoteSort = useStore((state) =>
+    state.updateUserSettingByKey('noteSort')
+  );
+
   const sortedNotes = useMemo(
     () =>
       notes.sort((n1, n2) => {
-        if (currentSort.id === 'Descending') {
+        if (noteSort === Sort.NameDescending) {
           return caseInsensitiveStringCompare(n2.title, n1.title);
         } else {
           return caseInsensitiveStringCompare(n1.title, n2.title);
         }
       }),
-    [notes, currentSort.id]
+    [notes, noteSort]
   );
 
   return (
     <ErrorBoundary>
       <div className={`flex flex-col flex-1 overflow-x-hidden ${className}`}>
         <div className="flex items-center justify-end">
-          <SortDropdown currentSort={currentSort} setSort={setCurrentSort} />
+          <SortDropdown currentSort={noteSort} setCurrentSort={setNoteSort} />
         </div>
         <div className="overflow-y-auto">
           {sortedNotes && sortedNotes.length > 0 ? (
@@ -79,12 +78,12 @@ export default function SidebarNotes(props: SidebarNotesProps) {
 }
 
 type SortDropdownProps = {
-  currentSort: SortType;
-  setSort: (sort: SortType) => void;
+  currentSort: Sort;
+  setCurrentSort: (sort: Sort) => void;
 };
 
 const SortDropdown = (props: SortDropdownProps) => {
-  const { currentSort, setSort } = props;
+  const { currentSort, setCurrentSort } = props;
 
   const buttonRef = useRef<HTMLButtonElement | null>(null);
   const [popperElement, setPopperElement] = useState<HTMLDivElement | null>(
@@ -108,29 +107,28 @@ const SortDropdown = (props: SortDropdownProps) => {
         style={styles.popper}
         {...attributes.popper}
       >
-        {SORTS.map((sort) => (
-          <Menu.Item key={sort.id}>
-            {({ active }) => (
-              <button
-                className={`flex w-full items-center px-4 py-2 text-left text-gray-800 text-sm ${
-                  active ? 'bg-gray-100' : ''
-                }`}
-                onClick={() => setSort(sort)}
-              >
-                <span
-                  className={
-                    currentSort.id === sort.id ? 'text-primary-600' : undefined
-                  }
+        {Object.values(Sort).map((sort) => {
+          const isActive = currentSort === sort;
+          return (
+            <Menu.Item key={sort}>
+              {({ active }) => (
+                <button
+                  className={`flex w-full items-center px-4 py-2 text-left text-gray-800 text-sm ${
+                    active ? 'bg-gray-100' : ''
+                  }`}
+                  onClick={() => setCurrentSort(sort)}
                 >
-                  {sort.name}
-                </span>
-                {currentSort.id === sort.id ? (
-                  <IconCheck size={18} className="ml-1 text-primary-600" />
-                ) : null}
-              </button>
-            )}
-          </Menu.Item>
-        ))}
+                  <span className={isActive ? 'text-primary-600' : undefined}>
+                    {ReadableNameBySort[sort]}
+                  </span>
+                  {isActive ? (
+                    <IconCheck size={18} className="ml-1 text-primary-600" />
+                  ) : null}
+                </button>
+              )}
+            </Menu.Item>
+          );
+        })}
       </Menu.Items>
     </Menu>
   );
