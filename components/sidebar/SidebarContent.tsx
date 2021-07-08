@@ -20,7 +20,7 @@ export default function SidebarContent(props: Props) {
   return (
     <div className={`flex flex-col ${className}`}>
       <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
-      <div className="flex flex-col flex-1 overflow-x-hidden overflow-y-auto">
+      <div className="flex flex-col flex-1 overflow-x-hidden">
         <SidebarNotes
           className={activeTab !== SidebarTab.Notes ? 'hidden' : undefined}
           currentNoteId={currentNoteId}

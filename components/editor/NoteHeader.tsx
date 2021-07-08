@@ -69,7 +69,7 @@ export default function NoteHeader() {
               <Portal>
                 <Menu.Items
                   ref={setPopperElement}
-                  className="z-10 bg-white rounded shadow-popover"
+                  className="z-10 overflow-hidden bg-white rounded shadow-popover"
                   static
                   style={styles.popper}
                   {...attributes.popper}

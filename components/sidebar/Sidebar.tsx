@@ -79,7 +79,7 @@ const Header = () => {
             <IconChevronsLeft className="text-gray-500" />
           </span>
         </Menu.Button>
-        <Menu.Items className="absolute z-10 w-56 bg-white rounded left-6 top-full shadow-popover">
+        <Menu.Items className="absolute z-10 w-56 overflow-hidden bg-white rounded left-6 top-full shadow-popover">
           <p className="px-4 py-2 overflow-hidden text-xs text-gray-600 overflow-ellipsis">
             {user?.email}
           </p>

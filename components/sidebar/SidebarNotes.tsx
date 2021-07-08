@@ -1,8 +1,13 @@
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { Menu } from '@headlessui/react';
-import { IconDots, IconTrash } from '@tabler/icons';
+import {
+  IconSortDescending,
+  IconDots,
+  IconTrash,
+  IconCheck,
+} from '@tabler/icons';
 import { usePopper } from 'react-popper';
 import type { Note } from 'types/supabase';
 import { store, useStore, deepEqual } from 'lib/store';
@@ -12,6 +17,12 @@ import { caseInsensitiveStringCompare } from 'utils/string';
 import Portal from '../Portal';
 import ErrorBoundary from '../ErrorBoundary';
 import SidebarItem from './SidebarItem';
+
+type SortType = { id: string; name: string };
+const SORTS: readonly SortType[] = [
+  { id: 'Ascending', name: 'Sort by name (A-Z)' },
+  { id: 'Descending', name: 'Sort by name (Z-A)' },
+] as const;
 
 type SidebarNotesProps = {
   currentNoteId?: string;
@@ -23,30 +34,107 @@ export default function SidebarNotes(props: SidebarNotesProps) {
 
   const notes = useStore(
     (state) =>
-      Object.values(state.notes)
-        .map((note) => ({ id: note.id, title: note.title }))
-        .sort((n1, n2) => caseInsensitiveStringCompare(n1.title, n2.title)),
+      Object.values(state.notes).map((note) => ({
+        id: note.id,
+        title: note.title,
+      })),
     deepEqual
+  );
+
+  const [currentSort, setCurrentSort] = useState<SortType>(SORTS[0]);
+  const sortedNotes = useMemo(
+    () =>
+      notes.sort((n1, n2) => {
+        if (currentSort.id === 'Descending') {
+          return caseInsensitiveStringCompare(n2.title, n1.title);
+        } else {
+          return caseInsensitiveStringCompare(n1.title, n2.title);
+        }
+      }),
+    [notes, currentSort.id]
   );
 
   return (
     <ErrorBoundary>
-      <div className={className}>
-        {notes && notes.length > 0 ? (
-          notes.map((note) => (
-            <NoteLink
-              key={note.id}
-              note={note}
-              isHighlighted={note.id === currentNoteId}
-            />
-          ))
-        ) : (
-          <p className="px-6 my-2 text-gray-500">No notes yet</p>
-        )}
+      <div className={`flex flex-col flex-1 overflow-x-hidden ${className}`}>
+        <div className="flex items-center justify-end">
+          <SortDropdown currentSort={currentSort} setSort={setCurrentSort} />
+        </div>
+        <div className="overflow-y-auto">
+          {sortedNotes && sortedNotes.length > 0 ? (
+            sortedNotes.map((note) => (
+              <NoteLink
+                key={note.id}
+                note={note}
+                isHighlighted={note.id === currentNoteId}
+              />
+            ))
+          ) : (
+            <p className="px-6 my-2 text-gray-500">No notes yet</p>
+          )}
+        </div>
       </div>
     </ErrorBoundary>
   );
 }
+
+type SortDropdownProps = {
+  currentSort: SortType;
+  setSort: (sort: SortType) => void;
+};
+
+const SortDropdown = (props: SortDropdownProps) => {
+  const { currentSort, setSort } = props;
+
+  const buttonRef = useRef<HTMLButtonElement | null>(null);
+  const [popperElement, setPopperElement] = useState<HTMLDivElement | null>(
+    null
+  );
+  const { styles, attributes } = usePopper(buttonRef.current, popperElement, {
+    placement: 'bottom-start',
+  });
+
+  return (
+    <Menu>
+      <Menu.Button
+        className="p-1 m-1 rounded hover:bg-gray-200 active:bg-gray-300"
+        ref={buttonRef}
+      >
+        <IconSortDescending size={16} className="text-gray-800" />
+      </Menu.Button>
+      <Menu.Items
+        className="z-10 w-56 overflow-hidden bg-white rounded shadow-popover"
+        ref={setPopperElement}
+        style={styles.popper}
+        {...attributes.popper}
+      >
+        {SORTS.map((sort) => (
+          <Menu.Item key={sort.id}>
+            {({ active }) => (
+              <button
+                className={`flex w-full items-center px-4 py-2 text-left text-gray-800 text-sm ${
+                  active ? 'bg-gray-100' : ''
+                }`}
+                onClick={() => setSort(sort)}
+              >
+                <span
+                  className={
+                    currentSort.id === sort.id ? 'text-primary-600' : undefined
+                  }
+                >
+                  {sort.name}
+                </span>
+                {currentSort.id === sort.id ? (
+                  <IconCheck size={18} className="ml-1 text-primary-600" />
+                ) : null}
+              </button>
+            )}
+          </Menu.Item>
+        ))}
+      </Menu.Items>
+    </Menu>
+  );
+};
 
 type NoteLinkProps = {
   note: Pick<Note, 'id' | 'title'>;
@@ -119,7 +207,7 @@ const NoteLinkDropdown = (props: NoteLinkDropdownProps) => {
               <Portal>
                 <Menu.Items
                   ref={setPopperElement}
-                  className="z-10 w-48 bg-white rounded shadow-popover"
+                  className="z-10 w-48 overflow-hidden bg-white rounded shadow-popover"
                   static
                   style={styles.popper}
                   {...attributes.popper}
