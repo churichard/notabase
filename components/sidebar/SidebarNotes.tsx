@@ -96,10 +96,10 @@ const SortDropdown = (props: SortDropdownProps) => {
   return (
     <Menu>
       <Menu.Button
-        className="p-1 m-1 rounded hover:bg-gray-200 active:bg-gray-300"
+        className="p-1 m-1 mr-5 rounded hover:bg-gray-200 active:bg-gray-300"
         ref={buttonRef}
       >
-        <IconSortDescending size={16} className="text-gray-800" />
+        <IconSortDescending size={16} className="text-gray-600" />
       </Menu.Button>
       <Menu.Items
         className="z-10 w-56 overflow-hidden bg-white rounded shadow-popover"
