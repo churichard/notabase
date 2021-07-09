@@ -43,7 +43,7 @@
   },
   "devDependencies": {
     "@next/bundle-analyzer": "^11.0.1",
-    "@types/d3": "^6.7.4",
+    "@types/d3": "^7.0.0",
     "@types/file-saver": "^2.0.2",
     "@types/node": "^16.0.1",
     "@types/nprogress": "^0.2.0",
