@@ -81,7 +81,7 @@ export default function SidebarNotes(props: SidebarNotesProps) {
 
     const input = document.createElement('input');
     input.type = 'file';
-    input.accept = '.md, .mkdn, .mdwn, .mdown, .markdown';
+    input.accept = '.text, .txt, .md, .mkdn, .mdwn, .mdown, .markdown';
     input.multiple = true;
 
     input.onchange = async (e) => {
