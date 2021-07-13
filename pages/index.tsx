@@ -83,7 +83,7 @@ export default function Home() {
                 <p className="text-lg leading-loose text-gray-700 md:text-xl md:leading-loose">
                   Notabase is{' '}
                   <a
-                    href="https://github.com/churichard/notabase"
+                    href="https://github.com/notabase/notabase"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="link"

@@ -19,7 +19,7 @@ export default function Changelog() {
           may not be comprehensive. For a full list of technical changes, go to{' '}
           <a
             className="link"
-            href="https://github.com/churichard/notabase/commits/main"
+            href="https://github.com/notabase/notabase/commits/main"
             target="_blank"
             rel="noopener noreferrer"
           >
