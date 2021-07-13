@@ -7,7 +7,7 @@ import JSZip from 'jszip';
 import Portal from 'components/Portal';
 import { useCurrentNote } from 'utils/useCurrentNote';
 import { store, useStore } from 'lib/store';
-import serialize from 'editor/serialize';
+import serialize from 'editor/serialization/serialize';
 import { Note } from 'types/supabase';
 
 export default function NoteHeader() {
