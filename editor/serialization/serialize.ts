@@ -113,6 +113,10 @@ export default function serialize(
       if (chunk.code) {
         children = retainWhitespaceAndFormat(children, '`');
       }
+
+      if (chunk.underline) {
+        children = retainWhitespaceAndFormat(children, '<u>');
+      }
     }
   }
 
@@ -185,7 +189,7 @@ function retainWhitespaceAndFormat(string: string, format: string) {
 
   // We reverse the right side formatting, to properly handle bold/italic and strikethrough
   // formats, so we can create ~~***FooBar***~~
-  const fullFormat = `${format}${children}${reverseStr(format)}`;
+  const fullFormat = `${format}${children}${getEndFormat(format)}`;
 
   // This conditions accounts for no whitespace in our string
   // if we don't have any, we can return early.
@@ -196,10 +200,16 @@ function retainWhitespaceAndFormat(string: string, format: string) {
   // if we do have whitespace, let's add our formatting around our trimmed string
   // We reverse the right side formatting, to properly handle bold/italic and strikethrough
   // formats, so we can create ~~***FooBar***~~
-  const formattedString = format + children + reverseStr(format);
+  const formattedString = format + children + getEndFormat(format);
 
   // and replace the non-whitespace content of the string
   return string.replace(frozenString, formattedString);
 }
 
-const reverseStr = (string: string) => string.split('').reverse().join('');
+const getEndFormat = (format: string) => {
+  if (format === '<u>') {
+    return '</u>';
+  } else {
+    return format.split('').reverse().join('');
+  }
+};
