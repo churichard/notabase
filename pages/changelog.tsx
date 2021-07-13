@@ -29,6 +29,10 @@ export default function Changelog() {
         </p>
         <div className="divide-y">
           <ChangelogBlock
+            title="July 13, 2021"
+            features={['Add the ability to import notes']}
+          />
+          <ChangelogBlock
             title="July 8, 2021"
             features={[
               'Add the option to sort notes by ascending or descending order',
