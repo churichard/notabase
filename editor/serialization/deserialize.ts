@@ -24,15 +24,9 @@ THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 import { ElementType, Mark } from 'types/slate';
 import { MdastNode } from './types';
 
-export interface OptionType {
-  imageSourceKey?: string;
-  imageCaptionKey?: string;
-}
+export type OptionType = Record<string, never>;
 
 export default function deserialize(node: MdastNode, opts?: OptionType) {
-  // const imageSourceKey = opts?.imageSourceKey ?? 'link';
-  // const imageCaptionKey = opts?.imageCaptionKey ?? 'caption';
-
   let children = [{ text: '' }];
 
   if (
