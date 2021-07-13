@@ -31,6 +31,7 @@ export default function Changelog() {
           <ChangelogBlock
             title="July 13, 2021"
             features={['Add the ability to import notes']}
+            bugFixes={['Fix exporting underlined text']}
           />
           <ChangelogBlock
             title="July 8, 2021"
