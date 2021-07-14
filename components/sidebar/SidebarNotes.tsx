@@ -15,7 +15,7 @@ import {
   IconTrash,
   IconCheck,
   IconPlus,
-  IconFileImport,
+  IconDownload,
 } from '@tabler/icons';
 import { usePopper } from 'react-popper';
 import type { Note } from 'types/supabase';
@@ -97,7 +97,7 @@ export default function SidebarNotes(props: SidebarNotesProps) {
               className="p-1 rounded hover:bg-gray-200 active:bg-gray-300"
               onClick={onImport}
             >
-              <IconFileImport size={16} className="text-gray-600" />
+              <IconDownload size={16} className="text-gray-600" />
             </button>
           </div>
         </div>

@@ -1,6 +1,12 @@
 import { useCallback, useRef, useState } from 'react';
 import { Menu } from '@headlessui/react';
-import { IconDots, IconFileExport, IconMenu2 } from '@tabler/icons';
+import {
+  IconDots,
+  IconDownload,
+  IconMenu2,
+  IconUpload,
+  IconCloudDownload,
+} from '@tabler/icons';
 import { usePopper } from 'react-popper';
 import { saveAs } from 'file-saver';
 import JSZip from 'jszip';
@@ -9,9 +15,11 @@ import { useCurrentNote } from 'utils/useCurrentNote';
 import { store, useStore } from 'lib/store';
 import serialize from 'editor/serialization/serialize';
 import { Note } from 'types/supabase';
+import useImport from 'utils/useImport';
 
 export default function NoteHeader() {
   const currentNote = useCurrentNote();
+  const onImport = useImport();
 
   const isSidebarButtonVisible = useStore(
     (state) => !state.isSidebarOpen && state.openNoteIds?.[0] === currentNote.id
@@ -80,10 +88,23 @@ export default function NoteHeader() {
                         className={`flex w-full items-center px-4 py-2 text-left text-gray-800 ${
                           active ? 'bg-gray-100' : ''
                         }`}
+                        onClick={onImport}
+                      >
+                        <IconDownload size={18} className="mr-1" />
+                        <span>Import</span>
+                      </button>
+                    )}
+                  </Menu.Item>
+                  <Menu.Item>
+                    {({ active }) => (
+                      <button
+                        className={`flex w-full items-center px-4 py-2 text-left text-gray-800 ${
+                          active ? 'bg-gray-100' : ''
+                        }`}
                         onClick={onExportClick}
                       >
-                        <IconFileExport size={18} className="mr-1" />
-                        <span>Export to Markdown</span>
+                        <IconUpload size={18} className="mr-1" />
+                        <span>Export</span>
                       </button>
                     )}
                   </Menu.Item>
@@ -95,8 +116,8 @@ export default function NoteHeader() {
                         }`}
                         onClick={onExportAllClick}
                       >
-                        <IconFileExport size={18} className="mr-1" />
-                        <span>Export all to Markdown</span>
+                        <IconCloudDownload size={18} className="mr-1" />
+                        <span>Export All</span>
                       </button>
                     )}
                   </Menu.Item>
