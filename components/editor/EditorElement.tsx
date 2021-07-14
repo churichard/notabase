@@ -254,6 +254,7 @@ const Image = (props: ImageProps) => {
           selected && focused ? 'ring ring-blue-100' : ''
         }`}
         contentEditable={false}
+        alt={element.caption}
       />
       {children}
     </div>

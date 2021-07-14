@@ -95,6 +95,7 @@ export type ThematicBreak = {
 export type Image = {
   type: ElementType.Image;
   url: string;
+  caption?: string;
   children: FormattedText[];
 };
 

@@ -70,13 +70,13 @@ export default function deserialize(node: MdastNode, opts?: OptionType) {
       return { type: ElementType.Paragraph, children };
     case 'link':
       return { type: ElementType.ExternalLink, url: node.url, children };
-    // case 'image':
-    //   return {
-    //     type: types.image,
-    //     children: [{ text: '' }],
-    //     [imageSourceKey]: node.url,
-    //     [imageCaptionKey]: node.alt,
-    //   };
+    case 'image':
+      return {
+        type: ElementType.Image,
+        children: [{ text: '' }],
+        url: node.url,
+        caption: node.alt,
+      };
     case 'blockquote':
       return { type: ElementType.Blockquote, children };
     case 'code':
