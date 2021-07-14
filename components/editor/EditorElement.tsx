@@ -2,7 +2,7 @@ import { ReactNode, useMemo } from 'react';
 import { RenderElementProps, useFocused, useSelected } from 'slate-react';
 import Tippy from '@tippyjs/react';
 import Link from 'next/link';
-import type { ExternalLink, NoteLink } from 'types/slate';
+import type { ExternalLink, Image as ImageType, NoteLink } from 'types/slate';
 import { ElementType } from 'types/slate';
 import useOnNoteLinkClick from 'editor/useOnNoteLinkClick';
 import { useStore } from 'lib/store';
@@ -109,6 +109,12 @@ export default function EditorElement(props: Props) {
         <NoteLinkElement element={element} attributes={attributes}>
           {children}
         </NoteLinkElement>
+      );
+    case ElementType.Image:
+      return (
+        <Image element={element} attributes={attributes}>
+          {children}
+        </Image>
       );
     default:
       return (
@@ -224,6 +230,30 @@ const ThematicBreak = (props: ThematicBreakProps) => {
       }`}
       {...attributes}
     >
+      {children}
+    </div>
+  );
+};
+
+type ImageProps = {
+  children: ReactNode;
+  attributes: RenderElementProps['attributes'];
+  element: ImageType;
+};
+
+const Image = (props: ImageProps) => {
+  const { children, attributes, element } = props;
+  const selected = useSelected();
+  const focused = useFocused();
+  return (
+    <div contentEditable={false} {...attributes}>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={element.url}
+        className={`mx-auto max-w-full max-h-80 ${
+          selected && focused ? 'ring ring-blue-100' : ''
+        }`}
+      />
       {children}
     </div>
   );

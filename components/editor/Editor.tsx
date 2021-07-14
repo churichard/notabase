@@ -34,6 +34,7 @@ import withLinks from 'editor/plugins/withLinks';
 import withNormalization from 'editor/plugins/withNormalization';
 import withCustomDeleteBackward from 'editor/plugins/withCustomDeleteBackward';
 import withThematicBreak from 'editor/plugins/withThematicBreak';
+import withImages from 'editor/plugins/withImages';
 import { ElementType, Mark } from 'types/slate';
 import HoveringToolbar from './HoveringToolbar';
 import AddLinkPopover from './AddLinkPopover';
@@ -65,7 +66,7 @@ export default function Editor(props: Props) {
           withAutoMarkdown(
             withBlockBreakout(
               withThematicBreak(
-                withLinks(withHistory(withReact(createEditor())))
+                withImages(withLinks(withHistory(withReact(createEditor()))))
               )
             )
           )

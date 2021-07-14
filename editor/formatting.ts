@@ -1,5 +1,5 @@
 import { Editor, Element, Transforms, Range, Text, Node } from 'slate';
-import type { ExternalLink, NoteLink, ListElement } from 'types/slate';
+import type { ExternalLink, NoteLink, ListElement, Image } from 'types/slate';
 import { ElementType, Mark } from 'types/slate';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -187,4 +187,13 @@ export const insertNoteLink = (
     children: isCollapsed ? [{ text: noteTitle }] : [],
   };
   wrapLink(editor, link);
+};
+
+export const insertImage = (editor: Editor, url: string) => {
+  const image: Image = {
+    type: ElementType.Image,
+    url,
+    children: [{ text: '' }],
+  };
+  Transforms.insertNodes(editor, image);
 };
