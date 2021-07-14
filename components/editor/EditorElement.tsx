@@ -246,13 +246,14 @@ const Image = (props: ImageProps) => {
   const selected = useSelected();
   const focused = useFocused();
   return (
-    <div contentEditable={false} {...attributes}>
+    <div {...attributes}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={element.url}
         className={`select-none mx-auto max-w-full max-h-full ${
           selected && focused ? 'ring ring-blue-100' : ''
         }`}
+        contentEditable={false}
       />
       {children}
     </div>
