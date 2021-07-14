@@ -250,7 +250,7 @@ const Image = (props: ImageProps) => {
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={element.url}
-        className={`select-none mx-auto max-w-full max-h-80 ${
+        className={`select-none mx-auto max-w-full max-h-full ${
           selected && focused ? 'ring ring-blue-100' : ''
         }`}
       />
