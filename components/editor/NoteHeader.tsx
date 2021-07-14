@@ -10,6 +10,7 @@ import {
 import { usePopper } from 'react-popper';
 import { saveAs } from 'file-saver';
 import JSZip from 'jszip';
+import Tippy from '@tippyjs/react';
 import Portal from 'components/Portal';
 import { useCurrentNote } from 'utils/useCurrentNote';
 import { store, useStore } from 'lib/store';
@@ -57,12 +58,20 @@ export default function NoteHeader() {
     <div className="flex items-center justify-between w-full px-4 py-1 text-right bg-white">
       <div>
         {isSidebarButtonVisible ? (
-          <button
-            className="p-1 rounded hover:bg-gray-300 active:bg-gray-400"
-            onClick={() => setIsSidebarOpen(true)}
+          <Tippy
+            content="Open sidebar"
+            duration={0}
+            arrow={false}
+            offset={[0, 6]}
+            placement="right"
           >
-            <IconMenu2 className="text-gray-600" />
-          </button>
+            <button
+              className="p-1 rounded hover:bg-gray-300 active:bg-gray-400"
+              onClick={() => setIsSidebarOpen(true)}
+            >
+              <IconMenu2 className="text-gray-600" />
+            </button>
+          </Tippy>
         ) : null}
       </div>
       <Menu>

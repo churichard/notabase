@@ -18,6 +18,7 @@ import {
   IconDownload,
 } from '@tabler/icons';
 import { usePopper } from 'react-popper';
+import Tippy from '@tippyjs/react';
 import type { Note } from 'types/supabase';
 import { store, useStore, deepEqual } from 'lib/store';
 import deleteNote from 'lib/api/deleteNote';
@@ -82,23 +83,32 @@ export default function SidebarNotes(props: SidebarNotesProps) {
           )}
         </div>
         <div className="flex items-center justify-between border-t">
-          <button
-            className="p-1 mx-2 my-1 rounded hover:bg-gray-200 active:bg-gray-300"
-            onClick={() => setIsFindOrCreateModalOpen((isOpen) => !isOpen)}
+          <Tippy
+            content="Create a new note"
+            duration={0}
+            arrow={false}
+            offset={[0, 6]}
           >
-            <IconPlus size={16} className="text-gray-600" />
-          </button>
+            <button
+              className="p-1 mx-2 my-1 rounded hover:bg-gray-200 active:bg-gray-300"
+              onClick={() => setIsFindOrCreateModalOpen((isOpen) => !isOpen)}
+            >
+              <IconPlus size={16} className="text-gray-600" />
+            </button>
+          </Tippy>
           <span className="p-1 mx-2 my-1 text-xs text-gray-500">
             {notes.length} notes
           </span>
           <div className="mx-2 my-1">
             <SortDropdown currentSort={noteSort} setCurrentSort={setNoteSort} />
-            <button
-              className="p-1 rounded hover:bg-gray-200 active:bg-gray-300"
-              onClick={onImport}
-            >
-              <IconDownload size={16} className="text-gray-600" />
-            </button>
+            <Tippy content="Import" duration={0} arrow={false} offset={[0, 6]}>
+              <button
+                className="p-1 rounded hover:bg-gray-200 active:bg-gray-300"
+                onClick={onImport}
+              >
+                <IconDownload size={16} className="text-gray-600" />
+              </button>
+            </Tippy>
           </div>
         </div>
       </div>
@@ -124,12 +134,14 @@ const SortDropdown = (props: SortDropdownProps) => {
 
   return (
     <Menu>
-      <Menu.Button
-        className="p-1 rounded hover:bg-gray-200 active:bg-gray-300"
-        ref={buttonRef}
-      >
-        <IconSortDescending size={16} className="text-gray-600" />
-      </Menu.Button>
+      <Tippy content="Sort notes" duration={0} arrow={false} offset={[0, 6]}>
+        <Menu.Button
+          className="p-1 rounded hover:bg-gray-200 active:bg-gray-300"
+          ref={buttonRef}
+        >
+          <IconSortDescending size={16} className="text-gray-600" />
+        </Menu.Button>
+      </Tippy>
       <Menu.Items
         className="z-10 w-56 overflow-hidden bg-white rounded shadow-popover"
         ref={setPopperElement}

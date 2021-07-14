@@ -13,6 +13,7 @@ import {
   IconChevronsLeft,
   IconBrandDiscord,
 } from '@tabler/icons';
+import Tippy from '@tippyjs/react';
 import { useAuth } from 'utils/useAuth';
 import { useStore } from 'lib/store';
 import SidebarItem from './SidebarItem';
@@ -37,21 +38,39 @@ export default function Sidebar(props: Props) {
     >
       <Header />
       <SidebarItem>
-        <button
-          className="flex items-center w-full px-6 py-1 text-left"
-          onClick={() => setIsFindOrCreateModalOpen((isOpen) => !isOpen)}
+        <Tippy
+          content="Quickly jump to a note, or create a new note (Ctrl+P)"
+          duration={0}
+          arrow={false}
+          offset={[0, 6]}
+          placement="right"
         >
-          <IconSearch className="mr-1 text-gray-800" size={20} />
-          <span>Find or Create Note</span>
-        </button>
+          <button
+            className="flex items-center w-full px-6 py-1 text-left"
+            onClick={() => setIsFindOrCreateModalOpen((isOpen) => !isOpen)}
+          >
+            <IconSearch className="mr-1 text-gray-800" size={20} />
+            <span>Find or Create Note</span>
+          </button>
+        </Tippy>
       </SidebarItem>
       <SidebarItem isHighlighted={router.pathname.includes('/app/graph')}>
-        <Link href="/app/graph">
-          <a className="flex items-center px-6 py-1">
-            <IconAffiliate className="mr-1 text-gray-800" size={20} />
-            <span>Graph View</span>
-          </a>
-        </Link>
+        <Tippy
+          content="Visualization of all of your notes as a network"
+          duration={0}
+          arrow={false}
+          offset={[0, 6]}
+          placement="right"
+        >
+          <span>
+            <Link href="/app/graph">
+              <a className="flex items-center px-6 py-1">
+                <IconAffiliate className="mr-1 text-gray-800" size={20} />
+                <span>Graph View</span>
+              </a>
+            </Link>
+          </span>
+        </Tippy>
       </SidebarItem>
       <SidebarContent
         className="flex-1 mt-3 overflow-x-hidden overflow-y-auto"
@@ -73,12 +92,20 @@ const Header = () => {
             <span className="mr-1 font-medium">Notabase</span>
             <IconSelector size={18} className="text-gray-500" />
           </div>
-          <span
-            className="p-1 mr-2 rounded hover:bg-gray-300 active:bg-gray-400"
-            onClick={() => setIsSidebarOpen(false)}
+          <Tippy
+            content="Collapse sidebar"
+            duration={0}
+            arrow={false}
+            offset={[0, 6]}
+            placement="right"
           >
-            <IconChevronsLeft className="text-gray-500" />
-          </span>
+            <span
+              className="p-1 mr-2 rounded hover:bg-gray-300 active:bg-gray-400"
+              onClick={() => setIsSidebarOpen(false)}
+            >
+              <IconChevronsLeft className="text-gray-500" />
+            </span>
+          </Tippy>
         </Menu.Button>
         <Menu.Items className="absolute z-10 w-56 overflow-hidden bg-white rounded left-6 top-full shadow-popover">
           <p className="px-4 py-2 overflow-hidden text-xs text-gray-600 overflow-ellipsis">
