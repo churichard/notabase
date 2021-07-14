@@ -18,21 +18,12 @@ import {
   IconFileImport,
 } from '@tabler/icons';
 import { usePopper } from 'react-popper';
-import unified from 'unified';
-import markdown from 'remark-parse';
-import { Descendant } from 'slate';
-import { toast } from 'react-toastify';
 import type { Note } from 'types/supabase';
 import { store, useStore, deepEqual } from 'lib/store';
 import deleteNote from 'lib/api/deleteNote';
-import upsertNote from 'lib/api/upsertNote';
 import useBacklinks from 'editor/useBacklinks';
-import remarkToSlate from 'editor/serialization/remarkToSlate';
-import {
-  caseInsensitiveStringCompare,
-  caseInsensitiveStringEqual,
-} from 'utils/string';
-import { useAuth } from 'utils/useAuth';
+import { caseInsensitiveStringCompare } from 'utils/string';
+import useImport from 'utils/useImport';
 import { ReadableNameBySort, Sort } from 'constants/userSettings';
 import Portal from '../Portal';
 import ErrorBoundary from '../ErrorBoundary';
@@ -46,7 +37,7 @@ type SidebarNotesProps = {
 
 export default function SidebarNotes(props: SidebarNotesProps) {
   const { currentNoteId, className, setIsFindOrCreateModalOpen } = props;
-  const { user } = useAuth();
+  const onImport = useImport();
 
   const notes = useStore(
     (state) =>
@@ -73,68 +64,6 @@ export default function SidebarNotes(props: SidebarNotesProps) {
       }),
     [notes, noteSort]
   );
-
-  const onImportClick = useCallback(() => {
-    if (!user) {
-      return;
-    }
-
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.text, .txt, .md, .mkdn, .mdwn, .mdown, .markdown';
-    input.multiple = true;
-
-    input.onchange = async (e) => {
-      if (!e.target) {
-        return;
-      }
-
-      const inputElement = e.target as HTMLInputElement;
-
-      if (!inputElement.files) {
-        return;
-      }
-
-      // Add a new note for each imported note
-      const promises = [];
-      for (const file of inputElement.files) {
-        const fileName = file.name.replace(/\.[^/.]+$/, '');
-        const fileContent = await file.text();
-
-        const { result } = unified()
-          .use(markdown)
-          .use(remarkToSlate)
-          .processSync(fileContent);
-        const slateContent = result as Descendant[];
-
-        promises.push(
-          upsertNote({
-            user_id: user.id,
-            title: getUniqueTitle(fileName),
-            content: slateContent.length > 0 ? slateContent : undefined,
-          })
-        );
-      }
-
-      const newNotes = await Promise.all(promises);
-
-      // Show a toast with the number of successfully imported notes
-      const numOfSuccessfulImports = newNotes.filter((note) => !!note).length;
-      if (numOfSuccessfulImports > 1) {
-        toast.success(
-          `${numOfSuccessfulImports} notes were successfully imported.`
-        );
-      } else if (numOfSuccessfulImports === 1) {
-        toast.success(
-          `${numOfSuccessfulImports} note was successfully imported.`
-        );
-      } else {
-        toast.error('No notes were imported.');
-      }
-    };
-
-    input.click();
-  }, [user]);
 
   return (
     <ErrorBoundary>
@@ -166,7 +95,7 @@ export default function SidebarNotes(props: SidebarNotesProps) {
             <SortDropdown currentSort={noteSort} setCurrentSort={setNoteSort} />
             <button
               className="p-1 rounded hover:bg-gray-200 active:bg-gray-300"
-              onClick={onImportClick}
+              onClick={onImport}
             >
               <IconFileImport size={16} className="text-gray-600" />
             </button>
@@ -331,21 +260,4 @@ const NoteLinkDropdown = (props: NoteLinkDropdownProps) => {
       </Menu>
     </div>
   );
-};
-
-// Get a unique title by appending a number after the given noteTitle.
-const getUniqueTitle = (title: string) => {
-  const getResult = () => (suffix > 0 ? `${title} ${suffix}` : title);
-
-  let suffix = 0;
-  const notesArr = Object.values(store.getState().notes);
-  while (
-    notesArr.findIndex((note) =>
-      caseInsensitiveStringEqual(note.title, getResult())
-    ) > -1
-  ) {
-    suffix += 1;
-  }
-
-  return getResult();
 };
