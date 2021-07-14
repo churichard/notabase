@@ -136,7 +136,13 @@ const NoteLinkElement = (props: NoteLinkElementProps) => {
   }`;
 
   return (
-    <Tippy content={element.noteTitle} duration={0} placement="bottom">
+    <Tippy
+      content={element.noteTitle}
+      duration={0}
+      placement="bottom"
+      arrow={false}
+      offset={[0, 6]}
+    >
       {isPageStackingOn ? (
         <span
           className={className}
@@ -178,7 +184,13 @@ type ExternalLinkElementProps = {
 const ExternalLinkElement = (props: ExternalLinkElementProps) => {
   const { element, children, attributes } = props;
   return (
-    <Tippy content={element.url} duration={0} placement="bottom">
+    <Tippy
+      content={element.url}
+      duration={0}
+      placement="bottom"
+      arrow={false}
+      offset={[0, 6]}
+    >
       <a
         className="link"
         href={element.url}
