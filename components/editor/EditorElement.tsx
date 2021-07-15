@@ -23,6 +23,12 @@ export default function EditorElement(props: Props) {
       element.type === ElementType.NumberedList
     ) {
       return 'my-2';
+    } else if (element.type === ElementType.HeadingOne) {
+      return 'mb-3 mt-8 first:mt-3';
+    } else if (element.type === ElementType.HeadingTwo) {
+      return 'mb-3 mt-6 first:mt-3';
+    } else if (element.type === ElementType.HeadingThree) {
+      return 'mb-3 mt-4 first:mt-3';
     } else {
       return 'my-3';
     }
