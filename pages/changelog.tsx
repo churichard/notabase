@@ -29,6 +29,10 @@ export default function Changelog() {
         </p>
         <div className="divide-y">
           <ChangelogBlock
+            title="July 15, 2021"
+            features={['Add support for images (hosted externally)']}
+          />
+          <ChangelogBlock
             title="July 13, 2021"
             features={['Add the ability to import notes']}
             bugFixes={['Fix exporting underlined text']}
