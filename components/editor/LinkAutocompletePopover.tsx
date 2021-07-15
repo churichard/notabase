@@ -3,19 +3,14 @@ import { useMemo, useState, useCallback, useEffect } from 'react';
 import { Editor, Range, Transforms } from 'slate';
 import { useSlate } from 'slate-react';
 import type { TablerIcon } from '@tabler/icons';
-import { IconFilePlus } from '@tabler/icons';
-import { v4 as uuidv4 } from 'uuid';
-import upsertNote from 'lib/api/upsertNote';
 import { insertNoteLink } from 'editor/formatting';
 import { deleteText } from 'editor/transforms';
 import { useAuth } from 'utils/useAuth';
 import useNoteSearch from 'utils/useNoteSearch';
-import { caseInsensitiveStringEqual } from 'utils/string';
 import Popover from './Popover';
 
 enum OptionType {
   NOTE,
-  NEW_NOTE,
 }
 
 type Option = {
@@ -37,33 +32,15 @@ export default function LinkAutocompletePopover() {
   const search = useNoteSearch({ numOfResults: 10 });
   const searchResults = useMemo(() => search(linkText), [search, linkText]);
 
-  const options = useMemo(() => {
-    const result: Array<Option> = [];
-    if (linkText) {
-      // Show new note option if there isn't already a note called `linkText`
-      // (We assume if there is a note, then it will be the first result)
-      if (
-        searchResults.length <= 0 ||
-        !caseInsensitiveStringEqual(linkText, searchResults[0].item.title)
-      ) {
-        result.push({
-          id: 'NEW_NOTE',
-          type: OptionType.NEW_NOTE,
-          text: `New note: ${linkText}`,
-          icon: IconFilePlus,
-        });
-      }
-    }
-    // Show notes that match `linkText`
-    result.push(
-      ...searchResults.map((result) => ({
+  const options = useMemo(
+    () =>
+      searchResults.map((result) => ({
         id: result.item.id,
         type: OptionType.NOTE,
         text: result.item.title,
-      }))
-    );
-    return result;
-  }, [searchResults, linkText]);
+      })),
+    [searchResults]
+  );
 
   const hidePopover = useCallback(() => {
     setIsVisible(false);
@@ -133,19 +110,13 @@ export default function LinkAutocompletePopover() {
         // Insert a link to an existing note with the note title as the link text
         insertNoteLink(editor, option.id, option.text);
         Transforms.move(editor, { distance: 1, unit: 'offset' }); // Focus after the note link
-      } else if (option.type === OptionType.NEW_NOTE) {
-        // Add a new note and insert a link to it with the note title as the link text
-        const noteId = uuidv4();
-        insertNoteLink(editor, noteId, linkText);
-        upsertNote({ id: noteId, user_id: user.id, title: linkText });
-        Transforms.move(editor, { distance: 1, unit: 'offset' }); // Focus after the note link
       } else {
         throw new Error(`Option type ${option.type} is not supported`);
       }
 
       hidePopover();
     },
-    [editor, user, hidePopover, linkText, getRegexResult]
+    [editor, user, hidePopover, getRegexResult]
   );
 
   const onKeyDown = useCallback(
@@ -181,7 +152,7 @@ export default function LinkAutocompletePopover() {
     }
   }, [isVisible, onKeyDown]);
 
-  return isVisible ? (
+  return isVisible && options.length > 0 ? (
     <Popover
       placement="bottom"
       className="flex flex-col w-96"
