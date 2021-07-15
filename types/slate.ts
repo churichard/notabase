@@ -17,6 +17,7 @@ export enum ElementType {
   NoteLink = 'note-link',
   CodeBlock = 'code-block',
   ThematicBreak = 'thematic-break',
+  Image = 'image',
 }
 
 export enum Mark {
@@ -91,6 +92,13 @@ export type ThematicBreak = {
   children: Descendant[];
 };
 
+export type Image = {
+  type: ElementType.Image;
+  url: string;
+  caption?: string;
+  children: FormattedText[];
+};
+
 export type NotabaseElement =
   | ParagraphElement
   | HeadingOneElement
@@ -103,7 +111,8 @@ export type NotabaseElement =
   | ExternalLink
   | NoteLink
   | CodeBlock
-  | ThematicBreak;
+  | ThematicBreak
+  | Image;
 
 export type ListElement = BulletedList | NumberedList;
 

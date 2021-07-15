@@ -26,6 +26,7 @@ import {
   ElementType,
   ExternalLink,
   FormattedText,
+  Image,
   NoteLink,
 } from 'types/slate';
 
@@ -44,6 +45,7 @@ const isLeafNode = (node: BlockType | LeafType): node is LeafType => {
 const VOID_ELEMENTS: Array<ElementType> = [
   ElementType.NoteLink,
   ElementType.ThematicBreak,
+  ElementType.Image,
 ];
 
 const BREAK_TAG = '';
@@ -144,12 +146,12 @@ export default function serialize(
         : `[[${noteLink.noteTitle}]]`;
     }
     case ElementType.ExternalLink:
-      return `[${children}](${(chunk as ExternalLink).url || ''})`;
+      return `[${children}](${(chunk as ExternalLink).url})`;
 
-    // case nodeTypes.image:
-    //   return `![${(chunk as BlockType).caption}](${
-    //     (chunk as BlockType).url || ''
-    //   })`;
+    case ElementType.Image: {
+      const image = chunk as Image;
+      return `![${image.caption ?? image.url}](${image.url})\n\n`;
+    }
 
     case ElementType.BulletedList:
     case ElementType.NumberedList:
