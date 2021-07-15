@@ -16,14 +16,14 @@ export default function Home() {
           <Navbar />
           <div className="py-16 md:py-32">
             <div className="container px-6 text-center">
-              <h1 className="text-5xl font-medium leading-tight md:leading-tight md:text-6xl">
+              <h1 className="text-5xl font-semibold leading-tight md:leading-tight md:text-6xl">
                 Networked notes for your research and ideas.
               </h1>
               <p className="pt-6 text-2xl text-gray-700 md:pt-8 md:text-3xl">
                 Notabase is a personal knowledge base for networked thinking.
               </p>
               <Link href="/signup">
-                <a className="inline-block mt-6 font-medium md:mt-8 btn">
+                <a className="inline-block mt-6 font-semibold md:mt-8 btn">
                   Start your knowledge base
                 </a>
               </Link>
@@ -40,7 +40,7 @@ export default function Home() {
           </div>
           <div className="py-16 bg-gray-100 md:py-32">
             <div className="container px-6">
-              <h2 className="text-3xl font-medium text-center md:text-4xl">
+              <h2 className="text-3xl font-semibold text-center md:text-4xl">
                 Link your knowledge together
               </h2>
               <div className="max-w-3xl pt-6 mx-auto md:pt-8">
@@ -56,7 +56,7 @@ export default function Home() {
           </div>
           <div className="py-16 md:py-32">
             <div className="container px-6">
-              <h2 className="text-3xl font-medium text-center md:text-4xl">
+              <h2 className="text-3xl font-semibold text-center md:text-4xl">
                 Write in rich text as you type
               </h2>
               <div className="max-w-3xl pt-6 mx-auto md:pt-8">
@@ -76,7 +76,7 @@ export default function Home() {
           </div>
           <div className="py-16 bg-gray-100 md:py-32">
             <div className="container px-6">
-              <h2 className="text-3xl font-medium text-center md:text-4xl">
+              <h2 className="text-3xl font-semibold text-center md:text-4xl">
                 Open source
               </h2>
               <div className="max-w-3xl pt-6 mx-auto md:pt-8">
@@ -101,7 +101,7 @@ export default function Home() {
           </div>
           <div className="py-16 md:py-32">
             <div className="container px-6">
-              <h2 className="text-3xl font-medium text-center md:text-4xl">
+              <h2 className="text-3xl font-semibold text-center md:text-4xl">
                 Pricing
               </h2>
               <div className="max-w-3xl pt-6 mx-auto md:pt-8">
@@ -128,14 +128,14 @@ export default function Home() {
           </div>
           <div className="py-16 md:py-32 bg-primary-50">
             <div className="container px-6 text-center">
-              <h2 className="text-4xl font-medium leading-tight md:text-5xl md:leading-tight">
+              <h2 className="text-4xl font-semibold leading-tight md:text-5xl md:leading-tight">
                 Networked notes for your research and ideas.
               </h2>
               <p className="pt-4 text-2xl text-gray-700 md:pt-6 md:text-3xl">
                 Start your personal knowledge base today.
               </p>
               <Link href="/signup">
-                <a className="inline-block mt-4 font-medium md:mt-6 btn">
+                <a className="inline-block mt-4 font-semibold md:mt-6 btn">
                   Sign up
                 </a>
               </Link>

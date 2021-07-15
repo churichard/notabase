@@ -26,7 +26,7 @@ export default function About() {
             helps you <b>write and think better</b>. With that fundamental
             guiding star, I eventually settled on three core principles:
           </p>
-          <ol className="font-medium">
+          <ol className="font-semibold">
             <li>Easy to use; it just works.</li>
             <li>Links are first-class citizens.</li>
             <li>Transparent and open.</li>

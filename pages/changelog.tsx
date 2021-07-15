@@ -10,7 +10,7 @@ export default function Changelog() {
       </Head>
       <Navbar />
       <div className="container px-6 pt-12 pb-16 max-w-prose">
-        <h1 className="text-4xl font-medium text-center md:text-5xl">
+        <h1 className="text-4xl font-semibold text-center md:text-5xl">
           Changelog
         </h1>
         <p className="pt-8">
@@ -99,10 +99,10 @@ const ChangelogBlock = (props: ChangelogBlockProps) => {
   const { title, features, bugFixes } = props;
   return (
     <div className="py-8">
-      <h2 className="text-2xl font-medium md:text-3xl">{title}</h2>
+      <h2 className="text-2xl font-semibold md:text-3xl">{title}</h2>
       {features && features.length > 0 ? (
         <>
-          <p className="pt-4 font-medium">Features</p>
+          <p className="pt-4 font-semibold">Features</p>
           <ul className="mt-2 ml-5 space-y-1 list-disc">
             {features.map((feature, index) => (
               <li key={index}>{feature}</li>
@@ -112,7 +112,7 @@ const ChangelogBlock = (props: ChangelogBlockProps) => {
       ) : null}
       {bugFixes && bugFixes.length > 0 ? (
         <>
-          <p className="pt-4 font-medium">Bug Fixes</p>
+          <p className="pt-4 font-semibold">Bug Fixes</p>
           <ul className="mt-2 ml-5 space-y-1 list-disc">
             {bugFixes.map((bugFix, index) => (
               <li key={index}>{bugFix}</li>

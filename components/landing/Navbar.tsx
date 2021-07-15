@@ -11,7 +11,7 @@ export default function Navbar() {
           <a>Sign in</a>
         </Link>
         <Link href="/signup">
-          <a className="font-medium btn">Get started</a>
+          <a className="font-semibold btn">Get started</a>
         </Link>
       </div>
     </div>

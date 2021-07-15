@@ -11,7 +11,7 @@ export default function Footer(props: Props) {
       <div className="container flex flex-col justify-between px-6 lg:flex-row">
         <div>
           <Link href="/">
-            <a className="font-medium">Notabase</a>
+            <a className="font-semibold">Notabase</a>
           </Link>
           <p className="pt-1 text-gray-700">
             A personal knowledge base for networked thinking.
@@ -19,7 +19,7 @@ export default function Footer(props: Props) {
         </div>
         <div className="flex flex-wrap flex-1 space-x-16 lg:justify-end">
           <div className="flex flex-col mt-8 space-y-2 lg:mt-0">
-            <p className="font-medium">Product</p>
+            <p className="font-semibold">Product</p>
             <Link href="/changelog">
               <a className="text-gray-700">Changelog</a>
             </Link>
@@ -33,7 +33,7 @@ export default function Footer(props: Props) {
             </a>
           </div>
           <div className="flex flex-col mt-8 space-y-2 lg:mt-0">
-            <p className="font-medium">Connect</p>
+            <p className="font-semibold">Connect</p>
             <a
               href="https://twitter.com/notabase"
               className="text-gray-700"
@@ -68,7 +68,7 @@ export default function Footer(props: Props) {
             </a>
           </div>
           <div className="flex flex-col mt-8 space-y-2 lg:mt-0">
-            <p className="font-medium">Company</p>
+            <p className="font-semibold">Company</p>
             <Link href="/about">
               <a className="text-gray-700">About</a>
             </Link>
