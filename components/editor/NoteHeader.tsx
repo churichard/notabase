@@ -6,26 +6,63 @@ import {
   IconMenu2,
   IconUpload,
   IconCloudDownload,
+  IconX,
 } from '@tabler/icons';
 import { usePopper } from 'react-popper';
 import { saveAs } from 'file-saver';
 import JSZip from 'jszip';
 import Tippy from '@tippyjs/react';
+import { useRouter } from 'next/router';
 import Portal from 'components/Portal';
 import { useCurrentNote } from 'utils/useCurrentNote';
 import { store, useStore } from 'lib/store';
 import serialize from 'editor/serialization/serialize';
 import { Note } from 'types/supabase';
 import useImport from 'utils/useImport';
+import { queryParamToArray } from 'utils/url';
 
 export default function NoteHeader() {
   const currentNote = useCurrentNote();
   const onImport = useImport();
+  const router = useRouter();
+  const {
+    query: { stack: stackQuery },
+  } = router;
 
   const isSidebarButtonVisible = useStore(
     (state) => !state.isSidebarOpen && state.openNoteIds?.[0] === currentNote.id
   );
   const setIsSidebarOpen = useStore((state) => state.setIsSidebarOpen);
+
+  const isCloseButtonVisible = useStore(
+    (state) => state.openNoteIds?.[0] !== currentNote.id
+  );
+
+  const onClosePane = useCallback(() => {
+    const currentNoteIndex = store
+      .getState()
+      .openNoteIds.findIndex((openNoteId) => openNoteId === currentNote.id);
+
+    if (currentNoteIndex < 0) {
+      return;
+    }
+
+    // Remove from stacked notes and shallowly route
+    const stackedNoteIds = queryParamToArray(stackQuery);
+    stackedNoteIds.splice(
+      currentNoteIndex - 1, // Stacked notes don't include the main note
+      1
+    );
+
+    router.push(
+      {
+        pathname: router.pathname,
+        query: { ...router.query, stack: stackedNoteIds },
+      },
+      undefined,
+      { shallow: true }
+    );
+  }, [currentNote.id, stackQuery, router]);
 
   const menuButtonRef = useRef<HTMLDivElement | null>(null);
   const [popperElement, setPopperElement] = useState<HTMLDivElement | null>(
@@ -74,68 +111,92 @@ export default function NoteHeader() {
           </Tippy>
         ) : null}
       </div>
-      <Menu>
-        {({ open }) => (
-          <>
-            <Menu.Button className="p-1 rounded hover:bg-gray-300 active:bg-gray-400">
-              <div ref={menuButtonRef}>
-                <IconDots className="text-gray-600" />
-              </div>
-            </Menu.Button>
-            {open && (
-              <Portal>
-                <Menu.Items
-                  ref={setPopperElement}
-                  className="z-10 overflow-hidden bg-white rounded shadow-popover"
-                  static
-                  style={styles.popper}
-                  {...attributes.popper}
-                >
-                  <Menu.Item>
-                    {({ active }) => (
-                      <button
-                        className={`flex w-full items-center px-4 py-2 text-left text-gray-800 ${
-                          active ? 'bg-gray-100' : ''
-                        }`}
-                        onClick={onImport}
-                      >
-                        <IconDownload size={18} className="mr-1" />
-                        <span>Import</span>
-                      </button>
-                    )}
-                  </Menu.Item>
-                  <Menu.Item>
-                    {({ active }) => (
-                      <button
-                        className={`flex w-full items-center px-4 py-2 text-left text-gray-800 ${
-                          active ? 'bg-gray-100' : ''
-                        }`}
-                        onClick={onExportClick}
-                      >
-                        <IconUpload size={18} className="mr-1" />
-                        <span>Export</span>
-                      </button>
-                    )}
-                  </Menu.Item>
-                  <Menu.Item>
-                    {({ active }) => (
-                      <button
-                        className={`flex w-full items-center px-4 py-2 text-left text-gray-800 ${
-                          active ? 'bg-gray-100' : ''
-                        }`}
-                        onClick={onExportAllClick}
-                      >
-                        <IconCloudDownload size={18} className="mr-1" />
-                        <span>Export All</span>
-                      </button>
-                    )}
-                  </Menu.Item>
-                </Menu.Items>
-              </Portal>
-            )}
-          </>
-        )}
-      </Menu>
+      <div>
+        {isCloseButtonVisible ? (
+          <Tippy
+            content="Close pane"
+            duration={0}
+            arrow={false}
+            offset={[0, 6]}
+          >
+            <button
+              className="p-1 rounded hover:bg-gray-300 active:bg-gray-400"
+              onClick={onClosePane}
+            >
+              <IconX className="text-gray-600" />
+            </button>
+          </Tippy>
+        ) : null}
+        <Menu>
+          {({ open }) => (
+            <>
+              <Tippy
+                content="Options (export, import, etc.)"
+                duration={0}
+                arrow={false}
+                offset={[0, 6]}
+              >
+                <Menu.Button className="p-1 rounded hover:bg-gray-300 active:bg-gray-400">
+                  <div ref={menuButtonRef}>
+                    <IconDots className="text-gray-600" />
+                  </div>
+                </Menu.Button>
+              </Tippy>
+              {open && (
+                <Portal>
+                  <Menu.Items
+                    ref={setPopperElement}
+                    className="z-10 overflow-hidden bg-white rounded shadow-popover"
+                    static
+                    style={styles.popper}
+                    {...attributes.popper}
+                  >
+                    <Menu.Item>
+                      {({ active }) => (
+                        <button
+                          className={`flex w-full items-center px-4 py-2 text-left text-gray-800 ${
+                            active ? 'bg-gray-100' : ''
+                          }`}
+                          onClick={onImport}
+                        >
+                          <IconDownload size={18} className="mr-1" />
+                          <span>Import</span>
+                        </button>
+                      )}
+                    </Menu.Item>
+                    <Menu.Item>
+                      {({ active }) => (
+                        <button
+                          className={`flex w-full items-center px-4 py-2 text-left text-gray-800 ${
+                            active ? 'bg-gray-100' : ''
+                          }`}
+                          onClick={onExportClick}
+                        >
+                          <IconUpload size={18} className="mr-1" />
+                          <span>Export</span>
+                        </button>
+                      )}
+                    </Menu.Item>
+                    <Menu.Item>
+                      {({ active }) => (
+                        <button
+                          className={`flex w-full items-center px-4 py-2 text-left text-gray-800 ${
+                            active ? 'bg-gray-100' : ''
+                          }`}
+                          onClick={onExportAllClick}
+                        >
+                          <IconCloudDownload size={18} className="mr-1" />
+                          <span>Export All</span>
+                        </button>
+                      )}
+                    </Menu.Item>
+                  </Menu.Items>
+                </Portal>
+              )}
+            </>
+          )}
+        </Menu>
+      </div>
     </div>
   );
 }

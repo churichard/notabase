@@ -30,7 +30,10 @@ export default function Changelog() {
         <div className="divide-y">
           <ChangelogBlock
             title="July 15, 2021"
-            features={['Add support for images (hosted externally)']}
+            features={[
+              'Add support for images (hosted externally)',
+              'Note panes can now be closed',
+            ]}
           />
           <ChangelogBlock
             title="July 13, 2021"
