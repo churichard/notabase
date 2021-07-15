@@ -41,7 +41,7 @@
     "tailwindcss": "^2.2.4",
     "unified": "^9.2.1",
     "uuid": "^8.3.2",
-    "zustand": "^3.5.6"
+    "zustand": "^3.5.7"
   },
   "devDependencies": {
     "@next/bundle-analyzer": "^11.0.1",
