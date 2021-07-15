@@ -105,6 +105,7 @@ export default function NotePage(props: Props) {
                 <Note
                   key={noteId}
                   noteId={noteId}
+                  className="sticky left-0"
                   highlightedPath={
                     highlightedPath?.index === index
                       ? highlightedPath.path

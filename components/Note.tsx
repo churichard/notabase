@@ -23,10 +23,11 @@ const UNIQUE_VIOLATION_ERROR_CODE = '23505';
 type Props = {
   noteId: string;
   highlightedPath?: Path;
+  className?: string;
 };
 
 export default function Note(props: Props) {
-  const { noteId, highlightedPath } = props;
+  const { noteId, highlightedPath, className } = props;
   const router = useRouter();
 
   const note = useStore<NoteType | undefined>(
@@ -192,7 +193,7 @@ export default function Note(props: Props) {
       }
     >
       <ProvideCurrentNote value={note}>
-        <div id={note.id} className={noteContainerClassName}>
+        <div id={note.id} className={`${noteContainerClassName} ${className}`}>
           <NoteHeader />
           <div className="flex flex-col flex-1 overflow-x-hidden overflow-y-auto">
             <div className="flex flex-col flex-1 w-full mx-auto md:w-128 lg:w-160 xl:w-192">
