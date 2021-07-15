@@ -13,26 +13,26 @@ const withImages = (editor: Editor) => {
 
   editor.insertData = (data) => {
     const text = data.getData('text/plain');
-    const { files } = data;
+    // const { files } = data;
 
-    if (files && files.length > 0) {
-      for (const file of files) {
-        const reader = new FileReader();
-        const [mime] = file.type.split('/');
-
-        if (mime === 'image') {
-          reader.addEventListener('load', () => {
-            const url = reader.result;
-            if (!url || typeof url !== 'string') {
-              return;
-            }
-            insertImage(editor, url);
-          });
-
-          reader.readAsDataURL(file);
-        }
-      }
-    } else if (isImageUrl(text)) {
+    // TODO: upload pasted images to supabase storage
+    // if (files && files.length > 0) {
+    // for (const file of files) {
+    //   const reader = new FileReader();
+    //   const [mime] = file.type.split('/');
+    //   if (mime === 'image') {
+    //     reader.addEventListener('load', () => {
+    //       const url = reader.result;
+    //       if (!url || typeof url !== 'string') {
+    //         return;
+    //       }
+    //       insertImage(editor, url);
+    //     });
+    //     reader.readAsDataURL(file);
+    //   }
+    // }
+    // }
+    if (isImageUrl(text)) {
       insertImage(editor, text);
     } else {
       insertData(data);
