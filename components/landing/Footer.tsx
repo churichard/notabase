@@ -51,7 +51,7 @@ export default function Footer(props: Props) {
               Discord
             </a>
             <a
-              href="https://github.com/notabase/notabase"
+              href="https://github.com/churichard/notabase"
               className="text-gray-700"
               target="_blank"
               rel="noopener noreferrer"
