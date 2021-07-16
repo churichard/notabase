@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import Head from 'next/head';
 import Link from 'next/link';
 import AuthForm from 'components/AuthForm';
+import PageLoading from 'components/PageLoading';
 import { useAuth } from 'utils/useAuth';
 
 export default function Login() {
@@ -19,7 +20,7 @@ export default function Login() {
   }, [router, user, isLoaded]);
 
   if (!isPageLoaded) {
-    return <div>Loading...</div>;
+    return <PageLoading />;
   }
 
   return (

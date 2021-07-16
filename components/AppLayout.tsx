@@ -8,6 +8,7 @@ import { useAuth } from 'utils/useAuth';
 import useHotkeys from 'utils/useHotkeys';
 import Sidebar from './sidebar/Sidebar';
 import FindOrCreateModal from './FindOrCreateModal';
+import PageLoading from './PageLoading';
 
 const SM_BREAKPOINT = 640;
 
@@ -121,7 +122,7 @@ export default function AppLayout(props: Props) {
   useHotkeys(hotkeys);
 
   if (!isPageLoaded) {
-    return <div>Loading...</div>;
+    return <PageLoading />;
   }
 
   return (
