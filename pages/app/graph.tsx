@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
 import Head from 'next/head';
 import { createEditor, Editor, Element, Node } from 'slate';
-import AppLayout from 'components/AppLayout';
 import type { NoteLink } from 'types/slate';
 import { ElementType } from 'types/slate';
 import type { GraphData } from 'components/ForceGraph';
@@ -53,14 +52,12 @@ export default function Graph() {
       <Head>
         <title>Graph View | Notabase</title>
       </Head>
-      <AppLayout className="max-w-screen">
-        <ErrorBoundary>
-          <div className="flex flex-1">
-            <GraphHeader />
-            <ForceGraph data={graphData} className="flex-1" />
-          </div>
-        </ErrorBoundary>
-      </AppLayout>
+      <ErrorBoundary>
+        <div className="flex flex-1">
+          <GraphHeader />
+          <ForceGraph data={graphData} className="flex-1" />
+        </div>
+      </ErrorBoundary>
     </>
   );
 }

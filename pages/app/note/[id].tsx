@@ -3,7 +3,6 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { Path } from 'slate';
-import AppLayout from 'components/AppLayout';
 import Note from 'components/Note';
 import { useStore } from 'lib/store';
 import usePrevious from 'utils/usePrevious';
@@ -90,24 +89,22 @@ export default function NotePage() {
       <Head>
         <title>{pageTitle}</title>
       </Head>
-      <AppLayout>
-        <div className="flex flex-1 overflow-x-auto divide-x">
-          {openNoteIds.length > 0
-            ? openNoteIds.map((noteId, index) => (
-                <Note
-                  key={noteId}
-                  noteId={noteId}
-                  className="sticky left-0"
-                  highlightedPath={
-                    highlightedPath?.index === index
-                      ? highlightedPath.path
-                      : undefined
-                  }
-                />
-              ))
-            : null}
-        </div>
-      </AppLayout>
+      <div className="flex flex-1 overflow-x-auto divide-x">
+        {openNoteIds.length > 0
+          ? openNoteIds.map((noteId, index) => (
+              <Note
+                key={noteId}
+                noteId={noteId}
+                className="sticky left-0"
+                highlightedPath={
+                  highlightedPath?.index === index
+                    ? highlightedPath.path
+                    : undefined
+                }
+              />
+            ))
+          : null}
+      </div>
     </>
   );
 }
