@@ -53,6 +53,9 @@ module.exports = {
             a: {
               textDecoration: 'none',
               fontWeight: 'normal',
+              '&:hover': {
+                color: colors.emerald[500],
+              },
             },
           },
         },

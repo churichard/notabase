@@ -26,11 +26,11 @@ export default function Footer(props: Props) {
           <div className="flex flex-col mt-8 space-y-2 lg:mt-0">
             <p className="font-semibold">Product</p>
             <Link href="/changelog">
-              <a className="text-gray-700">Changelog</a>
+              <a className="text-gray-700 hover:text-primary-500">Changelog</a>
             </Link>
             <a
               href="https://trello.com/b/dpZLRkRR"
-              className="text-gray-700"
+              className="text-gray-700 hover:text-primary-500"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -41,7 +41,7 @@ export default function Footer(props: Props) {
             <p className="font-semibold">Connect</p>
             <a
               href="https://twitter.com/notabase"
-              className="text-gray-700"
+              className="text-gray-700 hover:text-primary-500"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -49,7 +49,7 @@ export default function Footer(props: Props) {
             </a>
             <a
               href="https://discord.gg/BQKNRu7nv5"
-              className="text-gray-700"
+              className="text-gray-700 hover:text-primary-500"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -57,7 +57,7 @@ export default function Footer(props: Props) {
             </a>
             <a
               href="https://github.com/churichard/notabase"
-              className="text-gray-700"
+              className="text-gray-700 hover:text-primary-500"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -65,7 +65,7 @@ export default function Footer(props: Props) {
             </a>
             <a
               href="mailto:hello@notabase.io"
-              className="text-gray-700"
+              className="text-gray-700 hover:text-primary-500"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -75,10 +75,10 @@ export default function Footer(props: Props) {
           <div className="flex flex-col mt-8 space-y-2 lg:mt-0">
             <p className="font-semibold">Company</p>
             <Link href="/about">
-              <a className="text-gray-700">About</a>
+              <a className="text-gray-700 hover:text-primary-500">About</a>
             </Link>
             <Link href="/privacy">
-              <a className="text-gray-700">Privacy</a>
+              <a className="text-gray-700 hover:text-primary-500">Privacy</a>
             </Link>
           </div>
         </div>

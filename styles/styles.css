@@ -16,7 +16,7 @@
   }
 
   .link {
-    @apply cursor-pointer text-primary-600 hover:text-primary-800;
+    @apply cursor-pointer text-primary-600 hover:text-primary-500;
   }
 }
 
