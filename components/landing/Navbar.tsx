@@ -7,7 +7,7 @@ export default function Navbar() {
     <div className="container flex items-center justify-between px-6 py-6 space-x-6 text-gray-900">
       <Link href="/">
         <a className="flex items-center">
-          <Image src={logo} width={28} height={28} />
+          <Image src={logo} width={28} height={28} alt="Notabase logo" />
           <span className="ml-2 text-xl font-semibold">Notabase</span>
         </a>
       </Link>

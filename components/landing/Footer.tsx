@@ -14,7 +14,7 @@ export default function Footer(props: Props) {
         <div>
           <Link href="/">
             <a className="flex items-center">
-              <Image src={logo} width={28} height={28} />
+              <Image src={logo} width={28} height={28} alt="Notabase logo" />
               <span className="ml-2 text-xl font-semibold">Notabase</span>
             </a>
           </Link>
