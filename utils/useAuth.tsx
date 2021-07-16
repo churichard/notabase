@@ -32,16 +32,18 @@ function useProvideAuth(): AuthContextType {
   const [isLoaded, setIsLoaded] = useState(false);
   const [user, setUser] = useState<User | null>(null);
 
-  // Updates the user and sets isLoaded to true
-  const updateUser = useCallback((user: User | null) => {
-    setUser(user);
+  // Initialize the user based on the stored session
+  const initUser = useCallback(async () => {
+    const session = supabase.auth.session();
+    await supabase.auth.signIn({
+      refreshToken: session?.refresh_token,
+    });
     setIsLoaded(true);
   }, []);
 
-  // Initialize the user
   useEffect(() => {
-    updateUser(supabase.auth.user());
-  }, [updateUser]);
+    initUser();
+  }, [initUser]);
 
   const signIn = useCallback(
     (email: string, password: string) =>
@@ -70,7 +72,8 @@ function useProvideAuth(): AuthContextType {
     const { data: authListener } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         // Update user
-        updateUser(session?.user ?? null);
+        setUser(session?.user ?? null);
+        setIsLoaded(true);
 
         // Redirect to /app if the user has signed in
         if (event === 'SIGNED_IN' && router.pathname === '/login') {
@@ -81,7 +84,7 @@ function useProvideAuth(): AuthContextType {
       }
     );
     return () => authListener?.unsubscribe();
-  }, [router, updateUser]);
+  }, [router]);
 
   // Return the user object and auth methods
   return {
