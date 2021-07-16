@@ -4,6 +4,7 @@ import { ToastContainer } from 'react-toastify';
 import NProgress from 'nprogress';
 import type { AppProps } from 'next/app';
 import { ProvideAuth } from 'utils/useAuth';
+import AppLayout from 'components/AppLayout';
 import 'styles/styles.css';
 import 'styles/nprogress.css';
 import 'react-toastify/dist/ReactToastify.css';
@@ -13,7 +14,7 @@ Router.events.on('routeChangeStart', () => NProgress.start());
 Router.events.on('routeChangeComplete', () => NProgress.done());
 Router.events.on('routeChangeError', () => NProgress.done());
 
-export default function MyApp({ Component, pageProps }: AppProps) {
+export default function MyApp({ Component, pageProps, router }: AppProps) {
   return (
     <>
       <Head>
@@ -47,7 +48,13 @@ export default function MyApp({ Component, pageProps }: AppProps) {
         ></script>
       </Head>
       <ProvideAuth>
-        <Component {...pageProps} />
+        {router.pathname.startsWith('/app') ? (
+          <AppLayout>
+            <Component {...pageProps} />
+          </AppLayout>
+        ) : (
+          <Component {...pageProps} />
+        )}
       </ProvideAuth>
       <ToastContainer
         position="top-center"

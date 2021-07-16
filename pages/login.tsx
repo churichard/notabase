@@ -1,10 +1,28 @@
-import type { GetServerSideProps } from 'next';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 import Head from 'next/head';
 import Link from 'next/link';
-import { createClient } from '@supabase/supabase-js';
 import AuthForm from 'components/AuthForm';
+import PageLoading from 'components/PageLoading';
+import { useAuth } from 'utils/useAuth';
 
 export default function Login() {
+  const { user, isLoaded } = useAuth();
+  const [isPageLoaded, setIsPageLoaded] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isLoaded && user) {
+      router.replace('/app');
+    } else if (isLoaded) {
+      setIsPageLoaded(true);
+    }
+  }, [router, user, isLoaded]);
+
+  if (!isPageLoaded) {
+    return <PageLoading />;
+  }
+
   return (
     <>
       <Head>
@@ -27,20 +45,3 @@ export default function Login() {
     </>
   );
 }
-
-export const getServerSideProps: GetServerSideProps<Record<string, never>> =
-  async ({ req }) => {
-    // Create admin supabase client on server
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL ?? '',
-      process.env.SUPABASE_SERVICE_KEY ?? ''
-    );
-
-    // Get authed user
-    const { user } = await supabase.auth.api.getUserByCookie(req);
-    if (user) {
-      return { props: {}, redirect: { destination: '/app', permanent: false } };
-    }
-
-    return { props: {} };
-  };

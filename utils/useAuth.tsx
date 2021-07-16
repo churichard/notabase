@@ -69,13 +69,7 @@ function useProvideAuth(): AuthContextType {
   useEffect(() => {
     const { data: authListener } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        // Set auth cookie and update user
-        await fetch('/api/auth', {
-          method: 'POST',
-          headers: new Headers({ 'Content-Type': 'application/json' }),
-          credentials: 'same-origin',
-          body: JSON.stringify({ event, session }),
-        });
+        // Update user
         updateUser(session?.user ?? null);
 
         // Redirect to /app if the user has signed in

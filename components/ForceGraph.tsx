@@ -18,13 +18,11 @@ type DragEvent = d3.D3DragEvent<HTMLCanvasElement, NodeDatum, NodeDatum>;
 
 type Props = {
   data: GraphData;
-  width: number;
-  height: number;
   className?: string;
 };
 
 export default function ForceGraph(props: Props) {
-  const { data, width, height, className } = props;
+  const { data, className } = props;
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const transform = useRef(d3.zoomIdentity);
@@ -141,34 +139,50 @@ export default function ForceGraph(props: Props) {
     [areNeighbors]
   );
 
-  const renderCanvas = useCallback(
-    (context: CanvasRenderingContext2D) => {
-      context.save();
-      context.clearRect(0, 0, width, height);
+  const renderCanvas = useCallback(() => {
+    if (!canvasRef.current) {
+      return;
+    }
 
-      context.translate(transform.current.x, transform.current.y);
-      context.scale(transform.current.k, transform.current.k);
-
-      // Draw links
-      for (const link of data.links) {
-        drawLink(context, link);
-      }
-
-      // Draw nodes
-      for (const node of data.nodes) {
-        drawNode(context, node, transform.current.k);
-      }
-
-      context.restore();
-    },
-    [width, height, data, drawLink, drawNode]
-  );
-
-  useEffect(() => {
-    const context = canvasRef.current?.getContext('2d');
+    const context = canvasRef.current.getContext('2d');
     if (!context) {
       return;
     }
+
+    const width = canvasRef.current.width;
+    const height = canvasRef.current.height;
+
+    context.save();
+    context.clearRect(0, 0, width, height);
+
+    context.translate(transform.current.x, transform.current.y);
+    context.scale(transform.current.k, transform.current.k);
+
+    // Draw links
+    for (const link of data.links) {
+      drawLink(context, link);
+    }
+
+    // Draw nodes
+    for (const node of data.nodes) {
+      drawNode(context, node, transform.current.k);
+    }
+
+    context.restore();
+  }, [data, drawLink, drawNode]);
+
+  useEffect(() => {
+    if (!canvasRef.current) {
+      return;
+    }
+
+    const context = canvasRef.current.getContext('2d');
+    if (!context) {
+      return;
+    }
+
+    const width = canvasRef.current.width;
+    const height = canvasRef.current.height;
 
     const simulation: d3.Simulation<NodeDatum, LinkDatum> = d3
       .forceSimulation<NodeDatum>(data.nodes)
@@ -181,7 +195,7 @@ export default function ForceGraph(props: Props) {
       .force('x', d3.forceX(width / 2))
       .force('y', d3.forceY(height / 2));
 
-    simulation.on('tick', () => renderCanvas(context));
+    simulation.on('tick', () => renderCanvas());
 
     d3.select<HTMLCanvasElement, NodeDatum>(context.canvas)
       .call(drag(simulation, context.canvas))
@@ -195,7 +209,7 @@ export default function ForceGraph(props: Props) {
           ])
           .on('zoom', ({ transform: t }) => {
             transform.current = t;
-            renderCanvas(context);
+            renderCanvas();
           })
       )
       .on('mousemove', (event) => {
@@ -206,11 +220,11 @@ export default function ForceGraph(props: Props) {
         if (node) {
           context.canvas.style.cursor = 'pointer';
           hoveredNode.current = node;
-          renderCanvas(context);
+          renderCanvas();
         } else if (hoveredNode.current) {
           context.canvas.style.cursor = 'default';
           hoveredNode.current = null;
-          renderCanvas(context);
+          renderCanvas();
         }
       })
       .on('click', (event) => {
@@ -222,19 +236,64 @@ export default function ForceGraph(props: Props) {
           router.push(`/app/note/${clickedNode.id}`);
         }
       });
-  }, [data, renderCanvas, width, height, router]);
+  }, [data, renderCanvas, router]);
 
-  if (width === 0 || height === 0) {
-    return null;
-  }
+  /**
+   * Set canvas width and height when its container changes size
+   */
+  const resizeObserverRef = useRef<ResizeObserver | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
+  const containerRefCallback = useCallback(
+    (node: HTMLDivElement | null) => {
+      // Initialize resize observer
+      if (!resizeObserverRef.current) {
+        resizeObserverRef.current = new ResizeObserver((entries) => {
+          if (!canvasRef.current) {
+            return;
+          }
+          for (const entry of entries) {
+            // Update canvas dimensions and re-render
+            const cr = entry.contentRect;
+            canvasRef.current.width = cr.width;
+            canvasRef.current.height = cr.height;
+            renderCanvas();
+          }
+        });
+      }
+
+      if (containerRef.current) {
+        // Unobserve and reset containerRef if it already exists
+        resizeObserverRef.current?.unobserve(containerRef.current);
+        containerRef.current = null;
+      }
+
+      if (node) {
+        // Observe the new node and set containerRef
+        resizeObserverRef.current?.observe(node);
+        containerRef.current = node;
+
+        // Set initial canvas width and height
+        if (canvasRef.current) {
+          canvasRef.current.width = node.offsetWidth;
+          canvasRef.current.height = node.offsetHeight;
+        }
+      }
+    },
+    [renderCanvas]
+  );
+
+  useEffect(() => {
+    // Make sure that the resize observer is cleaned up when component is unmounted
+    return () => {
+      resizeObserverRef.current?.disconnect();
+    };
+  }, []);
 
   return (
-    <canvas
-      ref={canvasRef}
-      width={width}
-      height={height}
-      className={className}
-    />
+    <div ref={containerRefCallback} className={`relative ${className}`}>
+      <canvas ref={canvasRef} className="absolute w-full h-full" />
+    </div>
   );
 }
 

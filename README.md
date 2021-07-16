@@ -13,7 +13,7 @@ https://user-images.githubusercontent.com/4218237/122793125-b08a7980-d26f-11eb-8
 
 ## Status
 
-Notabase is currently in alpha. It is under active development.
+Notabase is in alpha. It is under active development.
 
 ## Features
 
@@ -30,7 +30,7 @@ Notabase is currently in alpha. It is under active development.
 Notabase is currently focused on the hosted experience, but it is possible for you to self-host it as well. Here's a list of steps that you need to take to get it running locally (not tested):
 
 1. Notabase uses Supabase as the backend (for authentication and the database), so you'll have to make a [Supabase](https://supabase.io) account. If you prefer to self-host Supabase as well, you can follow the instructions in their [docs](https://supabase.io/docs/guides/self-hosting).
-2. Copy `.env.local.example` into `.env.local` and fill in the environment variables from your [Supabase dashboard](https://app.supabase.io). Go to `Settings` and click on `API`. `NEXT_PUBLIC_SUPABASE_URL` is the `Config URL`, `NEXT_PUBLIC_SUPABASE_KEY` is the public `anon` key, and `SUPABASE_SERVICE_KEY` is the secret `service_role` key.
+2. Copy `.env.local.example` into `.env.local` and fill in the environment variables from your [Supabase dashboard](https://app.supabase.io). Go to `Settings` and click on `API`. `NEXT_PUBLIC_SUPABASE_URL` is the `Config URL` and `NEXT_PUBLIC_SUPABASE_KEY` is the public `anon` key.
 3. Go to the Table Editor on the Supabase dashboard and create two new tables: `users` and `notes`. `users` requires a `id` column with type `uuid`. `notes` requires a `id` column with type `uuid`, a `user_id` column that is a foreign key for the `users` `id` column, a `title` column with type `text`, and a `content` column with type `jsonb`.
 4. You'll want to create a stored procedure that creates a new user in the `users` table whenever a new user is created through Supabase authentication. Go to the SQL tab on the Supabase dashboard and create a new query. Paste the following inside:
 
