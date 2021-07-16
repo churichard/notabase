@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Head from 'next/head';
 import { createEditor, Editor, Element, Node } from 'slate';
 import AppLayout from 'components/AppLayout';
@@ -14,21 +14,37 @@ export default function Graph() {
   const notes = useStore((state) => state.notes, deepEqual);
 
   // Set graph dimensions
+  const resizeObserverRef = useRef<ResizeObserver | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container) {
-      return;
+
+  const containerRefCallback = useCallback((node: HTMLDivElement | null) => {
+    if (containerRef.current) {
+      resizeObserverRef.current?.unobserve(containerRef.current);
+      containerRef.current = null;
     }
-    const resizeObserver = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        const cr = entry.contentRect;
-        setDimensions({ width: cr.width, height: cr.height });
-      }
-    });
-    resizeObserver.observe(container);
-    return () => resizeObserver.unobserve(container);
+
+    if (node) {
+      resizeObserverRef.current?.observe(node);
+      containerRef.current = node;
+    }
+  }, []);
+
+  useEffect(() => {
+    // Initialize resize observer
+    if (!resizeObserverRef.current) {
+      resizeObserverRef.current = new ResizeObserver((entries) => {
+        for (const entry of entries) {
+          const cr = entry.contentRect;
+          setDimensions({ width: cr.width, height: cr.height });
+        }
+      });
+    }
+
+    // Make sure that the resize observer is cleaned up when component is unmounted
+    return () => {
+      resizeObserverRef.current?.disconnect();
+    };
   }, []);
 
   // Compute graph data
@@ -73,7 +89,7 @@ export default function Graph() {
       </Head>
       <AppLayout className="max-w-screen">
         <ErrorBoundary>
-          <div ref={containerRef} className="flex-1">
+          <div ref={containerRefCallback} className="flex-1">
             <GraphHeader />
             <ForceGraph
               data={graphData}
