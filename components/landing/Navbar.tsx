@@ -1,17 +1,24 @@
 import Link from 'next/link';
+import Image from 'next/image';
+import logo from 'public/logo.svg';
 
 export default function Navbar() {
   return (
     <div className="container flex items-center justify-between px-6 py-6 space-x-6 text-gray-900">
       <Link href="/">
-        <a className="text-xl">Notabase</a>
+        <a className="flex items-center">
+          <Image src={logo} width={28} height={28} />
+          <span className="ml-2 text-xl font-semibold">Notabase</span>
+        </a>
       </Link>
-      <div className="flex items-center space-x-6">
+      <div className="flex items-center space-x-2">
         <Link href="/login">
-          <a>Sign in</a>
+          <a className="px-4 py-2 transition duration-200 ease-in-out rounded hover:bg-gray-200">
+            Sign in
+          </a>
         </Link>
         <Link href="/signup">
-          <a className="font-semibold btn">Get started</a>
+          <a className="px-4 py-2 font-semibold btn">Get started</a>
         </Link>
       </div>
     </div>

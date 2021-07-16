@@ -1,4 +1,6 @@
 import Link from 'next/link';
+import Image from 'next/image';
+import logo from 'public/logo.svg';
 
 type Props = {
   className?: string;
@@ -11,9 +13,12 @@ export default function Footer(props: Props) {
       <div className="container flex flex-col justify-between px-6 lg:flex-row">
         <div>
           <Link href="/">
-            <a className="font-semibold">Notabase</a>
+            <a className="flex items-center">
+              <Image src={logo} width={28} height={28} />
+              <span className="ml-2 text-xl font-semibold">Notabase</span>
+            </a>
           </Link>
-          <p className="pt-1 text-gray-700">
+          <p className="pt-2 text-gray-700">
             A personal knowledge base for networked thinking.
           </p>
         </div>
