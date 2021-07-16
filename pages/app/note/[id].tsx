@@ -1,23 +1,15 @@
 import { useEffect, useState } from 'react';
-import type { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { createClient } from '@supabase/supabase-js';
 import { Path } from 'slate';
 import AppLayout from 'components/AppLayout';
 import Note from 'components/Note';
-import type { Note as NoteType } from 'types/supabase';
-import { useStore, Notes } from 'lib/store';
+import { useStore } from 'lib/store';
 import usePrevious from 'utils/usePrevious';
 import { queryParamToArray } from 'utils/url';
 
-type Props = {
-  initialNotes: Notes;
-};
-
-export default function NotePage(props: Props) {
-  const { initialNotes } = props;
+export default function NotePage() {
   const router = useRouter();
   const {
     query: { id: noteId, stack: stackQuery },
@@ -98,7 +90,7 @@ export default function NotePage(props: Props) {
       <Head>
         <title>{pageTitle}</title>
       </Head>
-      <AppLayout initialNotes={initialNotes}>
+      <AppLayout>
         <div className="flex flex-1 overflow-x-auto divide-x">
           {openNoteIds.length > 0
             ? openNoteIds.map((noteId, index) => (
@@ -119,39 +111,6 @@ export default function NotePage(props: Props) {
     </>
   );
 }
-
-export const getServerSideProps: GetServerSideProps<Props> = async ({
-  req,
-}) => {
-  // Create admin supabase client on server
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL ?? '',
-    process.env.SUPABASE_SERVICE_KEY ?? ''
-  );
-
-  // Get authed user
-  const { user } = await supabase.auth.api.getUserByCookie(req);
-  if (!user) {
-    return { props: {}, redirect: { destination: '/login', permanent: false } };
-  }
-
-  // Get notes from database
-  const { data: notes } = await supabase
-    .from<NoteType>('notes')
-    .select('id, title, content')
-    .eq('user_id', user.id)
-    .order('title');
-
-  return {
-    props: {
-      initialNotes:
-        notes?.reduce<Record<NoteType['id'], NoteType>>((acc, note) => {
-          acc[note.id] = note;
-          return acc;
-        }, {}) ?? {},
-    },
-  };
-};
 
 /**
  * Takes in a url with a hash parameter formatted like #1-2,3 (where 1 signifies the open note index,

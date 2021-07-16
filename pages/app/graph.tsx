@@ -1,25 +1,16 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import type { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import { createEditor, Editor, Element, Node } from 'slate';
-import { createClient } from '@supabase/supabase-js';
-import type { Note } from 'types/supabase';
 import AppLayout from 'components/AppLayout';
 import type { NoteLink } from 'types/slate';
 import { ElementType } from 'types/slate';
 import type { GraphData } from 'components/ForceGraph';
 import ForceGraph from 'components/ForceGraph';
 import GraphHeader from 'components/GraphHeader';
-import type { Notes } from 'lib/store';
 import { useStore, deepEqual } from 'lib/store';
 import ErrorBoundary from 'components/ErrorBoundary';
 
-type Props = {
-  initialNotes: Notes;
-};
-
-export default function Graph(props: Props) {
-  const { initialNotes } = props;
+export default function Graph() {
   const notes = useStore((state) => state.notes, deepEqual);
 
   // Set graph dimensions
@@ -80,7 +71,7 @@ export default function Graph(props: Props) {
       <Head>
         <title>Graph View | Notabase</title>
       </Head>
-      <AppLayout initialNotes={initialNotes} className="max-w-screen">
+      <AppLayout className="max-w-screen">
         <ErrorBoundary>
           <div ref={containerRef} className="flex-1">
             <GraphHeader />
@@ -96,39 +87,6 @@ export default function Graph(props: Props) {
     </>
   );
 }
-
-export const getServerSideProps: GetServerSideProps<Props> = async ({
-  req,
-}) => {
-  // Create admin supabase client on server
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL ?? '',
-    process.env.SUPABASE_SERVICE_KEY ?? ''
-  );
-
-  // Get authed user
-  const { user } = await supabase.auth.api.getUserByCookie(req);
-  if (!user) {
-    return { props: {}, redirect: { destination: '/login', permanent: false } };
-  }
-
-  // Get notes from database
-  const { data: notes } = await supabase
-    .from<Note>('notes')
-    .select('id, title, content')
-    .eq('user_id', user.id)
-    .order('title');
-
-  return {
-    props: {
-      initialNotes:
-        notes?.reduce<Record<Note['id'], Note>>((acc, note) => {
-          acc[note.id] = note;
-          return acc;
-        }, {}) ?? {},
-    },
-  };
-};
 
 const getRadius = (numOfLinks: number) => {
   const BASE_RADIUS = 3;
