@@ -29,6 +29,10 @@ export default function Changelog() {
         </p>
         <div className="divide-y">
           <ChangelogBlock
+            title="July 16, 2021"
+            bugFixes={['Make authentication more robust']}
+          />
+          <ChangelogBlock
             title="July 15, 2021"
             features={[
               'Add support for images (hosted externally)',
