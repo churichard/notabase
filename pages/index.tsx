@@ -28,7 +28,7 @@ export default function Home() {
                 </a>
               </Link>
               <video
-                className="hidden mx-auto mt-8 rounded md:mt-16 shadow-popover md:block"
+                className="hidden mx-auto mt-8 rounded-md md:mt-16 shadow-popover md:block"
                 width={1200}
                 autoPlay
                 loop
@@ -127,7 +127,7 @@ export default function Home() {
             </div>
           </div>
           <div className="container my-8">
-            <div className="px-8 py-12 bg-primary-50 lg:py-16 lg:px-16 md:flex md:items-center md:justify-between xl:rounded-lg">
+            <div className="px-8 py-12 bg-primary-50 lg:py-16 lg:px-16 md:flex md:items-center md:justify-between xl:rounded-md">
               <div>
                 <h2 className="text-2xl font-medium text-primary-900 lg:text-3xl">
                   Write the way your brain thinks.
