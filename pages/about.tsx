@@ -29,7 +29,7 @@ export default function About() {
           <ol className="font-semibold">
             <li>Easy to use; it just works.</li>
             <li>Links are first-class citizens.</li>
-            <li>Transparent and open.</li>
+            <li>Open, transparent, and privacy-friendly.</li>
           </ol>
         </div>
         <div>
@@ -55,8 +55,9 @@ export default function About() {
           <h2>2. Links are first-class citizens</h2>
           <p>
             Nothing exists in a vacuum, so your notes shouldn&apos;t either.
-            With Notabase, your notes can link to each other, allowing you to
-            organize knowledge associatively, not just hierarchically.
+            With Notabase, your notes form bidirectional links to each other,
+            allowing you to organize knowledge associatively, not just
+            hierarchically.
           </p>
           <p>
             The real power comes from backlinks, which let you see which notes
@@ -71,15 +72,32 @@ export default function About() {
           </p>
         </div>
         <div>
-          <h2>3. Transparent and open</h2>
+          <h2>3. Open, transparent, and privacy-friendly</h2>
           <p>
-            Notabase is designed to be an open, transparent, and
-            privacy-conscious platform.
-          </p>
-          <p>
-            It&apos;s open source with a public changelog and roadmap, which
-            means that development happens transparently and the entire
-            community can get involved.
+            Notabase is{' '}
+            <a
+              href="https://github.com/churichard/notabase"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="link"
+            >
+              open source
+            </a>{' '}
+            with a public{' '}
+            <Link href="/changelog">
+              <a>changelog</a>
+            </Link>{' '}
+            and{' '}
+            <a
+              href="https://trello.com/b/dpZLRkRR"
+              className="link"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              roadmap
+            </a>
+            , which means that development happens transparently and the entire
+            community is involved.
           </p>
           <p>
             Notabase will never sell your data or advertise to you. The only way
