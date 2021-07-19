@@ -79,6 +79,9 @@ export default function Footer(props: Props) {
             <Link href="/privacy">
               <a className="text-gray-700 hover:text-primary-500">Privacy</a>
             </Link>
+            <Link href="/terms">
+              <a className="text-gray-700 hover:text-primary-500">Terms</a>
+            </Link>
           </div>
         </div>
       </div>

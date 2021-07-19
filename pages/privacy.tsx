@@ -12,33 +12,18 @@ export default function Privacy() {
       <article className="container px-6 pt-12 pb-16 prose lg:prose-xl prose-primary">
         <h1>Privacy Policy</h1>
 
-        <p>Last updated: June 28, 2021</p>
+        <p>Last updated: July 19, 2021</p>
 
         <p>
-          Privacy is a fundamental human right, and it is ingrained in
-          Notabase&apos;s product and processes.
-        </p>
-
-        <p>
-          We strive to be as transparent as possible with how we handle your
-          data, and we only ask for personal information when it’s absolutely
-          necessary.
-        </p>
-
-        <p>
-          The data that we collect about you is yours. You can request that we
-          delete it at any time. We do not sell your personal data to anyone.
-        </p>
-
-        <p>
-          If you have any questions about how we handle your privacy, please
-          don’t hesitate to contact us.
+          <b>TL;DR</b>: You have full ownership over your data, and we do not
+          sell it to others or use it for advertising. We will never read or
+          access your private notes without your consent.
         </p>
 
         <h2>1. Introduction</h2>
 
         <p>
-          Notabase (“us”, “we”, or “our”) operates{' '}
+          Notabase (“<b>us</b>”, “<b>we</b>”, or “<b>our</b>”) operates{' '}
           <a
             href="https://notabase.io"
             target="_blank"
@@ -697,12 +682,12 @@ export default function Privacy() {
         </p>
 
         <p>
-          <b>Plausible</b>
+          <b>Plausible Analytics</b>
         </p>
 
         <p>
-          Plausible is a web analytics service. You can visit their Privacy
-          Policy page here:{' '}
+          Plausible Analytics is a web analytics service. You can visit their
+          Privacy Policy page here:{' '}
           <a
             href="https://plausible.io/privacy"
             target="_blank"
@@ -794,13 +779,13 @@ export default function Privacy() {
         <h2>18. Children&apos;s Privacy</h2>
 
         <p>
-          Our Services are not intended for use by children under the age of 13
+          Our Services are not intended for use by children under the age of 18
           (“<b>Children</b>”).{' '}
         </p>
 
         <p>
           We do not knowingly collect personally identifiable information from
-          Children under 13. If you become aware that a Child has provided us
+          Children under 18. If you become aware that a Child has provided us
           with Personal Data, please contact us. If we become aware that we have
           collected Personal Data from Children without verification of parental
           consent, we take steps to remove that information from our servers.
