@@ -16,7 +16,7 @@ export default function Home() {
           <Navbar />
           <div className="py-16 md:py-32">
             <div className="container px-6 text-center">
-              <h1 className="text-5xl font-semibold leading-tight md:leading-tight md:text-6xl">
+              <h1 className="text-4xl font-semibold leading-tight md:leading-tight md:text-5xl">
                 Networked notes for your research and ideas.
               </h1>
               <p className="pt-6 text-2xl text-gray-700 md:pt-8 md:text-3xl">
