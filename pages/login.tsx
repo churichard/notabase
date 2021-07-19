@@ -5,7 +5,7 @@ import Link from 'next/link';
 import AuthForm from 'components/AuthForm';
 import PageLoading from 'components/PageLoading';
 import { useAuth } from 'utils/useAuth';
-import Logo from 'components/Logo';
+import LogoWithText from 'components/LogoWithText';
 
 export default function Login() {
   const { user, isLoaded } = useAuth();
@@ -32,12 +32,7 @@ export default function Login() {
       <div className="min-h-screen bg-gray-50">
         <div className="container p-8 md:p-24">
           <div className="flex items-center justify-center mb-6">
-            <Link href="/">
-              <a className="flex items-center">
-                <Logo width={28} height={28} />
-                <span className="ml-2 text-xl font-semibold">Notabase</span>
-              </a>
-            </Link>
+            <LogoWithText />
           </div>
           <div className="mx-auto card md:p-12">
             <p className="pb-6 -mt-2 text-xl text-center">Log in to Notabase</p>

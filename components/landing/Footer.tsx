@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import Logo from 'components/Logo';
+import LogoWithText from 'components/LogoWithText';
 
 type Props = {
   className?: string;
@@ -11,12 +11,7 @@ export default function Footer(props: Props) {
     <div className={`py-8 bg-gray-50 md:py-16 ${className}`}>
       <div className="container flex flex-col justify-between px-6 lg:flex-row">
         <div>
-          <Link href="/">
-            <a className="flex items-center">
-              <Logo width={28} height={28} />
-              <span className="ml-2 text-xl font-semibold">Notabase</span>
-            </a>
-          </Link>
+          <LogoWithText />
           <p className="pt-2 text-gray-700">
             A personal knowledge base for networked thinking.
           </p>
