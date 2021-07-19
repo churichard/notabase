@@ -126,19 +126,21 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <div className="py-16 md:py-32 bg-primary-50">
-            <div className="container px-6 text-center">
-              <h2 className="text-4xl font-semibold leading-tight md:text-5xl md:leading-tight">
-                Networked notes for your research and ideas.
-              </h2>
-              <p className="pt-4 text-2xl text-gray-700 md:pt-6 md:text-3xl">
-                Start your personal knowledge base today.
-              </p>
-              <Link href="/signup">
-                <a className="inline-block mt-4 font-semibold md:mt-6 btn">
-                  Sign up
-                </a>
-              </Link>
+          <div className="container my-8">
+            <div className="px-8 py-12 bg-primary-50 lg:py-16 lg:px-16 md:flex md:items-center md:justify-between xl:rounded-lg">
+              <div>
+                <h2 className="text-2xl font-medium text-primary-900 lg:text-3xl">
+                  Write the way your brain thinks.
+                </h2>
+                <h2 className="mt-1 text-2xl font-medium text-primary-600 lg:text-3xl">
+                  Start your personal knowledge base today.
+                </h2>
+              </div>
+              <div className="mt-8 md:flex-shrink-0 md:mt-0">
+                <Link href="/signup">
+                  <a className="btn">Start your knowledge base</a>
+                </Link>
+              </div>
             </div>
           </div>
         </div>

@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const colors = require('tailwindcss/colors');
+require('tailwindcss');
 
 module.exports = {
   mode: 'jit',
@@ -8,6 +9,13 @@ module.exports = {
   theme: {
     container: {
       center: true,
+      screens: {
+        sm: '640px',
+        md: '768px',
+        lg: '1024px',
+        xl: '1280px',
+        '2xl': '1280px',
+      },
     },
     extend: {
       spacing: {
