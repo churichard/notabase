@@ -29,6 +29,12 @@ export default function Changelog() {
         </p>
         <div className="divide-y">
           <ChangelogBlock
+            title="July 20, 2021"
+            bugFixes={[
+              'Fix an issue where open notes may not be scrolled into view properly',
+            ]}
+          />
+          <ChangelogBlock
             title="July 16, 2021"
             bugFixes={['Make authentication more robust']}
           />
