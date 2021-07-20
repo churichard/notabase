@@ -27,7 +27,7 @@ export default function Login() {
   return (
     <>
       <Head>
-        <title>Log in | Notabase</title>
+        <title>Sign In | Notabase</title>
       </Head>
       <div className="min-h-screen bg-gray-50">
         <div className="container p-8 md:p-24">
@@ -35,7 +35,9 @@ export default function Login() {
             <LogoWithText />
           </div>
           <div className="mx-auto card md:p-12">
-            <p className="pb-6 -mt-2 text-xl text-center">Log in to Notabase</p>
+            <p className="pb-6 -mt-2 text-xl text-center">
+              Sign in to Notabase
+            </p>
             <AuthForm />
           </div>
           <p className="mt-4 text-sm text-center text-gray-700">

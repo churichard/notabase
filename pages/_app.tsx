@@ -18,6 +18,9 @@ export default function MyApp({ Component, pageProps, router }: AppProps) {
   return (
     <>
       <Head>
+        <title>
+          Notabase | A personal knowledge base for networked thinking
+        </title>
         <meta
           name="description"
           content="Notabase is a personal knowledge base for networked thinking. It's powerful, easy-to-use, and open source."

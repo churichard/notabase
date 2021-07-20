@@ -76,7 +76,7 @@ export default function AuthForm(props: Props) {
         className={`w-full mt-6 btn ${isLoading && 'opacity-50 cursor-wait'}`}
         disabled={isLoading}
       >
-        {signup ? 'Sign up' : 'Log in'}
+        {signup ? 'Sign up' : 'Sign in'}
       </button>
       {signup && showEmailConfirmationMessage ? (
         <div className="mt-4 text-primary-500">

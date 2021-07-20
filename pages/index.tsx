@@ -1,4 +1,3 @@
-import Head from 'next/head';
 import Link from 'next/link';
 import Footer from 'components/landing/Footer';
 import Navbar from 'components/landing/Navbar';
@@ -6,11 +5,6 @@ import Navbar from 'components/landing/Navbar';
 export default function Home() {
   return (
     <>
-      <Head>
-        <title>
-          Notabase | A personal knowledge base for networked thinking
-        </title>
-      </Head>
       <div className="flex flex-col min-h-screen bg-gray-50">
         <div className="flex-1">
           <Navbar />

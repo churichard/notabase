@@ -7,7 +7,7 @@ export default function Signup() {
   return (
     <>
       <Head>
-        <title>Sign up | Notabase</title>
+        <title>Sign Up | Notabase</title>
       </Head>
       <div className="min-h-screen bg-gray-50">
         <div className="container p-8 md:p-24">
@@ -16,14 +16,14 @@ export default function Signup() {
           </div>
           <div className="mx-auto card md:p-12">
             <p className="pb-6 -mt-2 text-xl text-center">
-              Sign up for Notabase
+              Create your Notabase account
             </p>
             <AuthForm signup />
           </div>
           <p className="mt-4 text-sm text-center text-gray-700">
             Have an account?{' '}
             <Link href="/login">
-              <a className="text-primary-600 hover:text-primary-700">Log in</a>
+              <a className="text-primary-600 hover:text-primary-700">Sign in</a>
             </Link>
           </p>
         </div>
