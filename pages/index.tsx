@@ -67,28 +67,41 @@ export default function Home() {
             </div>
           </div>
           <div className="py-16 md:py-32">
-            <div className="container px-6">
-              <h2 className="text-3xl font-semibold text-center md:text-4xl">
-                Easy to use; it just works
-              </h2>
-              <div className="max-w-3xl pt-6 mx-auto md:pt-8">
-                <p className="text-lg leading-relaxed text-gray-700 md:text-xl md:leading-relaxed">
-                  As you{' '}
-                  <code className="p-0.25 bg-gray-200 rounded text-primary-800">
-                    type
-                  </code>
-                  , everything is converted <i>effortlessly</i> into{' '}
-                  <b>rich-text</b>. This makes it frictionless to write down and
-                  read your thoughts.
-                </p>
-                <p className="mt-4 text-lg leading-relaxed text-gray-700 md:text-xl md:leading-relaxed">
-                  Your notes are automatically synced across all of your
-                  devices, so they&apos;re accessible from anywhere.
-                </p>
-                <p className="mt-4 text-lg leading-relaxed text-gray-700 md:text-xl md:leading-relaxed">
-                  No fiddling, no hassle&mdash;everything works out of the box
-                  with no setup.
-                </p>
+            <div className="container flex flex-col items-center px-6 md:flex-row md:space-x-12">
+              <div className="flex-1 order-1 mt-12 md:order-none md:mt-0">
+                <video
+                  className="mx-auto rounded-md shadow-popover"
+                  width={400}
+                  autoPlay
+                  loop
+                  muted
+                >
+                  <source src="/rich_text.mp4" type="video/mp4" />
+                </video>
+              </div>
+              <div className="flex-1">
+                <h2 className="text-3xl font-semibold text-center md:text-4xl">
+                  Easy to use; it just works
+                </h2>
+                <div className="max-w-3xl pt-6 mx-auto md:pt-8">
+                  <p className="text-lg leading-relaxed text-gray-700 md:text-xl md:leading-relaxed">
+                    As you{' '}
+                    <code className="p-0.25 bg-gray-200 rounded text-primary-800">
+                      type
+                    </code>
+                    , everything is converted <i>effortlessly</i> into{' '}
+                    <b>rich-text</b>. This makes it frictionless to write down
+                    and read your thoughts.
+                  </p>
+                  <p className="mt-4 text-lg leading-relaxed text-gray-700 md:text-xl md:leading-relaxed">
+                    Your notes are automatically synced across all of your
+                    devices, so they&apos;re accessible from anywhere.
+                  </p>
+                  <p className="mt-4 text-lg leading-relaxed text-gray-700 md:text-xl md:leading-relaxed">
+                    No fiddling, no hassle&mdash;everything works out of the box
+                    with no setup.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
