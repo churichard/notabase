@@ -17,7 +17,7 @@ export default function Home() {
                 Notabase is a personal knowledge base for networked thinking.
               </p>
               <Link href="/signup">
-                <a className="inline-block mt-6 font-semibold md:mt-8 btn">
+                <a className="inline-block mt-6 font-semibold md:mt-8 btn hover:shadow-lg">
                   Start your knowledge base
                 </a>
               </Link>
@@ -32,7 +32,7 @@ export default function Home() {
               </video>
             </div>
           </div>
-          <div className="py-16 bg-gray-100 md:py-32">
+          <div className="py-16 bg-gray-100 border-t border-b md:py-32">
             <div className="container flex flex-col items-center px-6 md:flex-row md:space-x-12">
               <div className="flex-1">
                 <h2 className="text-3xl font-semibold text-center md:text-4xl">
@@ -105,7 +105,7 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <div className="py-16 bg-gray-100 md:py-32">
+          <div className="py-16 bg-gray-100 border-t border-b md:py-32">
             <div className="container px-6">
               <h2 className="text-3xl font-semibold text-center md:text-4xl">
                 Privacy-friendly and open source
@@ -176,7 +176,7 @@ export default function Home() {
             </div>
           </div>
           <div className="container my-8">
-            <div className="px-8 py-12 bg-primary-50 lg:py-16 lg:px-16 md:flex md:items-center md:justify-between xl:rounded-md">
+            <div className="px-8 py-12 border bg-primary-50 border-primary-200 lg:py-16 lg:px-16 md:flex md:items-center md:justify-between xl:rounded-md">
               <div>
                 <h2 className="text-2xl font-medium text-primary-900 lg:text-3xl">
                   Write the way you think.
