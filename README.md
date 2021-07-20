@@ -17,7 +17,7 @@ Notabase is in alpha. It is under active development.
 
 ## Features
 
-- Browse through your notes with sliding window mode (similar to [Andy's working notes](https://notes.andymatuschak.org/About_these_notes))
+- Browse your notes with sliding panes (similar to [Andy's working notes](https://notes.andymatuschak.org/About_these_notes))
 - WYSIWYG editor with markdown support makes it easy to edit notes
 - Linked/unlinked references let you see other notes that reference a specific note
 - Your notes are synced to the cloud and can be accessed on any device
@@ -53,3 +53,7 @@ Notabase is currently focused on the hosted experience, but it is possible for y
 5. In your local development environment, install the packages using `npm install`, and then run the project using `npm run dev`.
 
 If you have any feedback about these instructions or have ways to make it better, please let me know.
+
+## Sponsors
+
+[Become a sponsor](https://github.com/sponsors/churichard)
