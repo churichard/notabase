@@ -86,7 +86,7 @@ export default function Home() {
                 <div className="max-w-3xl pt-6 mx-auto md:pt-8">
                   <p className="text-lg leading-relaxed text-gray-700 md:text-xl md:leading-relaxed">
                     As you{' '}
-                    <code className="p-0.25 bg-gray-200 rounded text-primary-800">
+                    <code className="p-0.25 bg-gray-100 border border-gray-200 rounded">
                       type
                     </code>
                     , everything is converted <i>effortlessly</i> into{' '}
