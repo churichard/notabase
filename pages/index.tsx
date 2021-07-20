@@ -22,7 +22,7 @@ export default function Home() {
                 </a>
               </Link>
               <video
-                className="hidden mx-auto mt-8 rounded-md md:mt-16 shadow-popover md:block"
+                className="mx-auto mt-8 rounded-md md:mt-16 shadow-popover"
                 width={1200}
                 autoPlay
                 loop
@@ -33,22 +33,36 @@ export default function Home() {
             </div>
           </div>
           <div className="py-16 bg-gray-100 md:py-32">
-            <div className="container px-6">
-              <h2 className="text-3xl font-semibold text-center md:text-4xl">
-                Write the way you think
-              </h2>
-              <div className="max-w-3xl pt-6 mx-auto md:pt-8">
-                <p className="text-lg leading-relaxed text-gray-700 md:text-xl md:leading-relaxed">
-                  With Notabase, your notes link to each other.
-                </p>
-                <p className="mt-4 text-lg leading-relaxed text-gray-700 md:text-xl md:leading-relaxed">
-                  These links form a network: your own, personal knowledge
-                  graph. The more you write, the more powerful it gets.
-                </p>
-                <p className="mt-4 text-lg leading-relaxed text-gray-700 md:text-xl md:leading-relaxed">
-                  When you look at a note, relevant notes will surface
-                  naturally&mdash;empowering your writing, research, and ideas.
-                </p>
+            <div className="container flex flex-col items-center px-6 md:flex-row md:space-x-12">
+              <div className="flex-1">
+                <h2 className="text-3xl font-semibold text-center md:text-4xl">
+                  Write the way you think
+                </h2>
+                <div className="max-w-3xl pt-6 mx-auto md:pt-8">
+                  <p className="text-lg leading-relaxed text-gray-700 md:text-xl md:leading-relaxed">
+                    With Notabase, your notes link to each other.
+                  </p>
+                  <p className="mt-4 text-lg leading-relaxed text-gray-700 md:text-xl md:leading-relaxed">
+                    These links form a network: your own, personal knowledge
+                    graph. The more you write, the more powerful it gets.
+                  </p>
+                  <p className="mt-4 text-lg leading-relaxed text-gray-700 md:text-xl md:leading-relaxed">
+                    When you look at a note, relevant notes will surface
+                    naturally&mdash;empowering your writing, research, and
+                    ideas.
+                  </p>
+                </div>
+              </div>
+              <div className="flex-1 mt-12 md:mt-0">
+                <video
+                  className="mx-auto rounded-md shadow-popover"
+                  width={400}
+                  autoPlay
+                  loop
+                  muted
+                >
+                  <source src="/graph.mp4" type="video/mp4" />
+                </video>
               </div>
             </div>
           </div>
