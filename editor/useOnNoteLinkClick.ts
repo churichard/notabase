@@ -23,17 +23,23 @@ export default function useOnNoteLinkClick() {
         (openNoteId) => openNoteId === noteId
       );
       if (index > -1) {
+        const noteElement = document.getElementById(openNoteIds[index]);
+        if (noteElement) {
+          const notesContainer = noteElement.parentElement;
+          const noteWidth = noteElement.offsetWidth;
+          notesContainer?.scrollTo({
+            left: noteWidth * index, // We assume all the notes are the same width
+            behavior: 'smooth',
+          });
+        }
+
         if (highlightedPath) {
           // Update highlighted path; scrolling is handled in editor
           router.push({ hash: `${index}-${highlightedPath}` }, undefined, {
             shallow: true,
           });
-        } else {
-          document.getElementById(openNoteIds[index])?.scrollIntoView({
-            behavior: 'smooth',
-            inline: 'center',
-          });
         }
+
         return;
       }
 

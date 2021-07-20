@@ -268,7 +268,6 @@ export default function Editor(props: Props) {
       domNode.scrollIntoView({
         behavior: 'smooth',
         block: 'start',
-        inline: 'center',
       });
 
       // Highlight line, but restore original color if mouse is clicked or component is re-rendered
