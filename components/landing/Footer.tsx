@@ -11,8 +11,10 @@ export default function Footer(props: Props) {
     <div className={`py-8 bg-gray-50 md:py-16 ${className}`}>
       <div className="container flex flex-col justify-between px-6 lg:flex-row">
         <div>
-          <LogoWithText />
-          <p className="pt-2 text-gray-700">
+          <div className="inline-block">
+            <LogoWithText />
+          </div>
+          <p className="pt-0.5 text-gray-700">
             A personal knowledge base for networked thinking.
           </p>
         </div>
