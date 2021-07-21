@@ -40,7 +40,7 @@
     "slate-history": "^0.62.0",
     "slate-react": "^0.65.2",
     "tailwindcss": "^2.2.4",
-    "unified": "^9.2.1",
+    "unified": "^10.0.1",
     "uuid": "^8.3.2",
     "zustand": "^3.5.7"
   },
