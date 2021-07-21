@@ -184,8 +184,8 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <div className="container my-8">
-            <div className="px-8 py-12 border bg-primary-50 border-primary-200 lg:py-16 lg:px-16 md:flex md:items-center md:justify-between xl:rounded-md">
+          <div className="container my-8 border-t border-b bg-primary-50 sm:border-l sm:border-r border-primary-200 sm:rounded-md">
+            <div className="px-8 py-12 md:space-x-6 lg:py-16 lg:px-16 md:flex md:items-center md:justify-between">
               <div>
                 <h2 className="text-2xl font-medium text-primary-900 lg:text-3xl">
                   Write the way you think.
