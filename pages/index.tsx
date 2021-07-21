@@ -5,7 +5,7 @@ import Navbar from 'components/landing/Navbar';
 export default function Home() {
   return (
     <>
-      <div className="flex flex-col min-h-screen bg-gray-50">
+      <div className="flex flex-col min-h-screen">
         <div className="flex-1">
           <Navbar />
           <div className="py-16 md:py-32">
@@ -41,7 +41,7 @@ export default function Home() {
               </video>
             </div>
           </div>
-          <div className="py-16 bg-gray-100 border-t border-b md:py-32">
+          <div className="py-16 md:py-32">
             <div className="container flex flex-col items-center px-6 md:flex-row md:space-x-12">
               <div className="flex-1">
                 <h2 className="text-3xl font-semibold text-center md:text-4xl">
@@ -114,7 +114,7 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <div className="py-16 bg-gray-100 border-t border-b md:py-32">
+          <div className="py-16 border-t border-b bg-gray-50 md:py-32">
             <div className="container px-6">
               <h2 className="text-3xl font-semibold text-center md:text-4xl">
                 Privacy-friendly and open source
