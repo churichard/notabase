@@ -16,6 +16,7 @@ import {
   IconLink,
   IconBraces,
 } from '@tabler/icons';
+import Tippy from '@tippyjs/react';
 import {
   toggleMark,
   isMarkActive,
@@ -57,28 +58,48 @@ type ToolbarButtonProps = {
   icon: TablerIcon;
   onClick: () => void;
   text?: string;
+  tooltip?: string;
   isActive?: boolean;
   className?: string;
 };
 
 const ToolbarButton = (props: ToolbarButtonProps) => {
-  const { icon: Icon, onClick, text, isActive = false, className = '' } = props;
+  const {
+    icon: Icon,
+    onClick,
+    text,
+    tooltip,
+    isActive = false,
+    className = '',
+  } = props;
+
   return (
-    <span
-      className={`flex items-center px-2 py-2 cursor-pointer hover:bg-gray-100 active:bg-gray-200 ${
-        isActive ? 'text-primary-500' : 'text-gray-800'
-      } ${className}`}
-      onMouseDown={(event) => event.preventDefault()}
-      onMouseUp={(event) => {
-        if (event.button === 0) {
-          event.preventDefault();
-          onClick();
-        }
-      }}
+    <Tippy
+      content={tooltip}
+      duration={0}
+      placement="top"
+      arrow={false}
+      offset={[0, 6]}
+      disabled={!tooltip}
     >
-      <Icon size={18} />
-      {text ? <span className="ml-1 text-sm tracking-wide">{text}</span> : null}
-    </span>
+      <span
+        className={`flex items-center px-2 py-2 cursor-pointer hover:bg-gray-100 active:bg-gray-200 ${
+          isActive ? 'text-primary-500' : 'text-gray-800'
+        } ${className}`}
+        onMouseDown={(event) => event.preventDefault()}
+        onMouseUp={(event) => {
+          if (event.button === 0) {
+            event.preventDefault();
+            onClick();
+          }
+        }}
+      >
+        <Icon size={18} />
+        {text ? (
+          <span className="ml-1 text-sm tracking-wide">{text}</span>
+        ) : null}
+      </span>
+    </Tippy>
   );
 };
 
@@ -108,12 +129,30 @@ const FormatButton = ({ format, className = '' }: FormatButtonProps) => {
     }
   }, [format]);
 
+  const tooltip = useMemo(() => {
+    switch (format) {
+      case Mark.Bold:
+        return 'Bold';
+      case Mark.Italic:
+        return 'Italic';
+      case Mark.Underline:
+        return 'Underline';
+      case Mark.Strikethrough:
+        return 'Strikethrough';
+      case Mark.Code:
+        return 'Code';
+      default:
+        return undefined;
+    }
+  }, [format]);
+
   return (
     <ToolbarButton
       icon={Icon}
       onClick={() => toggleMark(editor, format)}
       isActive={isActive}
       className={className}
+      tooltip={tooltip}
     />
   );
 };
@@ -148,12 +187,34 @@ const BlockButton = ({ format, className = '' }: BlockButtonProps) => {
     }
   }, [format]);
 
+  const tooltip = useMemo(() => {
+    switch (format) {
+      case ElementType.HeadingOne:
+        return 'Heading 1';
+      case ElementType.HeadingTwo:
+        return 'Heading 2';
+      case ElementType.HeadingThree:
+        return 'Heading 3';
+      case ElementType.BulletedList:
+        return 'Bulleted List';
+      case ElementType.NumberedList:
+        return 'Numbered List';
+      case ElementType.Blockquote:
+        return 'Quote Block';
+      case ElementType.CodeBlock:
+        return 'Code Block';
+      default:
+        return undefined;
+    }
+  }, [format]);
+
   return (
     <ToolbarButton
       icon={Icon}
       onClick={() => toggleElement(editor, format)}
       isActive={isActive}
       className={className}
+      tooltip={tooltip}
     />
   );
 };
@@ -186,6 +247,7 @@ const LinkButton = (props: LinkButtonProps) => {
       text="Link"
       isActive={isActive}
       className={className}
+      tooltip="Link to a note or web page"
     />
   );
 };

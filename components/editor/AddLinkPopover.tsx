@@ -57,7 +57,7 @@ export default function AddLinkPopover(props: Props) {
         result.push({
           id: 'URL',
           type: OptionType.URL,
-          text: `Link to url: ${linkText}`,
+          text: `Link to web page: ${linkText}`,
           icon: IconLink,
         });
       }
@@ -173,7 +173,7 @@ export default function AddLinkPopover(props: Props) {
         className="mx-4 input"
         value={linkText}
         onChange={(e) => setLinkText(e.target.value)}
-        placeholder="Enter link URL or search for a note"
+        placeholder="Search for a note or enter web page link"
         onKeyPress={(event) => {
           if (event.key === 'Enter') {
             event.preventDefault();
