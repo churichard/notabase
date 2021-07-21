@@ -22,13 +22,22 @@ export default function Home() {
                 </a>
               </Link>
               <video
-                className="mx-auto mt-8 rounded-md md:mt-16 shadow-popover"
+                className="hidden mx-auto mt-8 rounded-md md:mt-16 shadow-popover md:block"
                 width={1200}
                 autoPlay
                 loop
                 muted
               >
                 <source src="/demo.mp4" type="video/mp4" />
+              </video>
+              <video
+                className="block mx-auto mt-8 rounded-md md:mt-16 shadow-popover md:hidden"
+                width={500}
+                autoPlay
+                loop
+                muted
+              >
+                <source src="/demo_mobile.mp4" type="video/mp4" />
               </video>
             </div>
           </div>
