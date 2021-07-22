@@ -1,4 +1,10 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import {
+  MutableRefObject,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+} from 'react';
 import * as d3 from 'd3';
 import defaultTheme from 'tailwindcss/defaultTheme';
 import colors from 'tailwindcss/colors';
@@ -206,7 +212,7 @@ export default function ForceGraph(props: Props) {
     simulation.on('tick', () => renderCanvas());
 
     d3.select<HTMLCanvasElement, NodeDatum>(context.canvas)
-      .call(drag(simulation, context.canvas))
+      .call(drag(simulation, context.canvas, hoveredNode))
       .call(
         d3
           .zoom<HTMLCanvasElement, NodeDatum>()
@@ -345,7 +351,8 @@ const getNode = (
 
 const drag = (
   simulation: d3.Simulation<NodeDatum, LinkDatum>,
-  canvas: HTMLCanvasElement
+  canvas: HTMLCanvasElement,
+  hoveredNode: MutableRefObject<NodeDatum | null>
 ) => {
   let initialDragPos: { x: number; y: number };
 
@@ -362,6 +369,8 @@ const drag = (
     initialDragPos = { x: subject.x, y: subject.y };
     subject.fx = subject.x;
     subject.fy = subject.y;
+
+    hoveredNode.current = subject; // Show hover state
   }
 
   function dragged(event: DragEvent) {
@@ -376,6 +385,8 @@ const drag = (
     if (!event.active) simulation.alphaTarget(0);
     event.subject.fx = null;
     event.subject.fy = null;
+
+    hoveredNode.current = null; // Show hover state
   }
 
   return d3
