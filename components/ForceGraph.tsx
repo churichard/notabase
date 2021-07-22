@@ -155,8 +155,15 @@ export default function ForceGraph(props: Props) {
     context.save();
     context.clearRect(0, 0, width, height);
 
-    context.translate(transform.current.x, transform.current.y);
-    context.scale(transform.current.k, transform.current.k);
+    const pixelRatio = window.devicePixelRatio;
+    context.translate(
+      transform.current.x * pixelRatio,
+      transform.current.y * pixelRatio
+    );
+    context.scale(
+      transform.current.k * pixelRatio,
+      transform.current.k * pixelRatio
+    );
 
     // Draw links
     for (const link of data.links) {
@@ -165,7 +172,7 @@ export default function ForceGraph(props: Props) {
 
     // Draw nodes
     for (const node of data.nodes) {
-      drawNode(context, node, transform.current.k);
+      drawNode(context, node, transform.current.k * pixelRatio);
     }
 
     context.restore();
@@ -181,8 +188,9 @@ export default function ForceGraph(props: Props) {
       return;
     }
 
-    const width = canvasRef.current.width;
-    const height = canvasRef.current.height;
+    const pixelRatio = window.devicePixelRatio;
+    const width = canvasRef.current.width / pixelRatio;
+    const height = canvasRef.current.height / pixelRatio;
 
     const simulation: d3.Simulation<NodeDatum, LinkDatum> = d3
       .forceSimulation<NodeDatum>(data.nodes)
@@ -207,7 +215,7 @@ export default function ForceGraph(props: Props) {
             [0, 0],
             [width, height],
           ])
-          .on('zoom', ({ transform: t }) => {
+          .on('zoom', ({ transform: t }: { transform: d3.ZoomTransform }) => {
             transform.current = t;
             renderCanvas();
           })
@@ -255,8 +263,9 @@ export default function ForceGraph(props: Props) {
           for (const entry of entries) {
             // Update canvas dimensions and re-render
             const cr = entry.contentRect;
-            canvasRef.current.width = cr.width;
-            canvasRef.current.height = cr.height;
+            const scale = window.devicePixelRatio;
+            canvasRef.current.width = Math.floor(cr.width * scale);
+            canvasRef.current.height = Math.floor(cr.height * scale);
             renderCanvas();
           }
         });
@@ -275,8 +284,9 @@ export default function ForceGraph(props: Props) {
 
         // Set initial canvas width and height
         if (canvasRef.current) {
-          canvasRef.current.width = node.offsetWidth;
-          canvasRef.current.height = node.offsetHeight;
+          const scale = window.devicePixelRatio;
+          canvasRef.current.width = Math.floor(node.offsetWidth * scale);
+          canvasRef.current.height = Math.floor(node.offsetHeight * scale);
         }
       }
     },
