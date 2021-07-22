@@ -7,39 +7,56 @@ export default function Home() {
     <>
       <div className="flex flex-col min-h-screen">
         <div className="flex-1">
-          <Navbar />
-          <div className="py-16 md:py-32">
-            <div className="container px-6 text-center">
-              <h1 className="text-4xl font-semibold leading-tight md:leading-tight md:text-5xl">
-                Networked notes for your research and ideas
-              </h1>
-              <p className="pt-6 text-2xl text-gray-700 md:pt-8 md:text-3xl">
-                Notabase is a personal knowledge base for networked thinking.
-              </p>
-              <Link href="/signup">
-                <a className="inline-block mt-6 font-semibold md:mt-8 btn hover:shadow-lg">
-                  Start your knowledge base
-                </a>
-              </Link>
-              <video
-                className="hidden mx-auto mt-8 rounded-md md:mt-16 shadow-popover md:block"
-                width={1200}
-                autoPlay
-                loop
-                muted
-              >
-                <source src="/demo.mp4" type="video/mp4" />
-              </video>
-              <video
-                className="block mx-auto mt-8 rounded-md md:mt-16 shadow-popover md:hidden"
-                width={500}
-                autoPlay
-                loop
-                muted
-              >
-                <source src="/demo_mobile.mp4" type="video/mp4" />
-              </video>
+          <div className="hero">
+            <Navbar />
+            <div className="py-16 md:py-32">
+              <div className="container px-6 text-center">
+                <h1 className="text-4xl font-semibold leading-tight md:leading-tight md:text-5xl">
+                  Networked notes for your research and ideas
+                </h1>
+                <p className="pt-6 text-2xl text-gray-700 md:pt-8 md:text-3xl">
+                  Notabase is a personal knowledge base for networked thinking.
+                </p>
+                <Link href="/signup">
+                  <a className="inline-block mt-6 font-semibold md:mt-8 btn hover:shadow-lg">
+                    Start your knowledge base
+                  </a>
+                </Link>
+                <video
+                  className="hidden mx-auto mt-8 rounded-md md:mt-16 shadow-popover md:block"
+                  width={1200}
+                  autoPlay
+                  loop
+                  muted
+                >
+                  <source src="/demo.mp4" type="video/mp4" />
+                </video>
+                <video
+                  className="block mx-auto mt-8 rounded-md md:mt-16 shadow-popover md:hidden"
+                  width={500}
+                  autoPlay
+                  loop
+                  muted
+                >
+                  <source src="/demo_mobile.mp4" type="video/mp4" />
+                </video>
+              </div>
             </div>
+            <style jsx>{`
+              .hero {
+                background: linear-gradient(to bottom, transparent 70%, white),
+                  linear-gradient(
+                    -30deg,
+                    rgba(45, 212, 191, 0) 50%,
+                    rgb(45, 212, 191, 0.1) 70%
+                  ),
+                  linear-gradient(
+                    40deg,
+                    rgba(52, 211, 153, 0) 50%,
+                    rgb(52, 211, 153, 0.1) 65%
+                  );
+              }
+            `}</style>
           </div>
           <div className="py-16 md:py-32">
             <div className="container flex flex-col items-center px-6 md:flex-row md:space-x-12">
@@ -114,7 +131,7 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <div className="py-16 border-t border-b bg-gray-50 md:py-32">
+          <div className="py-16 bg-opacity-50 bg-primary-50 md:py-32">
             <div className="container px-6">
               <h2 className="text-3xl font-semibold text-center md:text-4xl">
                 Privacy-friendly and open source
@@ -184,7 +201,7 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <div className="container my-8 border-t border-b bg-primary-50 sm:border-l sm:border-r border-primary-200 sm:rounded-md">
+          <div className="container my-8 bg-opacity-50 border-t border-b bg-primary-50 sm:border-l sm:border-r border-primary-200 sm:rounded-md">
             <div className="px-8 py-12 md:space-x-6 lg:py-16 lg:px-16 md:flex md:items-center md:justify-between">
               <div>
                 <h2 className="text-2xl font-medium text-primary-900 lg:text-3xl">
