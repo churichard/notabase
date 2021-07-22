@@ -11,7 +11,6 @@ import {
 import { usePopper } from 'react-popper';
 import { saveAs } from 'file-saver';
 import JSZip from 'jszip';
-import Tippy from '@tippyjs/react';
 import { useRouter } from 'next/router';
 import Portal from 'components/Portal';
 import { useCurrentNote } from 'utils/useCurrentNote';
@@ -20,6 +19,7 @@ import serialize from 'editor/serialization/serialize';
 import { Note } from 'types/supabase';
 import useImport from 'utils/useImport';
 import { queryParamToArray } from 'utils/url';
+import Tooltip from 'components/Tooltip';
 
 export default function NoteHeader() {
   const currentNote = useCurrentNote();
@@ -95,53 +95,37 @@ export default function NoteHeader() {
     <div className="flex items-center justify-between w-full px-4 py-1 text-right bg-white">
       <div>
         {isSidebarButtonVisible ? (
-          <Tippy
-            content="Open sidebar"
-            duration={0}
-            arrow={false}
-            offset={[0, 6]}
-            placement="right"
-          >
+          <Tooltip content="Open sidebar" placement="right">
             <button
               className="p-1 rounded hover:bg-gray-300 active:bg-gray-400"
               onClick={() => setIsSidebarOpen(true)}
             >
               <IconMenu2 className="text-gray-600" />
             </button>
-          </Tippy>
+          </Tooltip>
         ) : null}
       </div>
       <div>
         {isCloseButtonVisible ? (
-          <Tippy
-            content="Close pane"
-            duration={0}
-            arrow={false}
-            offset={[0, 6]}
-          >
+          <Tooltip content="Close pane">
             <button
               className="p-1 rounded hover:bg-gray-300 active:bg-gray-400"
               onClick={onClosePane}
             >
               <IconX className="text-gray-600" />
             </button>
-          </Tippy>
+          </Tooltip>
         ) : null}
         <Menu>
           {({ open }) => (
             <>
-              <Tippy
-                content="Options (export, import, etc.)"
-                duration={0}
-                arrow={false}
-                offset={[0, 6]}
-              >
+              <Tooltip content="Options (export, import, etc.)">
                 <Menu.Button className="p-1 rounded hover:bg-gray-300 active:bg-gray-400">
                   <div ref={menuButtonRef}>
                     <IconDots className="text-gray-600" />
                   </div>
                 </Menu.Button>
-              </Tippy>
+              </Tooltip>
               {open && (
                 <Portal>
                   <Menu.Items

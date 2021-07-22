@@ -16,7 +16,6 @@ import {
   IconLink,
   IconBraces,
 } from '@tabler/icons';
-import Tippy from '@tippyjs/react';
 import {
   toggleMark,
   isMarkActive,
@@ -24,6 +23,7 @@ import {
   isElementActive,
 } from 'editor/formatting';
 import { ElementType, Mark } from 'types/slate';
+import Tooltip from 'components/Tooltip';
 import Popover from './Popover';
 import type { AddLinkPopoverState } from './Editor';
 
@@ -74,14 +74,7 @@ const ToolbarButton = (props: ToolbarButtonProps) => {
   } = props;
 
   return (
-    <Tippy
-      content={tooltip}
-      duration={0}
-      placement="top"
-      arrow={false}
-      offset={[0, 6]}
-      disabled={!tooltip}
-    >
+    <Tooltip content={tooltip} placement="top" disabled={!tooltip}>
       <span
         className={`flex items-center px-2 py-2 cursor-pointer hover:bg-gray-100 active:bg-gray-200 ${
           isActive ? 'text-primary-500' : 'text-gray-800'
@@ -99,7 +92,7 @@ const ToolbarButton = (props: ToolbarButtonProps) => {
           <span className="ml-1 text-sm tracking-wide">{text}</span>
         ) : null}
       </span>
-    </Tippy>
+    </Tooltip>
   );
 };
 

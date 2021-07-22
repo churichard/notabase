@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction, useState } from 'react';
 import { IconFile, IconSearch } from '@tabler/icons';
-import Tippy from '@tippyjs/react';
+import Tooltip from 'components/Tooltip';
 import SidebarNotes from './SidebarNotes';
 import SidebarSearch from './SidebarSearch';
 
@@ -46,7 +46,7 @@ const Tabs = (props: TabsProps) => {
 
   return (
     <div className="flex">
-      <Tippy content="Notes List" duration={0} arrow={false} offset={[0, 6]}>
+      <Tooltip content="Notes List">
         <button
           className={`flex justify-center flex-1 py-1.5 rounded-t hover:bg-gray-100 active:bg-gray-200 ${
             activeTab === SidebarTab.Notes
@@ -62,8 +62,8 @@ const Tabs = (props: TabsProps) => {
             }
           />
         </button>
-      </Tippy>
-      <Tippy content="Search" duration={0} arrow={false} offset={[0, 6]}>
+      </Tooltip>
+      <Tooltip content="Search">
         <button
           className={`flex justify-center flex-1 py-1.5 rounded-t hover:bg-gray-100 active:bg-gray-200 ${
             activeTab === SidebarTab.Search
@@ -81,7 +81,7 @@ const Tabs = (props: TabsProps) => {
             }
           />
         </button>
-      </Tippy>
+      </Tooltip>
     </div>
   );
 };

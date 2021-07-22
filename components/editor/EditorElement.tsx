@@ -1,11 +1,11 @@
 import { ReactNode, useMemo } from 'react';
 import { RenderElementProps, useFocused, useSelected } from 'slate-react';
-import Tippy from '@tippyjs/react';
 import Link from 'next/link';
 import type { ExternalLink, Image as ImageType, NoteLink } from 'types/slate';
 import { ElementType } from 'types/slate';
 import useOnNoteLinkClick from 'editor/useOnNoteLinkClick';
 import { useStore } from 'lib/store';
+import Tooltip from 'components/Tooltip';
 
 type Props = {
   omitVerticalSpacing: boolean;
@@ -148,13 +148,7 @@ const NoteLinkElement = (props: NoteLinkElementProps) => {
   }`;
 
   return (
-    <Tippy
-      content={element.noteTitle}
-      duration={0}
-      placement="bottom"
-      arrow={false}
-      offset={[0, 6]}
-    >
+    <Tooltip content={element.noteTitle} placement="bottom">
       {isPageStackingOn ? (
         <span
           className={className}
@@ -183,7 +177,7 @@ const NoteLinkElement = (props: NoteLinkElementProps) => {
           </Link>
         </span>
       )}
-    </Tippy>
+    </Tooltip>
   );
 };
 
@@ -196,13 +190,7 @@ type ExternalLinkElementProps = {
 const ExternalLinkElement = (props: ExternalLinkElementProps) => {
   const { element, children, attributes } = props;
   return (
-    <Tippy
-      content={element.url}
-      duration={0}
-      placement="bottom"
-      arrow={false}
-      offset={[0, 6]}
-    >
+    <Tooltip content={element.url} placement="bottom">
       <a
         className="link"
         href={element.url}
@@ -215,7 +203,7 @@ const ExternalLinkElement = (props: ExternalLinkElementProps) => {
       >
         {children}
       </a>
-    </Tippy>
+    </Tooltip>
   );
 };
 
