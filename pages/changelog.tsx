@@ -29,6 +29,12 @@ export default function Changelog() {
         </p>
         <div className="divide-y">
           <ChangelogBlock
+            title="July 22, 2021"
+            bugFixes={[
+              'The graph view is no longer blurry on high resolution devices',
+            ]}
+          />
+          <ChangelogBlock
             title="July 20, 2021"
             bugFixes={[
               'Fix an issue where open notes may not be scrolled into view properly',
