@@ -1,17 +1,15 @@
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
-import Footer from 'components/landing/Footer';
-import Navbar from 'components/landing/Navbar';
 import profileImg from 'public/richard.jpg';
+import LandingLayout from 'components/landing/LandingLayout';
 
 export default function About() {
   return (
-    <>
+    <LandingLayout>
       <Head>
         <title>About | Notabase</title>
       </Head>
-      <Navbar />
       <div className="container px-6 pt-12 pb-16 prose lg:prose-xl prose-primary">
         <h1>About Notabase</h1>
         <div>
@@ -152,7 +150,6 @@ export default function About() {
           </p>
         </div>
       </div>
-      <Footer />
-    </>
+    </LandingLayout>
   );
 }

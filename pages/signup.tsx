@@ -2,10 +2,11 @@ import Head from 'next/head';
 import Link from 'next/link';
 import AuthForm from 'components/AuthForm';
 import LogoWithText from 'components/LogoWithText';
+import LandingLayout from 'components/landing/LandingLayout';
 
 export default function Signup() {
   return (
-    <>
+    <LandingLayout showNavbar={false} showFooter={false}>
       <Head>
         <title>Sign Up | Notabase</title>
       </Head>
@@ -28,6 +29,6 @@ export default function Signup() {
           </p>
         </div>
       </div>
-    </>
+    </LandingLayout>
   );
 }

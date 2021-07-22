@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
+const defaultTheme = require('tailwindcss/defaultTheme');
 const colors = require('tailwindcss/colors');
-require('tailwindcss');
 
 module.exports = {
   mode: 'jit',
@@ -18,6 +18,9 @@ module.exports = {
       },
     },
     extend: {
+      fontFamily: {
+        display: ['Inter', ...defaultTheme.fontFamily.sans],
+      },
       spacing: {
         0.25: '0.0625rem',
         128: '32rem',

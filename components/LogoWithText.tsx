@@ -6,7 +6,7 @@ export default function LogoWithText() {
     <Link href="/">
       <a className="flex items-center">
         <Logo width={28} height={28} />
-        <span className="ml-2 text-xl font-semibold">Notabase</span>
+        <span className="ml-2 text-xl font-medium">Notabase</span>
       </a>
     </Link>
   );

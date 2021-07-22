@@ -1,14 +1,12 @@
 import Head from 'next/head';
-import Footer from 'components/landing/Footer';
-import Navbar from 'components/landing/Navbar';
+import LandingLayout from 'components/landing/LandingLayout';
 
 export default function Privacy() {
   return (
-    <>
+    <LandingLayout>
       <Head>
         <title>Privacy Policy | Notabase</title>
       </Head>
-      <Navbar />
       <article className="container px-6 pt-12 pb-16 prose lg:prose-xl prose-primary">
         <h1>Privacy Policy</h1>
 
@@ -823,7 +821,6 @@ export default function Privacy() {
           .
         </p>
       </article>
-      <Footer />
-    </>
+    </LandingLayout>
   );
 }

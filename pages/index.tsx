@@ -1,24 +1,25 @@
 import Link from 'next/link';
 import Footer from 'components/landing/Footer';
 import Navbar from 'components/landing/Navbar';
+import LandingLayout from 'components/landing/LandingLayout';
 
 export default function Home() {
   return (
-    <>
+    <LandingLayout showNavbar={false} showFooter={false}>
       <div className="flex flex-col min-h-screen">
         <div className="flex-1">
           <div className="hero">
             <Navbar />
             <div className="py-16 md:py-32">
               <div className="container px-6 text-center">
-                <h1 className="text-4xl font-semibold leading-tight md:leading-tight md:text-5xl">
+                <h1 className="text-4xl font-medium leading-tight md:leading-tight md:text-5xl">
                   Networked notes for your research and ideas
                 </h1>
                 <p className="pt-6 text-2xl text-gray-700 md:pt-8 md:text-3xl">
                   Notabase is a personal knowledge base for networked thinking.
                 </p>
                 <Link href="/signup">
-                  <a className="inline-block mt-6 font-semibold md:mt-8 btn hover:shadow-lg">
+                  <a className="inline-block mt-6 md:mt-8 btn hover:shadow-lg">
                     Start your knowledge base
                   </a>
                 </Link>
@@ -42,26 +43,11 @@ export default function Home() {
                 </video>
               </div>
             </div>
-            <style jsx>{`
-              .hero {
-                background: linear-gradient(to bottom, transparent 70%, white),
-                  linear-gradient(
-                    -30deg,
-                    rgba(45, 212, 191, 0) 50%,
-                    rgb(45, 212, 191, 0.1) 70%
-                  ),
-                  linear-gradient(
-                    40deg,
-                    rgba(52, 211, 153, 0) 50%,
-                    rgb(52, 211, 153, 0.1) 65%
-                  );
-              }
-            `}</style>
           </div>
           <div className="py-16 md:py-32">
             <div className="container flex flex-col items-center px-6 md:flex-row md:space-x-12">
               <div className="flex-1">
-                <h2 className="text-3xl font-semibold text-center md:text-4xl">
+                <h2 className="text-3xl font-medium text-center md:text-4xl">
                   Write the way you think
                 </h2>
                 <div className="max-w-3xl pt-6 mx-auto md:pt-8">
@@ -106,7 +92,7 @@ export default function Home() {
                 </video>
               </div>
               <div className="flex-1">
-                <h2 className="text-3xl font-semibold text-center md:text-4xl">
+                <h2 className="text-3xl font-medium text-center md:text-4xl">
                   Easy to use; it just works
                 </h2>
                 <div className="max-w-3xl pt-6 mx-auto md:pt-8">
@@ -133,7 +119,7 @@ export default function Home() {
           </div>
           <div className="py-16 bg-opacity-50 bg-primary-50 md:py-32">
             <div className="container px-6">
-              <h2 className="text-3xl font-semibold text-center md:text-4xl">
+              <h2 className="text-3xl font-medium text-center md:text-4xl">
                 Privacy-friendly and open source
               </h2>
               <div className="max-w-3xl pt-6 mx-auto md:pt-8">
@@ -176,7 +162,7 @@ export default function Home() {
           </div>
           <div className="py-16 md:py-32">
             <div className="container px-6">
-              <h2 className="text-3xl font-semibold text-center md:text-4xl">
+              <h2 className="text-3xl font-medium text-center md:text-4xl">
                 Pricing
               </h2>
               <div className="max-w-3xl pt-6 mx-auto md:pt-8">
@@ -221,6 +207,21 @@ export default function Home() {
         </div>
         <Footer />
       </div>
-    </>
+      <style jsx>{`
+        .hero {
+          background: linear-gradient(to bottom, transparent 70%, white),
+            linear-gradient(
+              -30deg,
+              rgba(45, 212, 191, 0) 50%,
+              rgb(45, 212, 191, 0.08) 70%
+            ),
+            linear-gradient(
+              40deg,
+              rgba(52, 211, 153, 0) 50%,
+              rgb(52, 211, 153, 0.08) 65%
+            );
+        }
+      `}</style>
+    </LandingLayout>
   );
 }

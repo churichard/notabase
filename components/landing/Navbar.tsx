@@ -7,12 +7,12 @@ export default function Navbar() {
       <LogoWithText />
       <div className="flex items-center space-x-2">
         <Link href="/login">
-          <a className="px-4 py-2 transition duration-200 ease-in-out rounded hover:text-gray-500">
+          <a className="px-4 py-2 font-medium transition duration-200 ease-in-out rounded hover:text-gray-600">
             Sign in
           </a>
         </Link>
         <Link href="/signup">
-          <a className="px-4 py-2 font-semibold btn">Get started</a>
+          <a className="px-4 py-2 btn">Get started</a>
         </Link>
       </div>
     </div>

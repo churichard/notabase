@@ -1,14 +1,12 @@
 import Head from 'next/head';
-import Footer from 'components/landing/Footer';
-import Navbar from 'components/landing/Navbar';
+import LandingLayout from 'components/landing/LandingLayout';
 
 export default function Terms() {
   return (
-    <>
+    <LandingLayout>
       <Head>
         <title>Terms of Service | Notabase</title>
       </Head>
-      <Navbar />
       <article className="container px-6 pt-12 pb-16 prose lg:prose-xl prose-primary">
         <h1>Terms of Service</h1>
 
@@ -755,7 +753,6 @@ export default function Terms() {
           .
         </p>
       </article>
-      <Footer />
-    </>
+    </LandingLayout>
   );
 }

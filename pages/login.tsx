@@ -6,6 +6,7 @@ import AuthForm from 'components/AuthForm';
 import PageLoading from 'components/PageLoading';
 import { useAuth } from 'utils/useAuth';
 import LogoWithText from 'components/LogoWithText';
+import LandingLayout from 'components/landing/LandingLayout';
 
 export default function Login() {
   const { user, isLoaded } = useAuth();
@@ -25,7 +26,7 @@ export default function Login() {
   }
 
   return (
-    <>
+    <LandingLayout showNavbar={false} showFooter={false}>
       <Head>
         <title>Sign In | Notabase</title>
       </Head>
@@ -48,6 +49,6 @@ export default function Login() {
           </p>
         </div>
       </div>
-    </>
+    </LandingLayout>
   );
 }
