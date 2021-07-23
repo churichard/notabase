@@ -9,6 +9,7 @@ import useHotkeys from 'utils/useHotkeys';
 import Sidebar from './sidebar/Sidebar';
 import FindOrCreateModal from './FindOrCreateModal';
 import PageLoading from './PageLoading';
+import SettingsModal from './SettingsModal';
 
 const SM_BREAKPOINT = 640;
 
@@ -76,6 +77,7 @@ export default function AppLayout(props: Props) {
   }, [router, user, isLoaded, isPageLoaded, initData]);
 
   const [isFindOrCreateModalOpen, setIsFindOrCreateModalOpen] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   const isSidebarOpen = useStore((state) => state.isSidebarOpen);
   const setIsSidebarOpen = useStore((state) => state.setIsSidebarOpen);
@@ -139,8 +141,10 @@ export default function AppLayout(props: Props) {
       <Sidebar
         className={!isSidebarOpen ? 'hidden' : undefined}
         setIsFindOrCreateModalOpen={setIsFindOrCreateModalOpen}
+        setIsSettingsOpen={setIsSettingsOpen}
       />
       {children}
+      {isSettingsOpen ? <SettingsModal setIsOpen={setIsSettingsOpen} /> : null}
       {isFindOrCreateModalOpen ? (
         <FindOrCreateModal setIsOpen={setIsFindOrCreateModalOpen} />
       ) : null}
