@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
 import { useRouter } from 'next/router';
+import { toast } from 'react-toastify';
 import { useStore, store } from 'lib/store';
 import supabase from 'lib/supabase';
 import type { Note } from 'types/supabase';
@@ -131,6 +132,22 @@ export default function AppLayout(props: Props) {
     [setIsFindOrCreateModalOpen]
   );
   useHotkeys(hotkeys);
+
+  useEffect(() => {
+    const {
+      query: { checkout_session_id: checkoutSessionId, ...otherQueryParams },
+    } = router;
+
+    if (checkoutSessionId) {
+      // Show toast if the user successfully subscribed to Notabase
+      toast.success('You have successfully subscribed to Notabase! 🎉');
+      router.push(
+        { pathname: router.pathname, query: otherQueryParams },
+        undefined,
+        { shallow: true }
+      );
+    }
+  }, [router]);
 
   if (!isPageLoaded) {
     return <PageLoading />;

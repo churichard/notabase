@@ -1,7 +1,8 @@
-import { IconCreditCard } from '@tabler/icons';
 import { useMemo } from 'react';
+import { IconCreditCard } from '@tabler/icons';
 import useHotkeys from 'utils/useHotkeys';
 import SidebarItem from './sidebar/SidebarItem';
+import Billing from './Billing';
 
 type Props = {
   setIsOpen: (isOpen: boolean) => void;
@@ -28,9 +29,9 @@ export default function SettingsModal(props: Props) {
         onClick={() => setIsOpen(false)}
       />
       <div className="flex items-center justify-center h-screen p-6">
-        <div className="z-20 flex w-full h-full bg-white rounded max-h-128 sm:w-192 xl:w-240 xl:max-h-176 shadow-popover">
+        <div className="z-20 flex w-full h-full max-w-full bg-white rounded max-h-128 sm:w-192 xl:w-240 xl:max-h-176 shadow-popover">
           <SettingsModalSidebar />
-          <div className="flex-1 p-4">herro</div>
+          <Billing />
         </div>
       </div>
     </div>
