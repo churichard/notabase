@@ -78,7 +78,7 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <div className="pt-8 pb-16 md:pb-32 md:pt-16">
+          <div className="py-8 md:py-16">
             <div className="container flex flex-col items-center px-6 md:flex-row">
               <div className="relative flex-1 order-1 px-6 mt-12 md:order-none md:mt-0 md:mx-8 lg:px-8 xl:px-0">
                 <video
@@ -112,7 +112,7 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <div className="py-16 bg-gradient-to-r from-yellow-50 via-green-50 to-blue-50 md:py-32">
+          <div className="pt-8 pb-16 md:pb-32 md:pt-16">
             <div className="container px-6">
               <h2 className="text-3xl font-semibold text-center md:text-4xl">
                 Privacy-friendly and open source
@@ -151,33 +151,6 @@ export default function Home() {
                 <p className="mt-4 text-lg leading-relaxed text-gray-700 md:text-xl md:leading-relaxed">
                   You have full ownership over your notes. Notabase will never
                   sell your data or advertise to you.
-                </p>
-              </div>
-            </div>
-          </div>
-          <div className="py-16 md:py-32">
-            <div className="container px-6">
-              <h2 className="text-3xl font-semibold text-center md:text-4xl">
-                Pricing
-              </h2>
-              <div className="max-w-3xl pt-6 mx-auto md:pt-8">
-                <p className="text-lg leading-relaxed text-gray-700 md:text-xl md:leading-relaxed">
-                  Notabase is in alpha and is <b>free</b> to use during this
-                  time.
-                </p>
-                <p className="mt-4 text-lg leading-relaxed text-gray-700 md:text-xl md:leading-relaxed">
-                  In the future, a paid tier will be added to support
-                  Notabase&apos;s development. If you&apos;d like to support my
-                  work in the meantime, you can{' '}
-                  <a
-                    href="https://github.com/sponsors/churichard"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="link"
-                  >
-                    sponsor me on GitHub
-                  </a>
-                  .
                 </p>
               </div>
             </div>

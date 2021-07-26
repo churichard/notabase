@@ -45,9 +45,9 @@ export default function PricingTable(props: Props) {
     <table className="w-full text-left table-fixed">
       <thead>
         <tr>
-          <th className="w-48 py-2 md:w-1/3"></th>
-          <th className="w-48 py-2 md:w-1/3">{plans.basic.name}</th>
-          <th className="w-48 py-2 md:w-1/3">
+          <th className="py-2 w-52 md:w-1/3"></th>
+          <th className="py-2 w-52 md:w-1/3">{plans.basic.name}</th>
+          <th className="py-2 w-52 md:w-1/3">
             <span>{plans.pro.name}</span>
             <span className="px-2 py-1 ml-2 text-xs font-medium rounded-full text-primary-900 bg-primary-100">
               Early bird pricing
