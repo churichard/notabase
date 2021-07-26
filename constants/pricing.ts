@@ -19,7 +19,6 @@ export enum PriceId {
 export type Price = {
   amount: number;
   priceId?: string;
-  discount?: string;
 };
 
 export type Plan = {
@@ -57,7 +56,6 @@ const plans: Plans = {
       [PriceId.Annual]: {
         amount: 7000,
         priceId: isDev ? PRO_ANNUAL_DEV_PRICE_ID : PRO_ANNUAL_PROD_PRICE_ID,
-        discount: '2 months free',
       },
     },
   },

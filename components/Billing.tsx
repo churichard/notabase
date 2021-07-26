@@ -52,6 +52,17 @@ export default function Billing() {
     [showMonthly]
   );
 
+  const getAnnualPrice = useCallback(
+    (plan: Plan) => {
+      const prices = plan.prices;
+      const price = showMonthly
+        ? (prices.monthly.amount / 100) * 12
+        : prices.annual.amount / 100;
+      return +price.toFixed(2);
+    },
+    [showMonthly]
+  );
+
   const getBillingPeriodPrice = useCallback(
     (plan: Plan) => {
       const price = showMonthly ? plan.prices.monthly : plan.prices.annual;
@@ -77,7 +88,7 @@ export default function Billing() {
               <div className="flex items-baseline text-4xl font-semibold">
                 <span>${getBillingPeriodPrice(plans.basic)}</span>
                 <span className="ml-1 text-2xl leading-8 text-gray-500">
-                  {showMonthly ? '/mo' : '/yr'}
+                  {showMonthly ? '/ month' : '/ year'}
                 </span>
               </div>
             </td>
@@ -85,7 +96,7 @@ export default function Billing() {
               <div className="flex items-baseline text-4xl font-semibold">
                 <span>${getBillingPeriodPrice(plans.pro)}</span>
                 <span className="ml-1 text-2xl leading-8 text-gray-500">
-                  {showMonthly ? '/mo' : '/yr'}
+                  {showMonthly ? '/ month' : '/ year'}
                 </span>
               </div>
             </td>
@@ -96,11 +107,12 @@ export default function Billing() {
             <td className="pb-2 text-gray-500">
               {!showMonthly ? (
                 <span className="text-sm">
-                  ${getMonthlyPrice(plans.pro)} / mo &mdash;{' '}
-                  {plans.pro.prices.annual.discount}
+                  ${getMonthlyPrice(plans.pro)} / month
                 </span>
               ) : (
-                <span className="text-sm">Billed monthly. Cancel anytime.</span>
+                <span className="text-sm">
+                  ${getAnnualPrice(plans.pro)} / year
+                </span>
               )}
             </td>
           </tr>
