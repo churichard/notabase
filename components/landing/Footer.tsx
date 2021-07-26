@@ -21,6 +21,14 @@ export default function Footer(props: Props) {
         <div className="flex flex-wrap flex-1 space-x-16 lg:justify-end">
           <div className="flex flex-col mt-8 space-y-2 lg:mt-0">
             <p className="font-medium">Product</p>
+            <a
+              href="https://help.notabase.io"
+              className="text-gray-700 hover:text-primary-500"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Help Center
+            </a>
             <Link href="/changelog">
               <a className="text-gray-700 hover:text-primary-500">Changelog</a>
             </Link>

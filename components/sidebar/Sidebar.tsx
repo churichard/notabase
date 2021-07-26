@@ -12,6 +12,7 @@ import {
   IconMessage,
   IconChevronsLeft,
   IconBrandDiscord,
+  IconHelp,
 } from '@tabler/icons';
 import { useAuth } from 'utils/useAuth';
 import { useStore } from 'lib/store';
@@ -126,6 +127,21 @@ const Header = () => {
               >
                 <IconBrandDiscord size={18} className="mr-1" />
                 <span>Join our Discord</span>
+              </a>
+            )}
+          </Menu.Item>
+          <Menu.Item>
+            {({ active }) => (
+              <a
+                className={`flex w-full items-center px-4 py-2 text-left text-gray-800 text-sm ${
+                  active ? 'bg-gray-100' : ''
+                }`}
+                href="https://help.notabase.io"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <IconHelp size={18} className="mr-1" />
+                <span>Help Center</span>
               </a>
             )}
           </Menu.Item>

@@ -23,6 +23,7 @@ export default function Changelog() {
           </a>
           .
         </p>
+        <ChangelogBlock title="July 26, 2021" features={['Add help center']} />
         <ChangelogBlock
           title="July 22, 2021"
           bugFixes={[
