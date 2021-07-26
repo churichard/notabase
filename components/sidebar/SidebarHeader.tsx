@@ -41,7 +41,7 @@ export default function Header(props: Props) {
           </Tooltip>
         </Menu.Button>
         <Menu.Items className="absolute z-10 w-56 overflow-hidden bg-white rounded left-6 top-full shadow-popover">
-          <p className="px-4 py-2 overflow-hidden text-xs text-gray-600 overflow-ellipsis">
+          <p className="px-4 pt-2 pb-1 overflow-hidden text-xs text-gray-600 overflow-ellipsis">
             {user?.email}
           </p>
           <Menu.Item>
@@ -60,7 +60,7 @@ export default function Header(props: Props) {
           <Menu.Item>
             {({ active }) => (
               <a
-                className={`flex w-full items-center px-4 py-2 text-left text-gray-800 text-sm ${
+                className={`flex w-full items-center px-4 py-2 text-left text-gray-800 text-sm border-t ${
                   active ? 'bg-gray-100' : ''
                 }`}
                 href="https://8z3pisyojx8.typeform.com/to/tXt36EQM"
@@ -120,7 +120,7 @@ export default function Header(props: Props) {
           <Menu.Item>
             {({ active }) => (
               <button
-                className={`flex w-full items-center px-4 py-2 text-left text-gray-800 text-sm ${
+                className={`flex w-full items-center px-4 py-2 text-left text-gray-800 text-sm border-t ${
                   active ? 'bg-gray-100' : ''
                 }`}
                 onClick={() => signOut()}
