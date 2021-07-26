@@ -9,12 +9,12 @@ export default function Pricing() {
     return [
       () => (
         <Link href="/signup">
-          <a className="w-full px-4 py-2 btn">Get started</a>
+          <a className="block w-full px-4 py-2 text-center btn">Get started</a>
         </Link>
       ),
       () => (
         <Link href="/signup">
-          <a className="w-full px-4 py-2 btn">Try for free</a>
+          <a className="block w-full px-4 py-2 text-center btn">Try for free</a>
         </Link>
       ),
     ];

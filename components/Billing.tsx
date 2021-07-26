@@ -42,13 +42,13 @@ export default function Billing() {
   const pricingButtons = useMemo(() => {
     return [
       () => (
-        <div className="w-full px-4 py-2 text-center text-gray-600 border rounded">
+        <div className="block w-full px-4 py-2 text-center text-gray-600 border rounded">
           Current plan
         </div>
       ),
       (showMonthly: boolean) => (
         <button
-          className="w-full px-4 py-2 btn"
+          className="block w-full px-4 py-2 btn"
           onClick={() => onSubscribe(plans.pro, showMonthly)}
         >
           Upgrade
