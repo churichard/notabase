@@ -1,7 +1,35 @@
-import { ReactNode, useCallback, useState } from 'react';
+import { Fragment, ReactNode, useCallback, useState } from 'react';
 import { IconCheck } from '@tabler/icons';
 import { Plan, plans } from 'constants/pricing';
 import Toggle from './Toggle';
+
+const pricingTableData = [
+  {
+    name: 'Usage',
+    data: [
+      ['Notes', '50', 'Unlimited'],
+      ['Image upload', '5 MB', '10 MB'],
+    ],
+  },
+  {
+    name: 'Features',
+    data: [
+      ['Rich-text editor', true, true],
+      ['Backlinks', true, true],
+      ['Sync between devices', true, true],
+      ['Full-text search', true, true],
+      ['Graph view', true, true],
+      ['Import / export', true, true],
+    ],
+  },
+  {
+    name: 'Support',
+    data: [
+      ['Community support', true, true],
+      ['Priority support', false, true],
+    ],
+  },
+];
 
 type Props = {
   buttons: ((showMonthly: boolean) => ReactNode)[];
@@ -111,101 +139,29 @@ export default function PricingTable(props: Props) {
             </td>
           ))}
         </tr>
-        <tr>
-          <td className="pt-4 pb-2 font-semibold border-b">Usage</td>
-          <td className="py-2 font-semibold border-b"></td>
-          <td className="py-2 font-semibold border-b"></td>
-        </tr>
-        <tr>
-          <td className="py-2 text-gray-600 border-b">Notes</td>
-          <td className="py-2 border-b">50</td>
-          <td className="py-2 border-b">Unlimited</td>
-        </tr>
-        <tr>
-          <td className="py-2 text-gray-600 border-b">Image upload</td>
-          <td className="py-2 border-b">5 MB</td>
-          <td className="py-2 border-b">10 MB</td>
-        </tr>
-        <tr>
-          <td className="pt-4 pb-2 font-semibold border-b">Features</td>
-          <td className="py-2 font-semibold border-b"></td>
-          <td className="py-2 font-semibold border-b"></td>
-        </tr>
-        <tr>
-          <td className="py-2 text-gray-600 border-b">Rich-text editor</td>
-          <td className="py-2 border-b">
-            <IconCheck className="text-primary-500" />
-          </td>
-          <td className="py-2 border-b">
-            <IconCheck className="text-primary-500" />
-          </td>
-        </tr>
-        <tr>
-          <td className="py-2 text-gray-600 border-b">Backlinks</td>
-          <td className="py-2 border-b">
-            <IconCheck className="text-primary-500" />
-          </td>
-          <td className="py-2 border-b">
-            <IconCheck className="text-primary-500" />
-          </td>
-        </tr>
-        <tr>
-          <td className="py-2 text-gray-600 border-b">Sync between devices</td>
-          <td className="py-2 border-b">
-            <IconCheck className="text-primary-500" />
-          </td>
-          <td className="py-2 border-b">
-            <IconCheck className="text-primary-500" />
-          </td>
-        </tr>
-        <tr>
-          <td className="py-2 text-gray-600 border-b">Graph view</td>
-          <td className="py-2 border-b">
-            <IconCheck className="text-primary-500" />
-          </td>
-          <td className="py-2 border-b">
-            <IconCheck className="text-primary-500" />
-          </td>
-        </tr>
-        <tr>
-          <td className="py-2 text-gray-600 border-b">Full-text search</td>
-          <td className="py-2 border-b">
-            <IconCheck className="text-primary-500" />
-          </td>
-          <td className="py-2 border-b">
-            <IconCheck className="text-primary-500" />
-          </td>
-        </tr>
-        <tr>
-          <td className="py-2 text-gray-600 border-b">Import / export</td>
-          <td className="py-2 border-b">
-            <IconCheck className="text-primary-500" />
-          </td>
-          <td className="py-2 border-b">
-            <IconCheck className="text-primary-500" />
-          </td>
-        </tr>
-        <tr>
-          <td className="pt-4 pb-2 font-semibold border-b">Support</td>
-          <td className="py-2 font-semibold border-b"></td>
-          <td className="py-2 font-semibold border-b"></td>
-        </tr>
-        <tr>
-          <td className="py-2 text-gray-600 border-b">Community support</td>
-          <td className="py-2 border-b">
-            <IconCheck className="text-primary-500" />
-          </td>
-          <td className="py-2 border-b">
-            <IconCheck className="text-primary-500" />
-          </td>
-        </tr>
-        <tr>
-          <td className="py-2 text-gray-600 border-b">Priority support</td>
-          <td className="py-2 border-b"></td>
-          <td className="py-2 border-b">
-            <IconCheck className="text-primary-500" />
-          </td>
-        </tr>
+        {pricingTableData.map((category) => (
+          <Fragment key={`${category.name}-container`}>
+            <tr className="border-b" key={`${category.name}-title`}>
+              <td className="pt-4 pb-2 font-semibold">{category.name}</td>
+            </tr>
+            {category.data.map((row, rowIndex) => (
+              <tr className="border-b" key={`${category.name}-${rowIndex}`}>
+                {row.map((datum, datumIndex) => (
+                  <td
+                    key={`${category.name}-${rowIndex}-${datumIndex}`}
+                    className="py-2"
+                  >
+                    {typeof datum === 'boolean' && datum ? (
+                      <IconCheck className="text-primary-500" />
+                    ) : (
+                      datum
+                    )}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </Fragment>
+        ))}
       </tbody>
     </table>
   );
