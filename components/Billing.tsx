@@ -78,7 +78,12 @@ export default function Billing() {
           <tr>
             <th className="w-48 py-2 md:w-1/3"></th>
             <th className="w-48 py-2 md:w-1/3">{plans.basic.name}</th>
-            <th className="w-48 py-2 md:w-1/3">{plans.pro.name}</th>
+            <th className="w-48 py-2 md:w-1/3">
+              <span>{plans.pro.name}</span>
+              <span className="px-2 py-1 ml-2 text-xs font-medium rounded-full text-primary-900 bg-primary-100">
+                Early bird pricing
+              </span>
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -95,6 +100,9 @@ export default function Billing() {
             <td className="py-2">
               <div className="flex items-baseline text-4xl font-semibold">
                 <span>${getBillingPeriodPrice(plans.pro)}</span>
+                <s className="ml-2 text-2xl text-gray-500">
+                  {showMonthly ? '$10' : '$100'}
+                </s>
                 <span className="ml-1 text-2xl leading-8 text-gray-500">
                   {showMonthly ? '/ month' : '/ year'}
                 </span>
