@@ -35,11 +35,16 @@ export default function AppLayout(props: Props) {
       .eq('user_id', user.id)
       .order('title');
 
-    // Redirect to most recent note
-    const openNoteIds = store.getState().openNoteIds;
-    if (router.pathname === '/app' && openNoteIds.length > 0) {
-      router.replace(`/app/note/${openNoteIds[0]}`);
-      return;
+    // Redirect to most recent note or first note in database
+    if (router.pathname === '/app') {
+      const openNoteIds = store.getState().openNoteIds;
+      if (openNoteIds.length > 0) {
+        router.replace(`/app/note/${openNoteIds[0]}`);
+        return;
+      } else if (notes && notes.length > 0) {
+        router.replace(`/app/note/${notes[0].id}`);
+        return;
+      }
     }
 
     if (!notes) {
