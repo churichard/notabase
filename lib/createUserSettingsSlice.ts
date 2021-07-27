@@ -1,5 +1,5 @@
-import { WritableDraft } from 'immer/dist/internal';
-import { Store } from './store';
+import { Draft } from 'immer';
+import { setter, Store } from './store';
 
 export enum Sort {
   TitleAscending = 'TITLE_ASCENDING',
@@ -19,32 +19,12 @@ export type UserSettings = {
 };
 
 const createUserSettingsSlice = (
-  set: (fn: (draft: WritableDraft<Store>) => void) => void
+  set: (fn: (draft: Draft<Store>) => void) => void
 ) => ({
   isSidebarOpen: true,
-  setIsSidebarOpen: (value: boolean | ((value: boolean) => boolean)) => {
-    if (typeof value === 'function') {
-      set((state) => {
-        state.isSidebarOpen = value(state.isSidebarOpen);
-      });
-    } else {
-      set((state) => {
-        state.isSidebarOpen = value;
-      });
-    }
-  },
+  setIsSidebarOpen: setter(set, 'isSidebarOpen'),
   noteSort: Sort.TitleAscending,
-  setNoteSort: (value: Sort | ((value: Sort) => Sort)) => {
-    if (typeof value === 'function') {
-      set((state) => {
-        state.noteSort = value(state.noteSort);
-      });
-    } else {
-      set((state) => {
-        state.noteSort = value;
-      });
-    }
-  },
+  setNoteSort: setter(set, 'noteSort'),
 });
 
 export default createUserSettingsSlice;

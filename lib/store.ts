@@ -42,6 +42,30 @@ export type Store = {
   setIsPageStackingOn: (value: boolean | ((value: boolean) => boolean)) => void;
 } & UserSettings;
 
+type FunctionPropertyNames<T> = {
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  [K in keyof T]: T[K] extends Function ? K : never;
+}[keyof T];
+
+type StoreWithoutFunctions = Omit<Store, FunctionPropertyNames<Store>>;
+
+export const setter =
+  <K extends keyof StoreWithoutFunctions>(
+    set: (fn: (draft: Draft<Store>) => void) => void,
+    key: K
+  ) =>
+  (value: Store[K] | ((value: Store[K]) => Store[K])) => {
+    if (typeof value === 'function') {
+      set((state) => {
+        state[key] = value(state[key]);
+      });
+    } else {
+      set((state) => {
+        state[key] = value;
+      });
+    }
+  };
+
 export const store = createVanilla<Store>(
   persist(
     immer((set) => ({
@@ -52,17 +76,7 @@ export const store = createVanilla<Store>(
       /**
        * Sets the notes
        */
-      setNotes: (value: Notes | ((value: Notes) => Notes)) => {
-        if (typeof value === 'function') {
-          set((state) => {
-            state.notes = value(state.notes);
-          });
-        } else {
-          set((state) => {
-            state.notes = value;
-          });
-        }
-      },
+      setNotes: setter(set, 'notes'),
       /**
        * If the note id exists, then update the note. Otherwise, insert it
        */
@@ -117,17 +131,7 @@ export const store = createVanilla<Store>(
         });
       },
       isPageStackingOn: true,
-      setIsPageStackingOn: (value: boolean | ((value: boolean) => boolean)) => {
-        if (typeof value === 'function') {
-          set((state) => {
-            state.isPageStackingOn = value(state.isPageStackingOn);
-          });
-        } else {
-          set((state) => {
-            state.isPageStackingOn = value;
-          });
-        }
-      },
+      setIsPageStackingOn: setter(set, 'isPageStackingOn'),
       ...createUserSettingsSlice(set),
     })),
     {
