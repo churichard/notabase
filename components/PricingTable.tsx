@@ -1,5 +1,5 @@
 import { Fragment, ReactNode, useCallback, useState, useMemo } from 'react';
-import { IconCheck } from '@tabler/icons';
+import { IconCheck, IconMinus } from '@tabler/icons';
 import { Plan, PlanId, PRICING_PLANS } from 'constants/pricing';
 import Toggle from './Toggle';
 
@@ -26,7 +26,7 @@ const pricingTableData = [
     name: 'Support',
     data: [
       ['Community support', true, true],
-      ['Priority support', false, true],
+      ['Email support', false, true],
     ],
   },
 ];
@@ -191,8 +191,12 @@ const MobilePricingTable = (props: MobilePricingTableProps) => {
                                 datumIndex !== 0 ? 'text-right' : ''
                               }`}
                             >
-                              {typeof datum === 'boolean' && datum ? (
-                                <IconCheck className="ml-auto mr-0 text-primary-500" />
+                              {typeof datum === 'boolean' ? (
+                                datum ? (
+                                  <IconCheck className="ml-auto mr-0 text-primary-500" />
+                                ) : (
+                                  <IconMinus className="ml-auto mr-0 text-gray-400" />
+                                )
                               ) : (
                                 datum
                               )}
@@ -308,8 +312,12 @@ const DesktopPricingTable = (props: DesktopPricingTableProps) => {
                     key={`${category.name}-${rowIndex}-${datumIndex}`}
                     className="py-2"
                   >
-                    {typeof datum === 'boolean' && datum ? (
-                      <IconCheck className="text-primary-500" />
+                    {typeof datum === 'boolean' ? (
+                      datum ? (
+                        <IconCheck className="text-primary-500" />
+                      ) : (
+                        <IconMinus className="text-gray-400" />
+                      )
                     ) : (
                       datum
                     )}
