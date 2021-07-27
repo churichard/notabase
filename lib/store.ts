@@ -38,8 +38,6 @@ export type Store = {
   deleteNote: (noteId: string) => void;
   openNoteIds: string[];
   setOpenNoteIds: (openNoteIds: string[], index?: number) => void;
-  isSidebarOpen: boolean;
-  setIsSidebarOpen: (value: boolean | ((value: boolean) => boolean)) => void;
   isPageStackingOn: boolean;
   setIsPageStackingOn: (value: boolean | ((value: boolean) => boolean)) => void;
 } & UserSettings;
@@ -118,18 +116,6 @@ export const store = createVanilla<Store>(
           );
         });
       },
-      isSidebarOpen: true,
-      setIsSidebarOpen: (value: boolean | ((value: boolean) => boolean)) => {
-        if (typeof value === 'function') {
-          set((state) => {
-            state.isSidebarOpen = value(state.isSidebarOpen);
-          });
-        } else {
-          set((state) => {
-            state.isSidebarOpen = value;
-          });
-        }
-      },
       isPageStackingOn: true,
       setIsPageStackingOn: (value: boolean | ((value: boolean) => boolean)) => {
         if (typeof value === 'function') {
@@ -148,7 +134,7 @@ export const store = createVanilla<Store>(
       name: 'notabase-storage',
       version: 1,
       getStorage: () => storage,
-      whitelist: ['noteSort'],
+      whitelist: ['isSidebarOpen', 'noteSort'],
     }
   )
 );
