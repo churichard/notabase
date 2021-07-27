@@ -14,6 +14,8 @@ export const ReadableNameBySort = {
 export type UserSettings = {
   isSidebarOpen: boolean;
   setIsSidebarOpen: (value: boolean | ((value: boolean) => boolean)) => void;
+  isPageStackingOn: boolean;
+  setIsPageStackingOn: (value: boolean | ((value: boolean) => boolean)) => void;
   noteSort: Sort;
   setNoteSort: (value: Sort | ((value: Sort) => Sort)) => void;
 };
@@ -23,6 +25,8 @@ const createUserSettingsSlice = (
 ) => ({
   isSidebarOpen: true,
   setIsSidebarOpen: setter(set, 'isSidebarOpen'),
+  isPageStackingOn: true,
+  setIsPageStackingOn: setter(set, 'isPageStackingOn'),
   noteSort: Sort.TitleAscending,
   setNoteSort: setter(set, 'noteSort'),
 });

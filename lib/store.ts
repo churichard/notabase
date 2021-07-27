@@ -38,8 +38,6 @@ export type Store = {
   deleteNote: (noteId: string) => void;
   openNoteIds: string[];
   setOpenNoteIds: (openNoteIds: string[], index?: number) => void;
-  isPageStackingOn: boolean;
-  setIsPageStackingOn: (value: boolean | ((value: boolean) => boolean)) => void;
 } & UserSettings;
 
 type FunctionPropertyNames<T> = {
@@ -130,8 +128,6 @@ export const store = createVanilla<Store>(
           );
         });
       },
-      isPageStackingOn: true,
-      setIsPageStackingOn: setter(set, 'isPageStackingOn'),
       ...createUserSettingsSlice(set),
     })),
     {
