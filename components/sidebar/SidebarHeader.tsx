@@ -26,7 +26,7 @@ export default function Header(props: Props) {
   return (
     <div className="relative">
       <Menu>
-        <Menu.Button className="flex items-center justify-between w-full py-3 pl-6 text-left text-gray-800 hover:bg-gray-200 active:bg-gray-300">
+        <Menu.Button className="flex items-center justify-between w-full py-2 pl-6 text-left text-gray-800 hover:bg-gray-200 active:bg-gray-300">
           <div className="flex items-center flex-1">
             <span className="mr-1 font-semibold">Notabase</span>
             <IconSelector size={18} className="text-gray-500" />
