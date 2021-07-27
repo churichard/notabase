@@ -170,34 +170,40 @@ const MobilePricingTable = (props: MobilePricingTableProps) => {
             ) : null}
             <div className="py-2">{plan.button}</div>
             <table className="w-full">
-              {pricingTableData.map((category) => (
-                <Fragment key={`${category.name}-container`}>
-                  <tr className="border-b" key={`${category.name}-title`}>
-                    <td className="pt-4 pb-2 font-semibold">{category.name}</td>
-                  </tr>
-                  {category.data.map((row, rowIndex) => (
-                    <tr
-                      className="border-b"
-                      key={`${category.name}-${rowIndex}`}
-                    >
-                      {row.map((datum, datumIndex) =>
-                        datumIndex === 0 || datumIndex === planIndex + 1 ? (
-                          <td
-                            key={`${category.name}-${rowIndex}-${datumIndex}`}
-                            className="py-2"
-                          >
-                            {typeof datum === 'boolean' && datum ? (
-                              <IconCheck className="text-primary-500" />
-                            ) : (
-                              datum
-                            )}
-                          </td>
-                        ) : null
-                      )}
+              <tbody>
+                {pricingTableData.map((category) => (
+                  <Fragment key={`${category.name}-container`}>
+                    <tr className="border-b" key={`${category.name}-title`}>
+                      <td className="pt-4 pb-2 font-semibold">
+                        {category.name}
+                      </td>
                     </tr>
-                  ))}
-                </Fragment>
-              ))}
+                    {category.data.map((row, rowIndex) => (
+                      <tr
+                        className="border-b"
+                        key={`${category.name}-${rowIndex}`}
+                      >
+                        {row.map((datum, datumIndex) =>
+                          datumIndex === 0 || datumIndex === planIndex + 1 ? (
+                            <td
+                              key={`${category.name}-${rowIndex}-${datumIndex}`}
+                              className={`py-2 ${
+                                datumIndex !== 0 ? 'text-right' : ''
+                              }`}
+                            >
+                              {typeof datum === 'boolean' && datum ? (
+                                <IconCheck className="ml-auto mr-0 text-primary-500" />
+                              ) : (
+                                datum
+                              )}
+                            </td>
+                          ) : null
+                        )}
+                      </tr>
+                    ))}
+                  </Fragment>
+                ))}
+              </tbody>
             </table>
           </div>
         );
