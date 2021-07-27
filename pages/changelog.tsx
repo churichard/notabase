@@ -25,7 +25,10 @@ export default function Changelog() {
         </p>
         <ChangelogBlock
           title="July 27, 2021"
-          features={['Add persistence of user settings']}
+          features={[
+            'Add persistence of user settings',
+            'Default to opening most recent note',
+          ]}
         />
         <ChangelogBlock title="July 26, 2021" features={['Add help center']} />
         <ChangelogBlock

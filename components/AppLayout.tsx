@@ -35,10 +35,10 @@ export default function AppLayout(props: Props) {
       .eq('user_id', user.id)
       .order('title');
 
-    // Redirect to first note if one exists
-    // TODO: maybe we should redirect to the most recent note instead?
-    if (router.pathname === '/app' && notes && notes.length > 0) {
-      router.replace(`/app/note/${notes[0].id}`);
+    // Redirect to most recent note
+    const openNoteIds = store.getState().openNoteIds;
+    if (router.pathname === '/app' && openNoteIds.length > 0) {
+      router.replace(`/app/note/${openNoteIds[0]}`);
       return;
     }
 
