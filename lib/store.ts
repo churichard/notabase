@@ -4,7 +4,9 @@ import { persist, StateStorage } from 'zustand/middleware';
 import produce, { Draft } from 'immer';
 import localforage from 'localforage';
 import type { Note } from 'types/supabase';
-import { Sort, UserSettings } from 'constants/userSettings';
+import createUserSettingsSlice, {
+  UserSettings,
+} from './createUserSettingsSlice';
 import type { NoteUpdate } from './api/updateNote';
 
 export { default as shallowEqual } from 'zustand/shallow';
@@ -40,11 +42,7 @@ export type Store = {
   setIsSidebarOpen: (value: boolean | ((value: boolean) => boolean)) => void;
   isPageStackingOn: boolean;
   setIsPageStackingOn: (value: boolean | ((value: boolean) => boolean)) => void;
-  userSettings: UserSettings;
-  updateUserSettingByKey: (
-    key: keyof UserSettings
-  ) => (value: UserSettings[typeof key]) => void;
-};
+} & UserSettings;
 
 export const store = createVanilla<Store>(
   persist(
@@ -144,21 +142,13 @@ export const store = createVanilla<Store>(
           });
         }
       },
-      userSettings: {
-        noteSort: Sort.TitleAscending,
-      },
-      updateUserSettingByKey:
-        (key: keyof UserSettings) => (value: UserSettings[typeof key]) => {
-          set((state) => {
-            state.userSettings[key] = value;
-          });
-        },
+      ...createUserSettingsSlice(set),
     })),
     {
       name: 'notabase-storage',
       version: 1,
       getStorage: () => storage,
-      whitelist: ['userSettings'],
+      whitelist: ['noteSort'],
     }
   )
 );

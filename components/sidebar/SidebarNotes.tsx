@@ -24,7 +24,7 @@ import deleteNote from 'lib/api/deleteNote';
 import useBacklinks from 'editor/useBacklinks';
 import { caseInsensitiveStringCompare } from 'utils/string';
 import useImport from 'utils/useImport';
-import { ReadableNameBySort, Sort } from 'constants/userSettings';
+import { ReadableNameBySort, Sort } from 'lib/createUserSettingsSlice';
 import Tooltip from 'components/Tooltip';
 import Portal from '../Portal';
 import ErrorBoundary from '../ErrorBoundary';
@@ -49,10 +49,8 @@ export default function SidebarNotes(props: SidebarNotesProps) {
     deepEqual
   );
 
-  const noteSort = useStore((state) => state.userSettings.noteSort);
-  const setNoteSort = useStore((state) =>
-    state.updateUserSettingByKey('noteSort')
-  );
+  const noteSort = useStore((state) => state.noteSort);
+  const setNoteSort = useStore((state) => state.setNoteSort);
 
   const sortedNotes = useMemo(
     () =>
