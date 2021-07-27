@@ -58,7 +58,7 @@ export default function Billing() {
   }, [onSubscribe]);
 
   return (
-    <div className="flex-1 p-4 overflow-y-auto">
+    <div className="flex-1 p-6 overflow-y-auto">
       <PricingTable buttons={pricingButtons} />
     </div>
   );

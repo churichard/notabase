@@ -100,6 +100,7 @@ export default function PricingTable(props: Props) {
         showMonthly={showMonthly}
         setShowMonthly={setShowMonthly}
       />
+      <Faq />
     </>
   );
 }
@@ -150,7 +151,7 @@ const MobilePricingTable = (props: MobilePricingTableProps) => {
                     {showMonthly ? '$10' : '$100'}
                   </s>
                 ) : null}
-                <span className="ml-1 text-2xl leading-8 text-gray-500">
+                <span className="ml-1 text-2xl text-gray-500">
                   {showMonthly ? '/ mo' : '/ yr'}
                 </span>
               </div>
@@ -236,9 +237,11 @@ const DesktopPricingTable = (props: DesktopPricingTableProps) => {
       <thead className="text-left">
         <tr>
           <th className="py-2 w-52 md:w-1/3"></th>
-          <th className="py-2 w-52 md:w-1/3">{PRICING_PLANS.basic.name}</th>
+          <th className="py-2 text-lg w-52 md:w-1/3">
+            {PRICING_PLANS.basic.name}
+          </th>
           <th className="py-2 w-52 md:w-1/3">
-            <span>{PRICING_PLANS.pro.name}</span>
+            <span className="text-lg">{PRICING_PLANS.pro.name}</span>
             <span className="px-2 py-1 ml-2 text-xs font-medium rounded-full text-primary-900 bg-primary-100">
               Early bird pricing
             </span>
@@ -257,7 +260,7 @@ const DesktopPricingTable = (props: DesktopPricingTableProps) => {
                     {showMonthly ? '$10' : '$100'}
                   </s>
                 ) : null}
-                <span className="ml-1 text-2xl leading-8 text-gray-500">
+                <span className="ml-1 text-2xl text-gray-500">
                   {showMonthly ? '/ mo' : '/ yr'}
                 </span>
               </div>
@@ -329,5 +332,104 @@ const DesktopPricingTable = (props: DesktopPricingTableProps) => {
         ))}
       </tbody>
     </table>
+  );
+};
+
+const Faq = () => {
+  return (
+    <div className="py-12 sm:py-16 lg:py-24">
+      <h2 className="text-3xl font-semibold text-gray-900">FAQ</h2>
+      <div className="pt-10 mt-6 border-t">
+        <div className="grid gap-8 md:grid-cols-2">
+          <div>
+            <h3 className="text-lg font-medium text-gray-900">
+              Can I try Notabase for free?
+            </h3>
+            <div className="mt-2">
+              <p className="text-gray-600">
+                Yes, just sign up with the Basic plan and you can try out
+                Notabase for free for an unlimited amount of time.
+              </p>
+            </div>
+          </div>
+          <div>
+            <h3 className="text-lg font-medium text-gray-900">
+              Do I need a credit card to sign up?
+            </h3>
+            <div className="mt-2">
+              <p className="text-gray-600">
+                You can sign up for Notabase and use the Basic plan without a
+                credit card.
+              </p>
+            </div>
+          </div>
+          <div>
+            <h3 className="text-lg font-medium text-gray-900">
+              Can I cancel at any time?
+            </h3>
+            <div className="mt-2">
+              <p className="text-gray-600">
+                Yes, you can cancel your subscription at any time. You&apos;ll
+                continue to have access for the remainder of your billing
+                period.
+              </p>
+            </div>
+          </div>
+          <div>
+            <h3 className="text-lg font-medium text-gray-900">
+              Do you offer discounts?
+            </h3>
+            <div className="mt-2">
+              <p className="text-gray-600">
+                Notabase offers discounts for non-profits, researchers,
+                students, and people doing social good. If you think you might
+                qualify, please{' '}
+                <a
+                  href="mailto:hello@notabase.io"
+                  className="link"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  email us
+                </a>
+                .
+              </p>
+            </div>
+          </div>
+          <div>
+            <h3 className="text-lg font-medium text-gray-900">
+              What is &ldquo;early bird pricing&rdquo;?
+            </h3>
+            <div className="mt-2">
+              <p className="text-gray-600">
+                For a limited time, if you subscribe to Notabase, you&apos;ll
+                get a lifetime discount as a token of our appreciation. We may
+                raise our prices in the future, but you&apos;ll be locked in at
+                the current price as long as your subscription remains active.
+              </p>
+            </div>
+          </div>
+          <div>
+            <h3 className="text-lg font-medium text-gray-900">
+              What if I still have questions?
+            </h3>
+            <div className="mt-2">
+              <p className="text-gray-600">
+                Feel free to{' '}
+                <a
+                  href="mailto:hello@notabase.io"
+                  className="link"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  email us
+                </a>{' '}
+                and we&apos;ll get back to you as soon as possible.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
