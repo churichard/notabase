@@ -158,9 +158,13 @@ const MobilePricingTable = (props: MobilePricingTableProps) => {
             {isNotBasic ? (
               <div className="pb-2 text-gray-500">
                 {!showMonthly ? (
-                  <span className="text-sm">${plan.monthlyPrice} / mo</span>
+                  <span className="text-sm">
+                    Billed yearly (${plan.monthlyPrice} / mo)
+                  </span>
                 ) : (
-                  <span className="text-sm">${plan.annualPrice} / yr</span>
+                  <span className="text-sm">
+                    Billed monthly (${plan.annualPrice} / yr)
+                  </span>
                 )}
               </div>
             ) : null}
@@ -256,9 +260,13 @@ const DesktopPricingTable = (props: DesktopPricingTableProps) => {
             <td key={plan.id} className="pb-2 text-gray-500">
               {plan.id !== PlanId.Basic ? (
                 !showMonthly ? (
-                  <span className="text-sm">${plan.monthlyPrice} / mo</span>
+                  <span className="text-sm">
+                    Billed yearly (${plan.monthlyPrice} / mo)
+                  </span>
                 ) : (
-                  <span className="text-sm">${plan.annualPrice} / yr</span>
+                  <span className="text-sm">
+                    Billed monthly (${plan.annualPrice} / yr)
+                  </span>
                 )
               ) : null}
             </td>
