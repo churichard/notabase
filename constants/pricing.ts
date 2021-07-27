@@ -32,7 +32,7 @@ export type Plan = {
 
 type Plans = { basic: Plan; pro: Plan };
 
-const plans: Plans = {
+const PRICING_PLANS: Plans = {
   [PlanId.Basic]: {
     id: PlanId.Basic,
     name: 'Basic',
@@ -61,4 +61,4 @@ const plans: Plans = {
   },
 } as const;
 
-export { plans };
+export { PRICING_PLANS };

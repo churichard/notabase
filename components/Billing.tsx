@@ -2,7 +2,7 @@ import { useCallback, useMemo } from 'react';
 import { loadStripe } from '@stripe/stripe-js/pure';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
-import { Plan, plans } from 'constants/pricing';
+import { Plan, PRICING_PLANS } from 'constants/pricing';
 import PricingTable from './PricingTable';
 
 export default function Billing() {
@@ -49,7 +49,7 @@ export default function Billing() {
       (showMonthly: boolean) => (
         <button
           className="block w-full px-4 py-2 btn"
-          onClick={() => onSubscribe(plans.pro, showMonthly)}
+          onClick={() => onSubscribe(PRICING_PLANS.pro, showMonthly)}
         >
           Upgrade
         </button>

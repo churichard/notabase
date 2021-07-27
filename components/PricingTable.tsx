@@ -1,6 +1,6 @@
-import { Fragment, ReactNode, useCallback, useState } from 'react';
+import { Fragment, ReactNode, useCallback, useState, useMemo } from 'react';
 import { IconCheck } from '@tabler/icons';
-import { Plan, plans } from 'constants/pricing';
+import { Plan, PlanId, PRICING_PLANS } from 'constants/pricing';
 import Toggle from './Toggle';
 
 const pricingTableData = [
@@ -69,208 +69,243 @@ export default function PricingTable(props: Props) {
     [showMonthly]
   );
 
+  const plans = useMemo(
+    () =>
+      Object.values(PRICING_PLANS).map((plan, index) => ({
+        id: plan.id,
+        name: plan.name,
+        billingPeriodPrice: getBillingPeriodPrice(plan),
+        monthlyPrice: getMonthlyPrice(plan),
+        annualPrice: getAnnualPrice(plan),
+        button: buttons[index](showMonthly),
+      })),
+    [
+      getBillingPeriodPrice,
+      getMonthlyPrice,
+      getAnnualPrice,
+      buttons,
+      showMonthly,
+    ]
+  );
+
   return (
     <>
-      <div className="w-full space-y-8 md:hidden">
-        <div className="flex items-center justify-center">
-          <span className="text-sm text-gray-600">Annual</span>
-          <Toggle
-            className="mx-2"
-            isChecked={showMonthly}
-            setIsChecked={setShowMonthly}
-          />
-          <span className="text-sm text-gray-600">Monthly</span>
-        </div>
-        <div>
-          <div className="py-2 text-xl font-semibold">{plans.basic.name}</div>
-          <div className="py-2">
-            <div className="flex items-baseline text-4xl font-semibold">
-              <span>${getBillingPeriodPrice(plans.basic)}</span>
-              <span className="ml-1 text-2xl leading-8 text-gray-500">
-                {showMonthly ? '/ mo' : '/ yr'}
-              </span>
-            </div>
-          </div>
-          <div className="py-2">{buttons[0](showMonthly)}</div>
-          <table className="w-full">
-            {pricingTableData.map((category) => (
-              <Fragment key={`${category.name}-container`}>
-                <tr className="border-b" key={`${category.name}-title`}>
-                  <td className="pt-4 pb-2 font-semibold">{category.name}</td>
-                </tr>
-                {category.data.map((row, rowIndex) => (
-                  <tr className="border-b" key={`${category.name}-${rowIndex}`}>
-                    {row.map((datum, datumIndex) =>
-                      datumIndex === 0 || datumIndex === 1 ? (
-                        <td
-                          key={`${category.name}-${rowIndex}-${datumIndex}`}
-                          className="py-2"
-                        >
-                          {typeof datum === 'boolean' && datum ? (
-                            <IconCheck className="text-primary-500" />
-                          ) : (
-                            datum
-                          )}
-                        </td>
-                      ) : null
-                    )}
-                  </tr>
-                ))}
-              </Fragment>
-            ))}
-          </table>
-        </div>
-        <div>
-          <div className="flex items-center py-2 text-xl font-semibold">
-            <span>{plans.pro.name}</span>
-            <span className="px-2 py-1 ml-2 text-xs font-medium rounded-full text-primary-900 bg-primary-100">
-              Early bird pricing
-            </span>
-          </div>
-          <div className="py-2">
-            <div className="flex items-baseline text-4xl font-semibold">
-              <span>${getBillingPeriodPrice(plans.pro)}</span>
-              <s className="ml-2 text-2xl text-gray-500">
-                {showMonthly ? '$10' : '$100'}
-              </s>
-              <span className="ml-1 text-2xl leading-8 text-gray-500">
-                {showMonthly ? '/ mo' : '/ yr'}
-              </span>
-            </div>
-          </div>
-          <div className="pb-2 text-gray-500">
-            {!showMonthly ? (
-              <span className="text-sm">
-                ${getMonthlyPrice(plans.pro)} / mo
-              </span>
-            ) : (
-              <span className="text-sm">${getAnnualPrice(plans.pro)} / yr</span>
-            )}
-          </div>
-          <div className="py-2">{buttons[1](showMonthly)}</div>
-          <table className="w-full">
-            {pricingTableData.map((category) => (
-              <Fragment key={`${category.name}-container`}>
-                <tr className="border-b" key={`${category.name}-title`}>
-                  <td className="pt-4 pb-2 font-semibold">{category.name}</td>
-                </tr>
-                {category.data.map((row, rowIndex) => (
-                  <tr className="border-b" key={`${category.name}-${rowIndex}`}>
-                    {row.map((datum, datumIndex) =>
-                      datumIndex === 0 || datumIndex === 2 ? (
-                        <td
-                          key={`${category.name}-${rowIndex}-${datumIndex}`}
-                          className="py-2"
-                        >
-                          {typeof datum === 'boolean' && datum ? (
-                            <IconCheck className="text-primary-500" />
-                          ) : (
-                            datum
-                          )}
-                        </td>
-                      ) : null
-                    )}
-                  </tr>
-                ))}
-              </Fragment>
-            ))}
-          </table>
-        </div>
-      </div>
-      <table className="hidden w-full table-fixed md:table">
-        <thead className="text-left">
-          <tr>
-            <th className="py-2 w-52 md:w-1/3"></th>
-            <th className="py-2 w-52 md:w-1/3">{plans.basic.name}</th>
-            <th className="py-2 w-52 md:w-1/3">
-              <span>{plans.pro.name}</span>
-              <span className="px-2 py-1 ml-2 text-xs font-medium rounded-full text-primary-900 bg-primary-100">
-                Early bird pricing
-              </span>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td className="py-2"></td>
-            <td className="py-2">
-              <div className="flex items-baseline text-4xl font-semibold">
-                <span>${getBillingPeriodPrice(plans.basic)}</span>
-                <span className="ml-1 text-2xl leading-8 text-gray-500">
-                  {showMonthly ? '/ mo' : '/ yr'}
-                </span>
-              </div>
-            </td>
-            <td className="py-2">
-              <div className="flex items-baseline text-4xl font-semibold">
-                <span>${getBillingPeriodPrice(plans.pro)}</span>
-                <s className="ml-2 text-2xl text-gray-500">
-                  {showMonthly ? '$10' : '$100'}
-                </s>
-                <span className="ml-1 text-2xl leading-8 text-gray-500">
-                  {showMonthly ? '/ mo' : '/ yr'}
-                </span>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td className="pb-2"></td>
-            <td className="pb-2"></td>
-            <td className="pb-2 text-gray-500">
-              {!showMonthly ? (
-                <span className="text-sm">
-                  ${getMonthlyPrice(plans.pro)} / mo
-                </span>
-              ) : (
-                <span className="text-sm">
-                  ${getAnnualPrice(plans.pro)} / yr
-                </span>
-              )}
-            </td>
-          </tr>
-          <tr>
-            <td className="py-2">
-              <div className="flex items-center">
-                <span className="text-sm text-gray-600">Annual</span>
-                <Toggle
-                  className="mx-2"
-                  isChecked={showMonthly}
-                  setIsChecked={setShowMonthly}
-                />
-                <span className="text-sm text-gray-600">Monthly</span>
-              </div>
-            </td>
-            {buttons.map((button, index) => (
-              <td key={index} className="py-2 pr-6">
-                {button(showMonthly)}
-              </td>
-            ))}
-          </tr>
-          {pricingTableData.map((category) => (
-            <Fragment key={`${category.name}-container`}>
-              <tr className="border-b" key={`${category.name}-title`}>
-                <td className="pt-4 pb-2 font-semibold">{category.name}</td>
-              </tr>
-              {category.data.map((row, rowIndex) => (
-                <tr className="border-b" key={`${category.name}-${rowIndex}`}>
-                  {row.map((datum, datumIndex) => (
-                    <td
-                      key={`${category.name}-${rowIndex}-${datumIndex}`}
-                      className="py-2"
-                    >
-                      {typeof datum === 'boolean' && datum ? (
-                        <IconCheck className="text-primary-500" />
-                      ) : (
-                        datum
-                      )}
-                    </td>
-                  ))}
-                </tr>
-              ))}
-            </Fragment>
-          ))}
-        </tbody>
-      </table>
+      <MobilePricingTable
+        plans={plans}
+        showMonthly={showMonthly}
+        setShowMonthly={setShowMonthly}
+      />
+      <DesktopPricingTable
+        plans={plans}
+        showMonthly={showMonthly}
+        setShowMonthly={setShowMonthly}
+      />
     </>
   );
 }
+
+type MobilePricingTableProps = {
+  plans: {
+    id: PlanId;
+    name: string;
+    billingPeriodPrice: number;
+    monthlyPrice: number;
+    annualPrice: number;
+    button: ReactNode;
+  }[];
+  showMonthly: boolean;
+  setShowMonthly: (showMonthly: boolean) => void;
+};
+
+const MobilePricingTable = (props: MobilePricingTableProps) => {
+  const { plans, showMonthly, setShowMonthly } = props;
+  return (
+    <div className="w-full space-y-8 md:hidden">
+      <div className="flex items-center justify-center">
+        <span className="text-sm text-gray-600">Annual</span>
+        <Toggle
+          className="mx-2"
+          isChecked={showMonthly}
+          setIsChecked={setShowMonthly}
+        />
+        <span className="text-sm text-gray-600">Monthly</span>
+      </div>
+      {plans.map((plan, planIndex) => {
+        const isNotBasic = plan.id !== PlanId.Basic;
+        return (
+          <div key={plan.id}>
+            <div className="flex items-center py-2 text-xl font-semibold">
+              <span>{plan.name}</span>
+              {isNotBasic ? (
+                <span className="px-2 py-1 ml-2 text-xs font-medium rounded-full text-primary-900 bg-primary-100">
+                  Early bird pricing
+                </span>
+              ) : null}
+            </div>
+            <div className="py-2">
+              <div className="flex items-baseline text-4xl font-semibold">
+                <span>${plan.billingPeriodPrice}</span>
+                {isNotBasic ? (
+                  <s className="ml-2 text-2xl text-gray-500">
+                    {showMonthly ? '$10' : '$100'}
+                  </s>
+                ) : null}
+                <span className="ml-1 text-2xl leading-8 text-gray-500">
+                  {showMonthly ? '/ mo' : '/ yr'}
+                </span>
+              </div>
+            </div>
+            {isNotBasic ? (
+              <div className="pb-2 text-gray-500">
+                {!showMonthly ? (
+                  <span className="text-sm">${plan.monthlyPrice} / mo</span>
+                ) : (
+                  <span className="text-sm">${plan.annualPrice} / yr</span>
+                )}
+              </div>
+            ) : null}
+            <div className="py-2">{plan.button}</div>
+            <table className="w-full">
+              {pricingTableData.map((category) => (
+                <Fragment key={`${category.name}-container`}>
+                  <tr className="border-b" key={`${category.name}-title`}>
+                    <td className="pt-4 pb-2 font-semibold">{category.name}</td>
+                  </tr>
+                  {category.data.map((row, rowIndex) => (
+                    <tr
+                      className="border-b"
+                      key={`${category.name}-${rowIndex}`}
+                    >
+                      {row.map((datum, datumIndex) =>
+                        datumIndex === 0 || datumIndex === planIndex + 1 ? (
+                          <td
+                            key={`${category.name}-${rowIndex}-${datumIndex}`}
+                            className="py-2"
+                          >
+                            {typeof datum === 'boolean' && datum ? (
+                              <IconCheck className="text-primary-500" />
+                            ) : (
+                              datum
+                            )}
+                          </td>
+                        ) : null
+                      )}
+                    </tr>
+                  ))}
+                </Fragment>
+              ))}
+            </table>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
+type DesktopPricingTableProps = {
+  plans: {
+    id: PlanId;
+    name: string;
+    billingPeriodPrice: number;
+    monthlyPrice: number;
+    annualPrice: number;
+    button: ReactNode;
+  }[];
+  showMonthly: boolean;
+  setShowMonthly: (showMonthly: boolean) => void;
+};
+
+const DesktopPricingTable = (props: DesktopPricingTableProps) => {
+  const { plans, showMonthly, setShowMonthly } = props;
+  return (
+    <table className="hidden w-full table-fixed md:table">
+      <thead className="text-left">
+        <tr>
+          <th className="py-2 w-52 md:w-1/3"></th>
+          <th className="py-2 w-52 md:w-1/3">{PRICING_PLANS.basic.name}</th>
+          <th className="py-2 w-52 md:w-1/3">
+            <span>{PRICING_PLANS.pro.name}</span>
+            <span className="px-2 py-1 ml-2 text-xs font-medium rounded-full text-primary-900 bg-primary-100">
+              Early bird pricing
+            </span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td className="py-2"></td>
+          {plans.map((plan) => (
+            <td key={plan.id} className="py-2">
+              <div className="flex items-baseline text-4xl font-semibold">
+                <span>${plan.billingPeriodPrice}</span>
+                {plan.id !== PlanId.Basic ? (
+                  <s className="ml-2 text-2xl text-gray-500">
+                    {showMonthly ? '$10' : '$100'}
+                  </s>
+                ) : null}
+                <span className="ml-1 text-2xl leading-8 text-gray-500">
+                  {showMonthly ? '/ mo' : '/ yr'}
+                </span>
+              </div>
+            </td>
+          ))}
+        </tr>
+        <tr>
+          <td className="pb-2"></td>
+          {plans.map((plan) => (
+            <td key={plan.id} className="pb-2 text-gray-500">
+              {plan.id !== PlanId.Basic ? (
+                !showMonthly ? (
+                  <span className="text-sm">${plan.monthlyPrice} / mo</span>
+                ) : (
+                  <span className="text-sm">${plan.annualPrice} / yr</span>
+                )
+              ) : null}
+            </td>
+          ))}
+        </tr>
+        <tr>
+          <td className="py-2">
+            <div className="flex items-center">
+              <span className="text-sm text-gray-600">Annual</span>
+              <Toggle
+                className="mx-2"
+                isChecked={showMonthly}
+                setIsChecked={setShowMonthly}
+              />
+              <span className="text-sm text-gray-600">Monthly</span>
+            </div>
+          </td>
+          {plans.map((plan) => (
+            <td key={plan.id} className="py-2 pr-6">
+              {plan.button}
+            </td>
+          ))}
+        </tr>
+        {pricingTableData.map((category) => (
+          <Fragment key={`${category.name}-container`}>
+            <tr className="border-b" key={`${category.name}-title`}>
+              <td className="pt-4 pb-2 font-semibold">{category.name}</td>
+            </tr>
+            {category.data.map((row, rowIndex) => (
+              <tr className="border-b" key={`${category.name}-${rowIndex}`}>
+                {row.map((datum, datumIndex) => (
+                  <td
+                    key={`${category.name}-${rowIndex}-${datumIndex}`}
+                    className="py-2"
+                  >
+                    {typeof datum === 'boolean' && datum ? (
+                      <IconCheck className="text-primary-500" />
+                    ) : (
+                      datum
+                    )}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </Fragment>
+        ))}
+      </tbody>
+    </table>
+  );
+};
