@@ -10,13 +10,14 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (req.method !== 'POST') {
-    return res.status(400).send({ message: 'Only POST requests allowed' });
+    res.setHeader('Allow', 'POST');
+    res.status(405).end('Method Not Allowed');
   }
 
   const { priceId, redirectPath = '/app' } = req.body;
 
   if (!priceId) {
-    return res.status(400).json({ error: 'priceId is required' });
+    return res.status(400).json({ message: 'priceId is required' });
   }
 
   try {
@@ -35,6 +36,6 @@ export default async function handler(
     });
     res.json({ sessionId: session.id });
   } catch (e) {
-    res.status(500).json({ error: e.message });
+    res.status(500).json({ message: e.message });
   }
 }
