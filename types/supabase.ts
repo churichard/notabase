@@ -8,12 +8,7 @@ export enum SubscriptionStatus {
 
 export type User = {
   id: string;
-  billing_data: {
-    stripe_customer_id: string | null;
-    stripe_subscription_id: string | null;
-    subscription_status: SubscriptionStatus | null;
-    plan_id: PlanId | null;
-  };
+  subscription_id: Subscription['id'] | null;
 };
 
 export type Note = {
@@ -23,4 +18,12 @@ export type Note = {
   title: string;
   created_at: string;
   updated_at: string;
+};
+
+export type Subscription = {
+  id: string;
+  user_id: User['id'];
+  stripe_customer_id: string;
+  plan_id: PlanId;
+  subscription_status: SubscriptionStatus;
 };

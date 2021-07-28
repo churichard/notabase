@@ -1,7 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import Stripe from 'stripe';
-import supabase from 'lib/supabase';
-import { User } from 'types/supabase';
+import { createClient } from '@supabase/supabase-js';
+import { Subscription } from 'types/supabase';
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL ?? '',
+  process.env.SUPABASE_SERVICE_KEY ?? ''
+);
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? '', {
   apiVersion: '2020-08-27',
@@ -23,17 +28,17 @@ export default async function handler(
   }
 
   const { data } = await supabase
-    .from<User>('users')
-    .select('billing_data')
-    .eq('id', userId)
+    .from<Subscription>('subscriptions')
+    .select('stripe_customer_id')
+    .eq('user_id', userId)
     .single();
-  const billingData = data?.billing_data;
+  const stripeCustomerId = data?.stripe_customer_id;
 
   try {
     const baseUrl = process.env.BASE_URL ?? 'https://notabase.io';
     const session = await stripe.checkout.sessions.create({
       client_reference_id: userId,
-      customer: billingData?.stripe_customer_id ?? undefined,
+      customer: stripeCustomerId ?? undefined,
       customer_email: userEmail ?? undefined,
       payment_method_types: ['card'],
       line_items: [

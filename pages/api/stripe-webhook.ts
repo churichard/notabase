@@ -2,9 +2,14 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { buffer } from 'micro';
 import Cors from 'micro-cors';
 import Stripe from 'stripe';
-import supabase from 'lib/supabase';
-import { SubscriptionStatus, User } from 'types/supabase';
+import { createClient } from '@supabase/supabase-js';
+import { Subscription, SubscriptionStatus, User } from 'types/supabase';
 import { getPlanIdByProductId } from 'constants/pricing';
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL ?? '',
+  process.env.SUPABASE_SERVICE_KEY ?? ''
+);
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? '', {
   apiVersion: '2020-08-27',
@@ -56,18 +61,20 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
     const productId =
       typeof product === 'string' ? product : product?.id ?? null;
 
+    const { data: subscriptionData } = await supabase
+      .from<Subscription>('subscriptions')
+      .insert({
+        stripe_customer_id: customerId,
+        plan_id: getPlanIdByProductId(productId),
+        subscription_status: isSubscriptionActive
+          ? SubscriptionStatus.ACTIVE
+          : SubscriptionStatus.INACTIVE,
+      })
+      .single();
+
     await supabase
       .from<User>('users')
-      .update({
-        billing_data: {
-          stripe_customer_id: customerId,
-          stripe_subscription_id: subscriptionId,
-          subscription_status: isSubscriptionActive
-            ? SubscriptionStatus.ACTIVE
-            : SubscriptionStatus.INACTIVE,
-          plan_id: getPlanIdByProductId(productId),
-        },
-      })
+      .update({ subscription_id: subscriptionData?.id })
       .eq('id', userId);
   }
 
