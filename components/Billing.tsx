@@ -3,9 +3,11 @@ import { loadStripe } from '@stripe/stripe-js/pure';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
 import { Plan, PRICING_PLANS } from 'constants/pricing';
+import { useAuth } from 'utils/useAuth';
 import PricingTable from './PricingTable';
 
 export default function Billing() {
+  const { user } = useAuth();
   const router = useRouter();
 
   const onSubscribe = useCallback(
@@ -17,6 +19,8 @@ export default function Billing() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
+          userId: user?.id,
+          userEmail: user?.email,
           redirectPath: router.asPath,
           priceId: showMonthly
             ? plan.prices.monthly.priceId
@@ -36,7 +40,7 @@ export default function Billing() {
         toast.error('Error creating checkout session');
       }
     },
-    [router]
+    [router, user]
   );
 
   const pricingButtons = useMemo(() => {
