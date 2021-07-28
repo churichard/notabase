@@ -52,6 +52,7 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
         : session.subscription?.id ?? null;
 
     if (!userId || !customerId || !subscriptionId) {
+      res.status(500).send('Invalid user id, customer id, or subscription id');
       return;
     }
 
@@ -66,6 +67,7 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
       .from<Subscription>('subscriptions')
       .insert({
         stripe_customer_id: customerId,
+        stripe_subscription_id: subscriptionId,
         plan_id: getPlanIdByProductId(productId),
         subscription_status: isSubscriptionActive
           ? SubscriptionStatus.ACTIVE
@@ -79,6 +81,33 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
       .update({ subscription_id: subscriptionData?.id })
       .eq('id', userId);
   } else if (
+    event.type === 'invoice.paid' ||
+    event.type === 'invoice.payment_failed'
+  ) {
+    const invoice = event.data.object as Stripe.Invoice;
+    const subscriptionId =
+      typeof invoice.subscription === 'string'
+        ? invoice.subscription
+        : invoice.subscription?.id ?? null;
+
+    if (!subscriptionId) {
+      res.status(500).send('Invalid subscription id');
+      return;
+    }
+
+    const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+    const isSubscriptionActive = subscription.status === 'active';
+
+    // Update subscription status
+    await supabase
+      .from<Subscription>('subscriptions')
+      .update({
+        subscription_status: isSubscriptionActive
+          ? SubscriptionStatus.ACTIVE
+          : SubscriptionStatus.INACTIVE,
+      })
+      .eq('stripe_subscription_id', subscriptionId);
+  } else if (
     event.type === 'customer.subscription.updated' ||
     event.type === 'customer.subscription.deleted'
   ) {
@@ -86,11 +115,14 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
     const isSubscriptionActive = subscription.status === 'active';
 
     // Update subscription status
-    await supabase.from<Subscription>('subscriptions').update({
-      subscription_status: isSubscriptionActive
-        ? SubscriptionStatus.ACTIVE
-        : SubscriptionStatus.INACTIVE,
-    });
+    await supabase
+      .from<Subscription>('subscriptions')
+      .update({
+        subscription_status: isSubscriptionActive
+          ? SubscriptionStatus.ACTIVE
+          : SubscriptionStatus.INACTIVE,
+      })
+      .eq('stripe_subscription_id', subscription.id);
   }
 
   res.json({ received: true });
