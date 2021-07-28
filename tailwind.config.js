@@ -40,6 +40,9 @@ module.exports = {
       opacity: {
         85: '.85',
       },
+      zIndex: {
+        '-10': '-10',
+      },
       typography: {
         DEFAULT: {
           css: {

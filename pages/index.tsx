@@ -12,7 +12,7 @@ export default function Home() {
             <Navbar />
             <div className="pt-10 pb-16 md:pb-32 md:pt-24">
               <div className="container px-6 text-center">
-                <h1 className="text-4xl font-medium leading-tight md:leading-tight md:text-5xl">
+                <h1 className="text-4xl font-semibold leading-tight text-gray-900 md:leading-tight md:text-5xl">
                   Empower your writing, research, and ideas
                 </h1>
                 <p className="pt-6 text-2xl text-gray-700 md:pt-8 md:text-3xl">
@@ -46,8 +46,8 @@ export default function Home() {
           </div>
           <div className="pt-16 pb-8 md:pt-32 md:pb-16">
             <div className="container flex flex-col items-center px-6 md:flex-row">
-              <div className="flex-1 md:px-6">
-                <h2 className="text-3xl font-medium md:text-4xl">
+              <div className="flex-1 md:mx-8">
+                <h2 className="text-3xl font-semibold md:text-4xl">
                   Write the way you think
                 </h2>
                 <div className="max-w-3xl pt-6 mx-auto md:pt-8">
@@ -64,7 +64,7 @@ export default function Home() {
                   </p>
                 </div>
               </div>
-              <div className="flex-1 mt-12 md:mt-0 md:px-6">
+              <div className="relative flex-1 px-6 mt-12 md:mt-0 md:mx-8 lg:px-8 xl:px-0">
                 <video
                   className="mx-auto rounded-md shadow-popover"
                   width={400}
@@ -74,12 +74,13 @@ export default function Home() {
                 >
                   <source src="/graph.mp4" type="video/mp4" />
                 </video>
+                <div className="absolute left-0 right-0 w-full transform rounded-md top-14 bottom-14 bg-primary-50 -rotate-3 -z-10" />
               </div>
             </div>
           </div>
           <div className="pt-8 pb-16 md:pb-32 md:pt-16">
             <div className="container flex flex-col items-center px-6 md:flex-row">
-              <div className="flex-1 order-1 mt-12 md:order-none md:mt-0 md:px-6">
+              <div className="relative flex-1 order-1 px-6 mt-12 md:order-none md:mt-0 md:mx-8 lg:px-8 xl:px-0">
                 <video
                   className="mx-auto rounded-md shadow-popover"
                   width={400}
@@ -89,9 +90,10 @@ export default function Home() {
                 >
                   <source src="/rich_text.mp4" type="video/mp4" />
                 </video>
+                <div className="absolute left-0 right-0 w-full transform rounded-md top-14 bottom-14 bg-blue-50 rotate-3 -z-10" />
               </div>
-              <div className="flex-1 md:px-6">
-                <h2 className="text-3xl font-medium md:text-4xl">
+              <div className="flex-1 md:mx-8">
+                <h2 className="text-3xl font-semibold md:text-4xl">
                   Easy to use; it just works
                 </h2>
                 <div className="max-w-3xl pt-6 mx-auto md:pt-8">
@@ -112,7 +114,7 @@ export default function Home() {
           </div>
           <div className="py-16 bg-gradient-to-r from-yellow-50 via-green-50 to-blue-50 md:py-32">
             <div className="container px-6">
-              <h2 className="text-3xl font-medium text-center md:text-4xl">
+              <h2 className="text-3xl font-semibold text-center md:text-4xl">
                 Privacy-friendly and open source
               </h2>
               <div className="max-w-3xl pt-6 mx-auto md:pt-8">
@@ -155,7 +157,7 @@ export default function Home() {
           </div>
           <div className="py-16 md:py-32">
             <div className="container px-6">
-              <h2 className="text-3xl font-medium text-center md:text-4xl">
+              <h2 className="text-3xl font-semibold text-center md:text-4xl">
                 Pricing
               </h2>
               <div className="max-w-3xl pt-6 mx-auto md:pt-8">
@@ -180,7 +182,7 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <div className="container my-8 border-t border-b bg-gradient-to-r from-yellow-50 via-green-50 to-blue-50 sm:border-l sm:border-r border-primary-200 sm:rounded-md">
+          <div className="container my-8 bg-gradient-to-r from-yellow-50 via-green-50 to-blue-50 sm:rounded-md">
             <div className="px-8 py-12 md:space-x-6 lg:py-16 lg:px-16 md:flex md:items-center md:justify-between">
               <div>
                 <h2 className="text-2xl font-medium text-primary-900 lg:text-3xl">
