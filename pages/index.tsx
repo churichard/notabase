@@ -10,10 +10,10 @@ export default function Home() {
         <div className="flex-1">
           <div className="bg-gradient-to-r from-yellow-50 via-green-50 to-blue-50">
             <Navbar />
-            <div className="py-16 md:py-32">
+            <div className="pt-10 pb-16 md:pb-32 md:pt-24">
               <div className="container px-6 text-center">
                 <h1 className="text-4xl font-medium leading-tight md:leading-tight md:text-5xl">
-                  Networked notes for your research and ideas
+                  Empower your writing, research, and ideas
                 </h1>
                 <p className="pt-6 text-2xl text-gray-700 md:pt-8 md:text-3xl">
                   Notabase is a personal knowledge base for networked thinking.
@@ -44,10 +44,10 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <div className="py-16 md:py-32">
-            <div className="container flex flex-col items-center px-6 md:flex-row md:space-x-12">
-              <div className="flex-1">
-                <h2 className="text-3xl font-medium text-center md:text-4xl">
+          <div className="pt-16 pb-8 md:pt-32 md:pb-16">
+            <div className="container flex flex-col items-center px-6 md:flex-row">
+              <div className="flex-1 md:px-6">
+                <h2 className="text-3xl font-medium md:text-4xl">
                   Write the way you think
                 </h2>
                 <div className="max-w-3xl pt-6 mx-auto md:pt-8">
@@ -59,13 +59,12 @@ export default function Home() {
                     graph. The more you write, the more powerful it gets.
                   </p>
                   <p className="mt-4 text-lg leading-relaxed text-gray-700 md:text-xl md:leading-relaxed">
-                    When you look at a note, relevant notes will surface
-                    naturally&mdash;empowering your writing, research, and
-                    ideas.
+                    When you reference a note, relevant notes will surface
+                    naturally. Never lose sight of the bigger picture.
                   </p>
                 </div>
               </div>
-              <div className="flex-1 mt-12 md:mt-0">
+              <div className="flex-1 mt-12 md:mt-0 md:px-6">
                 <video
                   className="mx-auto rounded-md shadow-popover"
                   width={400}
@@ -78,9 +77,9 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <div className="py-16 md:py-32">
-            <div className="container flex flex-col items-center px-6 md:flex-row md:space-x-12">
-              <div className="flex-1 order-1 mt-12 md:order-none md:mt-0">
+          <div className="pt-8 pb-16 md:pb-32 md:pt-16">
+            <div className="container flex flex-col items-center px-6 md:flex-row">
+              <div className="flex-1 order-1 mt-12 md:order-none md:mt-0 md:px-6">
                 <video
                   className="mx-auto rounded-md shadow-popover"
                   width={400}
@@ -91,27 +90,21 @@ export default function Home() {
                   <source src="/rich_text.mp4" type="video/mp4" />
                 </video>
               </div>
-              <div className="flex-1">
-                <h2 className="text-3xl font-medium text-center md:text-4xl">
+              <div className="flex-1 md:px-6">
+                <h2 className="text-3xl font-medium md:text-4xl">
                   Easy to use; it just works
                 </h2>
                 <div className="max-w-3xl pt-6 mx-auto md:pt-8">
                   <p className="text-lg leading-relaxed text-gray-700 md:text-xl md:leading-relaxed">
-                    As you{' '}
-                    <code className="p-0.25 bg-gray-100 border border-gray-200 rounded">
-                      type
-                    </code>
-                    , everything is converted <i>effortlessly</i> into{' '}
-                    <b>rich-text</b>. This makes it frictionless to write down
-                    and read your thoughts.
+                    With our powerful editor, reading and writing happens in one
+                    fluid experience. Never context switch again.
                   </p>
                   <p className="mt-4 text-lg leading-relaxed text-gray-700 md:text-xl md:leading-relaxed">
                     Your notes are automatically synced across all of your
                     devices, so they&apos;re accessible from anywhere.
                   </p>
                   <p className="mt-4 text-lg leading-relaxed text-gray-700 md:text-xl md:leading-relaxed">
-                    No fiddling, no hassle&mdash;everything works out of the box
-                    with no setup.
+                    No setup, no hassle&mdash;everything works out of the box.
                   </p>
                 </div>
               </div>
@@ -124,8 +117,8 @@ export default function Home() {
               </h2>
               <div className="max-w-3xl pt-6 mx-auto md:pt-8">
                 <p className="text-lg leading-relaxed text-gray-700 md:text-xl md:leading-relaxed">
-                  Notabase is designed to be an open, transparent, and
-                  privacy-friendly platform.
+                  Notabase is an open, transparent, and privacy-friendly
+                  platform.
                 </p>
                 <p className="mt-4 text-lg leading-relaxed text-gray-700 md:text-xl md:leading-relaxed">
                   It&apos;s{' '}
@@ -191,7 +184,7 @@ export default function Home() {
             <div className="px-8 py-12 md:space-x-6 lg:py-16 lg:px-16 md:flex md:items-center md:justify-between">
               <div>
                 <h2 className="text-2xl font-medium text-primary-900 lg:text-3xl">
-                  Write the way you think.
+                  Empower your writing and thinking.
                 </h2>
                 <h2 className="mt-1 text-2xl font-medium text-primary-600 lg:text-3xl">
                   Start your personal knowledge base today.
