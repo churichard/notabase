@@ -51,16 +51,17 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
         ? session.subscription
         : session.subscription?.id ?? null;
 
-    // Store billing data in database
     if (!userId || !customerId || !subscriptionId) {
       return;
     }
+
     const subscription = await stripe.subscriptions.retrieve(subscriptionId);
     const isSubscriptionActive = subscription.status === 'active';
     const product = subscription.items.data[0].price.product;
     const productId =
       typeof product === 'string' ? product : product?.id ?? null;
 
+    // Create new subscription
     const { data: subscriptionData } = await supabase
       .from<Subscription>('subscriptions')
       .insert({
@@ -72,10 +73,24 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
       })
       .single();
 
+    // Add subscription id to user
     await supabase
       .from<User>('users')
       .update({ subscription_id: subscriptionData?.id })
       .eq('id', userId);
+  } else if (
+    event.type === 'customer.subscription.updated' ||
+    event.type === 'customer.subscription.deleted'
+  ) {
+    const subscription = event.data.object as Stripe.Subscription;
+    const isSubscriptionActive = subscription.status === 'active';
+
+    // Update subscription status
+    await supabase.from<Subscription>('subscriptions').update({
+      subscription_status: isSubscriptionActive
+        ? SubscriptionStatus.ACTIVE
+        : SubscriptionStatus.INACTIVE,
+    });
   }
 
   res.json({ received: true });
