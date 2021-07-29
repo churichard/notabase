@@ -25,6 +25,7 @@ export default function Changelog() {
         </p>
         <ChangelogBlock
           title="July 29, 2021"
+          features={['Add support for wiki links when importing a note']}
           bugFixes={[
             "Don't create paragraphs in a nested list when pressing enter or backspace",
             "Don't convert markdown shortcuts in code blocks",

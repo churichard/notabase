@@ -68,8 +68,17 @@ export default function deserialize(node: MdastNode, opts?: OptionType) {
       return { type: ElementType.ListItem, children };
     case 'paragraph':
       return { type: ElementType.Paragraph, children };
+
     case 'link':
       return { type: ElementType.ExternalLink, url: node.url, children };
+    case 'wikiLink':
+      // Note ids are omitted and are added later
+      return {
+        type: ElementType.NoteLink,
+        noteTitle: node.value,
+        children: [{ text: node.value }],
+      };
+
     case 'image':
       return {
         type: ElementType.Image,

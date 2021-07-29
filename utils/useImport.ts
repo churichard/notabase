@@ -1,12 +1,18 @@
 import { useCallback } from 'react';
 import unified from 'unified';
 import markdown from 'remark-parse';
-import { Descendant } from 'slate';
+import { createEditor, Descendant, Editor, Element, Transforms } from 'slate';
 import { toast } from 'react-toastify';
+import wikiLinkPlugin from 'remark-wiki-link';
+import { v4 as uuidv4 } from 'uuid';
 import { store } from 'lib/store';
 import upsertNote from 'lib/api/upsertNote';
+import supabase from 'lib/supabase';
 import remarkToSlate from 'editor/serialization/remarkToSlate';
+import withLinks from 'editor/plugins/withLinks';
 import { caseInsensitiveStringEqual } from 'utils/string';
+import { ElementType } from 'types/slate';
+import { Note } from 'types/supabase';
 import { useAuth } from './useAuth';
 
 export default function useImport() {
@@ -34,17 +40,21 @@ export default function useImport() {
       }
 
       // Add a new note for each imported note
-      const promises = [];
+      const promises: Promise<Note | null>[] = [];
       for (const file of inputElement.files) {
         const fileName = file.name.replace(/\.[^/.]+$/, '');
         const fileContent = await file.text();
 
         const { result } = unified()
           .use(markdown)
+          .use(wikiLinkPlugin)
           .use(remarkToSlate)
           .processSync(fileContent);
-        const slateContent = result as Descendant[];
 
+        const { content: slateContent, promises: noteLinkPromises } =
+          fixNoteLinks(result as Descendant[]);
+
+        promises.push(...noteLinkPromises);
         promises.push(
           upsertNote({
             user_id: user.id,
@@ -92,4 +102,67 @@ const getUniqueTitle = (title: string) => {
   }
 
   return getResult();
+};
+
+/**
+ * Fixes note links by adding the proper note id to the link.
+ * The note id comes from an existing note, or a new note is created.
+ */
+const fixNoteLinks = (
+  content: Descendant[]
+): { content: Descendant[]; promises: Promise<Note | null>[] } => {
+  const promises = [];
+
+  const editor = withLinks(createEditor());
+  editor.children = content;
+
+  // Find note link elements
+  const matchingElements = Editor.nodes(editor, {
+    at: [],
+    match: (n) => Element.isElement(n) && n.type === ElementType.NoteLink,
+  });
+
+  const newNoteTitleToId: Record<string, string | undefined> = {};
+  const notesArr = Object.values(store.getState().notes);
+  for (const [node, path] of matchingElements) {
+    if (Element.isElement(node) && node.type === ElementType.NoteLink) {
+      const noteTitle = node.noteTitle;
+      let noteId;
+
+      const existingNoteId =
+        newNoteTitleToId[noteTitle] ??
+        notesArr.find((note) =>
+          caseInsensitiveStringEqual(note.title, noteTitle)
+        )?.id;
+
+      if (existingNoteId) {
+        noteId = existingNoteId;
+      } else {
+        noteId = uuidv4(); // Create new note id
+        newNoteTitleToId[noteTitle] = noteId; // Add to new notes array
+
+        const userId = supabase.auth.user()?.id;
+        if (userId) {
+          promises.push(
+            upsertNote({ id: noteId, user_id: userId, title: noteTitle })
+          );
+        }
+      }
+
+      // Set proper note id on the note link
+      Transforms.setNodes(
+        editor,
+        { noteId },
+        {
+          at: path,
+          match: (n) =>
+            Element.isElement(n) &&
+            n.type === ElementType.NoteLink &&
+            n.noteTitle === noteTitle,
+        }
+      );
+    }
+  }
+
+  return { content: editor.children, promises };
 };

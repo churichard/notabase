@@ -37,6 +37,7 @@
     "react-popper": "^2.2.5",
     "react-toastify": "^7.0.4",
     "remark-parse": "^9.0.0",
+    "remark-wiki-link": "^1.0.4",
     "slate": "^0.63.0",
     "slate-history": "^0.62.0",
     "slate-react": "^0.65.2",
