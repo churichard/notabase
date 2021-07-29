@@ -51,13 +51,19 @@ const withBlockBreakout = (editor: Editor) => {
 
     // The element is a list item and the line is empty
     if (lineElementType === ElementType.ListItem && lineText.length === 0) {
-      Transforms.setNodes(editor, { type: ElementType.Paragraph });
-
       Transforms.unwrapNodes(editor, {
         match: (n) =>
           !Editor.isEditor(n) && Element.isElement(n) && isListType(n.type),
         split: true,
       });
+
+      const isInList = Editor.above(editor, {
+        match: (n) =>
+          !Editor.isEditor(n) && Element.isElement(n) && isListType(n.type),
+      });
+      if (!isInList) {
+        Transforms.setNodes(editor, { type: ElementType.Paragraph });
+      }
     }
     // The cursor is at the end of the line
     else if (isAtLineEnd) {

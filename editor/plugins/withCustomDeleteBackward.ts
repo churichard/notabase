@@ -26,9 +26,6 @@ const withCustomDeleteBackward = (editor: Editor) => {
       Element.isElement(lineElement) &&
       lineElement.type !== ElementType.Paragraph
     ) {
-      // Convert to paragraph
-      Transforms.setNodes(editor, { type: ElementType.Paragraph });
-
       // If it is a list item, unwrap the list
       if (lineElement.type === ElementType.ListItem) {
         Transforms.unwrapNodes(editor, {
@@ -36,6 +33,17 @@ const withCustomDeleteBackward = (editor: Editor) => {
             !Editor.isEditor(n) && Element.isElement(n) && isListType(n.type),
           split: true,
         });
+
+        const isInList = Editor.above(editor, {
+          match: (n) =>
+            !Editor.isEditor(n) && Element.isElement(n) && isListType(n.type),
+        });
+        if (!isInList) {
+          Transforms.setNodes(editor, { type: ElementType.Paragraph });
+        }
+      } else {
+        // Convert to paragraph
+        Transforms.setNodes(editor, { type: ElementType.Paragraph });
       }
 
       return;

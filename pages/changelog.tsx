@@ -24,6 +24,12 @@ export default function Changelog() {
           .
         </p>
         <ChangelogBlock
+          title="July 29, 2021"
+          bugFixes={[
+            "Don't create paragraphs in a nested list when pressing enter or backspace",
+          ]}
+        />
+        <ChangelogBlock
           title="July 27, 2021"
           features={[
             'Add persistence of user settings',
