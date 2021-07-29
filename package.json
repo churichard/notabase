@@ -11,7 +11,7 @@
     "analyze": "env ANALYZE=true next build"
   },
   "dependencies": {
-    "@headlessui/react": "^1.3.0",
+    "@headlessui/react": "^1.4.0",
     "@popperjs/core": "^2.9.2",
     "@sentry/nextjs": "^6.10.0",
     "@supabase/supabase-js": "^1.21.0",
