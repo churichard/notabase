@@ -27,4 +27,6 @@ export type Subscription = {
   stripe_subscription_id: string;
   plan_id: PlanId;
   subscription_status: SubscriptionStatus;
+  current_period_end: number;
+  cancel_at_period_end: boolean;
 };

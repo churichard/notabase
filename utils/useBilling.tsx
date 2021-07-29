@@ -12,9 +12,11 @@ import supabase from 'lib/supabase';
 import { Subscription, SubscriptionStatus } from 'types/supabase';
 import { useAuth } from './useAuth';
 
-type SubscriptionContextType = {
+export type SubscriptionContextType = {
   planId: PlanId;
   subscriptionStatus: SubscriptionStatus;
+  currentPeriodEnd: number;
+  cancelAtPeriodEnd: boolean;
 };
 
 type BillingContextType = {
@@ -32,15 +34,20 @@ function useProvideBilling(): BillingContextType {
 
   // Get the subscription based on the user
   const initSubscription = useCallback(async (user: User) => {
+    // const nextWeek = new Date();
+    // nextWeek.setDate(new Date().getDate() + 7);
+
     // setSubscription({
     //   planId: PlanId.Pro,
     //   subscriptionStatus: SubscriptionStatus.Active,
+    //   currentPeriodEnd: nextWeek.getTime(),
+    //   cancelAtPeriodEnd: true,
     // }); // TODO: remove this
 
     // TODO: uncomment this when table is created
     // const { data } = await supabase
     //   .from<Subscription>('subscriptions')
-    //   .select('plan_id, subscription_status')
+    //   .select('plan_id, subscription_status, current_period_end, cancel_at_period_end')
     //   .eq('user_id', user.id)
     //   .maybeSingle();
 
@@ -48,6 +55,8 @@ function useProvideBilling(): BillingContextType {
     //   setSubscription({
     //     planId: data.plan_id,
     //     subscriptionStatus: data.subscription_status,
+    //     currentPeriodEnd: data.current_period_end,
+    //     cancelAtPeriodEnd: data.cancel_at_period_end,
     //   });
     // }
 

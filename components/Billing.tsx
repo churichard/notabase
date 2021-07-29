@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
 import { Plan, PlanId, PRICING_PLANS } from 'constants/pricing';
 import { useAuth } from 'utils/useAuth';
-import { useBilling } from 'utils/useBilling';
+import { SubscriptionContextType, useBilling } from 'utils/useBilling';
 import { SubscriptionStatus } from 'types/supabase';
 import PricingTable from './PricingTable';
 
@@ -109,7 +109,66 @@ export default function Billing() {
 
   return (
     <div className="flex-1 p-6 overflow-y-auto">
+      <BillingBanner subscription={subscription} onChangePlan={onChangePlan} />
       <PricingTable buttons={pricingButtons} />
     </div>
   );
 }
+
+type BillingBannerProps = {
+  subscription: SubscriptionContextType | null;
+  onChangePlan: () => void;
+};
+
+const BillingBanner = (props: BillingBannerProps) => {
+  const { subscription, onChangePlan } = props;
+
+  if (!subscription) {
+    return null;
+  }
+
+  if (
+    subscription.cancelAtPeriodEnd &&
+    subscription.currentPeriodEnd > Date.now()
+  ) {
+    // Subscription is cancelling at the end of the current period
+    return (
+      <p className="p-4 mb-6 text-lg border rounded bg-primary-50 border-primary-200">
+        Your subscription will be cancelled at the end of your billing period on{' '}
+        {getDateFromTimestamp(subscription.currentPeriodEnd)}. If you&apos;d
+        like to renew your plan,{' '}
+        <button onClick={onChangePlan} className="link">
+          click here
+        </button>
+        .
+      </p>
+    );
+  } else if (
+    !subscription.cancelAtPeriodEnd &&
+    subscription.currentPeriodEnd > Date.now()
+  ) {
+    // Subscription is renewing at the end of the current period
+    return (
+      <p className="p-4 mb-6 text-lg border rounded bg-primary-50 border-primary-200">
+        Your subscription will renew at the end of your billing period on{' '}
+        {getDateFromTimestamp(subscription.currentPeriodEnd)}. If you&apos;d
+        like to edit your billing details,{' '}
+        <button onClick={onChangePlan} className="link">
+          click here
+        </button>
+        .
+      </p>
+    );
+  } else {
+    // No current subscription
+    return null;
+  }
+};
+
+const getDateFromTimestamp = (timestamp: number) => {
+  return new Date(timestamp).toLocaleDateString(undefined, {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+};

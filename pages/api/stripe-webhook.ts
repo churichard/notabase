@@ -58,6 +58,8 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     const subscription = await stripe.subscriptions.retrieve(subscriptionId);
     const isSubscriptionActive = subscription.status === 'active';
+    const currentPeriodEnd = subscription.current_period_end;
+    const cancelAtPeriodEnd = subscription.cancel_at_period_end;
     const product = subscription.items.data[0].price.product;
     const productId =
       typeof product === 'string' ? product : product?.id ?? null;
@@ -72,6 +74,8 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
         subscription_status: isSubscriptionActive
           ? SubscriptionStatus.Active
           : SubscriptionStatus.Inactive,
+        current_period_end: currentPeriodEnd,
+        cancel_at_period_end: cancelAtPeriodEnd,
       })
       .single();
 
@@ -110,6 +114,8 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   } else if (event.type === 'customer.subscription.updated') {
     const subscription = event.data.object as Stripe.Subscription;
     const isSubscriptionActive = subscription.status === 'active';
+    const currentPeriodEnd = subscription.current_period_end;
+    const cancelAtPeriodEnd = subscription.cancel_at_period_end;
     const product = subscription.items.data[0].price.product;
     const productId =
       typeof product === 'string' ? product : product?.id ?? null;
@@ -122,6 +128,8 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
         subscription_status: isSubscriptionActive
           ? SubscriptionStatus.Active
           : SubscriptionStatus.Inactive,
+        current_period_end: currentPeriodEnd,
+        cancel_at_period_end: cancelAtPeriodEnd,
       })
       .eq('stripe_subscription_id', subscription.id);
   } else if (event.type === 'customer.subscription.deleted') {
