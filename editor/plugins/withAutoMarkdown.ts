@@ -3,7 +3,7 @@ import { Editor, Element, Transforms, Range, Point, Text } from 'slate';
 import { v4 as uuidv4 } from 'uuid';
 import type { ExternalLink, ListElement, NoteLink } from 'types/slate';
 import { ElementType, Mark } from 'types/slate';
-import { isMark } from 'editor/formatting';
+import { isListType, isMark } from 'editor/formatting';
 import { isUrl } from 'utils/url';
 import { store } from 'lib/store';
 import upsertNote from 'lib/api/upsertNote';
@@ -128,8 +128,18 @@ const handleBlockShortcuts = (
   // Handle block shortcuts
   for (const shortcut of BLOCK_SHORTCUTS) {
     if (beforeText.match(shortcut.match)) {
+      // Delete markdown text
       Transforms.select(editor, beforeRange);
       Transforms.delete(editor);
+
+      // Unwrap lists if there are any
+      Transforms.unwrapNodes(editor, {
+        match: (n) =>
+          !Editor.isEditor(n) && Element.isElement(n) && isListType(n.type),
+        split: true,
+      });
+
+      // Update node type
       Transforms.setNodes(
         editor,
         { type: shortcut.type },

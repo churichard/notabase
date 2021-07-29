@@ -28,6 +28,7 @@ export default function Changelog() {
           bugFixes={[
             "Don't create paragraphs in a nested list when pressing enter or backspace",
             "Don't convert markdown shortcuts in code blocks",
+            'Remove enclosing list when typing a block markdown shortcut in a list',
           ]}
         />
         <ChangelogBlock
