@@ -377,6 +377,30 @@ const Faq = () => {
           </div>
           <div>
             <h3 className="text-lg font-medium text-gray-900">
+              What happens if I switch between the monthly and annual plans?
+            </h3>
+            <div className="mt-2">
+              <p className="text-gray-600">
+                You&apos;ll receive a prorated credit for the time remaining on
+                your current plan and be billed for the new plan.
+              </p>
+            </div>
+          </div>
+          <div>
+            <h3 className="text-lg font-medium text-gray-900">
+              What is &ldquo;early bird pricing&rdquo;?
+            </h3>
+            <div className="mt-2">
+              <p className="text-gray-600">
+                For a limited time, if you subscribe to Notabase, you&apos;ll
+                get a lifetime discount as a token of our appreciation. We may
+                raise our prices in the future, but you&apos;ll be locked in at
+                the current price as long as your subscription remains active.
+              </p>
+            </div>
+          </div>
+          <div>
+            <h3 className="text-lg font-medium text-gray-900">
               Do you offer discounts?
             </h3>
             <div className="mt-2">
@@ -393,19 +417,6 @@ const Faq = () => {
                   email us
                 </a>
                 .
-              </p>
-            </div>
-          </div>
-          <div>
-            <h3 className="text-lg font-medium text-gray-900">
-              What is &ldquo;early bird pricing&rdquo;?
-            </h3>
-            <div className="mt-2">
-              <p className="text-gray-600">
-                For a limited time, if you subscribe to Notabase, you&apos;ll
-                get a lifetime discount as a token of our appreciation. We may
-                raise our prices in the future, but you&apos;ll be locked in at
-                the current price as long as your subscription remains active.
               </p>
             </div>
           </div>
