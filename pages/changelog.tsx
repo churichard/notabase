@@ -27,6 +27,7 @@ export default function Changelog() {
           title="July 29, 2021"
           bugFixes={[
             "Don't create paragraphs in a nested list when pressing enter or backspace",
+            "Don't convert markdown shortcuts in code blocks",
           ]}
         />
         <ChangelogBlock

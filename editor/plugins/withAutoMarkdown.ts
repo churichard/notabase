@@ -80,6 +80,19 @@ const withAutoMarkdown = (editor: Editor) => {
 
     const { anchor } = selection;
 
+    // Don't handle auto markdown shortcuts in code blocks
+    const inCodeBlock = Editor.above(editor, {
+      match: (n) =>
+        !Editor.isEditor(n) &&
+        Element.isElement(n) &&
+        n.type === ElementType.CodeBlock,
+    });
+
+    if (inCodeBlock) {
+      insertText(text);
+      return;
+    }
+
     // Handle shortcuts at the beginning of a line
     const blockHandled = handleBlockShortcuts(editor, anchor, text);
     if (blockHandled) {
