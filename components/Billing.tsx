@@ -2,12 +2,15 @@ import { useCallback, useMemo } from 'react';
 import { loadStripe } from '@stripe/stripe-js/pure';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
-import { Plan, PRICING_PLANS } from 'constants/pricing';
+import { Plan, PlanId, PRICING_PLANS } from 'constants/pricing';
 import { useAuth } from 'utils/useAuth';
+import { useBilling } from 'utils/useBilling';
+import { SubscriptionStatus } from 'types/supabase';
 import PricingTable from './PricingTable';
 
 export default function Billing() {
   const { user } = useAuth();
+  const { subscription } = useBilling();
   const router = useRouter();
 
   const onSubscribe = useCallback(
@@ -44,22 +47,46 @@ export default function Billing() {
   );
 
   const pricingButtons = useMemo(() => {
-    return [
-      () => (
-        <div className="block w-full px-4 py-2 text-center text-gray-600 border rounded">
-          Current plan
-        </div>
-      ),
-      (showMonthly: boolean) => (
-        <button
-          className="block w-full px-4 py-2 btn"
-          onClick={() => onSubscribe(PRICING_PLANS.pro, showMonthly)}
-        >
-          Upgrade
-        </button>
-      ),
-    ];
-  }, [onSubscribe]);
+    const currentPlanId =
+      subscription &&
+      subscription.subscriptionStatus === SubscriptionStatus.ACTIVE
+        ? subscription.planId
+        : PlanId.Basic;
+
+    if (currentPlanId === PlanId.Pro) {
+      return [
+        (showMonthly: boolean) => (
+          <button
+            className="block w-full px-4 py-2 btn"
+            onClick={() => onSubscribe(PRICING_PLANS.pro, showMonthly)}
+          >
+            Switch plan
+          </button>
+        ),
+        () => (
+          <div className="block w-full px-4 py-2 text-center text-gray-600 border rounded">
+            Current plan
+          </div>
+        ),
+      ];
+    } else {
+      return [
+        () => (
+          <div className="block w-full px-4 py-2 text-center text-gray-600 border rounded">
+            Current plan
+          </div>
+        ),
+        (showMonthly: boolean) => (
+          <button
+            className="block w-full px-4 py-2 btn"
+            onClick={() => onSubscribe(PRICING_PLANS.pro, showMonthly)}
+          >
+            Upgrade
+          </button>
+        ),
+      ];
+    }
+  }, [onSubscribe, subscription]);
 
   return (
     <div className="flex-1 p-6 overflow-y-auto">

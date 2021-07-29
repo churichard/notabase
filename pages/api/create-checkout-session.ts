@@ -27,18 +27,19 @@ export default async function handler(
     return res.status(400).json({ message: 'Invalid params' });
   }
 
-  const { data } = await supabase
-    .from<Subscription>('subscriptions')
-    .select('stripe_customer_id')
-    .eq('user_id', userId)
-    .single();
-  const stripeCustomerId = data?.stripe_customer_id;
+  // TODO: uncomment this when table is created
+  // const { data } = await supabase
+  //   .from<Subscription>('subscriptions')
+  //   .select('stripe_customer_id')
+  //   .eq('user_id', userId)
+  //   .maybeSingle();
+  // const stripeCustomerId = data?.stripe_customer_id;
 
   try {
     const baseUrl = process.env.BASE_URL ?? 'https://notabase.io';
     const session = await stripe.checkout.sessions.create({
       client_reference_id: userId,
-      customer: stripeCustomerId ?? undefined,
+      // customer: stripeCustomerId ?? undefined, // TODO: uncomment this when table is created
       customer_email: userEmail ?? undefined,
       payment_method_types: ['card'],
       line_items: [

@@ -4,6 +4,7 @@ import { ToastContainer } from 'react-toastify';
 import NProgress from 'nprogress';
 import type { AppProps } from 'next/app';
 import { ProvideAuth } from 'utils/useAuth';
+import { ProvideBilling } from 'utils/useBilling';
 import AppLayout from 'components/AppLayout';
 import 'styles/styles.css';
 import 'styles/nprogress.css';
@@ -62,9 +63,11 @@ export default function MyApp({ Component, pageProps, router }: AppProps) {
       </Head>
       <ProvideAuth>
         {router.pathname.startsWith('/app') ? (
-          <AppLayout>
-            <Component {...pageProps} />
-          </AppLayout>
+          <ProvideBilling>
+            <AppLayout>
+              <Component {...pageProps} />
+            </AppLayout>
+          </ProvideBilling>
         ) : (
           <Component {...pageProps} />
         )}
