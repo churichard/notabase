@@ -21,9 +21,9 @@ export default async function handler(
     res.status(405).end('Method Not Allowed');
   }
 
-  const { userId, userEmail, priceId, redirectPath = '/app' } = req.body;
+  const { userId, redirectPath = '/app' } = req.body;
 
-  if (!userId || !priceId || !userEmail) {
+  if (!userId) {
     return res.status(400).json({ message: 'Invalid params' });
   }
 
@@ -36,25 +36,19 @@ export default async function handler(
   // const stripeCustomerId = data?.stripe_customer_id;
   const stripeCustomerId = ''; // TODO: remove this
 
+  if (!stripeCustomerId) {
+    return res
+      .status(500)
+      .json({ message: `Customer id for user ${userId} was not found` });
+  }
+
   try {
     const baseUrl = process.env.BASE_URL ?? 'https://notabase.io';
-    const session = await stripe.checkout.sessions.create({
-      client_reference_id: userId,
-      ...(stripeCustomerId
-        ? { customer: stripeCustomerId }
-        : { customer_email: userEmail }),
-      payment_method_types: ['card'],
-      line_items: [
-        {
-          price: priceId,
-          quantity: 1,
-        },
-      ],
-      mode: 'subscription',
-      success_url: `${baseUrl}${redirectPath}?checkout_session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${baseUrl}${redirectPath}`,
+    const session = await stripe.billingPortal.sessions.create({
+      customer: stripeCustomerId,
+      return_url: `${baseUrl}${redirectPath}`,
     });
-    res.json({ sessionId: session.id });
+    res.json({ sessionUrl: session.url });
   } catch (e) {
     res.status(500).json({ message: e.message });
   }

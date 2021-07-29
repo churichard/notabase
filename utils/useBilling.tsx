@@ -32,6 +32,11 @@ function useProvideBilling(): BillingContextType {
 
   // Get the subscription based on the user
   const initSubscription = useCallback(async (user: User) => {
+    // setSubscription({
+    //   planId: PlanId.Pro,
+    //   subscriptionStatus: SubscriptionStatus.Active,
+    // }); // TODO: remove this
+
     // TODO: uncomment this when table is created
     // const { data } = await supabase
     //   .from<Subscription>('subscriptions')

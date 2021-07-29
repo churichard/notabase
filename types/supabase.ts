@@ -2,8 +2,8 @@ import type { Descendant } from 'slate';
 import type { PlanId } from 'constants/pricing';
 
 export enum SubscriptionStatus {
-  ACTIVE = 'active',
-  INACTIVE = 'inactive',
+  Active = 'active',
+  Inactive = 'inactive',
 }
 
 export type User = {

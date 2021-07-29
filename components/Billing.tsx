@@ -46,20 +46,39 @@ export default function Billing() {
     [router, user]
   );
 
+  const onChangePlan = useCallback(async () => {
+    // Create stripe billing portal session
+    const res = await fetch('/api/create-billing-portal-session', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        userId: user?.id,
+        redirectPath: router.asPath,
+      }),
+    });
+
+    if (res.ok) {
+      // Redirect to stripe billing portal page
+      const { sessionUrl } = await res.json();
+      window.location.href = sessionUrl;
+    } else {
+      toast.error('Error creating billing portal session');
+    }
+  }, [router, user]);
+
   const pricingButtons = useMemo(() => {
     const currentPlanId =
       subscription &&
-      subscription.subscriptionStatus === SubscriptionStatus.ACTIVE
+      subscription.subscriptionStatus === SubscriptionStatus.Active
         ? subscription.planId
         : PlanId.Basic;
 
     if (currentPlanId === PlanId.Pro) {
       return [
-        (showMonthly: boolean) => (
-          <button
-            className="block w-full px-4 py-2 btn"
-            onClick={() => onSubscribe(PRICING_PLANS.pro, showMonthly)}
-          >
+        () => (
+          <button className="block w-full px-4 py-2 btn" onClick={onChangePlan}>
             Switch plan
           </button>
         ),
@@ -86,7 +105,7 @@ export default function Billing() {
         ),
       ];
     }
-  }, [onSubscribe, subscription]);
+  }, [onSubscribe, subscription, onChangePlan]);
 
   return (
     <div className="flex-1 p-6 overflow-y-auto">

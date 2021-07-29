@@ -70,8 +70,8 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
         stripe_subscription_id: subscriptionId,
         plan_id: getPlanIdByProductId(productId),
         subscription_status: isSubscriptionActive
-          ? SubscriptionStatus.ACTIVE
-          : SubscriptionStatus.INACTIVE,
+          ? SubscriptionStatus.Active
+          : SubscriptionStatus.Inactive,
       })
       .single();
 
@@ -103,14 +103,28 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
       .from<Subscription>('subscriptions')
       .update({
         subscription_status: isSubscriptionActive
-          ? SubscriptionStatus.ACTIVE
-          : SubscriptionStatus.INACTIVE,
+          ? SubscriptionStatus.Active
+          : SubscriptionStatus.Inactive,
       })
       .eq('stripe_subscription_id', subscriptionId);
-  } else if (
-    event.type === 'customer.subscription.updated' ||
-    event.type === 'customer.subscription.deleted'
-  ) {
+  } else if (event.type === 'customer.subscription.updated') {
+    const subscription = event.data.object as Stripe.Subscription;
+    const isSubscriptionActive = subscription.status === 'active';
+    const product = subscription.items.data[0].price.product;
+    const productId =
+      typeof product === 'string' ? product : product?.id ?? null;
+
+    // Update subscription status and plan id
+    await supabase
+      .from<Subscription>('subscriptions')
+      .update({
+        plan_id: getPlanIdByProductId(productId),
+        subscription_status: isSubscriptionActive
+          ? SubscriptionStatus.Active
+          : SubscriptionStatus.Inactive,
+      })
+      .eq('stripe_subscription_id', subscription.id);
+  } else if (event.type === 'customer.subscription.deleted') {
     const subscription = event.data.object as Stripe.Subscription;
     const isSubscriptionActive = subscription.status === 'active';
 
@@ -119,8 +133,8 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
       .from<Subscription>('subscriptions')
       .update({
         subscription_status: isSubscriptionActive
-          ? SubscriptionStatus.ACTIVE
-          : SubscriptionStatus.INACTIVE,
+          ? SubscriptionStatus.Active
+          : SubscriptionStatus.Inactive,
       })
       .eq('stripe_subscription_id', subscription.id);
   }
