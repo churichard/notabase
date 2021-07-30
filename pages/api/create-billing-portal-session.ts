@@ -27,14 +27,12 @@ export default async function handler(
     return res.status(400).json({ message: 'Invalid params' });
   }
 
-  // TODO: uncomment this when table is created
-  // const { data } = await supabase
-  //   .from<Subscription>('subscriptions')
-  //   .select('stripe_customer_id')
-  //   .eq('user_id', userId)
-  //   .maybeSingle();
-  // const stripeCustomerId = data?.stripe_customer_id;
-  const stripeCustomerId = ''; // TODO: remove this
+  const { data } = await supabase
+    .from<Subscription>('subscriptions')
+    .select('stripe_customer_id')
+    .eq('user_id', userId)
+    .maybeSingle();
+  const stripeCustomerId = data?.stripe_customer_id;
 
   if (!stripeCustomerId) {
     return res

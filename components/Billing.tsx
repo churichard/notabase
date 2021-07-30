@@ -129,14 +129,14 @@ const BillingBanner = (props: BillingBannerProps) => {
 
   if (
     subscription.cancelAtPeriodEnd &&
-    subscription.currentPeriodEnd > Date.now()
+    subscription.subscriptionStatus === SubscriptionStatus.Active
   ) {
     // Subscription is cancelling at the end of the current period
     return (
       <p className="p-4 mb-6 text-lg border rounded bg-primary-50 border-primary-200">
         Your subscription will be cancelled at the end of your billing period on{' '}
-        {getDateFromTimestamp(subscription.currentPeriodEnd)}. If you&apos;d
-        like to renew your plan,{' '}
+        {getReadableDate(subscription.currentPeriodEnd)}. If you&apos;d like to
+        renew your plan,{' '}
         <button onClick={onChangePlan} className="link">
           click here
         </button>
@@ -145,14 +145,14 @@ const BillingBanner = (props: BillingBannerProps) => {
     );
   } else if (
     !subscription.cancelAtPeriodEnd &&
-    subscription.currentPeriodEnd > Date.now()
+    subscription.subscriptionStatus === SubscriptionStatus.Active
   ) {
     // Subscription is renewing at the end of the current period
     return (
       <p className="p-4 mb-6 text-lg border rounded bg-primary-50 border-primary-200">
         Your subscription will renew at the end of your billing period on{' '}
-        {getDateFromTimestamp(subscription.currentPeriodEnd)}. If you&apos;d
-        like to edit your billing details,{' '}
+        {getReadableDate(subscription.currentPeriodEnd)}. If you&apos;d like to
+        edit your billing details,{' '}
         <button onClick={onChangePlan} className="link">
           click here
         </button>
@@ -165,8 +165,8 @@ const BillingBanner = (props: BillingBannerProps) => {
   }
 };
 
-const getDateFromTimestamp = (timestamp: number) => {
-  return new Date(timestamp).toLocaleDateString(undefined, {
+const getReadableDate = (date: Date) => {
+  return date.toLocaleDateString(undefined, {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
