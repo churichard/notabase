@@ -1,5 +1,5 @@
 import type { Descendant } from 'slate';
-import type { PlanId } from 'constants/pricing';
+import { BillingFrequency, PlanId } from 'constants/pricing';
 
 export enum SubscriptionStatus {
   Active = 'active',
@@ -27,6 +27,7 @@ export type Subscription = {
   stripe_subscription_id: string;
   plan_id: PlanId;
   subscription_status: SubscriptionStatus;
+  frequency: BillingFrequency;
   current_period_end: string;
   cancel_at_period_end: boolean;
 };

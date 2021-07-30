@@ -32,7 +32,7 @@ const pricingTableData = [
 ];
 
 type Props = {
-  buttons: ((showMonthly: boolean) => ReactNode)[];
+  buttons: (showMonthly: boolean) => ReactNode[];
 };
 
 export default function PricingTable(props: Props) {
@@ -77,7 +77,7 @@ export default function PricingTable(props: Props) {
         billingPeriodPrice: getBillingPeriodPrice(plan),
         monthlyPrice: getMonthlyPrice(plan),
         annualPrice: getAnnualPrice(plan),
-        button: buttons[index](showMonthly),
+        button: buttons(showMonthly)[index],
       })),
     [
       getBillingPeriodPrice,

@@ -4,7 +4,7 @@ import Cors from 'micro-cors';
 import Stripe from 'stripe';
 import { createClient } from '@supabase/supabase-js';
 import { Subscription, SubscriptionStatus, User } from 'types/supabase';
-import { getPlanIdByProductId } from 'constants/pricing';
+import { getFrequencyByPriceId, getPlanIdByProductId } from 'constants/pricing';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL ?? '',
@@ -60,6 +60,7 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
     const isSubscriptionActive = subscription.status === 'active';
     const currentPeriodEnd = subscription.current_period_end * 1000;
     const cancelAtPeriodEnd = subscription.cancel_at_period_end;
+    const priceId = subscription.items.data[0].price.id;
     const product = subscription.items.data[0].price.product;
     const productId =
       typeof product === 'string' ? product : product?.id ?? null;
@@ -67,17 +68,21 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
     // Create new subscription
     const { data: subscriptionData } = await supabase
       .from<Subscription>('subscriptions')
-      .insert({
-        user_id: userId,
-        stripe_customer_id: customerId,
-        stripe_subscription_id: subscriptionId,
-        plan_id: getPlanIdByProductId(productId),
-        subscription_status: isSubscriptionActive
-          ? SubscriptionStatus.Active
-          : SubscriptionStatus.Inactive,
-        current_period_end: new Date(currentPeriodEnd).toISOString(),
-        cancel_at_period_end: cancelAtPeriodEnd,
-      })
+      .upsert(
+        {
+          user_id: userId,
+          stripe_customer_id: customerId,
+          stripe_subscription_id: subscriptionId,
+          plan_id: getPlanIdByProductId(productId),
+          subscription_status: isSubscriptionActive
+            ? SubscriptionStatus.Active
+            : SubscriptionStatus.Inactive,
+          frequency: getFrequencyByPriceId(priceId),
+          current_period_end: new Date(currentPeriodEnd).toISOString(),
+          cancel_at_period_end: cancelAtPeriodEnd,
+        },
+        { onConflict: 'user_id' }
+      )
       .single();
 
     // Add subscription id to user
@@ -117,6 +122,7 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
     const isSubscriptionActive = subscription.status === 'active';
     const currentPeriodEnd = subscription.current_period_end * 1000;
     const cancelAtPeriodEnd = subscription.cancel_at_period_end;
+    const priceId = subscription.items.data[0].price.id;
     const product = subscription.items.data[0].price.product;
     const productId =
       typeof product === 'string' ? product : product?.id ?? null;
@@ -129,6 +135,7 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
         subscription_status: isSubscriptionActive
           ? SubscriptionStatus.Active
           : SubscriptionStatus.Inactive,
+        frequency: getFrequencyByPriceId(priceId),
         current_period_end: new Date(currentPeriodEnd).toISOString(),
         cancel_at_period_end: cancelAtPeriodEnd,
       })

@@ -7,7 +7,7 @@ import {
   useCallback,
 } from 'react';
 import type { User } from '@supabase/supabase-js';
-import { PlanId } from 'constants/pricing';
+import { PlanId, BillingFrequency } from 'constants/pricing';
 import supabase from 'lib/supabase';
 import { Subscription, SubscriptionStatus } from 'types/supabase';
 import { useAuth } from './useAuth';
@@ -15,6 +15,7 @@ import { useAuth } from './useAuth';
 export type SubscriptionContextType = {
   planId: PlanId;
   subscriptionStatus: SubscriptionStatus;
+  frequency: BillingFrequency;
   currentPeriodEnd: Date;
   cancelAtPeriodEnd: boolean;
 };
@@ -37,7 +38,7 @@ function useProvideBilling(): BillingContextType {
     const { data } = await supabase
       .from<Subscription>('subscriptions')
       .select(
-        'plan_id, subscription_status, current_period_end, cancel_at_period_end'
+        'plan_id, subscription_status, frequency, current_period_end, cancel_at_period_end'
       )
       .eq('user_id', user.id)
       .maybeSingle();
@@ -46,6 +47,7 @@ function useProvideBilling(): BillingContextType {
       setSubscription({
         planId: data.plan_id,
         subscriptionStatus: data.subscription_status,
+        frequency: data.frequency,
         currentPeriodEnd: new Date(data.current_period_end),
         cancelAtPeriodEnd: data.cancel_at_period_end,
       });

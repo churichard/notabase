@@ -13,13 +13,14 @@ export enum PlanId {
   Pro = 'pro',
 }
 
-export enum PriceId {
+export enum BillingFrequency {
   Monthly = 'monthly',
   Annual = 'annual',
 }
 
 export type Price = {
   amount: number;
+  frequency: BillingFrequency;
   priceId?: string;
 };
 
@@ -27,10 +28,7 @@ export type Plan = {
   id: PlanId;
   name: string;
   productId: string | null;
-  prices: {
-    monthly: Price;
-    annual: Price;
-  };
+  prices: Record<BillingFrequency, Price>;
 };
 
 type Plans = { basic: Plan; pro: Plan };
@@ -41,10 +39,12 @@ export const PRICING_PLANS: Plans = {
     name: 'Basic',
     productId: null,
     prices: {
-      [PriceId.Monthly]: {
+      [BillingFrequency.Monthly]: {
+        frequency: BillingFrequency.Monthly,
         amount: 0,
       },
-      [PriceId.Annual]: {
+      [BillingFrequency.Annual]: {
+        frequency: BillingFrequency.Annual,
         amount: 0,
       },
     },
@@ -54,11 +54,13 @@ export const PRICING_PLANS: Plans = {
     name: 'Pro',
     productId: isDev ? PRO_DEV_PRODUCT_ID : PRO_PROD_PRODUCT_ID,
     prices: {
-      [PriceId.Monthly]: {
+      [BillingFrequency.Monthly]: {
+        frequency: BillingFrequency.Monthly,
         amount: 700,
         priceId: isDev ? PRO_MONTHLY_DEV_PRICE_ID : PRO_MONTHLY_PROD_PRICE_ID,
       },
-      [PriceId.Annual]: {
+      [BillingFrequency.Annual]: {
+        frequency: BillingFrequency.Annual,
         amount: 7000,
         priceId: isDev ? PRO_ANNUAL_DEV_PRICE_ID : PRO_ANNUAL_PROD_PRICE_ID,
       },
@@ -73,4 +75,15 @@ export const getPlanIdByProductId = (productId: string | null) => {
     }
   }
   return PlanId.Basic;
+};
+
+export const getFrequencyByPriceId = (priceId: string): BillingFrequency => {
+  for (const plan of Object.values(PRICING_PLANS)) {
+    for (const price of Object.values(plan.prices)) {
+      if (price.priceId === priceId) {
+        return price.frequency;
+      }
+    }
+  }
+  return BillingFrequency.Monthly;
 };
