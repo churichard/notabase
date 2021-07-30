@@ -127,41 +127,58 @@ const BillingBanner = (props: BillingBannerProps) => {
     return null;
   }
 
-  if (
-    subscription.cancelAtPeriodEnd &&
-    subscription.subscriptionStatus === SubscriptionStatus.Active
-  ) {
+  const isSubscriptionActive =
+    subscription.subscriptionStatus === SubscriptionStatus.Active;
+  const currentPlanText = (
+    <span>
+      You are on the{' '}
+      <span className="font-semibold">
+        {isSubscriptionActive
+          ? PRICING_PLANS[subscription.planId].name
+          : PRICING_PLANS.basic.name}{' '}
+        Plan.
+      </span>
+    </span>
+  );
+
+  if (subscription.cancelAtPeriodEnd && isSubscriptionActive) {
     // Subscription is cancelling at the end of the current period
     return (
-      <p className="p-4 mb-6 text-lg border rounded bg-primary-50 border-primary-200">
-        Your subscription will be cancelled at the end of your billing period on{' '}
-        {getReadableDate(subscription.currentPeriodEnd)}. If you&apos;d like to
-        renew your plan,{' '}
-        <button onClick={onChangePlan} className="link">
-          click here
-        </button>
-        .
-      </p>
+      <div className="w-full pb-6 mb-6 space-y-2 border-b">
+        <p>
+          {currentPlanText} Your subscription will be cancelled at the end of
+          your billing period on{' '}
+          {getReadableDate(subscription.currentPeriodEnd)}.
+        </p>
+        <p>
+          To renew your plan,{' '}
+          <button onClick={onChangePlan} className="link">
+            click here
+          </button>
+          .
+        </p>
+      </div>
     );
-  } else if (
-    !subscription.cancelAtPeriodEnd &&
-    subscription.subscriptionStatus === SubscriptionStatus.Active
-  ) {
+  } else if (!subscription.cancelAtPeriodEnd && isSubscriptionActive) {
     // Subscription is renewing at the end of the current period
     return (
-      <p className="p-4 mb-6 text-lg border rounded bg-primary-50 border-primary-200">
-        Your subscription will renew at the end of your billing period on{' '}
-        {getReadableDate(subscription.currentPeriodEnd)}. If you&apos;d like to
-        edit your billing details,{' '}
-        <button onClick={onChangePlan} className="link">
-          click here
-        </button>
-        .
-      </p>
+      <div className="w-full pb-6 mb-6 space-y-2 border-b">
+        <p>
+          {currentPlanText} Your subscription will renew on{' '}
+          {getReadableDate(subscription.currentPeriodEnd)}.
+        </p>
+        <p>
+          To edit your billing details,{' '}
+          <button onClick={onChangePlan} className="link">
+            click here
+          </button>
+          .
+        </p>
+      </div>
     );
   } else {
     // No current subscription
-    return null;
+    return <p className="w-full pb-6 mb-6 border-b">{currentPlanText}</p>;
   }
 };
 
