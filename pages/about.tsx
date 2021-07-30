@@ -14,7 +14,7 @@ export default function About() {
         <h1>About Notabase</h1>
         <div>
           <p>
-            Notabase (pronounced <i>note-uh-base</i>) is a personal knowledge
+            Notabase (pronounced <i>noh-tuh-base</i>) is a personal knowledge
             base for networked thinking.
           </p>
           <p>
