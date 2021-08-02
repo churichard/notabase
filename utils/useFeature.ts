@@ -1,20 +1,19 @@
 import { useMemo } from 'react';
 import { Feature, PRICING_PLANS } from 'constants/pricing';
 import { useStore } from 'lib/store';
-import { useBilling } from './useBilling';
 
 export default function useFeature(feature: Feature) {
-  const { subscription } = useBilling();
+  const billingDetails = useStore((state) => state.billingDetails);
 
   const numOfNotes = useStore((state) => Object.keys(state.notes).length);
 
   // Whether or not the particular user can actually use the feature
   const isEnabled = useMemo(() => {
-    if (!subscription) {
+    if (!billingDetails) {
       return false;
     }
 
-    const planFeature = PRICING_PLANS[subscription.planId].features.find(
+    const planFeature = PRICING_PLANS[billingDetails.planId].features.find(
       (f) => f.name === feature
     );
 
@@ -28,7 +27,7 @@ export default function useFeature(feature: Feature) {
       default:
         return false;
     }
-  }, [numOfNotes, feature, subscription]);
+  }, [numOfNotes, feature, billingDetails]);
 
   return isEnabled;
 }

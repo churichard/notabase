@@ -9,12 +9,12 @@ import {
   PRICING_PLANS,
 } from 'constants/pricing';
 import { useAuth } from 'utils/useAuth';
-import { SubscriptionContextType, useBilling } from 'utils/useBilling';
+import { BillingDetails, useStore } from 'lib/store';
 import PricingTable from './PricingTable';
 
 export default function Billing() {
   const { user } = useAuth();
-  const { subscription } = useBilling();
+  const billingDetails = useStore((state) => state.billingDetails);
   const router = useRouter();
 
   const onSubscribe = useCallback(
@@ -74,7 +74,9 @@ export default function Billing() {
 
   const pricingButtons = useCallback(
     (showMonthly: boolean) => {
-      const currentPlanId = subscription ? subscription.planId : PlanId.Basic;
+      const currentPlanId = billingDetails
+        ? billingDetails.planId
+        : PlanId.Basic;
 
       const switchPlanButton = (
         <button className="block w-full px-4 py-2 btn" onClick={onChangePlan}>
@@ -104,35 +106,38 @@ export default function Billing() {
         return [currentPlanBlock, subscribeButton];
       }
     },
-    [onSubscribe, subscription, onChangePlan]
+    [onSubscribe, billingDetails, onChangePlan]
   );
 
   return (
     <div className="flex-1 p-6 overflow-y-auto">
-      <BillingBanner subscription={subscription} onChangePlan={onChangePlan} />
+      <BillingBanner
+        billingDetails={billingDetails}
+        onChangePlan={onChangePlan}
+      />
       <PricingTable buttons={pricingButtons} />
     </div>
   );
 }
 
 type BillingBannerProps = {
-  subscription: SubscriptionContextType | null;
+  billingDetails: BillingDetails | null;
   onChangePlan: () => void;
 };
 
 const BillingBanner = (props: BillingBannerProps) => {
-  const { subscription, onChangePlan } = props;
+  const { billingDetails, onChangePlan } = props;
 
-  if (!subscription) {
+  if (!billingDetails) {
     return null;
   }
 
-  const planId = subscription.planId;
+  const planId = billingDetails.planId;
   const isNotBasicPlan = planId !== PlanId.Basic;
   const planName = PRICING_PLANS[planId].name;
   const frequencyText = isNotBasicPlan
     ? `, billed ${
-        subscription.frequency === BillingFrequency.Monthly
+        billingDetails.frequency === BillingFrequency.Monthly
           ? 'monthly'
           : 'annually'
       }`
@@ -144,14 +149,14 @@ const BillingBanner = (props: BillingBannerProps) => {
     </span>
   );
 
-  if (isNotBasicPlan && subscription.cancelAtPeriodEnd) {
+  if (isNotBasicPlan && billingDetails.cancelAtPeriodEnd) {
     // Subscription is cancelling at the end of the current period
     return (
       <div className="w-full pb-6 mb-6 space-y-2 border-b">
         <p>
           {currentPlanText} Your subscription will be cancelled at the end of
           your billing period on{' '}
-          {getReadableDate(subscription.currentPeriodEnd)}.
+          {getReadableDate(billingDetails.currentPeriodEnd)}.
         </p>
         <p>
           To renew your plan,{' '}
@@ -162,13 +167,13 @@ const BillingBanner = (props: BillingBannerProps) => {
         </p>
       </div>
     );
-  } else if (isNotBasicPlan && !subscription.cancelAtPeriodEnd) {
+  } else if (isNotBasicPlan && !billingDetails.cancelAtPeriodEnd) {
     // Subscription is renewing at the end of the current period
     return (
       <div className="w-full pb-6 mb-6 space-y-2 border-b">
         <p>
           {currentPlanText} Your subscription will renew on{' '}
-          {getReadableDate(subscription.currentPeriodEnd)}.
+          {getReadableDate(billingDetails.currentPeriodEnd)}.
         </p>
         <p>
           To edit your billing details,{' '}

@@ -2,12 +2,12 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
 import { useRouter } from 'next/router';
 import { toast } from 'react-toastify';
+import type { User } from '@supabase/supabase-js';
 import { useStore, store } from 'lib/store';
 import supabase from 'lib/supabase';
-import type { Note } from 'types/supabase';
+import { Note, Subscription, SubscriptionStatus } from 'types/supabase';
 import { useAuth } from 'utils/useAuth';
 import useHotkeys from 'utils/useHotkeys';
-import { useBilling } from 'utils/useBilling';
 import { PlanId } from 'constants/pricing';
 import Sidebar from './sidebar/Sidebar';
 import FindOrCreateModal from './FindOrCreateModal';
@@ -80,6 +80,39 @@ export default function AppLayout(props: Props) {
     }
   }, [router, user, isLoaded, isPageLoaded, initData]);
 
+  const setBillingDetails = useStore((state) => state.setBillingDetails);
+  const initBillingDetails = useCallback(
+    async (user: User) => {
+      const { data } = await supabase
+        .from<Subscription>('subscriptions')
+        .select(
+          'plan_id, subscription_status, frequency, current_period_end, cancel_at_period_end'
+        )
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      if (data) {
+        setBillingDetails({
+          planId:
+            data.subscription_status === SubscriptionStatus.Active
+              ? data.plan_id
+              : PlanId.Basic,
+          frequency: data.frequency,
+          currentPeriodEnd: new Date(data.current_period_end),
+          cancelAtPeriodEnd: data.cancel_at_period_end,
+        });
+      }
+    },
+    [setBillingDetails]
+  );
+
+  useEffect(() => {
+    if (!user) {
+      return;
+    }
+    initBillingDetails(user);
+  }, [initBillingDetails, user]);
+
   const [isFindOrCreateModalOpen, setIsFindOrCreateModalOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
@@ -87,7 +120,7 @@ export default function AppLayout(props: Props) {
   const setIsSidebarOpen = useStore((state) => state.setIsSidebarOpen);
   const setIsPageStackingOn = useStore((state) => state.setIsPageStackingOn);
 
-  const { subscription } = useBilling();
+  const billingDetails = useStore((state) => state.billingDetails);
   const numOfNotes = useStore((state) => Object.keys(state.notes).length);
   const isUpgradeModalOpen = useStore((state) => state.isUpgradeModalOpen);
   const setIsUpgradeModalOpen = useStore(
@@ -172,7 +205,7 @@ export default function AppLayout(props: Props) {
         setIsSettingsOpen={setIsSettingsOpen}
       />
       <div className="flex flex-col flex-1">
-        {subscription?.planId === PlanId.Basic && numOfNotes >= 40 ? (
+        {billingDetails?.planId === PlanId.Basic && numOfNotes >= 40 ? (
           <button
             className="block w-full py-1 font-semibold text-center bg-yellow-300"
             onClick={() => setIsUpgradeModalOpen(true)}
