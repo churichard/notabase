@@ -181,7 +181,11 @@ const BillingBanner = (props: BillingBannerProps) => {
     );
   } else {
     // No current subscription
-    return <p className="w-full pb-6 mb-6 border-b">{currentPlanText}</p>;
+    return (
+      <p className="w-full pb-6 mb-6 border-b">
+        {currentPlanText} Upgrade to get unlimited notes.
+      </p>
+    );
   }
 };
 

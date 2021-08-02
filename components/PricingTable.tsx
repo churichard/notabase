@@ -401,27 +401,6 @@ const Faq = () => {
           </div>
           <div>
             <h3 className="text-lg font-medium text-gray-900">
-              Do you offer discounts?
-            </h3>
-            <div className="mt-2">
-              <p className="text-gray-600">
-                Notabase offers discounts for non-profits, researchers,
-                students, and people doing social good. If you think you might
-                qualify, please{' '}
-                <a
-                  href="mailto:hello@notabase.io"
-                  className="link"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  email us
-                </a>
-                .
-              </p>
-            </div>
-          </div>
-          <div>
-            <h3 className="text-lg font-medium text-gray-900">
               What if I still have questions?
             </h3>
             <div className="mt-2">
