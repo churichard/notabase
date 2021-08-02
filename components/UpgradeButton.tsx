@@ -31,7 +31,7 @@ export default function UpgradeButton(props: Props) {
         onClick={() => setIsUpgradeModalOpen(true)}
       >
         <IconArrowUpCircle size={18} className="flex-shrink-0 mr-1" />
-        <span>Upgrade to Pro</span>
+        <span className="whitespace-nowrap">Upgrade to Pro</span>
       </span>
     </Tooltip>
   );

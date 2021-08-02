@@ -7,7 +7,7 @@ import upsertNote from 'lib/api/upsertNote';
 import { useAuth } from 'utils/useAuth';
 import useNoteSearch from 'utils/useNoteSearch';
 import { caseInsensitiveStringEqual } from 'utils/string';
-import { useBilling } from 'utils/useBilling';
+import useFeature from 'utils/useFeature';
 import { Feature } from 'constants/pricing';
 import { useStore } from 'lib/store';
 import UpgradeButton from './UpgradeButton';
@@ -67,25 +67,46 @@ function FindOrCreateInput(props: Props, ref: ForwardedRef<HTMLInputElement>) {
     return result;
   }, [searchResults, inputText]);
 
-  const onOptionClick = async (option: Option) => {
-    if (option.type === OptionType.NEW_NOTE) {
+  const hasUnlimitedNotes = useFeature(Feature.UnlimitedNotes);
+  const setIsUpgradeModalOpen = useStore(
+    (state) => state.setIsUpgradeModalOpen
+  );
+
+  const onOptionClick = useCallback(
+    async (option: Option) => {
       if (!user) {
         return;
       }
-      const note = await upsertNote({ user_id: user.id, title: inputText });
-      if (!note) {
-        return;
+
+      onOptionClickCallback?.();
+
+      if (option.type === OptionType.NEW_NOTE) {
+        if (!hasUnlimitedNotes) {
+          setIsUpgradeModalOpen(true);
+          return;
+        }
+
+        const note = await upsertNote({ user_id: user.id, title: inputText });
+        if (!note) {
+          throw new Error(`There was an error creating the note ${inputText}.`);
+        }
+
+        router.push(`/app/note/${note.id}`);
+      } else if (option.type === OptionType.NOTE) {
+        router.push(`/app/note/${option.id}`);
+      } else {
+        throw new Error(`Option type ${option.type} is not supported`);
       }
-      router.push(`/app/note/${note.id}`);
-    } else if (option.type === OptionType.NOTE) {
-      router.push(`/app/note/${option.id}`);
-    } else {
-      throw new Error(`Option type ${option.type} is not supported`);
-    }
-    setSelectedOptionIndex(0);
-    setInputText('');
-    onOptionClickCallback?.();
-  };
+    },
+    [
+      user,
+      router,
+      hasUnlimitedNotes,
+      inputText,
+      onOptionClickCallback,
+      setIsUpgradeModalOpen,
+    ]
+  );
 
   const onKeyDown = useCallback(
     (event) => {
@@ -152,19 +173,11 @@ type OptionProps = {
 
 const OptionItem = (props: OptionProps) => {
   const { option, isSelected, onClick } = props;
-  const { canUseFeature } = useBilling();
-
-  const numOfNotes = useStore((state) => Object.keys(state.notes).length);
-  const setIsUpgradeModalOpen = useStore(
-    (state) => state.setIsUpgradeModalOpen
-  );
+  const hasUnlimitedNotes = useFeature(Feature.UnlimitedNotes);
 
   const isDisabled = useMemo(
-    () =>
-      numOfNotes >= 50 &&
-      !canUseFeature(Feature.UnlimitedNotes) &&
-      option.type === OptionType.NEW_NOTE,
-    [canUseFeature, option, numOfNotes]
+    () => !hasUnlimitedNotes && option.type === OptionType.NEW_NOTE,
+    [hasUnlimitedNotes, option]
   );
 
   return (
@@ -172,7 +185,7 @@ const OptionItem = (props: OptionProps) => {
       className={`flex flex-row w-full items-center px-4 py-2 text-gray-800 hover:bg-gray-100 active:bg-gray-200 ${
         isSelected ? 'bg-gray-100' : ''
       } ${isDisabled ? 'text-gray-400' : ''}`}
-      onClick={isDisabled ? () => setIsUpgradeModalOpen(true) : onClick}
+      onClick={onClick}
     >
       {isDisabled ? (
         <UpgradeButton feature={Feature.UnlimitedNotes} className="mr-1" />

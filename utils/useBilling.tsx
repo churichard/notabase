@@ -7,12 +7,7 @@ import {
   useCallback,
 } from 'react';
 import type { User } from '@supabase/supabase-js';
-import {
-  PlanId,
-  BillingFrequency,
-  Feature,
-  PRICING_PLANS,
-} from 'constants/pricing';
+import { PlanId, BillingFrequency } from 'constants/pricing';
 import supabase from 'lib/supabase';
 import { Subscription, SubscriptionStatus } from 'types/supabase';
 import { useAuth } from './useAuth';
@@ -26,7 +21,6 @@ export type SubscriptionContextType = {
 
 type BillingContextType = {
   subscription: SubscriptionContextType | null;
-  canUseFeature: (feature: Feature) => boolean;
   isLoaded: boolean;
 };
 
@@ -70,20 +64,8 @@ function useProvideBilling(): BillingContextType {
     initSubscription(user);
   }, [initSubscription, user]);
 
-  const canUseFeature = useCallback(
-    (feature: Feature) => {
-      return (
-        (subscription &&
-          PRICING_PLANS[subscription.planId].features.includes(feature)) ??
-        false
-      );
-    },
-    [subscription]
-  );
-
   return {
     isLoaded,
-    canUseFeature,
     subscription,
   };
 }
