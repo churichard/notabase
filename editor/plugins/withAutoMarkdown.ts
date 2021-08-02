@@ -1,6 +1,7 @@
 import type { Path } from 'slate';
 import { Editor, Element, Transforms, Range, Point, Text } from 'slate';
 import { v4 as uuidv4 } from 'uuid';
+import { toast } from 'react-toastify';
 import type { ExternalLink, ListElement, NoteLink } from 'types/slate';
 import { ElementType, Mark } from 'types/slate';
 import { isListType, isMark } from 'editor/formatting';
@@ -9,6 +10,7 @@ import { store } from 'lib/store';
 import upsertNote from 'lib/api/upsertNote';
 import supabase from 'lib/supabase';
 import { caseInsensitiveStringEqual } from 'utils/string';
+import { PlanId } from 'constants/pricing';
 
 const BLOCK_SHORTCUTS: Array<
   | {
@@ -235,6 +237,10 @@ const handleInlineShortcuts = (
       // Get or generate note id
       const noteId = getOrCreateNoteId(noteTitle);
 
+      if (!noteId) {
+        return false;
+      }
+
       // Wrap text in a link
       const noteTitleRange = deleteMarkup(editor, selectionAnchor, {
         startMark: startMark.length,
@@ -259,6 +265,10 @@ const handleInlineShortcuts = (
 
       // Get or generate note id
       const noteId = getOrCreateNoteId(noteTitle);
+
+      if (!noteId) {
+        return false;
+      }
 
       // Wrap text in a link
       const linkTextRange = deleteMarkup(editor, selectionAnchor, {
@@ -285,17 +295,28 @@ const handleInlineShortcuts = (
 
 // If the normalized note title exists, then returns the existing note id.
 // Otherwise, creates a new note id.
-const getOrCreateNoteId = (noteTitle: string): string => {
+const getOrCreateNoteId = (noteTitle: string): string | null => {
   let noteId;
 
   const notes = store.getState().notes;
-  const matchingNote = Object.values(notes).find((note) =>
+  const notesArr = Object.values(notes);
+  const matchingNote = notesArr.find((note) =>
     caseInsensitiveStringEqual(note.title, noteTitle)
   );
 
   if (matchingNote) {
     noteId = matchingNote.id;
   } else {
+    const billingDetails = store.getState().billingDetails;
+    if (
+      (!billingDetails || billingDetails.planId === PlanId.Basic) &&
+      notesArr.length >= 50
+    ) {
+      toast.error(
+        'You have reached your 50 note limit. New notes will not be created or linked. For unlimited notes, please upgrade to the Pro plan.'
+      );
+      return null;
+    }
     const userId = supabase.auth.user()?.id;
     noteId = uuidv4();
     if (userId) {
