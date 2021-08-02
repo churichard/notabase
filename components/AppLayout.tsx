@@ -11,6 +11,7 @@ import Sidebar from './sidebar/Sidebar';
 import FindOrCreateModal from './FindOrCreateModal';
 import PageLoading from './PageLoading';
 import SettingsModal from './SettingsModal';
+import UpgradeModal from './UpgradeModal';
 
 const SM_BREAKPOINT = 640;
 
@@ -83,6 +84,7 @@ export default function AppLayout(props: Props) {
   const isSidebarOpen = useStore((state) => state.isSidebarOpen);
   const setIsSidebarOpen = useStore((state) => state.setIsSidebarOpen);
   const setIsPageStackingOn = useStore((state) => state.setIsPageStackingOn);
+  const isUpgradeModalOpen = useStore((state) => state.isUpgradeModalOpen);
   const upsertNote = useStore((state) => state.upsertNote);
   const updateNote = useStore((state) => state.updateNote);
   const deleteNote = useStore((state) => state.deleteNote);
@@ -165,6 +167,7 @@ export default function AppLayout(props: Props) {
       {isFindOrCreateModalOpen ? (
         <FindOrCreateModal setIsOpen={setIsFindOrCreateModalOpen} />
       ) : null}
+      {isUpgradeModalOpen ? <UpgradeModal /> : null}
     </div>
   );
 }

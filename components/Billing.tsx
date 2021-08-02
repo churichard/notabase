@@ -10,7 +10,6 @@ import {
 } from 'constants/pricing';
 import { useAuth } from 'utils/useAuth';
 import { SubscriptionContextType, useBilling } from 'utils/useBilling';
-import { SubscriptionStatus } from 'types/supabase';
 import PricingTable from './PricingTable';
 
 export default function Billing() {
@@ -75,11 +74,7 @@ export default function Billing() {
 
   const pricingButtons = useCallback(
     (showMonthly: boolean) => {
-      const currentPlanId =
-        subscription &&
-        subscription.subscriptionStatus === SubscriptionStatus.Active
-          ? subscription.planId
-          : PlanId.Basic;
+      const currentPlanId = subscription ? subscription.planId : PlanId.Basic;
 
       const switchPlanButton = (
         <button className="block w-full px-4 py-2 btn" onClick={onChangePlan}>
@@ -132,18 +127,16 @@ const BillingBanner = (props: BillingBannerProps) => {
     return null;
   }
 
-  const isSubscriptionActive =
-    subscription.subscriptionStatus === SubscriptionStatus.Active;
-  const planId = isSubscriptionActive ? subscription.planId : PlanId.Basic;
+  const planId = subscription.planId;
+  const isNotBasicPlan = planId !== PlanId.Basic;
   const planName = PRICING_PLANS[planId].name;
-  const frequencyText =
-    planId !== PlanId.Basic
-      ? `, billed ${
-          subscription.frequency === BillingFrequency.Monthly
-            ? 'monthly'
-            : 'annually'
-        }`
-      : null;
+  const frequencyText = isNotBasicPlan
+    ? `, billed ${
+        subscription.frequency === BillingFrequency.Monthly
+          ? 'monthly'
+          : 'annually'
+      }`
+    : null;
   const currentPlanText = (
     <span>
       You are on the <span className="font-semibold">{planName} Plan</span>
@@ -151,7 +144,7 @@ const BillingBanner = (props: BillingBannerProps) => {
     </span>
   );
 
-  if (subscription.cancelAtPeriodEnd && isSubscriptionActive) {
+  if (isNotBasicPlan && subscription.cancelAtPeriodEnd) {
     // Subscription is cancelling at the end of the current period
     return (
       <div className="w-full pb-6 mb-6 space-y-2 border-b">
@@ -169,7 +162,7 @@ const BillingBanner = (props: BillingBannerProps) => {
         </p>
       </div>
     );
-  } else if (!subscription.cancelAtPeriodEnd && isSubscriptionActive) {
+  } else if (isNotBasicPlan && !subscription.cancelAtPeriodEnd) {
     // Subscription is renewing at the end of the current period
     return (
       <div className="w-full pb-6 mb-6 space-y-2 border-b">

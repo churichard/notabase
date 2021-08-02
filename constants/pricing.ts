@@ -18,6 +18,10 @@ export enum BillingFrequency {
   Annual = 'annual',
 }
 
+export enum Feature {
+  UnlimitedNotes = 'unlimited-notes',
+}
+
 export type Price = {
   amount: number;
   frequency: BillingFrequency;
@@ -29,6 +33,7 @@ export type Plan = {
   name: string;
   productId: string | null;
   prices: Record<BillingFrequency, Price>;
+  features: readonly Feature[];
 };
 
 type Plans = { basic: Plan; pro: Plan };
@@ -48,6 +53,7 @@ export const PRICING_PLANS: Plans = {
         amount: 0,
       },
     },
+    features: [],
   },
   [PlanId.Pro]: {
     id: PlanId.Pro,
@@ -65,6 +71,7 @@ export const PRICING_PLANS: Plans = {
         priceId: isDev ? PRO_ANNUAL_DEV_PRICE_ID : PRO_ANNUAL_PROD_PRICE_ID,
       },
     },
+    features: [Feature.UnlimitedNotes],
   },
 } as const;
 
