@@ -8,24 +8,27 @@ export default function useFeature(feature: Feature) {
 
   const numOfNotes = useStore((state) => Object.keys(state.notes).length);
 
-  // Whether or not the feature is enabled for the particular billing plan
-  const isFeatureEnabled = useMemo(
-    () =>
-      (subscription &&
-        PRICING_PLANS[subscription.planId].features.includes(feature)) ??
-      false,
-    [feature, subscription]
-  );
-
   // Whether or not the particular user can actually use the feature
-  const canUseFeature = useMemo(() => {
+  const isEnabled = useMemo(() => {
+    if (!subscription) {
+      return false;
+    }
+
+    const planFeature = PRICING_PLANS[subscription.planId].features.find(
+      (f) => f.name === feature
+    );
+
+    if (!planFeature) {
+      return false;
+    }
+
     switch (feature) {
-      case Feature.UnlimitedNotes:
-        return numOfNotes < 50 || isFeatureEnabled;
+      case Feature.NumOfNotes:
+        return numOfNotes < planFeature.amount;
       default:
         return false;
     }
-  }, [isFeatureEnabled, numOfNotes, feature]);
+  }, [numOfNotes, feature, subscription]);
 
-  return canUseFeature;
+  return isEnabled;
 }

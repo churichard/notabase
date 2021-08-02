@@ -17,7 +17,7 @@ export default function UpgradeButton(props: Props) {
   );
 
   const content = useMemo(() => {
-    if (feature === Feature.UnlimitedNotes) {
+    if (feature === Feature.NumOfNotes) {
       return 'You have reached your 50 note limit. Upgrade to Pro for unlimited notes.';
     } else {
       return 'Upgrade to Pro to access all features.';

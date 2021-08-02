@@ -7,6 +7,8 @@ import supabase from 'lib/supabase';
 import type { Note } from 'types/supabase';
 import { useAuth } from 'utils/useAuth';
 import useHotkeys from 'utils/useHotkeys';
+import { useBilling } from 'utils/useBilling';
+import { PlanId } from 'constants/pricing';
 import Sidebar from './sidebar/Sidebar';
 import FindOrCreateModal from './FindOrCreateModal';
 import PageLoading from './PageLoading';
@@ -84,7 +86,14 @@ export default function AppLayout(props: Props) {
   const isSidebarOpen = useStore((state) => state.isSidebarOpen);
   const setIsSidebarOpen = useStore((state) => state.setIsSidebarOpen);
   const setIsPageStackingOn = useStore((state) => state.setIsPageStackingOn);
+
+  const { subscription } = useBilling();
+  const numOfNotes = useStore((state) => Object.keys(state.notes).length);
   const isUpgradeModalOpen = useStore((state) => state.isUpgradeModalOpen);
+  const setIsUpgradeModalOpen = useStore(
+    (state) => state.setIsUpgradeModalOpen
+  );
+
   const upsertNote = useStore((state) => state.upsertNote);
   const updateNote = useStore((state) => state.updateNote);
   const deleteNote = useStore((state) => state.deleteNote);
@@ -162,7 +171,18 @@ export default function AppLayout(props: Props) {
         setIsFindOrCreateModalOpen={setIsFindOrCreateModalOpen}
         setIsSettingsOpen={setIsSettingsOpen}
       />
-      {children}
+      <div className="flex flex-col flex-1">
+        {subscription?.planId === PlanId.Basic && numOfNotes >= 40 ? (
+          <button
+            className="block w-full py-1 font-semibold text-center bg-yellow-300"
+            onClick={() => setIsUpgradeModalOpen(true)}
+          >
+            You have {numOfNotes < 50 ? 'almost' : ''} reached your 50 note
+            limit. Upgrade now for unlimited notes and uninterrupted access.
+          </button>
+        ) : null}
+        {children}
+      </div>
       {isSettingsOpen ? <SettingsModal setIsOpen={setIsSettingsOpen} /> : null}
       {isFindOrCreateModalOpen ? (
         <FindOrCreateModal setIsOpen={setIsFindOrCreateModalOpen} />

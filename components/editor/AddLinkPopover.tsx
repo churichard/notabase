@@ -113,7 +113,7 @@ export default function AddLinkPopover(props: Props) {
     });
   }, [editor, addLinkPopoverState, setAddLinkPopoverState]);
 
-  const canCreateNote = useFeature(Feature.UnlimitedNotes);
+  const canCreateNote = useFeature(Feature.NumOfNotes);
   const setIsUpgradeModalOpen = useStore(
     (state) => state.setIsUpgradeModalOpen
   );
@@ -223,7 +223,7 @@ type OptionProps = {
 
 const OptionItem = (props: OptionProps) => {
   const { option, isSelected, onClick } = props;
-  const canCreateNote = useFeature(Feature.UnlimitedNotes);
+  const canCreateNote = useFeature(Feature.NumOfNotes);
 
   const isDisabled = useMemo(
     () => !canCreateNote && option.type === OptionType.NEW_NOTE,
@@ -239,7 +239,7 @@ const OptionItem = (props: OptionProps) => {
       onMouseUp={onClick}
     >
       {isDisabled ? (
-        <UpgradeButton feature={Feature.UnlimitedNotes} className="mr-1" />
+        <UpgradeButton feature={Feature.NumOfNotes} className="mr-1" />
       ) : null}
       {option.icon ? (
         <option.icon size={18} className="flex-shrink-0 mr-1" />

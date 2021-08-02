@@ -19,7 +19,7 @@ import useFeature from './useFeature';
 
 export default function useImport() {
   const { user } = useAuth();
-  const canCreateNote = useFeature(Feature.UnlimitedNotes);
+  const canCreateNote = useFeature(Feature.NumOfNotes);
   const setIsUpgradeModalOpen = useStore(
     (state) => state.setIsUpgradeModalOpen
   );
