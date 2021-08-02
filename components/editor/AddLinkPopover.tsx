@@ -113,7 +113,7 @@ export default function AddLinkPopover(props: Props) {
     });
   }, [editor, addLinkPopoverState, setAddLinkPopoverState]);
 
-  const hasUnlimitedNotes = useFeature(Feature.UnlimitedNotes);
+  const canCreateNote = useFeature(Feature.UnlimitedNotes);
   const setIsUpgradeModalOpen = useStore(
     (state) => state.setIsUpgradeModalOpen
   );
@@ -136,7 +136,7 @@ export default function AddLinkPopover(props: Props) {
         insertExternalLink(editor, linkText);
         Transforms.move(editor, { distance: 1, unit: 'offset' }); // Focus after the note link
       } else if (option.type === OptionType.NEW_NOTE) {
-        if (!hasUnlimitedNotes) {
+        if (!canCreateNote) {
           setIsUpgradeModalOpen(true);
           return;
         }
@@ -152,14 +152,7 @@ export default function AddLinkPopover(props: Props) {
         throw new Error(`Option type ${option.type} is not supported`);
       }
     },
-    [
-      editor,
-      user,
-      hidePopover,
-      linkText,
-      hasUnlimitedNotes,
-      setIsUpgradeModalOpen,
-    ]
+    [editor, user, hidePopover, linkText, canCreateNote, setIsUpgradeModalOpen]
   );
 
   const onKeyDown = useCallback(
@@ -230,11 +223,11 @@ type OptionProps = {
 
 const OptionItem = (props: OptionProps) => {
   const { option, isSelected, onClick } = props;
-  const hasUnlimitedNotes = useFeature(Feature.UnlimitedNotes);
+  const canCreateNote = useFeature(Feature.UnlimitedNotes);
 
   const isDisabled = useMemo(
-    () => !hasUnlimitedNotes && option.type === OptionType.NEW_NOTE,
-    [hasUnlimitedNotes, option]
+    () => !canCreateNote && option.type === OptionType.NEW_NOTE,
+    [canCreateNote, option]
   );
 
   return (

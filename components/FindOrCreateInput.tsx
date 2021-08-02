@@ -67,7 +67,7 @@ function FindOrCreateInput(props: Props, ref: ForwardedRef<HTMLInputElement>) {
     return result;
   }, [searchResults, inputText]);
 
-  const hasUnlimitedNotes = useFeature(Feature.UnlimitedNotes);
+  const canCreateNote = useFeature(Feature.UnlimitedNotes);
   const setIsUpgradeModalOpen = useStore(
     (state) => state.setIsUpgradeModalOpen
   );
@@ -81,7 +81,7 @@ function FindOrCreateInput(props: Props, ref: ForwardedRef<HTMLInputElement>) {
       onOptionClickCallback?.();
 
       if (option.type === OptionType.NEW_NOTE) {
-        if (!hasUnlimitedNotes) {
+        if (!canCreateNote) {
           setIsUpgradeModalOpen(true);
           return;
         }
@@ -101,7 +101,7 @@ function FindOrCreateInput(props: Props, ref: ForwardedRef<HTMLInputElement>) {
     [
       user,
       router,
-      hasUnlimitedNotes,
+      canCreateNote,
       inputText,
       onOptionClickCallback,
       setIsUpgradeModalOpen,
@@ -173,11 +173,11 @@ type OptionProps = {
 
 const OptionItem = (props: OptionProps) => {
   const { option, isSelected, onClick } = props;
-  const hasUnlimitedNotes = useFeature(Feature.UnlimitedNotes);
+  const canCreateNote = useFeature(Feature.UnlimitedNotes);
 
   const isDisabled = useMemo(
-    () => !hasUnlimitedNotes && option.type === OptionType.NEW_NOTE,
-    [hasUnlimitedNotes, option]
+    () => !canCreateNote && option.type === OptionType.NEW_NOTE,
+    [canCreateNote, option]
   );
 
   return (
