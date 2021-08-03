@@ -33,6 +33,14 @@ export default function AuthForm(props: Props) {
       if (error) {
         toast.error(error.message);
       } else if (signup) {
+        // Add signup to email list
+        await fetch('/api/email-list', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email }),
+        });
         setShowEmailConfirmationMessage(true);
       }
 
