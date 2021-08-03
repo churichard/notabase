@@ -48,10 +48,11 @@ export default function MyApp({ Component, pageProps, router }: AppProps) {
         <meta property="og:image" content="https://notabase.io/banner.png" />
         <meta property="og:url" content="https://notabase.io" />
         <meta property="og:type" content="website" />
-        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@notabase" />
         <meta name="twitter:title" content="Notabase" />
         <meta name="twitter:description" content={DESCRIPTION} />
+        <meta name="twitter:image" content="https://notabase.io/banner.png" />
         <script
           async
           defer
