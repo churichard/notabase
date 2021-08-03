@@ -18,10 +18,11 @@ Notabase is in alpha. It is under active development.
 ## Features
 
 - Browse your notes with page stacking / sliding panes (similar to [Andy's working notes](https://notes.andymatuschak.org/About_these_notes))
-- WYSIWYG editor with markdown support makes it easy to edit notes
+- WYSIWYG editor with markdown support makes it easy to read and edit notes
 - Linked/unlinked references let you see other notes that reference a specific note
 - Your notes are synced to the cloud and can be accessed on any device
 - Use the graph view to analyze your knowledge graph
+- Full-text search lets you easily find relevant notes
 - Offline support (coming soon)
 - Open source, allowing community involvement and transparent development
 
