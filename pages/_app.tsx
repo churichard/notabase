@@ -14,6 +14,9 @@ Router.events.on('routeChangeStart', () => NProgress.start());
 Router.events.on('routeChangeComplete', () => NProgress.done());
 Router.events.on('routeChangeError', () => NProgress.done());
 
+const DESCRIPTION =
+  "Notabase is a personal knowledge base for networked thinking. It's powerful, easy-to-use, and open source.";
+
 export default function MyApp({ Component, pageProps, router }: AppProps) {
   return (
     <>
@@ -21,10 +24,7 @@ export default function MyApp({ Component, pageProps, router }: AppProps) {
         <title>
           Notabase | A personal knowledge base for networked thinking
         </title>
-        <meta
-          name="description"
-          content="Notabase is a personal knowledge base for networked thinking. It's powerful, easy-to-use, and open source."
-        />
+        <meta name="description" content={DESCRIPTION} />
         <link rel="icon" href="/favicon.ico" />
         <link
           rel="apple-touch-icon"
@@ -43,6 +43,14 @@ export default function MyApp({ Component, pageProps, router }: AppProps) {
           sizes="16x16"
           href="/favicon-16x16.png"
         />
+        <meta property="og:title" content="Notabase" />
+        <meta property="og:image" content="/banner.png" />
+        <meta property="og:url" content="https://notabase.io" />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:site" content="@notabase" />
+        <meta name="twitter:title" content="Notabase" />
+        <meta name="twitter:description" content={DESCRIPTION} />
         <script
           async
           defer
