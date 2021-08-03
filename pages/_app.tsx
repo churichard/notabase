@@ -44,7 +44,7 @@ export default function MyApp({ Component, pageProps, router }: AppProps) {
           href="/favicon-16x16.png"
         />
         <meta property="og:title" content="Notabase" />
-        <meta property="og:image" content="/banner.png" />
+        <meta property="og:image" content="https://notabase.io/banner.png" />
         <meta property="og:url" content="https://notabase.io" />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary" />
