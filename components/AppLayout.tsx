@@ -38,7 +38,11 @@ export default function AppLayout(props: Props) {
     // Redirect to most recent note or first note in database
     if (router.pathname === '/app') {
       const openNoteIds = store.getState().openNoteIds;
-      if (openNoteIds.length > 0) {
+      if (
+        openNoteIds.length > 0 &&
+        notes &&
+        notes.findIndex((note) => note.id === openNoteIds[0]) > -1
+      ) {
         router.replace(`/app/note/${openNoteIds[0]}`);
         return;
       } else if (notes && notes.length > 0) {

@@ -174,7 +174,7 @@ export default function Note(props: Props) {
 
   const noteContainerClassName =
     'flex flex-col flex-shrink-0 md:flex-shrink w-full bg-white';
-  const errorContainerClassName = `${noteContainerClassName} items-center justify-center h-full`;
+  const errorContainerClassName = `${noteContainerClassName} items-center justify-center h-full p-4`;
 
   if (!note) {
     return (
