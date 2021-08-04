@@ -51,6 +51,7 @@ export default async function handler(
       mode: 'subscription',
       success_url: `${baseUrl}${redirectPath}?checkout_session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${baseUrl}${redirectPath}`,
+      allow_promotion_codes: true,
     });
     res.json({ sessionId: session.id });
   } catch (e) {
