@@ -190,7 +190,10 @@ type ExternalLinkElementProps = {
 const ExternalLinkElement = (props: ExternalLinkElementProps) => {
   const { element, children, attributes } = props;
   return (
-    <Tooltip content={element.url} placement="bottom">
+    <Tooltip
+      content={<span className="break-words">{element.url}</span>}
+      placement="bottom"
+    >
       <a
         className="link"
         href={element.url}
