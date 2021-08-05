@@ -9,4 +9,6 @@ export type Note = {
   user_id: User['id'];
   content: Descendant[];
   title: string;
+  created_at: string;
+  updated_at: string;
 };
