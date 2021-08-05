@@ -3,7 +3,10 @@ import supabase from 'lib/supabase';
 import type { Note } from 'types/supabase';
 import type { PickPartial } from 'types/utils';
 
-type NoteUpsert = PickPartial<Note, 'id' | 'content'>;
+type NoteUpsert = PickPartial<
+  Note,
+  'id' | 'content' | 'created_at' | 'updated_at'
+>;
 
 export default async function upsertNote(note: NoteUpsert) {
   const { data } = await supabase
