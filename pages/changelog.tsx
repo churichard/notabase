@@ -24,6 +24,12 @@ export default function Changelog() {
           .
         </p>
         <ChangelogBlock
+          title="August 5, 2021"
+          features={[
+            'Add support for image uploads (by copying + pasting or dragging + dropping)',
+          ]}
+        />
+        <ChangelogBlock
           title="July 29, 2021"
           features={['Add support for wiki links when importing a note']}
           bugFixes={[
