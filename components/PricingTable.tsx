@@ -8,7 +8,7 @@ const pricingTableData = [
     name: 'Usage',
     data: [
       ['Notes', '50', 'Unlimited'],
-      // ['Image upload', '5 MB', '20 MB'], // TODO: add this back in after adding image upload
+      ['Image upload', '5 MB', '20 MB'],
     ],
   },
   {

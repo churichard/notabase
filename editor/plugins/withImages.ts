@@ -6,6 +6,8 @@ import { ElementType } from 'types/slate';
 import { isUrl } from 'utils/url';
 import imageExtensions from 'utils/image-extensions';
 import supabase from 'lib/supabase';
+import { store } from 'lib/store';
+import { PlanId } from 'constants/pricing';
 
 const withImages = (editor: Editor) => {
   const { insertData, isVoid } = editor;
@@ -55,9 +57,18 @@ const uploadAndInsertImage = async (editor: Editor, file: File) => {
     return;
   }
 
-  // Enforce 5 MB upload limit
-  if (file.size > 5 * 1024 * 1024) {
-    toast.error('Your image is over the 5 MB limit.');
+  // Enforce upload limits
+  const BASIC_UPLOAD_LIMIT = 5 * 1024 * 1024; // 5 MB
+  const PRO_UPLOAD_LIMIT = 20 * 1024 * 1024; // 20 MB
+  const planId = store.getState().billingDetails?.planId;
+
+  if (planId === PlanId.Basic && file.size > BASIC_UPLOAD_LIMIT) {
+    toast.error(
+      'Your image is over the 5 MB limit. Upgrade to the Pro plan for 20 MB file uploads.'
+    );
+    return;
+  } else if (planId === PlanId.Pro && file.size > PRO_UPLOAD_LIMIT) {
+    toast.error('Your image is over the 20 MB limit for the Pro plan.');
     return;
   }
 
@@ -71,9 +82,10 @@ const uploadAndInsertImage = async (editor: Editor, file: File) => {
     return;
   }
 
+  const expiresIn = 60 * 60 * 24 * 365 * 100; // 100 year expiry
   const { signedURL, error: signedUrlError } = await supabase.storage
     .from('user-assets')
-    .createSignedUrl(key, 60 * 60 * 24 * 365 * 100); // 100 year expiry
+    .createSignedUrl(key, expiresIn);
 
   if (signedURL) {
     insertImage(editor, signedURL);
