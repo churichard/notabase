@@ -53,7 +53,7 @@
     "@types/file-saver": "^2.0.3",
     "@types/node": "^16.4.12",
     "@types/nprogress": "^0.2.0",
-    "@types/react": "^17.0.15",
+    "@types/react": "^17.0.16",
     "@types/react-dom": "^17.0.9",
     "@types/react-highlight-words": "^0.16.3",
     "@types/tailwindcss": "^2.2.1",
