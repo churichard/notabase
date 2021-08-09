@@ -13,7 +13,7 @@ It is inspired by note-taking apps such as Notion, Obsidian, Typora, and Roam Re
 
 ## Status
 
-Notabase is in alpha. It is under active development.
+Notabase is in beta. It is under active development.
 
 ## Features
 
