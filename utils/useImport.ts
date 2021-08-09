@@ -50,9 +50,12 @@ export default function useImport() {
         return;
       }
 
+      const importingToast = toast.info('Importing notes, please wait...', {
+        autoClose: false,
+      });
+
       // Add a new note for each imported note
       const promises: Promise<Note | null>[] = [];
-      const noteLinkPromises: Promise<Note | null>[] = [];
       for (const file of inputElement.files) {
         const fileName = file.name.replace(/\.[^/.]+$/, '');
         const fileContent = await file.text();
@@ -63,10 +66,11 @@ export default function useImport() {
           .use(remarkToSlate)
           .processSync(fileContent);
 
-        const { content: slateContent, promises: fixNoteLinksPromises } =
+        const { content: slateContent, promises: noteLinkPromises } =
           fixNoteLinks(result as Descendant[]);
 
-        noteLinkPromises.push(...fixNoteLinksPromises);
+        await Promise.all(noteLinkPromises);
+
         promises.push(
           upsertNote({
             user_id: user.id,
@@ -79,6 +83,7 @@ export default function useImport() {
       const newNotes = await Promise.all(promises);
 
       // Show a toast with the number of successfully imported notes
+      toast.dismiss(importingToast);
       const numOfSuccessfulImports = newNotes.filter((note) => !!note).length;
       if (numOfSuccessfulImports > 1) {
         toast.success(
@@ -125,7 +130,7 @@ const fixNoteLinks = (
       let noteId;
 
       const existingNoteId =
-        newNoteTitleToId[noteTitle] ??
+        newNoteTitleToId[noteTitle.toLowerCase()] ??
         notesArr.find((note) =>
           caseInsensitiveStringEqual(note.title, noteTitle)
         )?.id;
@@ -134,7 +139,7 @@ const fixNoteLinks = (
         noteId = existingNoteId;
       } else {
         noteId = uuidv4(); // Create new note id
-        newNoteTitleToId[noteTitle] = noteId; // Add to new notes array
+        newNoteTitleToId[noteTitle.toLowerCase()] = noteId; // Add to new notes array
 
         const userId = supabase.auth.user()?.id;
         if (userId) {
