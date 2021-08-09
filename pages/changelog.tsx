@@ -25,8 +25,12 @@ export default function Changelog() {
         </p>
         <ChangelogBlock
           title="August 9, 2021"
-          features={['Notabase is now in beta']}
-          bugFixes={['Fix graph view radius computation']}
+          features={['Notabase is now in beta! 🎉']}
+          bugFixes={[
+            'Fix graph view radius computation',
+            'Importing and exporting improvements',
+            "Fix bug where paywall shows up when it's not supposed to",
+          ]}
         />
         <ChangelogBlock
           title="August 5, 2021"
