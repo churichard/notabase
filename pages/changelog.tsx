@@ -24,6 +24,11 @@ export default function Changelog() {
           .
         </p>
         <ChangelogBlock
+          title="August 9, 2021"
+          features={['Notabase is now in beta']}
+          bugFixes={['Fix graph view radius computation']}
+        />
+        <ChangelogBlock
           title="August 5, 2021"
           features={[
             'Add support for image uploads (by copying + pasting or dragging + dropping)',

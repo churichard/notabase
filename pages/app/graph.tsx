@@ -15,7 +15,16 @@ export default function Graph() {
   // Compute graph data
   const graphData: GraphData = useMemo(() => {
     const data: GraphData = { nodes: [], links: [] };
-    for (const note of Object.values(notes)) {
+    const notesArr = Object.values(notes);
+
+    // Initialize linksByNoteId
+    const linksByNoteId: Record<string, Set<string>> = {};
+    for (const note of notesArr) {
+      linksByNoteId[note.id] = new Set();
+    }
+
+    // Search for links in each note
+    for (const note of notesArr) {
       const editor = createEditor();
       editor.children = note.content;
 
@@ -28,22 +37,28 @@ export default function Graph() {
           !!Node.string(n), // We ignore note links with empty link text
       });
 
-      let numOfLinks = 0;
+      // Update linksByNoteId
       for (const [node] of matchingElements) {
-        numOfLinks++;
         const noteLinkElement = node as NoteLink;
-        data.links.push({
-          source: note.id,
-          target: noteLinkElement.noteId,
-        });
+        linksByNoteId[note.id].add(noteLinkElement.noteId);
+        linksByNoteId[noteLinkElement.noteId].add(note.id);
       }
+    }
 
+    // Create graph data
+    for (const note of notesArr) {
+      // Populate links
+      for (const linkNoteId of linksByNoteId[note.id].values()) {
+        data.links.push({ source: note.id, target: linkNoteId });
+      }
+      // Populate nodes
       data.nodes.push({
         id: note.id,
         name: note.title,
-        radius: getRadius(numOfLinks),
+        radius: getRadius(linksByNoteId[note.id].size),
       });
     }
+
     return data;
   }, [notes]);
 
@@ -63,7 +78,8 @@ export default function Graph() {
 }
 
 const getRadius = (numOfLinks: number) => {
+  const MAX_RADIUS = 10;
   const BASE_RADIUS = 3;
   const LINK_MULTIPLIER = 0.5;
-  return BASE_RADIUS + LINK_MULTIPLIER * numOfLinks;
+  return Math.min(BASE_RADIUS + LINK_MULTIPLIER * numOfLinks, MAX_RADIUS);
 };
