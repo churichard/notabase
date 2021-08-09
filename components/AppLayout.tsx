@@ -101,6 +101,8 @@ export default function AppLayout(props: Props) {
           currentPeriodEnd: new Date(data.current_period_end),
           cancelAtPeriodEnd: data.cancel_at_period_end,
         });
+      } else {
+        setBillingDetails(null);
       }
     },
     [setBillingDetails]
