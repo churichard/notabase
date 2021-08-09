@@ -5,6 +5,7 @@ import produce, { Draft } from 'immer';
 import localforage from 'localforage';
 import type { Note } from 'types/supabase';
 import { BillingFrequency, PlanId } from 'constants/pricing';
+import { caseInsensitiveStringEqual } from 'utils/string';
 import createUserSettingsSlice, {
   UserSettings,
 } from './createUserSettingsSlice';
@@ -101,7 +102,19 @@ export const store = createVanilla<Store>(
           if (state.notes[note.id]) {
             state.notes[note.id] = { ...state.notes[note.id], ...note };
           } else {
-            state.notes[note.id] = note;
+            const existingNote = Object.values(state.notes).find((n) =>
+              caseInsensitiveStringEqual(n.title, note.title)
+            );
+            if (existingNote) {
+              // Update existing note
+              state.notes[existingNote.id] = {
+                ...state.notes[existingNote.id],
+                ...note,
+              };
+            } else {
+              // Insert new note
+              state.notes[note.id] = note;
+            }
           }
         });
       },

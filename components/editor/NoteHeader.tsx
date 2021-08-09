@@ -186,7 +186,7 @@ export default function NoteHeader() {
 }
 
 const getSerializedNote = (note: Note) =>
-  `# ${note.title}\n\n${note.content.map((n) => serialize(n)).join('')}`;
+  note.content.map((n) => serialize(n)).join('');
 
 const getNoteAsBlob = (note: Note) => {
   const serializedContent = getSerializedNote(note);

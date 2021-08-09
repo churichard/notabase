@@ -52,6 +52,7 @@ export default function useImport() {
 
       // Add a new note for each imported note
       const promises: Promise<Note | null>[] = [];
+      const noteLinkPromises: Promise<Note | null>[] = [];
       for (const file of inputElement.files) {
         const fileName = file.name.replace(/\.[^/.]+$/, '');
         const fileContent = await file.text();
@@ -62,14 +63,14 @@ export default function useImport() {
           .use(remarkToSlate)
           .processSync(fileContent);
 
-        const { content: slateContent, promises: noteLinkPromises } =
+        const { content: slateContent, promises: fixNoteLinksPromises } =
           fixNoteLinks(result as Descendant[]);
 
-        promises.push(...noteLinkPromises);
+        noteLinkPromises.push(...fixNoteLinksPromises);
         promises.push(
           upsertNote({
             user_id: user.id,
-            title: getUniqueTitle(fileName),
+            title: fileName,
             content: slateContent.length > 0 ? slateContent : undefined,
           })
         );
@@ -97,23 +98,6 @@ export default function useImport() {
 
   return onImport;
 }
-
-// Get a unique title by appending a number after the given noteTitle.
-const getUniqueTitle = (title: string) => {
-  const getResult = () => (suffix > 0 ? `${title} ${suffix}` : title);
-
-  let suffix = 0;
-  const notesArr = Object.values(store.getState().notes);
-  while (
-    notesArr.findIndex((note) =>
-      caseInsensitiveStringEqual(note.title, getResult())
-    ) > -1
-  ) {
-    suffix += 1;
-  }
-
-  return getResult();
-};
 
 /**
  * Fixes note links by adding the proper note id to the link.
