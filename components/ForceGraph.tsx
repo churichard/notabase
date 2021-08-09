@@ -111,11 +111,11 @@ export default function ForceGraph(props: Props) {
 
       // Fill node color
       if (isHovered) {
-        context.strokeStyle = colors.emerald[300];
+        context.strokeStyle = colors.emerald[900];
         context.stroke();
-        context.fillStyle = colors.emerald[500];
+        context.fillStyle = colors.emerald[400];
       } else if (areNeighbors(hoveredNode.current?.id, node.id)) {
-        context.fillStyle = colors.emerald[300];
+        context.fillStyle = colors.emerald[400];
       } else {
         context.fillStyle = colors.trueGray[400];
       }
