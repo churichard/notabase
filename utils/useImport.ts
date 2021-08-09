@@ -59,7 +59,7 @@ export default function useImport() {
 
         const { result } = unified()
           .use(markdown)
-          .use(wikiLinkPlugin)
+          .use(wikiLinkPlugin, { aliasDivider: '|' })
           .use(remarkToSlate)
           .processSync(fileContent);
 

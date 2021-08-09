@@ -8,6 +8,9 @@ export interface MdastNode {
   url?: string;
   alt?: string;
   lang?: string;
+  data?: {
+    alias?: string;
+  };
   parentType?: string; // custom attribute specifying the parent type
   // mdast metadata
   position?: unknown;

@@ -76,6 +76,7 @@ export default function deserialize(node: MdastNode, opts?: OptionType) {
       return {
         type: ElementType.NoteLink,
         noteTitle: node.value,
+        ...(node.data?.alias ? { customText: node.data.alias } : {}),
         children: [{ text: node.value }],
       };
 
