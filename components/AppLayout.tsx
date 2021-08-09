@@ -206,7 +206,7 @@ export default function AppLayout(props: Props) {
         setIsFindOrCreateModalOpen={setIsFindOrCreateModalOpen}
         setIsSettingsOpen={setIsSettingsOpen}
       />
-      <div className="flex flex-col flex-1">
+      <div className="flex flex-col flex-1 overflow-y-hidden">
         {billingDetails?.planId === PlanId.Basic && numOfNotes >= 40 ? (
           <button
             className="block w-full py-1 font-semibold text-center bg-yellow-300"
