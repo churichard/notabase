@@ -5,7 +5,7 @@ import { createEditor, Descendant, Editor, Element, Transforms } from 'slate';
 import { toast } from 'react-toastify';
 import wikiLinkPlugin from 'remark-wiki-link';
 import { v4 as uuidv4 } from 'uuid';
-import { store } from 'lib/store';
+import { store, useStore } from 'lib/store';
 import upsertNote from 'lib/api/upsertNote';
 import supabase from 'lib/supabase';
 import remarkToSlate from 'editor/serialization/remarkToSlate';
@@ -13,12 +13,23 @@ import withLinks from 'editor/plugins/withLinks';
 import { caseInsensitiveStringEqual } from 'utils/string';
 import { ElementType } from 'types/slate';
 import { Note } from 'types/supabase';
+import { Feature } from 'constants/pricing';
 import { useAuth } from './useAuth';
+import useFeature from './useFeature';
 
 export default function useImport() {
   const { user } = useAuth();
+  const canCreateNote = useFeature(Feature.NumOfNotes);
+  const setIsUpgradeModalOpen = useStore(
+    (state) => state.setIsUpgradeModalOpen
+  );
 
   const onImport = useCallback(() => {
+    if (!canCreateNote) {
+      setIsUpgradeModalOpen(true);
+      return;
+    }
+
     if (!user) {
       return;
     }
@@ -82,7 +93,7 @@ export default function useImport() {
     };
 
     input.click();
-  }, [user]);
+  }, [user, canCreateNote, setIsUpgradeModalOpen]);
 
   return onImport;
 }

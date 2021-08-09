@@ -15,6 +15,10 @@ import { isUrl } from 'utils/url';
 import { useAuth } from 'utils/useAuth';
 import useNoteSearch from 'utils/useNoteSearch';
 import { caseInsensitiveStringEqual } from 'utils/string';
+import useFeature from 'utils/useFeature';
+import { useStore } from 'lib/store';
+import { Feature } from 'constants/pricing';
+import UpgradeButton from 'components/UpgradeButton';
 import Popover from './Popover';
 import type { AddLinkPopoverState } from './Editor';
 
@@ -109,6 +113,11 @@ export default function AddLinkPopover(props: Props) {
     });
   }, [editor, addLinkPopoverState, setAddLinkPopoverState]);
 
+  const canCreateNote = useFeature(Feature.NumOfNotes);
+  const setIsUpgradeModalOpen = useStore(
+    (state) => state.setIsUpgradeModalOpen
+  );
+
   const onOptionClick = useCallback(
     async (option?: Option) => {
       if (!option || !user) {
@@ -127,6 +136,10 @@ export default function AddLinkPopover(props: Props) {
         insertExternalLink(editor, linkText);
         Transforms.move(editor, { distance: 1, unit: 'offset' }); // Focus after the note link
       } else if (option.type === OptionType.NEW_NOTE) {
+        if (!canCreateNote) {
+          setIsUpgradeModalOpen(true);
+          return;
+        }
         // Add a new note and insert a link to it with the note title as the link text
         const noteId = uuidv4();
         insertNoteLink(editor, noteId, linkText);
@@ -139,7 +152,7 @@ export default function AddLinkPopover(props: Props) {
         throw new Error(`Option type ${option.type} is not supported`);
       }
     },
-    [editor, user, hidePopover, linkText]
+    [editor, user, hidePopover, linkText, canCreateNote, setIsUpgradeModalOpen]
   );
 
   const onKeyDown = useCallback(
@@ -210,14 +223,24 @@ type OptionProps = {
 
 const OptionItem = (props: OptionProps) => {
   const { option, isSelected, onClick } = props;
+  const canCreateNote = useFeature(Feature.NumOfNotes);
+
+  const isDisabled = useMemo(
+    () => !canCreateNote && option.type === OptionType.NEW_NOTE,
+    [canCreateNote, option]
+  );
+
   return (
     <div
       className={`flex flex-row items-center px-4 py-1 cursor-pointer text-gray-800 hover:bg-gray-100 active:bg-gray-200 ${
         isSelected ? 'bg-gray-100' : ''
-      }`}
+      } ${isDisabled ? 'text-gray-400' : ''}`}
       onMouseDown={(event) => event.preventDefault()}
       onMouseUp={onClick}
     >
+      {isDisabled ? (
+        <UpgradeButton feature={Feature.NumOfNotes} className="mr-1" />
+      ) : null}
       {option.icon ? (
         <option.icon size={18} className="flex-shrink-0 mr-1" />
       ) : null}

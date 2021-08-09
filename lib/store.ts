@@ -4,6 +4,7 @@ import { persist, StateStorage } from 'zustand/middleware';
 import produce, { Draft } from 'immer';
 import localforage from 'localforage';
 import type { Note } from 'types/supabase';
+import { BillingFrequency, PlanId } from 'constants/pricing';
 import createUserSettingsSlice, {
   UserSettings,
 } from './createUserSettingsSlice';
@@ -30,7 +31,18 @@ const storage: StateStorage = {
 
 export type Notes = Record<Note['id'], Note>;
 
+export type BillingDetails = {
+  planId: PlanId;
+  frequency: BillingFrequency;
+  currentPeriodEnd: Date;
+  cancelAtPeriodEnd: boolean;
+} | null;
+
 export type Store = {
+  billingDetails: BillingDetails;
+  setBillingDetails: (
+    value: BillingDetails | ((value: BillingDetails) => BillingDetails)
+  ) => void;
   notes: Notes;
   setNotes: (value: Notes | ((value: Notes) => Notes)) => void;
   upsertNote: (note: Note) => void;
@@ -38,6 +50,10 @@ export type Store = {
   deleteNote: (noteId: string) => void;
   openNoteIds: string[];
   setOpenNoteIds: (openNoteIds: string[], index?: number) => void;
+  isUpgradeModalOpen: boolean;
+  setIsUpgradeModalOpen: (
+    value: boolean | ((value: boolean) => boolean)
+  ) => void;
 } & UserSettings;
 
 type FunctionPropertyNames<T> = {
@@ -67,6 +83,8 @@ export const setter =
 export const store = createVanilla<Store>(
   persist(
     immer((set) => ({
+      billingDetails: null,
+      setBillingDetails: setter(set, 'billingDetails'),
       /**
        * An array of saved notes
        */
@@ -128,6 +146,8 @@ export const store = createVanilla<Store>(
           );
         });
       },
+      isUpgradeModalOpen: false,
+      setIsUpgradeModalOpen: setter(set, 'isUpgradeModalOpen'),
       ...createUserSettingsSlice(set),
     })),
     {

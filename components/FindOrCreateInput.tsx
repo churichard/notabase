@@ -7,6 +7,10 @@ import upsertNote from 'lib/api/upsertNote';
 import { useAuth } from 'utils/useAuth';
 import useNoteSearch from 'utils/useNoteSearch';
 import { caseInsensitiveStringEqual } from 'utils/string';
+import useFeature from 'utils/useFeature';
+import { Feature } from 'constants/pricing';
+import { useStore } from 'lib/store';
+import UpgradeButton from './UpgradeButton';
 
 enum OptionType {
   NOTE,
@@ -63,25 +67,46 @@ function FindOrCreateInput(props: Props, ref: ForwardedRef<HTMLInputElement>) {
     return result;
   }, [searchResults, inputText]);
 
-  const onOptionClick = async (option: Option) => {
-    if (option.type === OptionType.NEW_NOTE) {
+  const canCreateNote = useFeature(Feature.NumOfNotes);
+  const setIsUpgradeModalOpen = useStore(
+    (state) => state.setIsUpgradeModalOpen
+  );
+
+  const onOptionClick = useCallback(
+    async (option: Option) => {
       if (!user) {
         return;
       }
-      const note = await upsertNote({ user_id: user.id, title: inputText });
-      if (!note) {
-        return;
+
+      onOptionClickCallback?.();
+
+      if (option.type === OptionType.NEW_NOTE) {
+        if (!canCreateNote) {
+          setIsUpgradeModalOpen(true);
+          return;
+        }
+
+        const note = await upsertNote({ user_id: user.id, title: inputText });
+        if (!note) {
+          throw new Error(`There was an error creating the note ${inputText}.`);
+        }
+
+        router.push(`/app/note/${note.id}`);
+      } else if (option.type === OptionType.NOTE) {
+        router.push(`/app/note/${option.id}`);
+      } else {
+        throw new Error(`Option type ${option.type} is not supported`);
       }
-      router.push(`/app/note/${note.id}`);
-    } else if (option.type === OptionType.NOTE) {
-      router.push(`/app/note/${option.id}`);
-    } else {
-      throw new Error(`Option type ${option.type} is not supported`);
-    }
-    setSelectedOptionIndex(0);
-    setInputText('');
-    onOptionClickCallback?.();
-  };
+    },
+    [
+      user,
+      router,
+      canCreateNote,
+      inputText,
+      onOptionClickCallback,
+      setIsUpgradeModalOpen,
+    ]
+  );
 
   const onKeyDown = useCallback(
     (event) => {
@@ -148,13 +173,23 @@ type OptionProps = {
 
 const OptionItem = (props: OptionProps) => {
   const { option, isSelected, onClick } = props;
+  const canCreateNote = useFeature(Feature.NumOfNotes);
+
+  const isDisabled = useMemo(
+    () => !canCreateNote && option.type === OptionType.NEW_NOTE,
+    [canCreateNote, option]
+  );
+
   return (
     <button
       className={`flex flex-row w-full items-center px-4 py-2 text-gray-800 hover:bg-gray-100 active:bg-gray-200 ${
         isSelected ? 'bg-gray-100' : ''
-      }`}
+      } ${isDisabled ? 'text-gray-400' : ''}`}
       onClick={onClick}
     >
+      {isDisabled ? (
+        <UpgradeButton feature={Feature.NumOfNotes} className="mr-1" />
+      ) : null}
       {option.icon ? (
         <option.icon size={18} className="flex-shrink-0 mr-1" />
       ) : null}
