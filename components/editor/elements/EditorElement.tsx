@@ -1,12 +1,6 @@
-import { ComponentType, ReactNode } from 'react';
-import {
-  RenderElementProps,
-  useFocused,
-  useSelected,
-  useSlateStatic,
-} from 'slate-react';
+import { ReactNode } from 'react';
+import { RenderElementProps, useFocused, useSelected } from 'slate-react';
 import Link from 'next/link';
-import { IconDotsVertical } from '@tabler/icons';
 import type { ExternalLink, Image as ImageType, NoteLink } from 'types/slate';
 import { ElementType } from 'types/slate';
 import useOnNoteLinkClick from 'editor/useOnNoteLinkClick';
@@ -246,98 +240,4 @@ const Image = (props: ImageProps) => {
       {children}
     </div>
   );
-};
-
-export const withOptionsMenu = (
-  EditorElement: ComponentType<EditorElementProps>
-) => {
-  function WithOptionsMenuComponent(props: EditorElementProps) {
-    const { children, className, ...otherProps } = props;
-    const editor = useSlateStatic();
-    const elementType = props.element.type;
-
-    // We don't show the options menu for inline elements or bulleted/numbered lists
-    if (
-      editor.isInline(props.element) ||
-      elementType === ElementType.BulletedList ||
-      elementType === ElementType.NumberedList
-    ) {
-      return <EditorElement {...props} />;
-    }
-
-    const getButtonPosition = () => {
-      if (elementType === ElementType.ListItem) {
-        return '-left-14';
-      } else if (elementType === ElementType.Blockquote) {
-        return '-left-7';
-      } else {
-        return '-left-6';
-      }
-    };
-
-    return (
-      <EditorElement
-        className={`relative w-full group before:absolute before:top-0 before:bottom-0 before:w-full before:right-full ${className}`}
-        {...otherProps}
-      >
-        {children}
-        <Tooltip
-          content={<span className="text-xs">Click to open menu</span>}
-          delay={[200, 0]}
-        >
-          <button
-            className={`hidden group-hover:block hover:bg-gray-200 rounded p-0.5 absolute top-0.5 ${getButtonPosition()}`}
-          >
-            <IconDotsVertical className="text-gray-500" size={18} />
-          </button>
-        </Tooltip>
-      </EditorElement>
-    );
-  }
-
-  return WithOptionsMenuComponent;
-};
-
-export const withVerticalSpacing = (
-  EditorElement: ComponentType<EditorElementProps>
-) => {
-  function WithOptionsMenuComponent(props: EditorElementProps) {
-    const { children, className, ...otherProps } = props;
-    const editor = useSlateStatic();
-    const elementType = props.element.type;
-
-    // No vertical spacing for inline elements
-    if (editor.isInline(props.element)) {
-      return <EditorElement {...props} />;
-    }
-
-    const getVerticalSpacing = () => {
-      if (
-        elementType === ElementType.ListItem ||
-        elementType === ElementType.BulletedList ||
-        elementType === ElementType.NumberedList
-      ) {
-        return 'my-2';
-      } else if (elementType === ElementType.HeadingOne) {
-        return 'mb-3 mt-8 first:mt-3';
-      } else if (elementType === ElementType.HeadingTwo) {
-        return 'mb-3 mt-6 first:mt-3';
-      } else if (elementType === ElementType.HeadingThree) {
-        return 'mb-3 mt-4 first:mt-3';
-      } else {
-        return 'my-3';
-      }
-    };
-
-    return (
-      <EditorElement
-        className={`${getVerticalSpacing()} ${className}`}
-        {...otherProps}
-      >
-        {children}
-      </EditorElement>
-    );
-  }
-
-  return WithOptionsMenuComponent;
 };

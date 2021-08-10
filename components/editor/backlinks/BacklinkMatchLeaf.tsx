@@ -3,8 +3,8 @@ import { useRouter } from 'next/router';
 import { BacklinkMatch } from 'editor/backlinks/useBacklinks';
 import useOnNoteLinkClick from 'editor/useOnNoteLinkClick';
 import { useStore } from 'lib/store';
-import EditorElement, { EditorElementProps } from '../EditorElement';
-import EditorLeaf from '../EditorLeaf';
+import EditorElement, { EditorElementProps } from '../elements/EditorElement';
+import EditorLeaf, { EditorLeafProps } from '../elements/EditorLeaf';
 import { ReadOnlyEditor } from '../ReadOnlyEditor';
 
 type BacklinkMatchLeafProps = {
@@ -23,7 +23,10 @@ const BacklinkMatchLeaf = (props: BacklinkMatchLeafProps) => {
     (props: EditorElementProps) => <EditorElement {...props} />,
     []
   );
-  const renderLeaf = useCallback((props) => <EditorLeaf {...props} />, []);
+  const renderLeaf = useCallback(
+    (props: EditorLeafProps) => <EditorLeaf {...props} />,
+    []
+  );
 
   const backlinkMatch = useMemo(
     () => (

@@ -1,6 +1,8 @@
 import { RenderLeafProps } from 'slate-react';
 
-const EditorLeaf = ({ attributes, children, leaf }: RenderLeafProps) => {
+export type EditorLeafProps = RenderLeafProps;
+
+const EditorLeaf = ({ attributes, children, leaf }: EditorLeafProps) => {
   if (leaf.bold) {
     children = <span className="font-semibold">{children}</span>;
   }
