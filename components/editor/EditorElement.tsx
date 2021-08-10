@@ -267,11 +267,11 @@ export const withOptionsMenu = (
 
     const getButtonPosition = () => {
       if (elementType === ElementType.ListItem) {
-        return '-left-16';
+        return '-left-14';
       } else if (elementType === ElementType.Blockquote) {
-        return '-left-9';
+        return '-left-7';
       } else {
-        return '-left-8';
+        return '-left-6';
       }
     };
 
@@ -286,7 +286,7 @@ export const withOptionsMenu = (
           delay={[200, 0]}
         >
           <button
-            className={`hidden group-hover:block hover:bg-gray-200 rounded p-0.5 absolute top-0 ${getButtonPosition()}`}
+            className={`hidden group-hover:block hover:bg-gray-200 rounded p-0.5 absolute top-0.5 ${getButtonPosition()}`}
           >
             <IconDotsVertical className="text-gray-500" size={18} />
           </button>
