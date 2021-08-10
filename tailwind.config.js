@@ -45,6 +45,9 @@ module.exports = {
       zIndex: {
         '-10': '-10',
       },
+      cursor: {
+        alias: 'alias',
+      },
       typography: {
         DEFAULT: {
           css: {

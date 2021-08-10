@@ -2,7 +2,12 @@ import type { Path } from 'slate';
 import { Editor, Element, Transforms, Range, Point, Text } from 'slate';
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from 'react-toastify';
-import type { ExternalLink, ListElement, NoteLink } from 'types/slate';
+import type {
+  BlockReference,
+  ExternalLink,
+  ListElement,
+  NoteLink,
+} from 'types/slate';
 import { ElementType, Mark } from 'types/slate';
 import { isListType, isMark } from 'editor/formatting';
 import { isUrl } from 'utils/url';
@@ -52,7 +57,8 @@ const INLINE_SHORTCUTS: Array<{
     | Mark
     | CustomInlineShortcuts
     | ElementType.ExternalLink
-    | ElementType.NoteLink;
+    | ElementType.NoteLink
+    | ElementType.BlockReference;
 }> = [
   { match: /(?:^|\s)(\*\*)([^*]+)(\*\*)/, type: Mark.Bold },
   { match: /(?:^|\s)(__)([^_]+)(__)/, type: Mark.Bold },
@@ -66,6 +72,7 @@ const INLINE_SHORTCUTS: Array<{
   },
   { match: /(?:^|\s)(\[)(.+)(\]\()(.+)(\))/, type: ElementType.ExternalLink },
   { match: /(?:^|\s)(\[\[)(.+)(\]\])/, type: ElementType.NoteLink },
+  { match: /(?:^|\s)(\(\()(.+)(\)\))/, type: ElementType.BlockReference },
 ];
 
 // Add auto-markdown formatting shortcuts
@@ -284,6 +291,23 @@ const handleInlineShortcuts = (
         children: [],
       };
       Transforms.wrapNodes(editor, link, { at: linkTextRange, split: true });
+      Transforms.move(editor, { unit: 'offset' });
+
+      return true;
+    } else if (type === ElementType.BlockReference) {
+      const [, startMark, blockId, endMark] = result;
+
+      // Delete markdown and insert block reference
+      const length = startMark.length + blockId.length + endMark.length - 1; // The last character is not in the editor
+      deleteText(editor, selectionAnchor.path, selectionAnchor.offset, length);
+
+      const blockRef: BlockReference = {
+        type: ElementType.BlockReference,
+        blockId,
+        children: [{ text: '' }],
+      };
+
+      Editor.insertNode(editor, blockRef);
       Transforms.move(editor, { unit: 'offset' });
 
       return true;
