@@ -30,31 +30,31 @@ export enum Mark {
 }
 
 export type ParagraphElement = {
-  id: string;
+  id?: string;
   type: ElementType.Paragraph;
   children: Descendant[];
 };
 
 export type HeadingOneElement = {
-  id: string;
+  id?: string;
   type: ElementType.HeadingOne;
   children: Descendant[];
 };
 
 export type HeadingTwoElement = {
-  id: string;
+  id?: string;
   type: ElementType.HeadingTwo;
   children: Descendant[];
 };
 
 export type HeadingThreeElement = {
-  id: string;
+  id?: string;
   type: ElementType.HeadingThree;
   children: Descendant[];
 };
 
 export type ListItem = {
-  id: string;
+  id?: string;
   type: ElementType.ListItem;
   children: Descendant[];
 };
@@ -70,7 +70,7 @@ export type NumberedList = {
 };
 
 export type Blockquote = {
-  id: string;
+  id?: string;
   type: ElementType.Blockquote;
   children: Descendant[];
 };
@@ -90,13 +90,13 @@ export type NoteLink = {
 };
 
 export type CodeBlock = {
-  id: string;
+  id?: string;
   type: ElementType.CodeBlock;
   children: Descendant[];
 };
 
 export type ThematicBreak = {
-  id: string;
+  id?: string;
   type: ElementType.ThematicBreak;
   children: Descendant[];
 };
@@ -131,6 +131,16 @@ export type NotabaseElement =
   | BlockReference;
 
 export type ListElement = BulletedList | NumberedList;
+
+export type BlockElementWithId =
+  | ParagraphElement
+  | HeadingOneElement
+  | HeadingTwoElement
+  | HeadingThreeElement
+  | ListItem
+  | Blockquote
+  | CodeBlock
+  | ThematicBreak;
 
 export type FormattedText = { text: string } & Partial<Record<Mark, boolean>>;
 
