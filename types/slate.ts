@@ -18,6 +18,7 @@ export enum ElementType {
   CodeBlock = 'code-block',
   ThematicBreak = 'thematic-break',
   Image = 'image',
+  BlockReference = 'block-reference',
 }
 
 export enum Mark {
@@ -29,26 +30,31 @@ export enum Mark {
 }
 
 export type ParagraphElement = {
+  id: string;
   type: ElementType.Paragraph;
   children: Descendant[];
 };
 
 export type HeadingOneElement = {
+  id: string;
   type: ElementType.HeadingOne;
   children: Descendant[];
 };
 
 export type HeadingTwoElement = {
+  id: string;
   type: ElementType.HeadingTwo;
   children: Descendant[];
 };
 
 export type HeadingThreeElement = {
+  id: string;
   type: ElementType.HeadingThree;
   children: Descendant[];
 };
 
 export type ListItem = {
+  id: string;
   type: ElementType.ListItem;
   children: Descendant[];
 };
@@ -64,6 +70,7 @@ export type NumberedList = {
 };
 
 export type Blockquote = {
+  id: string;
   type: ElementType.Blockquote;
   children: Descendant[];
 };
@@ -83,11 +90,13 @@ export type NoteLink = {
 };
 
 export type CodeBlock = {
+  id: string;
   type: ElementType.CodeBlock;
   children: Descendant[];
 };
 
 export type ThematicBreak = {
+  id: string;
   type: ElementType.ThematicBreak;
   children: Descendant[];
 };
@@ -97,6 +106,12 @@ export type Image = {
   url: string;
   caption?: string;
   children: Descendant[];
+};
+
+export type BlockReference = {
+  type: ElementType.BlockReference;
+  blockId: string;
+  children: FormattedText[];
 };
 
 export type NotabaseElement =
@@ -112,7 +127,8 @@ export type NotabaseElement =
   | NoteLink
   | CodeBlock
   | ThematicBreak
-  | Image;
+  | Image
+  | BlockReference;
 
 export type ListElement = BulletedList | NumberedList;
 

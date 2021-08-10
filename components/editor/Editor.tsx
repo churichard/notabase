@@ -33,6 +33,7 @@ import withNormalization from 'editor/plugins/withNormalization';
 import withCustomDeleteBackward from 'editor/plugins/withCustomDeleteBackward';
 import withImages from 'editor/plugins/withImages';
 import withVoidElements from 'editor/plugins/withVoidElements';
+import withBlockReferences from 'editor/plugins/withBlockReferences';
 import { useStore } from 'lib/store';
 import { ElementType, Mark } from 'types/slate';
 import HoveringToolbar from './HoveringToolbar';
@@ -66,7 +67,9 @@ export default function Editor(props: Props) {
         withAutoMarkdown(
           withBlockBreakout(
             withVoidElements(
-              withImages(withLinks(withHistory(withReact(createEditor()))))
+              withBlockReferences(
+                withImages(withLinks(withHistory(withReact(createEditor()))))
+              )
             )
           )
         )
