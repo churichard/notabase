@@ -1,11 +1,19 @@
-import { ReactNode } from 'react';
+import { ReactNode, useCallback, useMemo } from 'react';
 import { RenderElementProps, useFocused, useSelected } from 'slate-react';
 import Link from 'next/link';
-import type { ExternalLink, Image as ImageType, NoteLink } from 'types/slate';
+import type {
+  BlockReference,
+  ExternalLink,
+  Image as ImageType,
+  NoteLink,
+} from 'types/slate';
 import { ElementType } from 'types/slate';
 import useOnNoteLinkClick from 'editor/useOnNoteLinkClick';
 import { useStore } from 'lib/store';
 import Tooltip from 'components/Tooltip';
+import useBlockReference from 'editor/useBlockReference';
+import { ReadOnlyEditor } from '../ReadOnlyEditor';
+import EditorLeaf, { EditorLeafProps } from './EditorLeaf';
 
 export type EditorElementProps = {
   className?: string;
@@ -98,11 +106,21 @@ export default function EditorElement(props: EditorElementProps) {
           {children}
         </Image>
       );
+    case ElementType.BlockReference:
+      return (
+        <BlockRef
+          className={className}
+          element={element}
+          attributes={attributes}
+        >
+          {children}
+        </BlockRef>
+      );
     default:
       return (
-        <p className={className} {...attributes}>
+        <div className={className} {...attributes}>
           {children}
-        </p>
+        </div>
       );
   }
 }
@@ -214,9 +232,9 @@ const ThematicBreak = (props: ThematicBreakProps) => {
 };
 
 type ImageProps = {
+  element: ImageType;
   children: ReactNode;
   attributes: RenderElementProps['attributes'];
-  element: ImageType;
   className?: string;
 };
 
@@ -239,5 +257,65 @@ const Image = (props: ImageProps) => {
       />
       {children}
     </div>
+  );
+};
+
+type BlockRefProps = {
+  element: BlockReference;
+  children: ReactNode;
+  attributes: RenderElementProps['attributes'];
+  className?: string;
+};
+
+const BlockRef = (props: BlockRefProps) => {
+  const { className = '', element, children, attributes } = props;
+  const selected = useSelected();
+  const focused = useFocused();
+  const blockRefClassName = `p-0.25 border-b border-gray-200 select-none hover:cursor-alias hover:bg-primary-50 active:bg-primary-100 ${className} ${
+    selected && focused ? 'bg-blue-100' : ''
+  }`;
+  const blockReference = useBlockReference(element.blockId);
+
+  const renderElement = useCallback(
+    (props: EditorElementProps) => (
+      <EditorElement className="inline" {...props} />
+    ),
+    []
+  );
+  const renderLeaf = useCallback(
+    (props: EditorLeafProps) => <EditorLeaf {...props} />,
+    []
+  );
+
+  const blockRefElement = useMemo(() => {
+    if (!blockReference) {
+      return (
+        <span className="font-medium text-red-500">
+          Error: no block with id &ldquo;{element.blockId}&rdquo;
+        </span>
+      );
+    }
+    return (
+      <ReadOnlyEditor
+        value={[blockReference.element]}
+        renderElement={renderElement}
+        renderLeaf={renderLeaf}
+      />
+    );
+  }, [blockReference, renderElement, renderLeaf, element.blockId]);
+
+  return (
+    <span
+      className={blockRefClassName}
+      onClick={(e) => {
+        // TODO: handle this
+        e.stopPropagation();
+      }}
+      contentEditable={false}
+      {...attributes}
+    >
+      {blockRefElement}
+      {children}
+    </span>
   );
 };
