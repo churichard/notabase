@@ -5,6 +5,7 @@ import {
   useState,
   KeyboardEvent,
   useEffect,
+  ComponentType,
 } from 'react';
 import {
   createEditor,
@@ -14,10 +15,18 @@ import {
   Descendant,
   Path,
 } from 'slate';
-import { withReact, Editable, ReactEditor, Slate } from 'slate-react';
+import {
+  withReact,
+  Editable,
+  ReactEditor,
+  Slate,
+  useSlateStatic,
+  RenderElementProps,
+} from 'slate-react';
 import { withHistory } from 'slate-history';
 import { isHotkey } from 'is-hotkey';
 import colors from 'tailwindcss/colors';
+import { IconDotsVertical } from '@tabler/icons';
 import {
   handleEnter,
   handleIndent,
@@ -34,10 +43,11 @@ import withCustomDeleteBackward from 'editor/plugins/withCustomDeleteBackward';
 import withImages from 'editor/plugins/withImages';
 import withVoidElements from 'editor/plugins/withVoidElements';
 import { useStore } from 'lib/store';
+import Tooltip from 'components/Tooltip';
 import { ElementType, Mark } from 'types/slate';
 import HoveringToolbar from './HoveringToolbar';
 import AddLinkPopover from './AddLinkPopover';
-import EditorElement from './EditorElement';
+import EditorElement, { EditorElementProps } from './EditorElement';
 import EditorLeaf from './EditorLeaf';
 import LinkAutocompletePopover from './LinkAutocompletePopover';
 
@@ -73,10 +83,13 @@ export default function Editor(props: Props) {
   }
   const editor = editorRef.current;
 
-  const renderElement = useCallback(
-    (props) => <EditorElement {...props} />,
-    []
-  );
+  const renderElement = useMemo(() => {
+    const EditorElementWithOptionsMenu = withOptionsMenu(EditorElement);
+    const renderElement = (props: RenderElementProps) => (
+      <EditorElementWithOptionsMenu {...props} />
+    );
+    return renderElement;
+  }, []);
   const renderLeaf = useCallback((props) => <EditorLeaf {...props} />, []);
 
   const [addLinkPopoverState, setAddLinkPopoverState] =
@@ -278,3 +291,51 @@ export default function Editor(props: Props) {
     </Slate>
   );
 }
+
+const withOptionsMenu = (EditorElement: ComponentType<EditorElementProps>) => {
+  function WithOptionsMenuComponent(props: EditorElementProps) {
+    const { children, ...otherProps } = props;
+    const editor = useSlateStatic();
+    const elementType = props.element.type;
+
+    // We don't show the options menu for inline elements or bulleted/numbered lists
+    if (
+      editor.isInline(props.element) ||
+      elementType === ElementType.BulletedList ||
+      elementType === ElementType.NumberedList
+    ) {
+      return <EditorElement {...props} />;
+    }
+
+    const getButtonPosition = () => {
+      if (elementType === ElementType.ListItem) {
+        return '-left-16';
+      } else if (elementType === ElementType.Blockquote) {
+        return '-left-9';
+      } else {
+        return '-left-8';
+      }
+    };
+
+    return (
+      <EditorElement
+        className="relative w-full group before:absolute before:top-0 before:bottom-0 before:w-full before:right-full"
+        {...otherProps}
+      >
+        {children}
+        <Tooltip
+          content={<span className="text-xs">Click to open menu</span>}
+          delay={[200, 0]}
+        >
+          <button
+            className={`hidden group-hover:block hover:bg-gray-200 rounded p-0.5 absolute top-0 ${getButtonPosition()}`}
+          >
+            <IconDotsVertical className="text-gray-500" size={18} />
+          </button>
+        </Tooltip>
+      </EditorElement>
+    );
+  }
+
+  return WithOptionsMenuComponent;
+};

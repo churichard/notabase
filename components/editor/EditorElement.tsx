@@ -7,12 +7,19 @@ import useOnNoteLinkClick from 'editor/useOnNoteLinkClick';
 import { useStore } from 'lib/store';
 import Tooltip from 'components/Tooltip';
 
-type Props = {
-  omitVerticalSpacing: boolean;
+export type EditorElementProps = {
+  omitVerticalSpacing?: boolean;
+  className?: string;
 } & RenderElementProps;
 
-export default function EditorElement(props: Props) {
-  const { omitVerticalSpacing, attributes, children, element } = props;
+export default function EditorElement(props: EditorElementProps) {
+  const {
+    omitVerticalSpacing = false,
+    className = '',
+    attributes,
+    children,
+    element,
+  } = props;
 
   const verticalSpacing = useMemo(() => {
     if (omitVerticalSpacing) {
@@ -38,7 +45,7 @@ export default function EditorElement(props: Props) {
     case ElementType.HeadingOne:
       return (
         <h1
-          className={`text-2xl font-semibold ${verticalSpacing}`}
+          className={`text-2xl font-semibold ${verticalSpacing} ${className}`}
           {...attributes}
         >
           {children}
@@ -47,7 +54,7 @@ export default function EditorElement(props: Props) {
     case ElementType.HeadingTwo:
       return (
         <h2
-          className={`text-xl font-semibold ${verticalSpacing}`}
+          className={`text-xl font-semibold ${verticalSpacing} ${className}`}
           {...attributes}
         >
           {children}
@@ -56,7 +63,7 @@ export default function EditorElement(props: Props) {
     case ElementType.HeadingThree:
       return (
         <h3
-          className={`text-lg font-semibold ${verticalSpacing}`}
+          className={`text-lg font-semibold ${verticalSpacing} ${className}`}
           {...attributes}
         >
           {children}
@@ -64,26 +71,32 @@ export default function EditorElement(props: Props) {
       );
     case ElementType.ListItem:
       return (
-        <li className={`pl-1 ${verticalSpacing}`} {...attributes}>
+        <li className={`pl-1 ${verticalSpacing} ${className}`} {...attributes}>
           {children}
         </li>
       );
     case ElementType.BulletedList:
       return (
-        <ul className={`ml-8 list-disc ${verticalSpacing}`} {...attributes}>
+        <ul
+          className={`ml-8 list-disc ${verticalSpacing} ${className}`}
+          {...attributes}
+        >
           {children}
         </ul>
       );
     case ElementType.NumberedList:
       return (
-        <ol className={`ml-8 list-decimal ${verticalSpacing}`} {...attributes}>
+        <ol
+          className={`ml-8 list-decimal ${verticalSpacing} ${className}`}
+          {...attributes}
+        >
           {children}
         </ol>
       );
     case ElementType.Blockquote:
       return (
         <blockquote
-          className={`pl-4 border-l-4 ${verticalSpacing}`}
+          className={`pl-4 border-l-4 ${verticalSpacing} ${className}`}
           {...attributes}
         >
           {children}
@@ -92,7 +105,7 @@ export default function EditorElement(props: Props) {
     case ElementType.CodeBlock:
       return (
         <code
-          className={`block p-2 bg-gray-100 border border-gray-200 rounded dark:bg-gray-800 dark:border-gray-700 ${verticalSpacing}`}
+          className={`block p-2 bg-gray-100 border border-gray-200 rounded dark:bg-gray-800 dark:border-gray-700 ${verticalSpacing} ${className}`}
           {...attributes}
         >
           {children}
@@ -100,31 +113,39 @@ export default function EditorElement(props: Props) {
       );
     case ElementType.ThematicBreak:
       return (
-        <ThematicBreak className={verticalSpacing} attributes={attributes}>
+        <ThematicBreak className={className} attributes={attributes}>
           {children}
         </ThematicBreak>
       );
     case ElementType.ExternalLink:
       return (
-        <ExternalLinkElement element={element} attributes={attributes}>
+        <ExternalLinkElement
+          className={className}
+          element={element}
+          attributes={attributes}
+        >
           {children}
         </ExternalLinkElement>
       );
     case ElementType.NoteLink:
       return (
-        <NoteLinkElement element={element} attributes={attributes}>
+        <NoteLinkElement
+          className={className}
+          element={element}
+          attributes={attributes}
+        >
           {children}
         </NoteLinkElement>
       );
     case ElementType.Image:
       return (
-        <Image element={element} attributes={attributes}>
+        <Image className={className} element={element} attributes={attributes}>
           {children}
         </Image>
       );
     default:
       return (
-        <p className={verticalSpacing} {...attributes}>
+        <p className={`${verticalSpacing} ${className}`} {...attributes}>
           {children}
         </p>
       );
@@ -135,15 +156,16 @@ type NoteLinkElementProps = {
   element: NoteLink;
   children: ReactNode;
   attributes: RenderElementProps['attributes'];
+  className?: string;
 };
 
 const NoteLinkElement = (props: NoteLinkElementProps) => {
-  const { element, children, attributes } = props;
+  const { className = '', element, children, attributes } = props;
   const onNoteLinkClick = useOnNoteLinkClick();
   const isPageStackingOn = useStore((state) => state.isPageStackingOn);
   const selected = useSelected();
   const focused = useFocused();
-  const className = `p-0.25 rounded text-primary-600 cursor-pointer select-none bg-gray-100 hover:bg-gray-200 active:bg-gray-300 dark:text-primary-400 dark:bg-gray-800 dark:hover:bg-gray-700 dark:active:bg-gray-600 ${
+  const noteLinkClassName = `p-0.25 rounded text-primary-600 cursor-pointer select-none bg-gray-100 hover:bg-gray-200 active:bg-gray-300 dark:text-primary-400 dark:bg-gray-800 dark:hover:bg-gray-700 dark:active:bg-gray-600 ${className} ${
     selected && focused ? 'bg-primary-100 dark:bg-primary-900' : ''
   }`;
 
@@ -151,7 +173,7 @@ const NoteLinkElement = (props: NoteLinkElementProps) => {
     <Tooltip content={element.noteTitle} placement="bottom-start">
       {isPageStackingOn ? (
         <span
-          className={className}
+          className={noteLinkClassName}
           onClick={(e) => {
             e.stopPropagation();
             onNoteLinkClick(element.noteId);
@@ -166,7 +188,7 @@ const NoteLinkElement = (props: NoteLinkElementProps) => {
         <span>
           <Link href={`/app/note/${element.noteId}`}>
             <a
-              className={className}
+              className={noteLinkClassName}
               contentEditable={false}
               onClick={(e) => e.stopPropagation()}
               {...attributes}
@@ -185,17 +207,18 @@ type ExternalLinkElementProps = {
   element: ExternalLink;
   children: ReactNode;
   attributes: RenderElementProps['attributes'];
+  className?: string;
 };
 
 const ExternalLinkElement = (props: ExternalLinkElementProps) => {
-  const { element, children, attributes } = props;
+  const { element, children, attributes, className = '' } = props;
   return (
     <Tooltip
       content={<span className="break-words">{element.url}</span>}
       placement="bottom-start"
     >
       <a
-        className="link"
+        className={`link ${className}`}
         href={element.url}
         onClick={(e) => {
           e.preventDefault();
@@ -221,13 +244,16 @@ const ThematicBreak = (props: ThematicBreakProps) => {
   const selected = useSelected();
   const focused = useFocused();
   return (
-    <div
-      className={`border-t-2 dark:border-gray-700 ${className} ${
-        selected && focused ? 'border-primary-100 dark:border-primary-900' : ''
-      }`}
-      {...attributes}
-    >
-      {children}
+    <div className={`py-2 ${className}`} {...attributes}>
+      <div
+        className={`py-0.25 ${
+          selected && focused
+            ? 'bg-primary-100 dark:bg-primary-900'
+            : 'bg-gray-200 dark:bg-gray-700'
+        }`}
+      >
+        {children}
+      </div>
     </div>
   );
 };
@@ -236,10 +262,11 @@ type ImageProps = {
   children: ReactNode;
   attributes: RenderElementProps['attributes'];
   element: ImageType;
+  className?: string;
 };
 
 const Image = (props: ImageProps) => {
-  const { children, attributes, element } = props;
+  const { children, attributes, element, className = '' } = props;
   const selected = useSelected();
   const focused = useFocused();
   return (
@@ -247,7 +274,7 @@ const Image = (props: ImageProps) => {
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={element.url}
-        className={`select-none mx-auto max-w-full max-h-full ${
+        className={`select-none mx-auto max-w-full max-h-full ${className} ${
           selected && focused
             ? 'ring ring-primary-100 dark:ring-primary-900'
             : ''
