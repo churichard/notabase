@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { BacklinkMatch } from 'editor/backlinks/useBacklinks';
 import useOnNoteLinkClick from 'editor/useOnNoteLinkClick';
 import { useStore } from 'lib/store';
-import EditorElement from '../EditorElement';
+import EditorElement, { EditorElementProps } from '../EditorElement';
 import EditorLeaf from '../EditorLeaf';
 import { ReadOnlyEditor } from '../ReadOnlyEditor';
 
@@ -20,7 +20,7 @@ const BacklinkMatchLeaf = (props: BacklinkMatchLeafProps) => {
   const router = useRouter();
 
   const renderElement = useCallback(
-    (props) => <EditorElement omitVerticalSpacing={true} {...props} />,
+    (props: EditorElementProps) => <EditorElement {...props} />,
     []
   );
   const renderLeaf = useCallback((props) => <EditorLeaf {...props} />, []);

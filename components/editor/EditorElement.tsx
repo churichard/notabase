@@ -1,6 +1,12 @@
-import { ReactNode, useMemo } from 'react';
-import { RenderElementProps, useFocused, useSelected } from 'slate-react';
+import { ComponentType, ReactNode } from 'react';
+import {
+  RenderElementProps,
+  useFocused,
+  useSelected,
+  useSlateStatic,
+} from 'slate-react';
 import Link from 'next/link';
+import { IconDotsVertical } from '@tabler/icons';
 import type { ExternalLink, Image as ImageType, NoteLink } from 'types/slate';
 import { ElementType } from 'types/slate';
 import useOnNoteLinkClick from 'editor/useOnNoteLinkClick';
@@ -8,104 +14,59 @@ import { useStore } from 'lib/store';
 import Tooltip from 'components/Tooltip';
 
 export type EditorElementProps = {
-  omitVerticalSpacing?: boolean;
   className?: string;
 } & RenderElementProps;
 
 export default function EditorElement(props: EditorElementProps) {
-  const {
-    omitVerticalSpacing = false,
-    className = '',
-    attributes,
-    children,
-    element,
-  } = props;
-
-  const verticalSpacing = useMemo(() => {
-    if (omitVerticalSpacing) {
-      return '';
-    } else if (
-      element.type === ElementType.ListItem ||
-      element.type === ElementType.BulletedList ||
-      element.type === ElementType.NumberedList
-    ) {
-      return 'my-2';
-    } else if (element.type === ElementType.HeadingOne) {
-      return 'mb-3 mt-8 first:mt-3';
-    } else if (element.type === ElementType.HeadingTwo) {
-      return 'mb-3 mt-6 first:mt-3';
-    } else if (element.type === ElementType.HeadingThree) {
-      return 'mb-3 mt-4 first:mt-3';
-    } else {
-      return 'my-3';
-    }
-  }, [element.type, omitVerticalSpacing]);
+  const { className = '', attributes, children, element } = props;
 
   switch (element.type) {
     case ElementType.HeadingOne:
       return (
-        <h1
-          className={`text-2xl font-semibold ${verticalSpacing} ${className}`}
-          {...attributes}
-        >
+        <h1 className={`text-2xl font-semibold ${className}`} {...attributes}>
           {children}
         </h1>
       );
     case ElementType.HeadingTwo:
       return (
-        <h2
-          className={`text-xl font-semibold ${verticalSpacing} ${className}`}
-          {...attributes}
-        >
+        <h2 className={`text-xl font-semibold ${className}`} {...attributes}>
           {children}
         </h2>
       );
     case ElementType.HeadingThree:
       return (
-        <h3
-          className={`text-lg font-semibold ${verticalSpacing} ${className}`}
-          {...attributes}
-        >
+        <h3 className={`text-lg font-semibold ${className}`} {...attributes}>
           {children}
         </h3>
       );
     case ElementType.ListItem:
       return (
-        <li className={`pl-1 ${verticalSpacing} ${className}`} {...attributes}>
+        <li className={`pl-1 ${className}`} {...attributes}>
           {children}
         </li>
       );
     case ElementType.BulletedList:
       return (
-        <ul
-          className={`ml-8 list-disc ${verticalSpacing} ${className}`}
-          {...attributes}
-        >
+        <ul className={`ml-8 list-disc ${className}`} {...attributes}>
           {children}
         </ul>
       );
     case ElementType.NumberedList:
       return (
-        <ol
-          className={`ml-8 list-decimal ${verticalSpacing} ${className}`}
-          {...attributes}
-        >
+        <ol className={`ml-8 list-decimal ${className}`} {...attributes}>
           {children}
         </ol>
       );
     case ElementType.Blockquote:
       return (
-        <blockquote
-          className={`pl-4 border-l-4 ${verticalSpacing} ${className}`}
-          {...attributes}
-        >
+        <blockquote className={`pl-4 border-l-4 ${className}`} {...attributes}>
           {children}
         </blockquote>
       );
     case ElementType.CodeBlock:
       return (
         <code
-          className={`block p-2 bg-gray-100 border border-gray-200 rounded dark:bg-gray-800 dark:border-gray-700 ${verticalSpacing} ${className}`}
+          className={`block p-2 bg-gray-100 border border-gray-200 rounded dark:bg-gray-800 dark:border-gray-700 ${className}`}
           {...attributes}
         >
           {children}
@@ -145,7 +106,7 @@ export default function EditorElement(props: EditorElementProps) {
       );
     default:
       return (
-        <p className={`${verticalSpacing} ${className}`} {...attributes}>
+        <p className={className} {...attributes}>
           {children}
         </p>
       );
@@ -285,4 +246,98 @@ const Image = (props: ImageProps) => {
       {children}
     </div>
   );
+};
+
+export const withOptionsMenu = (
+  EditorElement: ComponentType<EditorElementProps>
+) => {
+  function WithOptionsMenuComponent(props: EditorElementProps) {
+    const { children, className, ...otherProps } = props;
+    const editor = useSlateStatic();
+    const elementType = props.element.type;
+
+    // We don't show the options menu for inline elements or bulleted/numbered lists
+    if (
+      editor.isInline(props.element) ||
+      elementType === ElementType.BulletedList ||
+      elementType === ElementType.NumberedList
+    ) {
+      return <EditorElement {...props} />;
+    }
+
+    const getButtonPosition = () => {
+      if (elementType === ElementType.ListItem) {
+        return '-left-16';
+      } else if (elementType === ElementType.Blockquote) {
+        return '-left-9';
+      } else {
+        return '-left-8';
+      }
+    };
+
+    return (
+      <EditorElement
+        className={`relative w-full group before:absolute before:top-0 before:bottom-0 before:w-full before:right-full ${className}`}
+        {...otherProps}
+      >
+        {children}
+        <Tooltip
+          content={<span className="text-xs">Click to open menu</span>}
+          delay={[200, 0]}
+        >
+          <button
+            className={`hidden group-hover:block hover:bg-gray-200 rounded p-0.5 absolute top-0 ${getButtonPosition()}`}
+          >
+            <IconDotsVertical className="text-gray-500" size={18} />
+          </button>
+        </Tooltip>
+      </EditorElement>
+    );
+  }
+
+  return WithOptionsMenuComponent;
+};
+
+export const withVerticalSpacing = (
+  EditorElement: ComponentType<EditorElementProps>
+) => {
+  function WithOptionsMenuComponent(props: EditorElementProps) {
+    const { children, className, ...otherProps } = props;
+    const editor = useSlateStatic();
+    const elementType = props.element.type;
+
+    // No vertical spacing for inline elements
+    if (editor.isInline(props.element)) {
+      return <EditorElement {...props} />;
+    }
+
+    const getVerticalSpacing = () => {
+      if (
+        elementType === ElementType.ListItem ||
+        elementType === ElementType.BulletedList ||
+        elementType === ElementType.NumberedList
+      ) {
+        return 'my-2';
+      } else if (elementType === ElementType.HeadingOne) {
+        return 'mb-3 mt-8 first:mt-3';
+      } else if (elementType === ElementType.HeadingTwo) {
+        return 'mb-3 mt-6 first:mt-3';
+      } else if (elementType === ElementType.HeadingThree) {
+        return 'mb-3 mt-4 first:mt-3';
+      } else {
+        return 'my-3';
+      }
+    };
+
+    return (
+      <EditorElement
+        className={`${getVerticalSpacing()} ${className}`}
+        {...otherProps}
+      >
+        {children}
+      </EditorElement>
+    );
+  }
+
+  return WithOptionsMenuComponent;
 };
