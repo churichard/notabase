@@ -1,13 +1,10 @@
-import { ComponentType, useCallback, useMemo, useRef, useState } from 'react';
+import { ComponentType, useCallback, useMemo } from 'react';
 import { Element, Transforms } from 'slate';
 import { ReactEditor, useSlateStatic } from 'slate-react';
 import { IconDotsVertical, IconLink } from '@tabler/icons';
-import { usePopper } from 'react-popper';
-import { Menu } from '@headlessui/react';
 import { v4 as uuidv4 } from 'uuid';
 import { BlockElementWithId, ElementType } from 'types/slate';
-import Tooltip from 'components/Tooltip';
-import Portal from 'components/Portal';
+import Dropdown, { DropdownItem } from 'components/Dropdown';
 import { isElementWithBlockId } from 'editor/blockReferences';
 import { EditorElementProps } from './EditorElement';
 
@@ -58,15 +55,6 @@ const OptionsMenuDropdown = (props: OptionsMenuDropdownProps) => {
   const { element, className } = props;
   const editor = useSlateStatic();
 
-  const buttonRef = useRef<HTMLDivElement | null>(null);
-  const [popperElement, setPopperElement] = useState<HTMLDivElement | null>(
-    null
-  );
-  const { styles, attributes } = usePopper(buttonRef.current, popperElement, {
-    placement: 'left',
-    modifiers: [{ name: 'offset', options: { offset: [0, 6] } }],
-  });
-
   const onCopyBlockRef = useCallback(async () => {
     let blockRef;
 
@@ -90,50 +78,24 @@ const OptionsMenuDropdown = (props: OptionsMenuDropdownProps) => {
     navigator.clipboard.writeText(`((${blockRef}))`);
   }, [editor, element]);
 
+  const buttonChildren = useMemo(
+    () => <IconDotsVertical className="text-gray-500" size={18} />,
+    []
+  );
+
   return (
-    <Menu>
-      {({ open }) => (
-        <>
-          <Menu.Button
-            className={`hidden group-hover:block hover:bg-gray-200 rounded p-0.5 absolute top-0.5 ${className}`}
-          >
-            <Tooltip
-              content={<span className="text-xs">Click to open menu</span>}
-              delay={[200, 0]}
-              placement="bottom"
-            >
-              <span ref={buttonRef}>
-                <IconDotsVertical className="text-gray-500" size={18} />
-              </span>
-            </Tooltip>
-          </Menu.Button>
-          {open && (
-            <Portal>
-              <Menu.Items
-                ref={setPopperElement}
-                className="z-10 w-48 overflow-hidden text-sm bg-white rounded shadow-popover"
-                static
-                style={styles.popper}
-                {...attributes.popper}
-              >
-                <Menu.Item>
-                  {({ active }) => (
-                    <button
-                      className={`flex w-full items-center px-4 py-2 text-left text-gray-800 ${
-                        active ? 'bg-gray-100' : ''
-                      }`}
-                      onClick={onCopyBlockRef}
-                    >
-                      <IconLink size={18} className="mr-1" />
-                      <span>Copy block reference</span>
-                    </button>
-                  )}
-                </Menu.Item>
-              </Menu.Items>
-            </Portal>
-          )}
-        </>
-      )}
-    </Menu>
+    <Dropdown
+      buttonChildren={buttonChildren}
+      buttonClassName={`hidden group-hover:block hover:bg-gray-200 active:bg-gray-300 rounded p-0.5 absolute top-0.5 ${className}`}
+      placement="left"
+      offset={[0, 6]}
+      tooltipContent={<span className="text-xs">Click to open menu</span>}
+      tooltipPlacement="bottom"
+    >
+      <DropdownItem onClick={onCopyBlockRef}>
+        <IconLink size={18} className="mr-1" />
+        <span>Copy block reference</span>
+      </DropdownItem>
+    </Dropdown>
   );
 };
