@@ -3,9 +3,12 @@ import { Element, Transforms } from 'slate';
 import { ReactEditor, useSlateStatic } from 'slate-react';
 import { IconDotsVertical, IconLink } from '@tabler/icons';
 import { v4 as uuidv4 } from 'uuid';
-import { BlockElementWithId, ElementType } from 'types/slate';
+import { ElementType } from 'types/slate';
 import Dropdown, { DropdownItem } from 'components/Dropdown';
-import { isElementWithBlockId } from 'editor/blockReferences';
+import {
+  BlockElementWithId,
+  isElementWithBlockId,
+} from 'editor/plugins/withBlockReferences';
 import { EditorElementProps } from './EditorElement';
 
 export const withOptionsMenu = (
