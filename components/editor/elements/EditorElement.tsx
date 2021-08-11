@@ -271,9 +271,15 @@ const BlockRef = (props: BlockRefProps) => {
   const { className = '', element, children, attributes } = props;
   const selected = useSelected();
   const focused = useFocused();
-  const blockRefClassName = `p-0.25 border-b border-gray-200 select-none hover:cursor-alias hover:bg-primary-50 active:bg-primary-100 ${className} ${
-    selected && focused ? 'bg-blue-100' : ''
-  }`;
+
+  const blockRefClassName = useMemo(
+    () =>
+      `p-0.25 border-b border-gray-200 select-none hover:cursor-alias hover:bg-primary-50 active:bg-primary-100 ${className} ${
+        selected && focused ? 'bg-blue-100' : ''
+      }`,
+    [className, selected, focused]
+  );
+
   const blockReference = useBlockReference(element.blockId);
   const onBlockRefClick = useOnNoteLinkClick();
 
@@ -282,13 +288,15 @@ const BlockRef = (props: BlockRefProps) => {
 
     const elementType = props.element.type;
     let blockRefClassName = 'pointer-events-none';
+
+    // Text-based elements should be shown inline
     if (
-      elementType === ElementType.CodeBlock ||
-      elementType === ElementType.Blockquote ||
-      elementType === ElementType.Image
+      elementType === ElementType.Paragraph ||
+      elementType === ElementType.HeadingOne ||
+      elementType === ElementType.HeadingTwo ||
+      elementType === ElementType.HeadingThree ||
+      elementType === ElementType.ListItem
     ) {
-      blockRefClassName = `${blockRefClassName} inline-block`;
-    } else if (elementType !== ElementType.ThematicBreak) {
       blockRefClassName = `${blockRefClassName} inline`;
     }
 
