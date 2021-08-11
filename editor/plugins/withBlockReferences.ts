@@ -4,10 +4,12 @@ import {
   CodeBlock,
   ElementType,
   HeadingOneElement,
-  HeadingThreeElement,
   HeadingTwoElement,
+  HeadingThreeElement,
+  Image,
   ListItem,
   ParagraphElement,
+  ThematicBreak,
 } from 'types/slate';
 
 export type BlockElementWithId =
@@ -17,7 +19,9 @@ export type BlockElementWithId =
   | HeadingThreeElement
   | ListItem
   | Blockquote
-  | CodeBlock;
+  | CodeBlock
+  | ThematicBreak
+  | Image;
 
 // Only block elements that are not bulleted/numbered lists can be block references + have block ids
 export const isElementWithBlockId = (
@@ -30,7 +34,9 @@ export const isElementWithBlockId = (
     element.type === ElementType.HeadingThree ||
     element.type === ElementType.ListItem ||
     element.type === ElementType.Blockquote ||
-    element.type === ElementType.CodeBlock
+    element.type === ElementType.CodeBlock ||
+    element.type === ElementType.ThematicBreak ||
+    element.type === ElementType.Image
   );
 };
 

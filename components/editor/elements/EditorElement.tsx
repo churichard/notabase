@@ -243,11 +243,11 @@ const Image = (props: ImageProps) => {
   const selected = useSelected();
   const focused = useFocused();
   return (
-    <div {...attributes}>
+    <div className={className} {...attributes}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={element.url}
-        className={`select-none mx-auto max-w-full max-h-full ${className} ${
+        className={`select-none mx-auto max-w-full max-h-full ${
           selected && focused
             ? 'ring ring-primary-100 dark:ring-primary-900'
             : ''
@@ -277,13 +277,15 @@ const BlockRef = (props: BlockRefProps) => {
   const blockReference = useBlockReference(element.blockId);
 
   const renderElement = useCallback((props: EditorElementProps) => {
+    const elementType = props.element.type;
     let className;
     if (
-      props.element.type === ElementType.CodeBlock ||
-      props.element.type === ElementType.Blockquote
+      elementType === ElementType.CodeBlock ||
+      elementType === ElementType.Blockquote ||
+      elementType === ElementType.Image
     ) {
       className = 'inline-block';
-    } else {
+    } else if (elementType !== ElementType.ThematicBreak) {
       className = 'inline';
     }
     return <EditorElement className={className} {...props} />;

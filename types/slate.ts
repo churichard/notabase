@@ -96,11 +96,13 @@ export type CodeBlock = {
 };
 
 export type ThematicBreak = {
+  id?: string;
   type: ElementType.ThematicBreak;
   children: Descendant[];
 };
 
 export type Image = {
+  id?: string;
   type: ElementType.Image;
   url: string;
   caption?: string;
