@@ -96,7 +96,6 @@ export type CodeBlock = {
 };
 
 export type ThematicBreak = {
-  id?: string;
   type: ElementType.ThematicBreak;
   children: Descendant[];
 };
@@ -131,16 +130,6 @@ export type NotabaseElement =
   | BlockReference;
 
 export type ListElement = BulletedList | NumberedList;
-
-export type BlockElementWithId =
-  | ParagraphElement
-  | HeadingOneElement
-  | HeadingTwoElement
-  | HeadingThreeElement
-  | ListItem
-  | Blockquote
-  | CodeBlock
-  | ThematicBreak;
 
 export type FormattedText = { text: string } & Partial<Record<Mark, boolean>>;
 
