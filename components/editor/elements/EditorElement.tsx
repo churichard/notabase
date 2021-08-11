@@ -276,12 +276,18 @@ const BlockRef = (props: BlockRefProps) => {
   }`;
   const blockReference = useBlockReference(element.blockId);
 
-  const renderElement = useCallback(
-    (props: EditorElementProps) => (
-      <EditorElement className="inline" {...props} />
-    ),
-    []
-  );
+  const renderElement = useCallback((props: EditorElementProps) => {
+    let className;
+    if (
+      props.element.type === ElementType.CodeBlock ||
+      props.element.type === ElementType.Blockquote
+    ) {
+      className = 'inline-block';
+    } else {
+      className = 'inline';
+    }
+    return <EditorElement className={className} {...props} />;
+  }, []);
   const renderLeaf = useCallback(
     (props: EditorLeafProps) => <EditorLeaf {...props} />,
     []
