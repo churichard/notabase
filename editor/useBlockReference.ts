@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react';
+import { useMemo, useRef } from 'react';
 import { createEditor, Editor, Element, Path } from 'slate';
 import type { Notes } from 'lib/store';
 import { useStore, deepEqual } from 'lib/store';
@@ -24,34 +24,39 @@ export default function useBlockReference(blockId: string) {
   /**
    * Searches the notes array for the specific block reference and returns it.
    */
-  const computeBlockReference = useCallback(
-    (notes: Notes, blockId: string): BlockReference | null => {
-      for (const note of Object.values(notes)) {
-        const blockRef = getBlockReference(blockId, note);
-        if (blockRef) {
-          cachedNoteIdRef.current = note.id; // Cache the note id
-          return blockRef;
-        }
+  const blockReference = useMemo(() => {
+    // If there is a cached note id, search that note for the block id
+    if (cachedNoteIdRef.current) {
+      const note = notes[cachedNoteIdRef.current];
+      const blockRef = getBlockReference(blockId, note);
+      if (blockRef) {
+        return blockRef;
       }
-      cachedNoteIdRef.current = null; // Clear the note id
-      return null;
-    },
-    []
-  );
+    }
+    // Compute block reference and cache the note id
+    const blockRef = computeBlockReference(notes, blockId);
+    cachedNoteIdRef.current = blockRef?.noteId ?? null; // Cache the note id
+    return blockRef;
+  }, [notes, blockId]);
 
-  /**
-   * If there is a cached note id, search that note for the block id
-   */
-  if (cachedNoteIdRef.current) {
-    const note = notes[cachedNoteIdRef.current];
+  return blockReference;
+}
+
+/**
+ * Searches the notes array for the specific block reference and returns it.
+ */
+export const computeBlockReference = (
+  notes: Notes,
+  blockId: string
+): BlockReference | null => {
+  for (const note of Object.values(notes)) {
     const blockRef = getBlockReference(blockId, note);
     if (blockRef) {
       return blockRef;
     }
   }
-
-  return computeBlockReference(notes, blockId);
-}
+  return null;
+};
 
 const getBlockReference = (blockId: string, note: Note) => {
   const editor = createEditor();
