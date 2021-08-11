@@ -38,17 +38,10 @@ export const withOptionsMenu = (
         {...otherProps}
       >
         {children}
-        <Tooltip
-          content={<span className="text-xs">Click to open menu</span>}
-          delay={[200, 0]}
-        >
-          <span>
-            <OptionsMenuDropdown
-              element={element}
-              className={optionsMenuButtonPosition}
-            />
-          </span>
-        </Tooltip>
+        <OptionsMenuDropdown
+          element={element}
+          className={optionsMenuButtonPosition}
+        />
       </EditorElement>
     );
   };
@@ -104,9 +97,15 @@ const OptionsMenuDropdown = (props: OptionsMenuDropdownProps) => {
           <Menu.Button
             className={`hidden group-hover:block hover:bg-gray-200 rounded p-0.5 absolute top-0.5 ${className}`}
           >
-            <span ref={buttonRef}>
-              <IconDotsVertical className="text-gray-500" size={18} />
-            </span>
+            <Tooltip
+              content={<span className="text-xs">Click to open menu</span>}
+              delay={[200, 0]}
+              placement="bottom"
+            >
+              <span ref={buttonRef}>
+                <IconDotsVertical className="text-gray-500" size={18} />
+              </span>
+            </Tooltip>
           </Menu.Button>
           {open && (
             <Portal>
