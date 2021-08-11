@@ -285,6 +285,14 @@ const Image = (props: ImageProps) => {
   );
 };
 
+const TEXT_BASED_ELEMENT_TYPES = [
+  ElementType.Paragraph,
+  ElementType.HeadingOne,
+  ElementType.HeadingTwo,
+  ElementType.HeadingThree,
+  ElementType.ListItem,
+];
+
 type BlockRefProps = {
   element: BlockReference;
   children: ReactNode;
@@ -297,37 +305,36 @@ const BlockRef = (props: BlockRefProps) => {
   const selected = useSelected();
   const focused = useFocused();
 
-  const blockRefClassName = useMemo(
-    () =>
-      `p-0.25 border-b border-gray-200 select-none hover:cursor-alias hover:bg-primary-50 active:bg-primary-100 ${className} ${
-        selected && focused ? 'bg-blue-100' : ''
-      }`,
-    [className, selected, focused]
-  );
-
   const blockReference = useBlockReference(element.blockId);
   const onBlockRefClick = useOnNoteLinkClick();
+
+  const blockRefClassName = useMemo(
+    () =>
+      // Text-based elements should be shown inline
+      `p-0.25 border-b border-gray-200 select-none hover:cursor-alias hover:bg-primary-50 active:bg-primary-100 ${className} ${
+        selected && focused ? 'bg-blue-100' : ''
+      } ${
+        blockReference &&
+        TEXT_BASED_ELEMENT_TYPES.includes(blockReference.element.type)
+          ? 'inline'
+          : ''
+      }`,
+    [className, selected, focused, blockReference]
+  );
+
+  const noteTitle = useStore((state) =>
+    blockReference ? state.notes[blockReference.noteId].title : null
+  );
 
   const renderElement = useCallback((props: EditorElementProps) => {
     const { className, ...otherProps } = props;
 
-    const elementType = props.element.type;
-    let blockRefClassName = 'pointer-events-none';
-
     // Text-based elements should be shown inline
-    if (
-      elementType === ElementType.Paragraph ||
-      elementType === ElementType.HeadingOne ||
-      elementType === ElementType.HeadingTwo ||
-      elementType === ElementType.HeadingThree ||
-      elementType === ElementType.ListItem
-    ) {
-      blockRefClassName = `${blockRefClassName} inline`;
-    }
-
     return (
       <EditorElement
-        className={`${blockRefClassName} ${className}`}
+        className={`pointer-events-none ${
+          TEXT_BASED_ELEMENT_TYPES.includes(props.element.type) ? 'inline' : ''
+        } ${className}`}
         isBlockRef
         {...otherProps}
       />
@@ -356,19 +363,21 @@ const BlockRef = (props: BlockRefProps) => {
   }, [blockReference, renderElement, renderLeaf, element.blockId]);
 
   return (
-    <span
-      className={blockRefClassName}
-      contentEditable={false}
-      onClick={(e) => {
-        e.stopPropagation();
-        if (blockReference) {
-          onBlockRefClick(blockReference.noteId, blockReference.path);
-        }
-      }}
-      {...attributes}
-    >
-      {blockRefElement}
-      {children}
-    </span>
+    <Tooltip content={noteTitle} placement="bottom-start">
+      <div
+        className={blockRefClassName}
+        contentEditable={false}
+        onClick={(e) => {
+          e.stopPropagation();
+          if (blockReference) {
+            onBlockRefClick(blockReference.noteId, blockReference.path);
+          }
+        }}
+        {...attributes}
+      >
+        {blockRefElement}
+        {children}
+      </div>
+    </Tooltip>
   );
 };
