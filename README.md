@@ -23,6 +23,7 @@ Notabase is in beta. It is under active development.
 - Your notes are synced to the cloud and can be accessed on any device
 - Use the graph view to analyze your knowledge graph
 - Full-text search lets you easily find relevant notes
+- Block references (coming soon)
 - Offline support (coming soon)
 - Open source, allowing community involvement and transparent development
 
