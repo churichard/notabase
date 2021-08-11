@@ -17,33 +17,58 @@ import EditorLeaf, { EditorLeafProps } from './EditorLeaf';
 
 export type EditorElementProps = {
   className?: string;
+  isBlockRef?: boolean;
 } & RenderElementProps;
 
 export default function EditorElement(props: EditorElementProps) {
-  const { className = '', attributes, children, element } = props;
+  const {
+    className = '',
+    isBlockRef = false,
+    attributes,
+    children,
+    element,
+  } = props;
 
   switch (element.type) {
     case ElementType.HeadingOne:
       return (
-        <h1 className={`text-2xl font-semibold ${className}`} {...attributes}>
+        <h1
+          className={`${
+            isBlockRef ? '' : 'text-2xl font-semibold'
+          } ${className}`}
+          {...attributes}
+        >
           {children}
         </h1>
       );
     case ElementType.HeadingTwo:
       return (
-        <h2 className={`text-xl font-semibold ${className}`} {...attributes}>
+        <h2
+          className={`${
+            isBlockRef ? '' : 'text-xl font-semibold'
+          } ${className}`}
+          {...attributes}
+        >
           {children}
         </h2>
       );
     case ElementType.HeadingThree:
       return (
-        <h3 className={`text-lg font-semibold ${className}`} {...attributes}>
+        <h3
+          className={`${
+            isBlockRef ? '' : 'text-lg font-semibold'
+          } ${className}`}
+          {...attributes}
+        >
           {children}
         </h3>
       );
     case ElementType.ListItem:
       return (
-        <li className={`pl-1 ${className}`} {...attributes}>
+        <li
+          className={`${isBlockRef ? '' : 'pl-1'} ${className}`}
+          {...attributes}
+        >
           {children}
         </li>
       );
@@ -303,6 +328,7 @@ const BlockRef = (props: BlockRefProps) => {
     return (
       <EditorElement
         className={`${blockRefClassName} ${className}`}
+        isBlockRef
         {...otherProps}
       />
     );
