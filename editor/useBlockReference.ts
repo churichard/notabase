@@ -9,6 +9,7 @@ import { isElementWithBlockId } from './plugins/withBlockReferences';
 const DEBOUNCE_MS = 500;
 
 export type BlockReference = {
+  noteId: string;
   element: Element;
   path: Path;
 };
@@ -67,7 +68,7 @@ const getBlockReference = (blockId: string, note: Note) => {
   });
 
   for (const [element, path] of matchingElements) {
-    return { element: element as Element, path };
+    return { noteId: note.id, element: element as Element, path };
   }
 
   return null;

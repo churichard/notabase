@@ -275,6 +275,7 @@ const BlockRef = (props: BlockRefProps) => {
     selected && focused ? 'bg-blue-100' : ''
   }`;
   const blockReference = useBlockReference(element.blockId);
+  const onBlockRefClick = useOnNoteLinkClick();
 
   const renderElement = useCallback((props: EditorElementProps) => {
     const { className, ...otherProps } = props;
@@ -324,7 +325,12 @@ const BlockRef = (props: BlockRefProps) => {
     <span
       className={blockRefClassName}
       contentEditable={false}
-      onClick={(e) => e.stopPropagation()}
+      onClick={(e) => {
+        e.stopPropagation();
+        if (blockReference) {
+          onBlockRefClick(blockReference.noteId, blockReference.path);
+        }
+      }}
       {...attributes}
     >
       {blockRefElement}
