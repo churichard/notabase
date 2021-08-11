@@ -277,18 +277,26 @@ const BlockRef = (props: BlockRefProps) => {
   const blockReference = useBlockReference(element.blockId);
 
   const renderElement = useCallback((props: EditorElementProps) => {
+    const { className, ...otherProps } = props;
+
     const elementType = props.element.type;
-    let className;
+    let blockRefClassName = 'pointer-events-none';
     if (
       elementType === ElementType.CodeBlock ||
       elementType === ElementType.Blockquote ||
       elementType === ElementType.Image
     ) {
-      className = 'inline-block';
+      blockRefClassName = `${blockRefClassName} inline-block`;
     } else if (elementType !== ElementType.ThematicBreak) {
-      className = 'inline';
+      blockRefClassName = `${blockRefClassName} inline`;
     }
-    return <EditorElement className={className} {...props} />;
+
+    return (
+      <EditorElement
+        className={`${blockRefClassName} ${className}`}
+        {...otherProps}
+      />
+    );
   }, []);
   const renderLeaf = useCallback(
     (props: EditorLeafProps) => <EditorLeaf {...props} />,
@@ -315,11 +323,8 @@ const BlockRef = (props: BlockRefProps) => {
   return (
     <span
       className={blockRefClassName}
-      onClick={(e) => {
-        // TODO: handle this
-        e.stopPropagation();
-      }}
       contentEditable={false}
+      onClick={(e) => e.stopPropagation()}
       {...attributes}
     >
       {blockRefElement}
