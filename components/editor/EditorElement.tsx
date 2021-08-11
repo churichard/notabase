@@ -148,7 +148,7 @@ const NoteLinkElement = (props: NoteLinkElementProps) => {
   }`;
 
   return (
-    <Tooltip content={element.noteTitle} placement="bottom">
+    <Tooltip content={element.noteTitle} placement="bottom-start">
       {isPageStackingOn ? (
         <span
           className={className}
@@ -192,7 +192,7 @@ const ExternalLinkElement = (props: ExternalLinkElementProps) => {
   return (
     <Tooltip
       content={<span className="break-words">{element.url}</span>}
-      placement="bottom"
+      placement="bottom-start"
     >
       <a
         className="link"
