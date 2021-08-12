@@ -16,7 +16,7 @@
     "@popperjs/core": "^2.9.3",
     "@sentry/nextjs": "^6.11.0",
     "@stripe/stripe-js": "^1.16.0",
-    "@supabase/supabase-js": "^1.21.0",
+    "@supabase/supabase-js": "^1.21.1",
     "@tabler/icons": "^1.41.2",
     "@tailwindcss/forms": "^0.3.3",
     "@tailwindcss/typography": "^0.4.1",
