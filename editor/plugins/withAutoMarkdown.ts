@@ -80,59 +80,53 @@ const withAutoMarkdown = (editor: Editor) => {
   const { insertText } = editor;
 
   editor.insertText = (text) => {
-    const { selection } = editor;
-
-    if (!selection || !Range.isCollapsed(selection) || text.length > 1) {
-      insertText(text);
-      return;
-    }
-
-    const { anchor } = selection;
-
-    // Don't handle auto markdown shortcuts in code blocks
-    const inCodeBlock = Editor.above(editor, {
-      match: (n) =>
-        !Editor.isEditor(n) &&
-        Element.isElement(n) &&
-        n.type === ElementType.CodeBlock,
-    });
-
-    if (inCodeBlock) {
-      insertText(text);
-      return;
-    }
-
-    // Handle shortcuts at the beginning of a line
-    const blockHandled = handleBlockShortcuts(editor, anchor, text);
-    if (blockHandled) {
-      return;
-    }
-
-    // Handle inline shortcuts
-    const inlineHandled = handleInlineShortcuts(editor, anchor, text);
-    if (inlineHandled) {
-      return;
-    }
-
     insertText(text);
+    handleAutoMarkdown(editor);
+  };
+
+  editor.insertData = (data) => {
+    const text = data.getData('text/plain');
+    insertText(text);
+    handleAutoMarkdown(editor);
   };
 
   return editor;
 };
 
-// Returns true if a block shortcut was found and handled; otherwise, returns false.
-const handleBlockShortcuts = (
-  editor: Editor,
-  selectionAnchor: Point,
-  textToInsert: string
-): boolean => {
+const handleAutoMarkdown = (editor: Editor) => {
+  // Don't handle auto markdown shortcuts in code blocks
+  const inCodeBlock = Editor.above(editor, {
+    match: (n) =>
+      !Editor.isEditor(n) &&
+      Element.isElement(n) &&
+      n.type === ElementType.CodeBlock,
+  });
+
+  if (inCodeBlock) {
+    return;
+  }
+
+  // Handle shortcuts at the beginning of a line
+  handleBlockShortcuts(editor);
+
+  // Handle inline shortcuts
+  handleInlineShortcuts(editor);
+};
+
+// Handle block shortcuts
+const handleBlockShortcuts = (editor: Editor) => {
+  if (!editor.selection || !Range.isCollapsed(editor.selection)) {
+    return;
+  }
+
   const block = Editor.above(editor, {
     match: (n) => Editor.isBlock(editor, n),
   });
   const path = block ? block[1] : [];
   const lineStart = Editor.start(editor, path);
+  const selectionAnchor = editor.selection.anchor;
   const beforeRange = { anchor: selectionAnchor, focus: lineStart };
-  const beforeText = Editor.string(editor, beforeRange) + textToInsert;
+  const beforeText = Editor.string(editor, beforeRange);
 
   // Handle block shortcuts
   for (const shortcut of BLOCK_SHORTCUTS) {
@@ -173,40 +167,40 @@ const handleBlockShortcuts = (
           children: [{ text: '' }],
         });
       }
-      return true;
+      return;
     }
   }
-
-  return false;
 };
 
-// Returns true if an inline shortcut was found and handled; otherwise, returns false.
-const handleInlineShortcuts = (
-  editor: Editor,
-  selectionAnchor: Point,
-  textToInsert: string
-): boolean => {
-  const elementStart = Editor.start(editor, selectionAnchor.path);
-  const elementRange = { anchor: selectionAnchor, focus: elementStart };
-  const insertedElementText = Editor.string(editor, elementRange);
-  const elementText = insertedElementText + textToInsert;
+// Handle inline shortcuts
+const handleInlineShortcuts = (editor: Editor) => {
+  if (!editor.selection || !Range.isCollapsed(editor.selection)) {
+    return;
+  }
 
   for (const { match, type } of INLINE_SHORTCUTS) {
+    const selectionAnchor = editor.selection.anchor;
+    const elementStart = Editor.start(editor, selectionAnchor.path);
+    const elementRange = { anchor: selectionAnchor, focus: elementStart };
+    const elementText = Editor.string(editor, elementRange);
     const result = elementText.match(match);
-    const insertedResult = insertedElementText.match(match);
 
-    // We only care about matches that happen as a result of the inserted character
-    if (!result || (result && insertedResult)) {
+    if (!result || result.index === undefined) {
       continue;
     }
+
+    const endOfMatchPoint: Point = {
+      offset: result.index + result[0].length,
+      path: selectionAnchor.path,
+    };
 
     if (isMark(type)) {
       const [, startMark, textToFormat, endMark] = result;
 
-      const textRange = deleteMarkup(editor, selectionAnchor, {
+      const textRange = deleteMarkup(editor, endOfMatchPoint, {
         startMark: startMark.length,
         text: textToFormat.length,
-        endMark: endMark.length - 1, // The last character is not in the editor
+        endMark: endMark.length,
       });
 
       // Add formatting mark to the text to format
@@ -217,27 +211,30 @@ const handleInlineShortcuts = (
       );
       Editor.removeMark(editor, type);
 
-      return true;
+      return;
     } else if (type === ElementType.ExternalLink) {
       const [, startMark, linkText, middleMark, linkUrl, endMark] = result;
 
       if (!isUrl(linkUrl)) {
-        return false;
+        continue;
       }
 
-      const linkTextRange = deleteMarkup(editor, selectionAnchor, {
+      const linkTextRange = deleteMarkup(editor, endOfMatchPoint, {
         startMark: startMark.length,
         text: linkText.length,
-        endMark: middleMark.length + linkUrl.length + endMark.length - 1, // The last character is not in the editor
+        endMark: middleMark.length + linkUrl.length + endMark.length,
       });
       const link: ExternalLink = {
         type: ElementType.ExternalLink,
         url: linkUrl,
         children: [],
       };
-      Transforms.wrapNodes(editor, link, { at: linkTextRange, split: true });
+      Transforms.wrapNodes(editor, link, {
+        at: linkTextRange,
+        split: true,
+      });
 
-      return true;
+      return;
     } else if (type === ElementType.NoteLink) {
       const [, startMark, noteTitle, endMark] = result;
 
@@ -245,14 +242,14 @@ const handleInlineShortcuts = (
       const noteId = getOrCreateNoteId(noteTitle);
 
       if (!noteId) {
-        return false;
+        continue;
       }
 
       // Wrap text in a link
-      const noteTitleRange = deleteMarkup(editor, selectionAnchor, {
+      const noteTitleRange = deleteMarkup(editor, endOfMatchPoint, {
         startMark: startMark.length,
         text: noteTitle.length,
-        endMark: endMark.length - 1, // The last character is not in the editor
+        endMark: endMark.length,
       });
       const link: NoteLink = {
         type: ElementType.NoteLink,
@@ -266,7 +263,7 @@ const handleInlineShortcuts = (
       });
       Transforms.move(editor, { unit: 'offset' });
 
-      return true;
+      return;
     } else if (type === CustomInlineShortcuts.CustomNoteLink) {
       const [, startMark, linkText, middleMark, noteTitle, endMark] = result;
 
@@ -274,14 +271,14 @@ const handleInlineShortcuts = (
       const noteId = getOrCreateNoteId(noteTitle);
 
       if (!noteId) {
-        return false;
+        continue;
       }
 
       // Wrap text in a link
-      const linkTextRange = deleteMarkup(editor, selectionAnchor, {
+      const linkTextRange = deleteMarkup(editor, endOfMatchPoint, {
         startMark: startMark.length,
         text: linkText.length,
-        endMark: middleMark.length + noteTitle.length + endMark.length - 1, // The last character is not in the editor
+        endMark: middleMark.length + noteTitle.length + endMark.length,
       });
       const link: NoteLink = {
         type: ElementType.NoteLink,
@@ -290,16 +287,19 @@ const handleInlineShortcuts = (
         customText: linkText,
         children: [],
       };
-      Transforms.wrapNodes(editor, link, { at: linkTextRange, split: true });
+      Transforms.wrapNodes(editor, link, {
+        at: linkTextRange,
+        split: true,
+      });
       Transforms.move(editor, { unit: 'offset' });
 
-      return true;
+      return;
     } else if (type === ElementType.BlockReference) {
       const [, startMark, blockId, endMark] = result;
 
       // Delete markdown and insert block reference
-      const length = startMark.length + blockId.length + endMark.length - 1; // The last character is not in the editor
-      deleteText(editor, selectionAnchor.path, selectionAnchor.offset, length);
+      const length = startMark.length + blockId.length + endMark.length;
+      deleteText(editor, endOfMatchPoint.path, endOfMatchPoint.offset, length);
 
       const blockRef: BlockReference = {
         type: ElementType.BlockReference,
@@ -310,11 +310,9 @@ const handleInlineShortcuts = (
       Editor.insertNode(editor, blockRef);
       Transforms.move(editor, { unit: 'offset' });
 
-      return true;
+      return;
     }
   }
-
-  return false;
 };
 
 // If the normalized note title exists, then returns the existing note id.
@@ -354,7 +352,7 @@ const getOrCreateNoteId = (noteTitle: string): string | null => {
 // Deletes beginning and ending markup and returns the range of the text in the middle
 const deleteMarkup = (
   editor: Editor,
-  selectionAnchor: Point,
+  point: Point,
   lengths: { startMark: number; text: number; endMark: number }
 ): Range => {
   const {
@@ -363,28 +361,23 @@ const deleteMarkup = (
     endMark: endMarkLength,
   } = lengths;
 
-  const selectionPath = selectionAnchor.path;
-  let endOfSelection = selectionAnchor.offset;
+  const pointPath = point.path;
+  let pointOffset = point.offset;
 
   // Delete the ending mark
-  deleteText(editor, selectionPath, endOfSelection, endMarkLength);
-  endOfSelection -= endMarkLength;
+  deleteText(editor, pointPath, pointOffset, endMarkLength);
+  pointOffset -= endMarkLength;
 
   // Delete the start mark
-  deleteText(
-    editor,
-    selectionPath,
-    endOfSelection - textLength,
-    startMarkLength
-  );
-  endOfSelection -= startMarkLength;
+  deleteText(editor, pointPath, pointOffset - textLength, startMarkLength);
+  pointOffset -= startMarkLength;
 
   // Return range of the text to format
   return {
-    anchor: { path: selectionPath, offset: endOfSelection },
+    anchor: { path: pointPath, offset: pointOffset },
     focus: {
-      path: selectionPath,
-      offset: endOfSelection - textLength,
+      path: pointPath,
+      offset: pointOffset - textLength,
     },
   };
 };
