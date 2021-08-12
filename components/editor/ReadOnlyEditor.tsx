@@ -1,13 +1,14 @@
 import { ReactNode } from 'react';
 import { Descendant, Element as SlateElement } from 'slate';
-import { RenderElementProps, RenderLeafProps } from 'slate-react';
-import { FormattedText } from 'types/slate';
 import { isVoid } from 'editor/plugins/withVoidElements';
+import { FormattedText } from 'types/slate';
+import { EditorElementProps } from './elements/EditorElement';
+import { EditorLeafProps } from './elements/EditorLeaf';
 
 type Props = {
   value: Descendant[];
-  renderElement: (props: RenderElementProps) => ReactNode;
-  renderLeaf: (props: RenderLeafProps) => ReactNode;
+  renderElement: (props: EditorElementProps) => ReactNode;
+  renderLeaf: (props: EditorLeafProps) => ReactNode;
 };
 
 export function ReadOnlyEditor(props: Props) {
@@ -23,8 +24,8 @@ export function ReadOnlyEditor(props: Props) {
 
 type ChildrenProps = {
   value: Descendant[];
-  renderElement: (props: RenderElementProps) => ReactNode;
-  renderLeaf: (props: RenderLeafProps) => ReactNode;
+  renderElement: (props: EditorElementProps) => ReactNode;
+  renderLeaf: (props: EditorLeafProps) => ReactNode;
 };
 
 const Children = (props: ChildrenProps) => {
@@ -51,8 +52,8 @@ const Children = (props: ChildrenProps) => {
 
 type ElementProps = {
   element: SlateElement;
-  renderElement: (props: RenderElementProps) => ReactNode;
-  renderLeaf: (props: RenderLeafProps) => ReactNode;
+  renderElement: (props: EditorElementProps) => ReactNode;
+  renderLeaf: (props: EditorLeafProps) => ReactNode;
 };
 
 function Element(props: ElementProps) {
@@ -61,7 +62,11 @@ function Element(props: ElementProps) {
   return (
     <>
       {renderElement({
-        attributes: { 'data-slate-node': 'element', ref: undefined },
+        attributes: {
+          'data-slate-node': 'element',
+          ref: undefined,
+          contentEditable: false,
+        },
         children: (
           <Children
             value={element.children}
@@ -77,7 +82,7 @@ function Element(props: ElementProps) {
 
 type LeafProps = {
   leaf: FormattedText;
-  renderLeaf: (props: RenderLeafProps) => ReactNode;
+  renderLeaf: (props: EditorLeafProps) => ReactNode;
 };
 
 function Leaf(props: LeafProps) {

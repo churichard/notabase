@@ -17,6 +17,7 @@ import EditorLeaf, { EditorLeafProps } from './EditorLeaf';
 
 export type EditorElementProps = {
   className?: string;
+  attributes: { contentEditable?: boolean };
 } & RenderElementProps;
 
 export default function EditorElement(props: EditorElementProps) {
@@ -319,7 +320,6 @@ const BlockRef = (props: BlockRefProps) => {
     <Tooltip content={noteTitle} placement="bottom-start">
       <div
         className={blockRefClassName}
-        contentEditable={false}
         onClick={(e) => {
           e.stopPropagation();
           if (blockReference) {
