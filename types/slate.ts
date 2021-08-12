@@ -110,6 +110,7 @@ export type Image = {
 };
 
 export type BlockReference = {
+  id?: string;
   type: ElementType.BlockReference;
   blockId: string;
   children: FormattedText[];
