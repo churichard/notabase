@@ -86,6 +86,7 @@ const withAutoMarkdown = (editor: Editor) => {
 
   editor.insertData = (data) => {
     insertData(data);
+    // TODO: make sure multiple markdown elements inserted in the same data are all handled
     handleAutoMarkdown(editor);
   };
 
