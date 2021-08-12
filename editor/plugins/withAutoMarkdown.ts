@@ -77,7 +77,7 @@ const INLINE_SHORTCUTS: Array<{
 
 // Add auto-markdown formatting shortcuts
 const withAutoMarkdown = (editor: Editor) => {
-  const { insertText } = editor;
+  const { insertText, insertData } = editor;
 
   editor.insertText = (text) => {
     insertText(text);
@@ -85,8 +85,7 @@ const withAutoMarkdown = (editor: Editor) => {
   };
 
   editor.insertData = (data) => {
-    const text = data.getData('text/plain');
-    insertText(text);
+    insertData(data);
     handleAutoMarkdown(editor);
   };
 
@@ -295,7 +294,7 @@ const handleInlineShortcuts = (editor: Editor) => {
 
       return;
     } else if (type === ElementType.BlockReference) {
-      const [, startMark, blockId, endMark] = result;
+      const [wholeMatch, startMark, blockId, endMark] = result;
 
       // Delete markdown and insert block reference
       const length = startMark.length + blockId.length + endMark.length;
@@ -307,8 +306,13 @@ const handleInlineShortcuts = (editor: Editor) => {
         children: [{ text: '' }],
       };
 
-      Editor.insertNode(editor, blockRef);
-      Transforms.move(editor, { unit: 'offset' });
+      if (elementText === wholeMatch) {
+        // The block ref is on its own line
+        Transforms.setNodes(editor, blockRef);
+      } else {
+        // There's other content on the same line
+        Editor.insertNode(editor, blockRef);
+      }
 
       return;
     }
