@@ -28,7 +28,7 @@ export default function useBlockReference(blockId: string) {
     // If there is a cached note id, search that note for the block id
     if (cachedNoteIdRef.current) {
       const note = notes[cachedNoteIdRef.current];
-      const blockRef = getBlockReference(blockId, note);
+      const blockRef = getBlockReferenceFromNote(blockId, note);
       if (blockRef) {
         return blockRef;
       }
@@ -50,7 +50,7 @@ export const computeBlockReference = (
   blockId: string
 ): BlockReference | null => {
   for (const note of Object.values(notes)) {
-    const blockRef = getBlockReference(blockId, note);
+    const blockRef = getBlockReferenceFromNote(blockId, note);
     if (blockRef) {
       return blockRef;
     }
@@ -58,7 +58,7 @@ export const computeBlockReference = (
   return null;
 };
 
-const getBlockReference = (blockId: string, note: Note) => {
+const getBlockReferenceFromNote = (blockId: string, note: Note) => {
   const editor = createEditor();
   editor.children = note.content;
 
