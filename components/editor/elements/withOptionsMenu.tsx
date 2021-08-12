@@ -15,8 +15,7 @@ export const withOptionsMenu = (
   EditorElement: ComponentType<EditorElementProps>
 ) => {
   const EditorElementWithOptionsMenu = (props: EditorElementProps) => {
-    const { children, className, ...otherProps } = props;
-    const element = props.element;
+    const { element } = props;
 
     const optionsMenuButtonPosition = useMemo(() => {
       if (element.type === ElementType.ListItem) {
@@ -33,16 +32,13 @@ export const withOptionsMenu = (
     }
 
     return (
-      <EditorElement
-        className={`relative w-full group before:absolute before:top-0 before:bottom-0 before:w-full before:right-full ${className}`}
-        {...otherProps}
-      >
-        {children}
+      <div className="relative w-full group before:absolute before:top-0 before:bottom-0 before:w-full before:right-full">
+        <EditorElement {...props} />
         <OptionsMenuDropdown
           element={element}
           className={optionsMenuButtonPosition}
         />
-      </EditorElement>
+      </div>
     );
   };
 
