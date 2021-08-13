@@ -15,7 +15,7 @@ type Props = {
   onClose?: () => void;
 };
 
-export default function Popover(props: Props) {
+export default function EditorPopover(props: Props) {
   const { children, className = '', placement, selection, onClose } = props;
   const editor = useSlate();
 

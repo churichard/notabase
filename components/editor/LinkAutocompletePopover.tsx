@@ -8,7 +8,7 @@ import { deleteText } from 'editor/transforms';
 import { useAuth } from 'utils/useAuth';
 import useNoteSearch from 'utils/useNoteSearch';
 import useDebounce from 'utils/useDebounce';
-import Popover from './Popover';
+import EditorPopover from './EditorPopover';
 
 const DEBOUNCE_MS = 100;
 
@@ -157,7 +157,7 @@ export default function LinkAutocompletePopover() {
   }, [isVisible, onKeyDown]);
 
   return isVisible && options.length > 0 ? (
-    <Popover
+    <EditorPopover
       placement="bottom"
       className="flex flex-col w-96"
       onClose={hidePopover}
@@ -175,7 +175,7 @@ export default function LinkAutocompletePopover() {
           }}
         />
       ))}
-    </Popover>
+    </EditorPopover>
   ) : null;
 }
 
