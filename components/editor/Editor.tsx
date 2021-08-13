@@ -39,8 +39,8 @@ import { ElementType, Mark } from 'types/slate';
 import HoveringToolbar from './HoveringToolbar';
 import AddLinkPopover from './AddLinkPopover';
 import EditorElement from './elements/EditorElement';
-import { withVerticalSpacing } from './elements/withVerticalSpacing';
-import { withOptionsMenu } from './elements/withOptionsMenu';
+import withVerticalSpacing from './elements/withVerticalSpacing';
+import withBlockSideMenu from './elements/withBlockSideMenu';
 import EditorLeaf, { EditorLeafProps } from './elements/EditorLeaf';
 import LinkAutocompletePopover from './LinkAutocompletePopover';
 
@@ -81,10 +81,10 @@ export default function Editor(props: Props) {
   const editor = editorRef.current;
 
   const renderElement = useMemo(() => {
-    const EditorElementWithOptionsMenu = withOptionsMenu(
+    const ElementWithSideMenu = withBlockSideMenu(
       withVerticalSpacing(EditorElement)
     );
-    return EditorElementWithOptionsMenu;
+    return ElementWithSideMenu;
   }, []);
   const renderLeaf = useCallback(
     (props: EditorLeafProps) => <EditorLeaf {...props} />,

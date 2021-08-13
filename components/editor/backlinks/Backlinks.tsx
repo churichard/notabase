@@ -8,7 +8,7 @@ import BacklinkMatchLeaf from './BacklinkMatchLeaf';
 import BacklinkNoteBranch from './BacklinkNoteBranch';
 
 type Props = {
-  className: string;
+  className?: string;
 };
 
 export default function Backlinks(props: Props) {
@@ -28,7 +28,7 @@ export default function Backlinks(props: Props) {
   );
 }
 
-const getNumOfMatches = (backlinks: Backlink[]) =>
+export const getNumOfMatches = (backlinks: Backlink[]) =>
   backlinks.reduce(
     (numOfMatches, backlink) => numOfMatches + backlink.matches.length,
     0

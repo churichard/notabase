@@ -3,9 +3,9 @@ import { useSlateStatic } from 'slate-react';
 import { ElementType } from 'types/slate';
 import { EditorElementProps } from './EditorElement';
 
-export const withVerticalSpacing = (
+export default function withVerticalSpacing(
   EditorElement: ComponentType<EditorElementProps>
-) => {
+) {
   function WithOptionsMenuComponent(props: EditorElementProps) {
     const { children, className, ...otherProps } = props;
     const editor = useSlateStatic();
@@ -45,4 +45,4 @@ export const withVerticalSpacing = (
   }
 
   return WithOptionsMenuComponent;
-};
+}
