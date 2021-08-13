@@ -1,4 +1,4 @@
-import { useRef, useState, ReactNode } from 'react';
+import { useState, ReactNode } from 'react';
 import { usePopper } from 'react-popper';
 import { Menu } from '@headlessui/react';
 import { Placement } from '@popperjs/core';
@@ -28,11 +28,12 @@ export default function Dropdown(props: Props) {
     tooltipPlacement,
   } = props;
 
-  const buttonRef = useRef<HTMLDivElement | null>(null);
+  const [referenceElement, setReferenceElement] =
+    useState<HTMLButtonElement | null>(null);
   const [popperElement, setPopperElement] = useState<HTMLDivElement | null>(
     null
   );
-  const { styles, attributes } = usePopper(buttonRef.current, popperElement, {
+  const { styles, attributes } = usePopper(referenceElement, popperElement, {
     placement,
     modifiers: [{ name: 'offset', options: { offset } }],
   });
@@ -41,14 +42,18 @@ export default function Dropdown(props: Props) {
     <Menu>
       {({ open }) => (
         <>
-          <Menu.Button className={buttonClassName}>
+          <Menu.Button
+            ref={setReferenceElement}
+            className={buttonClassName}
+            contentEditable={false}
+          >
             <Tooltip
               disabled={!tooltipContent}
               content={tooltipContent}
               delay={[200, 0]}
               placement={tooltipPlacement}
             >
-              <span ref={buttonRef}>{buttonChildren}</span>
+              <span>{buttonChildren}</span>
             </Tooltip>
           </Menu.Button>
           {open && (

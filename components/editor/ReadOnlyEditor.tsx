@@ -62,6 +62,7 @@ function Element(props: ElementProps) {
   return (
     <>
       {renderElement({
+        className: 'pointer-events-none',
         attributes: {
           'data-slate-node': 'element',
           ref: undefined,

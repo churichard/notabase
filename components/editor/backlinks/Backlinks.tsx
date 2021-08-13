@@ -24,7 +24,7 @@ export default function Backlinks(props: Props) {
   return <Tree data={backlinkData} className={className} />;
 }
 
-const getNumOfMatches = (backlinks: Backlink[]) =>
+export const getNumOfMatches = (backlinks: Backlink[]) =>
   backlinks.reduce(
     (numOfMatches, backlink) => numOfMatches + backlink.matches.length,
     0
