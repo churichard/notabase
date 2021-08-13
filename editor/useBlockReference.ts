@@ -4,7 +4,7 @@ import type { Notes } from 'lib/store';
 import { useStore, deepEqual } from 'lib/store';
 import useDebounce from 'utils/useDebounce';
 import { Note } from 'types/supabase';
-import { isElementWithBlockId } from './plugins/withBlockReferences';
+import { isReferenceableBlockElement } from './plugins/withBlockReferences';
 
 const DEBOUNCE_MS = 500;
 
@@ -68,7 +68,7 @@ const getBlockReferenceFromNote = (blockId: string, note: Note) => {
     match: (n) =>
       Element.isElement(n) &&
       Editor.isBlock(editor, n) &&
-      isElementWithBlockId(n) &&
+      isReferenceableBlockElement(n) &&
       n.id === blockId,
   });
 
