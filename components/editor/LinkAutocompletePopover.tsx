@@ -7,7 +7,7 @@ import { insertNoteLink } from 'editor/formatting';
 import { deleteText } from 'editor/transforms';
 import { useAuth } from 'utils/useAuth';
 import useNoteSearch from 'utils/useNoteSearch';
-import Popover from './Popover';
+import EditorPopover from './EditorPopover';
 
 enum OptionType {
   NOTE,
@@ -153,7 +153,7 @@ export default function LinkAutocompletePopover() {
   }, [isVisible, onKeyDown]);
 
   return isVisible && options.length > 0 ? (
-    <Popover
+    <EditorPopover
       placement="bottom"
       className="flex flex-col w-96"
       onClose={hidePopover}
@@ -171,7 +171,7 @@ export default function LinkAutocompletePopover() {
           }}
         />
       ))}
-    </Popover>
+    </EditorPopover>
   ) : null;
 }
 

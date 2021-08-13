@@ -19,7 +19,7 @@ import useFeature from 'utils/useFeature';
 import { useStore } from 'lib/store';
 import { Feature } from 'constants/pricing';
 import UpgradeButton from 'components/UpgradeButton';
-import Popover from './Popover';
+import EditorPopover from './EditorPopover';
 import type { AddLinkPopoverState } from './Editor';
 
 enum OptionType {
@@ -174,7 +174,7 @@ export default function AddLinkPopover(props: Props) {
   );
 
   return (
-    <Popover
+    <EditorPopover
       selection={addLinkPopoverState.selection}
       placement="bottom"
       className="flex flex-col pt-4 pb-2 w-96"
@@ -211,7 +211,7 @@ export default function AddLinkPopover(props: Props) {
           />
         ))}
       </div>
-    </Popover>
+    </EditorPopover>
   );
 }
 
