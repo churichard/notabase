@@ -1,34 +1,11 @@
 import { Editor, Element } from 'slate';
-import {
-  Blockquote,
-  CodeBlock,
-  ElementType,
-  HeadingOneElement,
-  HeadingTwoElement,
-  HeadingThreeElement,
-  Image,
-  ListItem,
-  ParagraphElement,
-  ThematicBreak,
-  BlockReference,
-} from 'types/slate';
+import { ReferenceableBlockElement, ElementType } from 'types/slate';
 
-export type BlockElementWithId =
-  | ParagraphElement
-  | HeadingOneElement
-  | HeadingTwoElement
-  | HeadingThreeElement
-  | ListItem
-  | Blockquote
-  | CodeBlock
-  | ThematicBreak
-  | Image
-  | BlockReference;
-
-// Only block elements that are not bulleted/numbered lists can be block references + have block ids
-export const isElementWithBlockId = (
+// Returns true if the element is of type ReferenceableBlockElement, false otherwise
+export const isReferenceableBlockElement = (
   element: Element
-): element is BlockElementWithId => {
+): element is ReferenceableBlockElement => {
+  // TODO: if we make id required, we can check that instead
   return (
     element.type === ElementType.Paragraph ||
     element.type === ElementType.HeadingOne ||

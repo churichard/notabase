@@ -3,12 +3,9 @@ import { Element, Transforms } from 'slate';
 import { ReactEditor, useSlateStatic } from 'slate-react';
 import { IconDotsVertical, IconLink } from '@tabler/icons';
 import { v4 as uuidv4 } from 'uuid';
-import { ElementType } from 'types/slate';
+import { ReferenceableBlockElement, ElementType } from 'types/slate';
 import Dropdown, { DropdownItem } from 'components/Dropdown';
-import {
-  BlockElementWithId,
-  isElementWithBlockId,
-} from 'editor/plugins/withBlockReferences';
+import { isReferenceableBlockElement } from 'editor/plugins/withBlockReferences';
 import { EditorElementProps } from './EditorElement';
 
 export const withOptionsMenu = (
@@ -27,7 +24,7 @@ export const withOptionsMenu = (
       }
     }, [element.type]);
 
-    if (!isElementWithBlockId(element)) {
+    if (!isReferenceableBlockElement(element)) {
       return <EditorElement {...props} />;
     }
 
@@ -46,7 +43,7 @@ export const withOptionsMenu = (
 };
 
 type OptionsMenuDropdownProps = {
-  element: BlockElementWithId;
+  element: ReferenceableBlockElement;
   className?: string;
 };
 
