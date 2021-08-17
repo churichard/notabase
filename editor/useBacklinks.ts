@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useMemo } from 'react';
 import {
   createEditor,
   Editor,
@@ -13,9 +13,8 @@ import produce from 'immer';
 import { ElementType, FormattedText } from 'types/slate';
 import type { Note } from 'types/supabase';
 import supabase from 'lib/supabase';
-import usePrevious from 'utils/usePrevious';
 import type { Notes } from 'lib/store';
-import { store, useStore, deepEqual } from 'lib/store';
+import { store, useStore } from 'lib/store';
 import useDebounce from 'utils/useDebounce';
 import { caseInsensitiveStringEqual } from 'utils/string';
 
@@ -33,93 +32,37 @@ export type Backlink = {
   matches: Array<BacklinkMatch>;
 };
 
-type ReturnType = {
-  linkedBacklinks: Backlink[];
-  unlinkedBacklinks: Backlink[];
-  updateBacklinks: (newTitle: string) => Promise<void>;
-  deleteBacklinks: () => Promise<void>;
-};
-
 export default function useBacklinks(noteId: string) {
   const [notes] = useDebounce(
-    useStore((state) => state.notes, deepEqual),
+    useStore((state) => state.notes),
     DEBOUNCE_MS
   );
 
-  const { getLinkedBacklinks, getUnlinkedBacklinks } = useBacklinksCache(
-    notes,
-    noteId
+  const updateBacklinksWrapper = useCallback(
+    (newTitle: string) => updateBacklinks(newTitle, noteId),
+    [noteId]
   );
 
-  const state = useMemo(() => {
-    const state = {
-      updateBacklinks: (newTitle: string) => updateBacklinks(newTitle, noteId),
-      deleteBacklinks: () => deleteBacklinks(noteId),
-    };
-    // Backlinks are not computed until they are retrieved
-    Object.defineProperties(state, {
-      linkedBacklinks: {
-        get: getLinkedBacklinks,
-        enumerable: true,
-      },
-      unlinkedBacklinks: {
-        get: getUnlinkedBacklinks,
-        enumerable: true,
-      },
-    });
-    return state as ReturnType;
-  }, [noteId, getLinkedBacklinks, getUnlinkedBacklinks]);
+  const deleteBacklinksWrapper = useCallback(
+    () => deleteBacklinks(noteId),
+    [noteId]
+  );
 
-  return state;
-}
+  const linkedBacklinks = useMemo(
+    () => computeLinkedBacklinks(notes, noteId),
+    [notes, noteId]
+  );
 
-type BacklinkCache = {
-  backlinks: Backlink[];
-  shouldRecompute: boolean;
-};
-
-function useBacklinksCache(notes: Notes, noteId: string) {
-  const linkedCache = useRef<BacklinkCache>({
-    backlinks: [],
-    shouldRecompute: true,
-  });
-  const unlinkedCache = useRef<BacklinkCache>({
-    backlinks: [],
-    shouldRecompute: true,
-  });
-
-  const previousNotes = usePrevious(notes);
-  const previousNoteId = usePrevious(noteId);
-
-  useEffect(() => {
-    // Only recompute backlinks if the props have changed
-    if (previousNotes !== notes || previousNoteId !== noteId) {
-      linkedCache.current.shouldRecompute = true;
-      unlinkedCache.current.shouldRecompute = true;
-    }
-  }, [notes, noteId, previousNotes, previousNoteId]);
-
-  const getBacklinks = useCallback(
-    (cache: BacklinkCache, compute: () => Backlink[]) => {
-      if (cache.backlinks && !cache.shouldRecompute) {
-        return cache.backlinks;
-      }
-      cache.backlinks = compute();
-      cache.shouldRecompute = false;
-      return cache.backlinks;
-    },
-    []
+  const unlinkedBacklinks = useMemo(
+    () => computeUnlinkedBacklinks(notes, notes[noteId].title),
+    [notes, noteId]
   );
 
   return {
-    getLinkedBacklinks: () =>
-      getBacklinks(linkedCache.current, () =>
-        computeLinkedBacklinks(notes, noteId)
-      ),
-    getUnlinkedBacklinks: () =>
-      getBacklinks(unlinkedCache.current, () =>
-        computeUnlinkedBacklinks(notes, notes[noteId].title)
-      ),
+    updateBacklinks: updateBacklinksWrapper,
+    deleteBacklinks: deleteBacklinksWrapper,
+    linkedBacklinks,
+    unlinkedBacklinks,
   };
 }
 
