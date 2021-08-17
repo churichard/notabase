@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import Link from 'next/link';
-import { Backlink } from 'editor/useBacklinks';
+import { Backlink } from 'editor/backlinks/useBacklinks';
 import useOnNoteLinkClick from 'editor/useOnNoteLinkClick';
 import { useStore } from 'lib/store';
 
