@@ -19,23 +19,30 @@ export default function useBlockReference(blockId: string) {
     useStore((state) => state.notes, deepEqual),
     DEBOUNCE_MS
   );
-  const cachedNoteIdRef = useRef<string | null>(null);
+  const cachedPath = useRef<{ noteId: string; path: Path } | null>(null);
 
   /**
    * Searches the notes array for the specific block reference and returns it.
    */
   const blockReference = useMemo(() => {
-    // If there is a cached note id, search that note for the block id
-    if (cachedNoteIdRef.current) {
-      const note = notes[cachedNoteIdRef.current];
-      const blockRef = getBlockReferenceFromNote(blockId, note);
+    // If there is a cached note id + path, search that path + note for the block id
+    if (cachedPath.current) {
+      const note = notes[cachedPath.current.noteId];
+      // Search path first, then search note
+      const blockRef =
+        getBlockReferenceFromPath(blockId, note, cachedPath.current.path) ||
+        getBlockReferenceFromNote(blockId, note);
       if (blockRef) {
+        // Path could potentially have changed, so update cache
+        cachedPath.current = { noteId: blockRef.noteId, path: blockRef.path };
         return blockRef;
       }
     }
-    // Compute block reference and cache the note id
+    // Compute block reference and cache the note id + path
     const blockRef = computeBlockReference(notes, blockId);
-    cachedNoteIdRef.current = blockRef?.noteId ?? null; // Cache the note id
+    cachedPath.current = blockRef
+      ? { noteId: blockRef.noteId, path: blockRef.path }
+      : null;
     return blockRef;
   }, [notes, blockId]);
 
@@ -63,7 +70,7 @@ const getBlockReferenceFromNote = (blockId: string, note: Note) => {
   editor.children = note.content;
 
   // Find element that matches the block id
-  const matchingElements = Editor.nodes(editor, {
+  const matchingElements = Editor.nodes<Element>(editor, {
     at: [],
     match: (n) =>
       Element.isElement(n) &&
@@ -73,7 +80,29 @@ const getBlockReferenceFromNote = (blockId: string, note: Note) => {
   });
 
   for (const [element, path] of matchingElements) {
-    return { noteId: note.id, element: element as Element, path };
+    return { noteId: note.id, element, path };
+  }
+
+  return null;
+};
+
+const getBlockReferenceFromPath = (
+  blockId: string,
+  note: Note,
+  path: Path
+): BlockReference | null => {
+  const editor = createEditor();
+  editor.children = note.content;
+
+  const [element] = Editor.node(editor, path);
+
+  if (
+    Element.isElement(element) &&
+    Editor.isBlock(editor, element) &&
+    isReferenceableBlockElement(element) &&
+    element.id === blockId
+  ) {
+    return { noteId: note.id, element, path };
   }
 
   return null;
