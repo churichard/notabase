@@ -4,13 +4,13 @@ import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
 import Editor from 'components/editor/Editor';
 import Title from 'components/editor/Title';
-import useBacklinks from 'editor/useBacklinks';
 import { deepEqual, store, useStore } from 'lib/store';
 import type { NoteUpdate } from 'lib/api/updateNote';
 import updateDbNote from 'lib/api/updateNote';
 import { ProvideCurrentNote } from 'utils/useCurrentNote';
 import { caseInsensitiveStringEqual } from 'utils/string';
 import { Note as NoteType } from 'types/supabase';
+import updateBacklinks from 'editor/backlinks/updateBacklinks';
 import Backlinks from './editor/backlinks/Backlinks';
 import NoteHeader from './editor/NoteHeader';
 import ErrorBoundary from './ErrorBoundary';
@@ -51,8 +51,6 @@ export default function Note(props: Props) {
     [syncState]
   );
 
-  const { updateBacklinks } = useBacklinks(noteId);
-
   const onTitleChange = useCallback(
     (title: string) => {
       if (note && note.title !== title) {
@@ -87,36 +85,33 @@ export default function Note(props: Props) {
     [note, updateNote]
   );
 
-  const handleNoteUpdate = useCallback(
-    async (note: NoteUpdate) => {
-      const { error } = await updateDbNote(note);
+  const handleNoteUpdate = useCallback(async (note: NoteUpdate) => {
+    const { error } = await updateDbNote(note);
 
-      if (error) {
-        switch (error.code) {
-          case CHECK_VIOLATION_ERROR_CODE:
-            toast.error(
-              `This note cannot have an empty title. Please use a different title.`
-            );
-            return;
-          case UNIQUE_VIOLATION_ERROR_CODE:
-            toast.error(
-              `There's already a note called ${note.title}. Please use a different title.`
-            );
-            return;
-          default:
-            toast.error(
-              'Something went wrong saving your note. Please try again later.'
-            );
-            return;
-        }
+    if (error) {
+      switch (error.code) {
+        case CHECK_VIOLATION_ERROR_CODE:
+          toast.error(
+            `This note cannot have an empty title. Please use a different title.`
+          );
+          return;
+        case UNIQUE_VIOLATION_ERROR_CODE:
+          toast.error(
+            `There's already a note called ${note.title}. Please use a different title.`
+          );
+          return;
+        default:
+          toast.error(
+            'Something went wrong saving your note. Please try again later.'
+          );
+          return;
       }
-      if (note.title) {
-        await updateBacklinks(note.title);
-      }
-      setSyncState({ isTitleSynced: true, isContentSynced: true });
-    },
-    [updateBacklinks]
-  );
+    }
+    if (note.title) {
+      await updateBacklinks(note.title, note.id);
+    }
+    setSyncState({ isTitleSynced: true, isContentSynced: true });
+  }, []);
 
   // Save the note in the database if it changes and it hasn't been saved yet
   useEffect(() => {

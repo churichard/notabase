@@ -1,20 +1,16 @@
-import { useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
 import {
   createEditor,
   Editor,
   Element,
   Node,
-  Transforms,
   Descendant,
   Path,
   Text,
 } from 'slate';
-import produce from 'immer';
 import { ElementType, FormattedText } from 'types/slate';
-import type { Note } from 'types/supabase';
-import supabase from 'lib/supabase';
 import type { Notes } from 'lib/store';
-import { store, useStore } from 'lib/store';
+import { useStore } from 'lib/store';
 import useDebounce from 'utils/useDebounce';
 import { caseInsensitiveStringEqual } from 'utils/string';
 
@@ -38,16 +34,6 @@ export default function useBacklinks(noteId: string) {
     DEBOUNCE_MS
   );
 
-  const updateBacklinksWrapper = useCallback(
-    (newTitle: string) => updateBacklinks(newTitle, noteId),
-    [noteId]
-  );
-
-  const deleteBacklinksWrapper = useCallback(
-    () => deleteBacklinks(noteId),
-    [noteId]
-  );
-
   const linkedBacklinks = useMemo(
     () => computeLinkedBacklinks(notes, noteId),
     [notes, noteId]
@@ -58,19 +44,17 @@ export default function useBacklinks(noteId: string) {
     [notes, noteId]
   );
 
-  return {
-    updateBacklinks: updateBacklinksWrapper,
-    deleteBacklinks: deleteBacklinksWrapper,
-    linkedBacklinks,
-    unlinkedBacklinks,
-  };
+  return { linkedBacklinks, unlinkedBacklinks };
 }
 
 /**
  * Searches the notes array for note links to the given noteId
  * and returns an array of the matches.
  */
-const computeLinkedBacklinks = (notes: Notes, noteId: string): Backlink[] => {
+export const computeLinkedBacklinks = (
+  notes: Notes,
+  noteId: string
+): Backlink[] => {
   const result: Backlink[] = [];
   for (const note of Object.values(notes)) {
     const matches = computeLinkedMatches(note.content, noteId);
@@ -182,131 +166,4 @@ const computeUnlinkedMatches = (nodes: Descendant[], noteTitle: string) => {
     }
   }
   return result;
-};
-
-/**
- * Updates the link properties of the backlinks on each backlinked note when the
- * current note title has changed.
- */
-const updateBacklinks = async (newTitle: string, noteId: string) => {
-  const notes = store.getState().notes;
-  const backlinks = computeLinkedBacklinks(notes, noteId);
-  const updateData: Pick<Note, 'id' | 'content'>[] = [];
-
-  for (const backlink of backlinks) {
-    const note = notes[backlink.id];
-
-    if (!note) {
-      continue;
-    }
-
-    let newBacklinkContent = note.content;
-    for (const match of backlink.matches) {
-      newBacklinkContent = produce(newBacklinkContent, (draftState) => {
-        // Path should not be empty
-        const path = match.path;
-        if (path.length <= 0) {
-          return;
-        }
-
-        // Get the node from the path
-        let linkNode = draftState[path[0]];
-        for (const pathNumber of path.slice(1)) {
-          linkNode = (linkNode as Element).children[pathNumber];
-        }
-
-        // Assert that linkNode is a note link
-        if (
-          !Element.isElement(linkNode) ||
-          linkNode.type !== ElementType.NoteLink
-        ) {
-          return;
-        }
-
-        // Update noteTitle property on the node
-        linkNode.noteTitle = newTitle;
-
-        // If there is no custom text, then the link text should be the same as the note title
-        if (!linkNode.customText) {
-          for (const linkNodeChild of linkNode.children) {
-            linkNodeChild.text = newTitle;
-          }
-        }
-      });
-    }
-    updateData.push({
-      id: backlink.id,
-      content: newBacklinkContent,
-    });
-  }
-
-  // Make sure backlinks are updated locally
-  for (const newNote of updateData) {
-    store.getState().updateNote(newNote);
-  }
-
-  // It would be better if we could consolidate the update requests into one request
-  // See https://github.com/supabase/supabase-js/issues/156
-  const promises = [];
-  for (const data of updateData) {
-    promises.push(
-      supabase
-        .from<Note>('notes')
-        .update({ content: data.content })
-        .eq('id', data.id)
-    );
-  }
-  await Promise.all(promises);
-};
-
-/**
- * Deletes the backlinks on each backlinked note and replaces them with the link text.
- */
-const deleteBacklinks = async (noteId: string) => {
-  const notes = store.getState().notes;
-  const backlinks = computeLinkedBacklinks(notes, noteId);
-  const updateData: Pick<Note, 'id' | 'content'>[] = [];
-
-  for (const backlink of backlinks) {
-    const note = notes[backlink.id];
-
-    if (!note) {
-      continue;
-    }
-
-    const editor = createEditor();
-    editor.children = note.content;
-
-    Transforms.unwrapNodes(editor, {
-      at: [],
-      match: (n) =>
-        !Editor.isEditor(n) &&
-        Element.isElement(n) &&
-        n.type === ElementType.NoteLink &&
-        n.noteId === noteId,
-    });
-
-    updateData.push({
-      id: backlink.id,
-      content: editor.children,
-    });
-  }
-
-  // Make sure backlinks are updated locally
-  for (const newNote of updateData) {
-    store.getState().updateNote(newNote);
-  }
-
-  // It would be better if we could consolidate the update requests into one request
-  // See https://github.com/supabase/supabase-js/issues/156
-  const promises = [];
-  for (const data of updateData) {
-    promises.push(
-      supabase
-        .from<Note>('notes')
-        .update({ content: data.content })
-        .eq('id', data.id)
-    );
-  }
-  await Promise.all(promises);
 };

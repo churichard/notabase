@@ -21,7 +21,7 @@ import { usePopper } from 'react-popper';
 import type { Note } from 'types/supabase';
 import { store, useStore, deepEqual } from 'lib/store';
 import deleteNote from 'lib/api/deleteNote';
-import useBacklinks from 'editor/useBacklinks';
+import deleteBacklinks from 'editor/backlinks/deleteBacklinks';
 import { caseInsensitiveStringCompare } from 'utils/string';
 import useImport from 'utils/useImport';
 import { ReadableNameBySort, Sort } from 'lib/createUserSettingsSlice';
@@ -198,7 +198,6 @@ type NoteLinkDropdownProps = {
 const NoteLinkDropdown = (props: NoteLinkDropdownProps) => {
   const { note, className } = props;
   const router = useRouter();
-  const { deleteBacklinks } = useBacklinks(note.id);
   const openNoteIds = useStore((state) => state.openNoteIds);
 
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -213,7 +212,7 @@ const NoteLinkDropdown = (props: NoteLinkDropdownProps) => {
 
   const onDeleteClick = useCallback(async () => {
     await deleteNote(note.id);
-    await deleteBacklinks();
+    await deleteBacklinks(note.id);
 
     const deletedNoteIndex = openNoteIds.findIndex(
       (openNoteId) => openNoteId === note.id
@@ -223,7 +222,7 @@ const NoteLinkDropdown = (props: NoteLinkDropdownProps) => {
       const newNoteId = Object.keys(store.getState().notes)[0];
       router.push(`/app/note/${newNoteId}`, undefined, { shallow: true });
     }
-  }, [router, note.id, openNoteIds, deleteBacklinks]);
+  }, [router, note.id, openNoteIds]);
 
   return (
     <div ref={containerRef}>

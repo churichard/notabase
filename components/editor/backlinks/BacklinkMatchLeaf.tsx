@@ -1,6 +1,6 @@
 import { memo, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/router';
-import { BacklinkMatch } from 'editor/useBacklinks';
+import { BacklinkMatch } from 'editor/backlinks/useBacklinks';
 import useOnNoteLinkClick from 'editor/useOnNoteLinkClick';
 import { useStore } from 'lib/store';
 import EditorElement from '../EditorElement';
