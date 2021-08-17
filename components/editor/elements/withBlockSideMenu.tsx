@@ -112,7 +112,7 @@ const BacklinksPopover = (props: BacklinksPopoverProps) => {
   const elementId = isReferenceableBlockElement(element)
     ? element.id ?? null
     : null;
-  const { blockBacklinks } = useBlockBacklinks(elementId);
+  const blockBacklinks = useBlockBacklinks(elementId);
 
   const [referenceElement, setReferenceElement] =
     useState<HTMLButtonElement | null>(null);

@@ -5,7 +5,6 @@ import { ReferenceableBlockElement, ElementType } from 'types/slate';
 export const isReferenceableBlockElement = (
   element: Element
 ): element is ReferenceableBlockElement => {
-  // TODO: if we make id required, we can check that instead
   return (
     element.type === ElementType.Paragraph ||
     element.type === ElementType.HeadingOne ||
