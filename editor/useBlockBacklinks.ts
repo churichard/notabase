@@ -8,29 +8,12 @@ import { Backlink, BacklinkMatch } from './useBacklinks';
 
 const DEBOUNCE_MS = 1000;
 
-type ReturnType = {
-  blockBacklinks: Backlink[];
-};
-
 export default function useBlockBacklinks(blockId: string | null) {
   const [notes] = useDebounce(
     useStore((state) => state.notes, deepEqual),
     DEBOUNCE_MS
   );
-
-  const state = useMemo(() => {
-    const state = {};
-    // Backlinks are not computed until they are retrieved
-    Object.defineProperties(state, {
-      blockBacklinks: {
-        get: () => computeBlockBacklinks(notes, blockId),
-        enumerable: true,
-      },
-    });
-    return state as ReturnType;
-  }, [notes, blockId]);
-
-  return state;
+  return useMemo(() => computeBlockBacklinks(notes, blockId), [notes, blockId]);
 }
 
 /**
