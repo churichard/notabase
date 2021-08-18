@@ -9,7 +9,7 @@ import { ReferenceableBlockElement, ElementType } from 'types/slate';
 import Dropdown, { DropdownItem } from 'components/Dropdown';
 import Portal from 'components/Portal';
 import { isReferenceableBlockElement } from 'editor/plugins/withBlockReferences';
-import useBlockBacklinks from 'editor/useBlockBacklinks';
+import useBlockBacklinks from 'editor/backlinks/useBlockBacklinks';
 import BlockBacklinks from '../backlinks/BlockBacklinks';
 import { getNumOfMatches } from '../backlinks/Backlinks';
 import { EditorElementProps } from './EditorElement';

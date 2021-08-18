@@ -11,7 +11,7 @@ import { ElementType } from 'types/slate';
 import useOnNoteLinkClick from 'editor/useOnNoteLinkClick';
 import { useStore } from 'lib/store';
 import Tooltip from 'components/Tooltip';
-import useBlockReference from 'editor/useBlockReference';
+import useBlockReference from 'editor/backlinks/useBlockReference';
 import { ReadOnlyEditor } from '../ReadOnlyEditor';
 import EditorLeaf, { EditorLeafProps } from './EditorLeaf';
 
