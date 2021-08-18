@@ -1,5 +1,12 @@
-import { ComponentType, useCallback, useMemo, useState } from 'react';
-import { Element, Transforms } from 'slate';
+import {
+  ComponentType,
+  useCallback,
+  useMemo,
+  useState,
+  useEffect,
+  useRef,
+} from 'react';
+import { Element, Node, Transforms } from 'slate';
 import { ReactEditor, useSlateStatic } from 'slate-react';
 import { IconDotsVertical, IconLink } from '@tabler/icons';
 import { v4 as uuidv4 } from 'uuid';
@@ -10,6 +17,7 @@ import Dropdown, { DropdownItem } from 'components/Dropdown';
 import Portal from 'components/Portal';
 import { isReferenceableBlockElement } from 'editor/plugins/withBlockReferences';
 import useBlockBacklinks from 'editor/backlinks/useBlockBacklinks';
+import updateBlockBacklinks from 'editor/backlinks/updateBlockBacklinks';
 import BlockBacklinks from '../backlinks/BlockBacklinks';
 import { getNumOfMatches } from '../backlinks/Backlinks';
 import { EditorElementProps } from './EditorElement';
@@ -45,26 +53,29 @@ const OptionsMenuDropdown = (props: OptionsMenuDropdownProps) => {
   const editor = useSlateStatic();
 
   const onCopyBlockRef = useCallback(async () => {
-    let blockRef;
+    let blockId;
 
     if (!element.id) {
       // Generate block id if it doesn't exist
-      blockRef = uuidv4();
+      blockId = uuidv4();
       const path = ReactEditor.findPath(editor, element);
       Transforms.setNodes(
         editor,
-        { id: blockRef },
+        { id: blockId },
         {
           at: path,
-          match: (n) => Element.isElement(n) && n.type === element.type,
+          match: (n) =>
+            Element.isElement(n) &&
+            isReferenceableBlockElement(n) &&
+            n.type === element.type,
         }
       );
     } else {
       // Use the existing block id
-      blockRef = element.id;
+      blockId = element.id;
     }
 
-    navigator.clipboard.writeText(`((${blockRef}))`);
+    navigator.clipboard.writeText(`((${blockId}))`);
   }, [editor, element]);
 
   const buttonChildren = useMemo(
@@ -105,13 +116,13 @@ const OptionsMenuDropdown = (props: OptionsMenuDropdownProps) => {
   );
 };
 
-type BacklinksPopoverProps = { element: Element };
+const UPDATE_BLOCK_BACKLINKS_DEBOUNCE_MS = 500;
+
+type BacklinksPopoverProps = { element: ReferenceableBlockElement };
 
 const BacklinksPopover = (props: BacklinksPopoverProps) => {
   const { element } = props;
-  const elementId = isReferenceableBlockElement(element)
-    ? element.id ?? null
-    : null;
+  const elementId = element.id ?? null;
   const blockBacklinks = useBlockBacklinks(elementId);
 
   const [referenceElement, setReferenceElement] =
@@ -132,6 +143,26 @@ const BacklinksPopover = (props: BacklinksPopoverProps) => {
     () => getNumOfMatches(blockBacklinks),
     [blockBacklinks]
   );
+
+  // Update block references with the proper text when the block has changed
+  const currentElementText = useMemo(() => Node.string(element), [element]);
+  const prevSavedElementText = useRef<string>(currentElementText);
+  useEffect(() => {
+    // Only update if it is not the first render, there are backlinks, and the element text has updated
+    if (
+      numOfMatches > 0 &&
+      prevSavedElementText.current !== currentElementText
+    ) {
+      const handler = setTimeout(() => {
+        updateBlockBacklinks(blockBacklinks, currentElementText);
+        prevSavedElementText.current = currentElementText;
+      }, UPDATE_BLOCK_BACKLINKS_DEBOUNCE_MS);
+
+      return () => {
+        clearTimeout(handler);
+      };
+    }
+  }, [numOfMatches, currentElementText, blockBacklinks]);
 
   return numOfMatches > 0 ? (
     <Popover>
