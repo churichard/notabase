@@ -4,7 +4,7 @@ import type { Notes } from 'lib/store';
 import { useStore, deepEqual } from 'lib/store';
 import useDebounce from 'utils/useDebounce';
 import { ElementType } from 'types/slate';
-import { Backlink, BacklinkMatch } from './backlinks/useBacklinks';
+import { Backlink, BacklinkMatch } from './useBacklinks';
 
 const DEBOUNCE_MS = 1000;
 
