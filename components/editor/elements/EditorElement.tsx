@@ -321,7 +321,7 @@ const BlockRef = (props: BlockRefProps) => {
   }, [blockReference, renderElement, renderLeaf, element.blockId]);
 
   return (
-    <Tooltip content={noteTitle} placement="bottom-start">
+    <Tooltip content={noteTitle} placement="bottom-start" disabled={!noteTitle}>
       <div
         className={blockRefClassName}
         onClick={(e) => {
