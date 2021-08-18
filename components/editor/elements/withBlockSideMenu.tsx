@@ -5,6 +5,7 @@ import {
   useState,
   useEffect,
   useRef,
+  Fragment,
 } from 'react';
 import { Element, Node, Transforms } from 'slate';
 import { ReactEditor, useSlateStatic } from 'slate-react';
@@ -89,7 +90,7 @@ const OptionsMenuDropdown = (props: OptionsMenuDropdownProps) => {
 
   const buttonClassName = useMemo(() => {
     const className =
-      'hidden group-hover:block hover:bg-gray-200 active:bg-gray-300 rounded absolute top-0.5';
+      'hidden group-hover:block select-none hover:bg-gray-200 active:bg-gray-300 rounded absolute top-0.5';
     if (element.type === ElementType.ListItem) {
       return `${className} -left-16`;
     } else if (element.type === ElementType.Blockquote) {
@@ -165,12 +166,12 @@ const BacklinksPopover = (props: BacklinksPopoverProps) => {
   }, [numOfMatches, currentElementText, blockBacklinks]);
 
   return numOfMatches > 0 ? (
-    <Popover>
+    <Popover as={Fragment}>
       {({ open }) => (
         <>
           <Popover.Button
             ref={setReferenceElement}
-            className="absolute flex items-center justify-center w-6 h-6 text-sm font-medium rounded text-primary-700 top-0.5 -right-8 hover:bg-gray-100 active:bg-gray-200"
+            className="absolute flex items-center select-none justify-center w-6 h-6 text-sm font-medium rounded text-primary-700 top-0.5 -right-8 hover:bg-gray-100 active:bg-gray-200"
             contentEditable={false}
           >
             {numOfMatches}
@@ -178,7 +179,7 @@ const BacklinksPopover = (props: BacklinksPopoverProps) => {
           {open && (
             <Portal>
               <Popover.Panel
-                className={`z-10 p-2 overflow-y-auto bg-white rounded block-backlinks-popover shadow-popover w-64 md:w-96 lg:w-128 max-h-128 ${
+                className={`z-10 p-2 overflow-y-auto bg-white rounded shadow-popover w-64 md:w-96 lg:w-128 max-h-128 ${
                   state?.modifiersData.hide?.isReferenceHidden
                     ? 'invisible pointer-events-none'
                     : ''
