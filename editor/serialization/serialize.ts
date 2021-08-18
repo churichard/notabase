@@ -29,6 +29,7 @@ import {
   Image,
   NoteLink,
 } from 'types/slate';
+import { isVoid } from 'editor/plugins/withVoidElements';
 
 type LeafType = FormattedText & { parentType?: string };
 
@@ -41,12 +42,6 @@ type Options = {
 const isLeafNode = (node: BlockType | LeafType): node is LeafType => {
   return Text.isText(node);
 };
-
-const VOID_ELEMENTS: Array<ElementType> = [
-  ElementType.NoteLink,
-  ElementType.ThematicBreak,
-  ElementType.Image,
-];
 
 const BREAK_TAG = '';
 
@@ -82,7 +77,8 @@ export default function serialize(
   if (
     children === '' &&
     type !== ElementType.Paragraph &&
-    !VOID_ELEMENTS.find((voidElementType) => voidElementType === type)
+    !isLeafNode(chunk) &&
+    !isVoid(chunk)
   ) {
     return;
   }

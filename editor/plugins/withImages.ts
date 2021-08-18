@@ -2,7 +2,6 @@ import { Editor } from 'slate';
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from 'react-toastify';
 import { insertImage } from 'editor/formatting';
-import { ElementType } from 'types/slate';
 import { isUrl } from 'utils/url';
 import imageExtensions from 'utils/image-extensions';
 import supabase from 'lib/supabase';
@@ -10,11 +9,7 @@ import { store } from 'lib/store';
 import { PlanId } from 'constants/pricing';
 
 const withImages = (editor: Editor) => {
-  const { insertData, isVoid } = editor;
-
-  editor.isVoid = (element) => {
-    return element.type === ElementType.Image ? true : isVoid(element);
-  };
+  const { insertData } = editor;
 
   editor.insertData = (data) => {
     const text = data.getData('text/plain');

@@ -32,8 +32,8 @@ import withBlockBreakout from 'editor/plugins/withBlockBreakout';
 import withLinks from 'editor/plugins/withLinks';
 import withNormalization from 'editor/plugins/withNormalization';
 import withCustomDeleteBackward from 'editor/plugins/withCustomDeleteBackward';
-import withThematicBreak from 'editor/plugins/withThematicBreak';
 import withImages from 'editor/plugins/withImages';
+import withVoidElements from 'editor/plugins/withVoidElements';
 import { ElementType, Mark } from 'types/slate';
 import HoveringToolbar from './HoveringToolbar';
 import AddLinkPopover from './AddLinkPopover';
@@ -64,7 +64,7 @@ export default function Editor(props: Props) {
         withDeleteBackwardWorkaround(
           withAutoMarkdown(
             withBlockBreakout(
-              withThematicBreak(
+              withVoidElements(
                 withImages(withLinks(withHistory(withReact(createEditor()))))
               )
             )
