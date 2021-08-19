@@ -60,11 +60,13 @@ export type ListItem = {
 };
 
 export type BulletedList = {
+  id?: string;
   type: ElementType.BulletedList;
   children: ListItem[];
 };
 
 export type NumberedList = {
+  id?: string;
   type: ElementType.NumberedList;
   children: ListItem[];
 };
@@ -76,12 +78,14 @@ export type Blockquote = {
 };
 
 export type ExternalLink = {
+  id?: string;
   type: ElementType.ExternalLink;
   url: string;
   children: FormattedText[];
 };
 
 export type NoteLink = {
+  id?: string;
   type: ElementType.NoteLink;
   noteId: string;
   noteTitle: string;

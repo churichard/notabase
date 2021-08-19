@@ -10,7 +10,6 @@ import {
 import { Element, Node, Transforms } from 'slate';
 import { ReactEditor, useSlateStatic } from 'slate-react';
 import { IconDotsVertical, IconLink } from '@tabler/icons';
-import { v4 as uuidv4 } from 'uuid';
 import { Popover } from '@headlessui/react';
 import { usePopper } from 'react-popper';
 import { ReferenceableBlockElement, ElementType } from 'types/slate';
@@ -19,6 +18,7 @@ import Portal from 'components/Portal';
 import { isReferenceableBlockElement } from 'editor/checks';
 import useBlockBacklinks from 'editor/backlinks/useBlockBacklinks';
 import updateBlockBacklinks from 'editor/backlinks/updateBlockBacklinks';
+import { createNodeId } from 'editor/plugins/withNodeId';
 import BlockBacklinks from '../backlinks/BlockBacklinks';
 import { getNumOfMatches } from '../backlinks/Backlinks';
 import { EditorElementProps } from './EditorElement';
@@ -58,7 +58,7 @@ const OptionsMenuDropdown = (props: OptionsMenuDropdownProps) => {
 
     if (!element.id) {
       // Generate block id if it doesn't exist
-      blockId = uuidv4();
+      blockId = createNodeId();
       const path = ReactEditor.findPath(editor, element);
       Transforms.setNodes(
         editor,
