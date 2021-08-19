@@ -7,7 +7,7 @@ export default function withVerticalSpacing(
   EditorElement: ComponentType<EditorElementProps>
 ) {
   function WithOptionsMenuComponent(props: EditorElementProps) {
-    const { children, className, ...otherProps } = props;
+    const { children, className = '', ...otherProps } = props;
     const editor = useSlateStatic();
     const elementType = props.element.type;
 
