@@ -4,7 +4,7 @@ import type { Notes } from 'lib/store';
 import { useStore, deepEqual } from 'lib/store';
 import useDebounce from 'utils/useDebounce';
 import { Note } from 'types/supabase';
-import { isReferenceableBlockElement } from '../plugins/withBlockReferences';
+import { isReferenceableBlockElement } from '../checks';
 
 const DEBOUNCE_MS = 500;
 

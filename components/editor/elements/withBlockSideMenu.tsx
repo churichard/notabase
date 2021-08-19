@@ -16,7 +16,7 @@ import { usePopper } from 'react-popper';
 import { ReferenceableBlockElement, ElementType } from 'types/slate';
 import Dropdown, { DropdownItem } from 'components/Dropdown';
 import Portal from 'components/Portal';
-import { isReferenceableBlockElement } from 'editor/plugins/withBlockReferences';
+import { isReferenceableBlockElement } from 'editor/checks';
 import useBlockBacklinks from 'editor/backlinks/useBlockBacklinks';
 import updateBlockBacklinks from 'editor/backlinks/updateBlockBacklinks';
 import BlockBacklinks from '../backlinks/BlockBacklinks';
