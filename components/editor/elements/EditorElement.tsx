@@ -303,23 +303,6 @@ const BlockRef = (props: BlockRefProps) => {
     []
   );
 
-  const blockRefElement = useMemo(() => {
-    if (!blockReference) {
-      return (
-        <span className="font-medium text-red-500">
-          Error: no block with id &ldquo;{element.blockId}&rdquo;
-        </span>
-      );
-    }
-    return (
-      <ReadOnlyEditor
-        value={[blockReference.element]}
-        renderElement={renderElement}
-        renderLeaf={renderLeaf}
-      />
-    );
-  }, [blockReference, renderElement, renderLeaf, element.blockId]);
-
   return (
     <Tooltip content={noteTitle} placement="bottom-start" disabled={!noteTitle}>
       <div
@@ -332,9 +315,37 @@ const BlockRef = (props: BlockRefProps) => {
         }}
         {...attributes}
       >
-        {blockRefElement}
+        {blockReference ? (
+          <ReadOnlyEditor
+            value={[blockReference.element]}
+            renderElement={renderElement}
+            renderLeaf={renderLeaf}
+          />
+        ) : (
+          <BlockRefError element={element} />
+        )}
         {children}
       </div>
     </Tooltip>
+  );
+};
+
+type BlockRefErrorProps = {
+  element: BlockReference;
+};
+
+const BlockRefError = (props: BlockRefErrorProps) => {
+  const { element } = props;
+  return (
+    <div className="font-medium text-red-500" contentEditable={false}>
+      <div>
+        Error: no block with id &ldquo;{element.blockId}
+        &rdquo;.
+      </div>
+      <div>
+        Last saved content:{' '}
+        {element.children.map((value) => value.text).join('')}
+      </div>
+    </div>
   );
 };
