@@ -65,9 +65,14 @@ const withBlockBreakout = (editor: Editor) => {
         Transforms.setNodes(editor, { type: ElementType.Paragraph });
       }
     }
-    // The cursor is at the end of the line
-    else if (isAtLineEnd) {
+    // The cursor is at the end of the line, or the line element is a void and block element
+    else if (
+      isAtLineEnd ||
+      (Editor.isBlock(editor, lineElement) &&
+        Editor.isVoid(editor, lineElement))
+    ) {
       // We insert after the current node
+      Transforms.select(editor, lineEnd);
       Transforms.insertNodes(editor, {
         type: insertElementType,
         children: [{ text: '' }],
@@ -76,6 +81,7 @@ const withBlockBreakout = (editor: Editor) => {
     // The cursor is at the start of the line
     else if (isAtLineStart) {
       // We insert before the current node
+      Transforms.select(editor, lineStart);
       Transforms.insertNodes(editor, {
         type: insertElementType,
         children: [{ text: '' }],
