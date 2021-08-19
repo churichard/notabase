@@ -1,4 +1,4 @@
-import { Editor, Element } from 'slate';
+import { Element } from 'slate';
 import { ReferenceableBlockElement, ElementType } from 'types/slate';
 
 // Returns true if the element is of type ReferenceableBlockElement, false otherwise
@@ -18,17 +18,3 @@ export const isReferenceableBlockElement = (
     element.type === ElementType.BlockReference
   );
 };
-
-const withBlockReferences = (editor: Editor) => {
-  const { isInline } = editor;
-
-  editor.isInline = (element) => {
-    return element.type === ElementType.BlockReference
-      ? true
-      : isInline(element);
-  };
-
-  return editor;
-};
-
-export default withBlockReferences;
