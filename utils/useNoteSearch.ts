@@ -3,6 +3,7 @@ import Fuse from 'fuse.js';
 import { createEditor, Descendant, Editor, Node, Path } from 'slate';
 import { Notes, store } from 'lib/store';
 import withLinks from 'editor/plugins/withLinks';
+import withVoidElements from 'editor/plugins/withVoidElements';
 
 export type NoteBlock = { text: string; path: Path };
 
@@ -61,7 +62,7 @@ const getFuseData = (notes: Notes, searchContent: boolean): FuseDatum[] => {
 
 // Flatten the content into individual lines
 const flattenContent = (content: Descendant[]): NoteBlock[] => {
-  const editor = withLinks(createEditor());
+  const editor = withVoidElements(withLinks(createEditor()));
   editor.children = content;
 
   const blocks = Editor.nodes(editor, {
