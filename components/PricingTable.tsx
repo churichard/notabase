@@ -37,7 +37,7 @@ type Props = {
 
 export default function PricingTable(props: Props) {
   const { buttons } = props;
-  const [showMonthly, setShowMonthly] = useState(false);
+  const [showMonthly, setShowMonthly] = useState(true);
 
   const getMonthlyPrice = useCallback(
     (plan: Plan) => {
@@ -123,13 +123,13 @@ const MobilePricingTable = (props: MobilePricingTableProps) => {
   return (
     <div className="w-full space-y-8 md:hidden">
       <div className="flex items-center justify-center">
-        <span className="text-sm text-gray-600">Annual</span>
+        <span className="text-sm text-gray-600">Monthly</span>
         <Toggle
           className="mx-2"
-          isChecked={showMonthly}
-          setIsChecked={setShowMonthly}
+          isChecked={!showMonthly}
+          setIsChecked={(isChecked) => setShowMonthly(!isChecked)}
         />
-        <span className="text-sm text-gray-600">Monthly</span>
+        <span className="text-sm text-gray-600">Annual</span>
       </div>
       {plans.map((plan, planIndex) => {
         const isNotBasic = plan.id !== PlanId.Basic;
@@ -288,13 +288,13 @@ const DesktopPricingTable = (props: DesktopPricingTableProps) => {
         <tr>
           <td className="py-2">
             <div className="flex items-center">
-              <span className="text-sm text-gray-600">Annual</span>
+              <span className="text-sm text-gray-600">Monthly</span>
               <Toggle
                 className="mx-2"
-                isChecked={showMonthly}
-                setIsChecked={setShowMonthly}
+                isChecked={!showMonthly}
+                setIsChecked={(isChecked) => setShowMonthly(!isChecked)}
               />
-              <span className="text-sm text-gray-600">Monthly</span>
+              <span className="text-sm text-gray-600">Annual</span>
             </div>
           </td>
           {plans.map((plan) => (
@@ -392,10 +392,10 @@ const Faq = () => {
             </h3>
             <div className="mt-2">
               <p className="text-gray-600">
-                For a limited time, if you subscribe to Notabase, you&apos;ll
-                get a lifetime discount as a token of our appreciation. We may
-                raise our prices in the future, but you&apos;ll be locked in at
-                the current price as long as your subscription remains active.
+                Notabase is in beta. If you subscribe now, you&apos;ll get a
+                lifetime discount as a token of our appreciation. You&apos;ll be
+                locked in at this lower price as long as your subscription
+                remains active.
               </p>
             </div>
           </div>
