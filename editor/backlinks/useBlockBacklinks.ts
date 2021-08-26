@@ -20,7 +20,7 @@ export default function useBlockBacklinks(blockId: string | null) {
  * Searches the notes array for block matches to the given blockId
  * and returns an array of the matches.
  */
-const computeBlockBacklinks = (notes: Notes, blockId: string | null) => {
+export const computeBlockBacklinks = (notes: Notes, blockId: string | null) => {
   if (blockId === null) {
     return [];
   }
