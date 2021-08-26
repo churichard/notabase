@@ -24,6 +24,12 @@ export default function Changelog() {
           .
         </p>
         <ChangelogBlock
+          title="August 26, 2021"
+          bugFixes={[
+            "Fix bug where importing doesn't work properly with note links",
+          ]}
+        />
+        <ChangelogBlock
           title="August 9, 2021"
           features={['Notabase is now in beta! 🎉']}
           bugFixes={[
