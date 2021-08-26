@@ -24,31 +24,36 @@ export default function normalize(node: MdastNode): MdastNode {
         continue;
       }
 
-      const nestedLists = [];
-      const newNestedChildren = [];
-
       // Iterate through the children of the list item
-      for (const nestedChild of normalizedChild.children) {
-        const convertedNestedChild = normalize(nestedChild); // Normalize list item child
+      if (child.type === 'listItem') {
+        const nestedLists = [];
+        const newNestedChildren = [];
+        for (const nestedChild of normalizedChild.children) {
+          if (!nestedChild.children) {
+            // No children, just push in normally
+            newNestedChildren.push(nestedChild);
+            continue;
+          }
 
-        if (!convertedNestedChild.children) {
-          // No children, just push in normally
-          newNestedChildren.push(convertedNestedChild);
-          continue;
+          if (nestedChild.type === 'list') {
+            // If the list item child is a list, add it to nestedLists
+            nestedLists.push(nestedChild);
+          } else if (nestedChild.type === 'paragraph') {
+            // If the list item child is a paragraph, remove the paragraph wrapper
+            newNestedChildren.push(...(nestedChild.children ?? []));
+          } else {
+            // If the list item child is anything else (e.g. list item), add it normally
+            newNestedChildren.push(nestedChild);
+          }
         }
 
-        if (convertedNestedChild.type === 'list') {
-          // If the list item child is a list, add it to nestedLists
-          nestedLists.push(convertedNestedChild);
-        } else {
-          // If the list item child is not a list (i.e. a paragraph), remove the paragraph wrapper
-          newNestedChildren.push(...(convertedNestedChild.children ?? []));
-        }
+        // Add in the normalized list item with its normalized children, as well as the nested lists
+        newChildren.push({ ...normalizedChild, children: newNestedChildren });
+        newChildren.push(...nestedLists);
+      } else {
+        // Push in normally if it is not a list item (already normalized)
+        newChildren.push(normalizedChild);
       }
-
-      // Add in the normalized list item with its normalized children, as well as the nested lists
-      newChildren.push({ ...normalizedChild, children: newNestedChildren });
-      newChildren.push(...nestedLists);
     }
 
     return { ...node, children: newChildren };
@@ -66,16 +71,14 @@ export default function normalize(node: MdastNode): MdastNode {
         )
       ) {
         for (const nestedChild of normalizedChild.children) {
-          const convertedNestedChild = normalize(nestedChild); // Normalize list item child
-
-          if (convertedNestedChild.type === 'text') {
+          if (nestedChild.type === 'text') {
             // Convert text node into paragraph
             newChildren.push({
               type: 'paragraph',
-              children: [convertedNestedChild],
+              children: [nestedChild],
             });
           } else {
-            newChildren.push(convertedNestedChild);
+            newChildren.push(nestedChild);
           }
         }
       } else {

@@ -27,6 +27,7 @@ export default function Changelog() {
           title="August 26, 2021"
           bugFixes={[
             "Fix bug where importing doesn't work properly with note links",
+            'Improve nested list support when importing',
           ]}
         />
         <ChangelogBlock
