@@ -10,8 +10,9 @@ import upsertNote from 'lib/api/upsertNote';
 import supabase from 'lib/supabase';
 import remarkToSlate from 'editor/serialization/remarkToSlate';
 import withLinks from 'editor/plugins/withLinks';
+import withVoidElements from 'editor/plugins/withVoidElements';
 import { caseInsensitiveStringEqual } from 'utils/string';
-import { ElementType } from 'types/slate';
+import { ElementType, NoteLink } from 'types/slate';
 import { Note } from 'types/supabase';
 import { Feature } from 'constants/pricing';
 import { useAuth } from './useAuth';
@@ -113,11 +114,11 @@ const fixNoteLinks = (
 ): { content: Descendant[]; promises: Promise<Note | null>[] } => {
   const promises = [];
 
-  const editor = withLinks(createEditor());
+  const editor = withVoidElements(withLinks(createEditor()));
   editor.children = content;
 
   // Find note link elements
-  const matchingElements = Editor.nodes(editor, {
+  const matchingElements = Editor.nodes<NoteLink>(editor, {
     at: [],
     match: (n) => Element.isElement(n) && n.type === ElementType.NoteLink,
   });
@@ -125,43 +126,40 @@ const fixNoteLinks = (
   const newNoteTitleToId: Record<string, string | undefined> = {};
   const notesArr = Object.values(store.getState().notes);
   for (const [node, path] of matchingElements) {
-    if (Element.isElement(node) && node.type === ElementType.NoteLink) {
-      const noteTitle = node.noteTitle;
-      let noteId;
+    const noteTitle = node.noteTitle;
+    let noteId;
 
-      const existingNoteId =
-        newNoteTitleToId[noteTitle.toLowerCase()] ??
-        notesArr.find((note) =>
-          caseInsensitiveStringEqual(note.title, noteTitle)
-        )?.id;
+    const existingNoteId =
+      newNoteTitleToId[noteTitle.toLowerCase()] ??
+      notesArr.find((note) => caseInsensitiveStringEqual(note.title, noteTitle))
+        ?.id;
 
-      if (existingNoteId) {
-        noteId = existingNoteId;
-      } else {
-        noteId = uuidv4(); // Create new note id
-        newNoteTitleToId[noteTitle.toLowerCase()] = noteId; // Add to new notes array
+    if (existingNoteId) {
+      noteId = existingNoteId;
+    } else {
+      noteId = uuidv4(); // Create new note id
+      newNoteTitleToId[noteTitle.toLowerCase()] = noteId; // Add to new notes array
 
-        const userId = supabase.auth.user()?.id;
-        if (userId) {
-          promises.push(
-            upsertNote({ id: noteId, user_id: userId, title: noteTitle })
-          );
-        }
+      const userId = supabase.auth.user()?.id;
+      if (userId) {
+        promises.push(
+          upsertNote({ id: noteId, user_id: userId, title: noteTitle })
+        );
       }
-
-      // Set proper note id on the note link
-      Transforms.setNodes(
-        editor,
-        { noteId },
-        {
-          at: path,
-          match: (n) =>
-            Element.isElement(n) &&
-            n.type === ElementType.NoteLink &&
-            n.noteTitle === noteTitle,
-        }
-      );
     }
+
+    // Set proper note id on the note link
+    Transforms.setNodes(
+      editor,
+      { noteId },
+      {
+        at: path,
+        match: (n) =>
+          Element.isElement(n) &&
+          n.type === ElementType.NoteLink &&
+          n.noteTitle === noteTitle,
+      }
+    );
   }
 
   return { content: editor.children, promises };
