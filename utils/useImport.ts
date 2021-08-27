@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import unified from 'unified';
 import markdown from 'remark-parse';
-import { createEditor, Descendant, Editor, Element, Transforms } from 'slate';
+import { Descendant, Element } from 'slate';
 import { toast } from 'react-toastify';
 import wikiLinkPlugin from 'remark-wiki-link';
 import { v4 as uuidv4 } from 'uuid';
@@ -10,8 +10,6 @@ import { NoteUpsert } from 'lib/api/upsertNote';
 import supabase from 'lib/supabase';
 import { DEFAULT_EDITOR_VALUE } from 'editor/constants';
 import remarkToSlate from 'editor/serialization/remarkToSlate';
-import withLinks from 'editor/plugins/withLinks';
-import withVoidElements from 'editor/plugins/withVoidElements';
 import { caseInsensitiveStringEqual } from 'utils/string';
 import { ElementType, NoteLink } from 'types/slate';
 import { Note } from 'types/supabase';
@@ -54,6 +52,8 @@ export default function useImport() {
 
       const importingToast = toast.info('Importing notes, please wait...', {
         autoClose: false,
+        closeButton: false,
+        draggable: false,
       });
 
       // Add a new note for each imported note
@@ -128,51 +128,60 @@ const fixNoteLinks = (
   content: Descendant[],
   noteTitleToIdCache: Record<string, string | undefined> = {}
 ): { content: Descendant[]; upsertData: NoteUpsert[] } => {
-  const upsertData = [];
+  const upsertData: NoteUpsert[] = [];
 
-  const editor = withVoidElements(withLinks(createEditor()));
-  editor.children = content;
-
-  // Find note link elements
-  const matchingElements = Editor.nodes<NoteLink>(editor, {
-    at: [],
-    match: (n) => Element.isElement(n) && n.type === ElementType.NoteLink,
-  });
-
+  // Update note link elements with noteId
   const notesArr = Object.values(store.getState().notes);
-  for (const [node, path] of matchingElements) {
-    const noteTitle = node.noteTitle;
-    let noteId;
+  const newContent = content.map((node) =>
+    setNoteLinkIds(node, notesArr, noteTitleToIdCache, upsertData)
+  );
 
-    const existingNoteId =
-      noteTitleToIdCache[noteTitle.toLowerCase()] ??
-      notesArr.find((note) => caseInsensitiveStringEqual(note.title, noteTitle))
-        ?.id;
+  return { content: newContent, upsertData };
+};
 
-    if (existingNoteId) {
-      noteId = existingNoteId;
-    } else {
-      noteId = uuidv4(); // Create new note id
-      const userId = supabase.auth.user()?.id;
-      if (userId) {
-        upsertData.push({ id: noteId, user_id: userId, title: noteTitle });
-      }
+const getNoteId = (
+  node: NoteLink,
+  notes: Note[],
+  noteTitleToIdCache: Record<string, string | undefined>,
+  upsertData: NoteUpsert[]
+): string => {
+  const noteTitle = node.noteTitle;
+  let noteId;
+
+  const existingNoteId =
+    noteTitleToIdCache[noteTitle.toLowerCase()] ??
+    notes.find((note) => caseInsensitiveStringEqual(note.title, noteTitle))?.id;
+
+  if (existingNoteId) {
+    noteId = existingNoteId;
+  } else {
+    noteId = uuidv4(); // Create new note id
+    const userId = supabase.auth.user()?.id;
+    if (userId) {
+      upsertData.push({ id: noteId, user_id: userId, title: noteTitle });
     }
-    noteTitleToIdCache[noteTitle.toLowerCase()] = noteId; // Add to cache
-
-    // Set proper note id on the note link
-    Transforms.setNodes(
-      editor,
-      { noteId },
-      {
-        at: path,
-        match: (n) =>
-          Element.isElement(n) &&
-          n.type === ElementType.NoteLink &&
-          n.noteTitle === noteTitle,
-      }
-    );
   }
+  noteTitleToIdCache[noteTitle.toLowerCase()] = noteId; // Add to cache
+  return noteId;
+};
 
-  return { content: editor.children, upsertData };
+const setNoteLinkIds = (
+  node: Descendant,
+  notes: Note[],
+  noteTitleToIdCache: Record<string, string | undefined>,
+  upsertData: NoteUpsert[]
+): Descendant => {
+  if (Element.isElement(node)) {
+    return {
+      ...node,
+      ...(node.type === ElementType.NoteLink
+        ? { noteId: getNoteId(node, notes, noteTitleToIdCache, upsertData) }
+        : {}),
+      children: node.children.map((child) =>
+        setNoteLinkIds(child, notes, noteTitleToIdCache, upsertData)
+      ),
+    };
+  } else {
+    return node;
+  }
 };

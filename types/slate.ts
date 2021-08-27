@@ -55,12 +55,12 @@ export type ListItem = {
 
 export type BulletedList = {
   type: ElementType.BulletedList;
-  children: ListItem[];
+  children: Descendant[];
 };
 
 export type NumberedList = {
   type: ElementType.NumberedList;
-  children: ListItem[];
+  children: Descendant[];
 };
 
 export type Blockquote = {
@@ -71,7 +71,7 @@ export type Blockquote = {
 export type ExternalLink = {
   type: ElementType.ExternalLink;
   url: string;
-  children: FormattedText[];
+  children: Descendant[];
 };
 
 export type NoteLink = {
@@ -79,7 +79,7 @@ export type NoteLink = {
   noteId: string;
   noteTitle: string;
   customText?: string;
-  children: FormattedText[];
+  children: Descendant[];
 };
 
 export type CodeBlock = {
@@ -96,7 +96,7 @@ export type Image = {
   type: ElementType.Image;
   url: string;
   caption?: string;
-  children: FormattedText[];
+  children: Descendant[];
 };
 
 export type NotabaseElement =
