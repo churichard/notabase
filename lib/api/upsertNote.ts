@@ -3,7 +3,7 @@ import supabase from 'lib/supabase';
 import type { Note } from 'types/supabase';
 import type { PickPartial } from 'types/utils';
 
-type NoteUpsert = PickPartial<
+export type NoteUpsert = PickPartial<
   Note,
   'id' | 'content' | 'created_at' | 'updated_at'
 >;

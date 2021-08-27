@@ -24,6 +24,10 @@ export default function Changelog() {
           .
         </p>
         <ChangelogBlock
+          title="August 27, 2021"
+          bugFixes={['Improve import performance and stability']}
+        />
+        <ChangelogBlock
           title="August 26, 2021"
           bugFixes={[
             "Fix bug where importing doesn't work properly with note links",

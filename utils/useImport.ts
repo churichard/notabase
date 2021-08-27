@@ -6,8 +6,9 @@ import { toast } from 'react-toastify';
 import wikiLinkPlugin from 'remark-wiki-link';
 import { v4 as uuidv4 } from 'uuid';
 import { store, useStore } from 'lib/store';
-import upsertNote from 'lib/api/upsertNote';
+import { NoteUpsert } from 'lib/api/upsertNote';
 import supabase from 'lib/supabase';
+import { DEFAULT_EDITOR_VALUE } from 'editor/constants';
 import remarkToSlate from 'editor/serialization/remarkToSlate';
 import withLinks from 'editor/plugins/withLinks';
 import withVoidElements from 'editor/plugins/withVoidElements';
@@ -56,9 +57,14 @@ export default function useImport() {
       });
 
       // Add a new note for each imported note
-      const promises: Promise<Note | null>[] = [];
+      const upsertData: NoteUpsert[] = [];
+      const noteLinkUpsertData: NoteUpsert[] = [];
+      const noteTitleToIdCache: Record<string, string | undefined> = {};
       for (const file of inputElement.files) {
         const fileName = file.name.replace(/\.[^/.]+$/, '');
+        if (!fileName) {
+          continue;
+        }
         const fileContent = await file.text();
 
         const { result } = unified()
@@ -67,25 +73,34 @@ export default function useImport() {
           .use(remarkToSlate)
           .processSync(fileContent);
 
-        const { content: slateContent, promises: noteLinkPromises } =
-          fixNoteLinks(result as Descendant[]);
+        const { content: slateContent, upsertData: newUpsertData } =
+          fixNoteLinks(result as Descendant[], noteTitleToIdCache);
 
-        await Promise.all(noteLinkPromises);
-
-        promises.push(
-          upsertNote({
-            user_id: user.id,
-            title: fileName,
-            content: slateContent.length > 0 ? slateContent : undefined,
-          })
-        );
+        noteLinkUpsertData.push(...newUpsertData);
+        upsertData.push({
+          user_id: user.id,
+          title: fileName,
+          content:
+            slateContent.length > 0 ? slateContent : DEFAULT_EDITOR_VALUE,
+        });
       }
 
-      const newNotes = await Promise.all(promises);
+      // Create new notes that are linked to
+      const { data: newLinkedNotes } = await supabase
+        .from<Note>('notes')
+        .upsert(noteLinkUpsertData, { onConflict: 'user_id, title' });
+
+      // Create new notes from files
+      const { data: newNotes } = await supabase
+        .from<Note>('notes')
+        .upsert(upsertData, { onConflict: 'user_id, title' });
 
       // Show a toast with the number of successfully imported notes
       toast.dismiss(importingToast);
-      const numOfSuccessfulImports = newNotes.filter((note) => !!note).length;
+      const numOfSuccessfulImports =
+        [...(newLinkedNotes ?? []), ...(newNotes ?? [])]?.filter(
+          (note) => !!note
+        ).length ?? 0;
       if (numOfSuccessfulImports > 1) {
         toast.success(
           `${numOfSuccessfulImports} notes were successfully imported.`
@@ -110,9 +125,10 @@ export default function useImport() {
  * The note id comes from an existing note, or a new note is created.
  */
 const fixNoteLinks = (
-  content: Descendant[]
-): { content: Descendant[]; promises: Promise<Note | null>[] } => {
-  const promises = [];
+  content: Descendant[],
+  noteTitleToIdCache: Record<string, string | undefined> = {}
+): { content: Descendant[]; upsertData: NoteUpsert[] } => {
+  const upsertData = [];
 
   const editor = withVoidElements(withLinks(createEditor()));
   editor.children = content;
@@ -123,14 +139,13 @@ const fixNoteLinks = (
     match: (n) => Element.isElement(n) && n.type === ElementType.NoteLink,
   });
 
-  const newNoteTitleToId: Record<string, string | undefined> = {};
   const notesArr = Object.values(store.getState().notes);
   for (const [node, path] of matchingElements) {
     const noteTitle = node.noteTitle;
     let noteId;
 
     const existingNoteId =
-      newNoteTitleToId[noteTitle.toLowerCase()] ??
+      noteTitleToIdCache[noteTitle.toLowerCase()] ??
       notesArr.find((note) => caseInsensitiveStringEqual(note.title, noteTitle))
         ?.id;
 
@@ -138,15 +153,12 @@ const fixNoteLinks = (
       noteId = existingNoteId;
     } else {
       noteId = uuidv4(); // Create new note id
-      newNoteTitleToId[noteTitle.toLowerCase()] = noteId; // Add to new notes array
-
       const userId = supabase.auth.user()?.id;
       if (userId) {
-        promises.push(
-          upsertNote({ id: noteId, user_id: userId, title: noteTitle })
-        );
+        upsertData.push({ id: noteId, user_id: userId, title: noteTitle });
       }
     }
+    noteTitleToIdCache[noteTitle.toLowerCase()] = noteId; // Add to cache
 
     // Set proper note id on the note link
     Transforms.setNodes(
@@ -162,5 +174,5 @@ const fixNoteLinks = (
     );
   }
 
-  return { content: editor.children, promises };
+  return { content: editor.children, upsertData };
 };
