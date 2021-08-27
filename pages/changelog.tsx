@@ -25,7 +25,10 @@ export default function Changelog() {
         </p>
         <ChangelogBlock
           title="August 27, 2021"
-          bugFixes={['Improve import performance and stability']}
+          features={[
+            'Improve sidebar performance',
+            'Improve import performance and stability',
+          ]}
         />
         <ChangelogBlock
           title="August 26, 2021"

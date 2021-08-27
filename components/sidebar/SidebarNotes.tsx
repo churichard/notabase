@@ -1,4 +1,5 @@
 import {
+  CSSProperties,
   Dispatch,
   SetStateAction,
   useCallback,
@@ -18,6 +19,7 @@ import {
   IconDownload,
 } from '@tabler/icons';
 import { usePopper } from 'react-popper';
+import { useVirtual } from 'react-virtual';
 import type { Note } from 'types/supabase';
 import { store, useStore, deepEqual } from 'lib/store';
 import deleteNote from 'lib/api/deleteNote';
@@ -64,18 +66,44 @@ export default function SidebarNotes(props: SidebarNotesProps) {
     [notes, noteSort]
   );
 
+  const parentRef = useRef<HTMLDivElement | null>(null);
+  const rowVirtualizer = useVirtual({
+    size: sortedNotes.length,
+    parentRef,
+    estimateSize: useCallback(() => 32, []),
+  });
+
   return (
     <ErrorBoundary>
       <div className={`flex flex-col flex-1 overflow-x-hidden ${className}`}>
-        <div className="flex-1 overflow-y-auto">
+        <div ref={parentRef} className="flex-1 overflow-y-auto">
           {sortedNotes && sortedNotes.length > 0 ? (
-            sortedNotes.map((note) => (
-              <NoteLink
-                key={note.id}
-                note={note}
-                isHighlighted={note.id === currentNoteId}
-              />
-            ))
+            <div
+              style={{
+                height: `${rowVirtualizer.totalSize}px`,
+                width: '100%',
+                position: 'relative',
+              }}
+            >
+              {rowVirtualizer.virtualItems.map((virtualRow) => {
+                const note = sortedNotes[virtualRow.index];
+                return (
+                  <NoteLink
+                    key={note.id}
+                    note={note}
+                    isHighlighted={note.id === currentNoteId}
+                    style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      width: '100%',
+                      height: `${virtualRow.size}px`,
+                      transform: `translateY(${virtualRow.start}px)`,
+                    }}
+                  />
+                );
+              })}
+            </div>
           ) : (
             <p className="px-6 my-2 text-center text-gray-500">No notes yet</p>
           )}
@@ -171,14 +199,16 @@ const SortDropdown = (props: SortDropdownProps) => {
 type NoteLinkProps = {
   note: Pick<Note, 'id' | 'title'>;
   isHighlighted?: boolean;
+  style?: CSSProperties;
 };
 
 const NoteLink = (props: NoteLinkProps) => {
-  const { note, isHighlighted } = props;
+  const { note, isHighlighted, style } = props;
   return (
     <SidebarItem
       className="relative flex items-center justify-between group"
       isHighlighted={isHighlighted}
+      style={style}
     >
       <Link href={`/app/note/${note.id}`}>
         <a className="flex-1 px-6 py-1 overflow-hidden overflow-ellipsis whitespace-nowrap">
