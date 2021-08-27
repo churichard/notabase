@@ -29,7 +29,7 @@
     "immer": "^9.0.5",
     "is-hotkey": "^0.2.0",
     "jszip": "^3.7.1",
-    "localforage": "^1.9.0",
+    "localforage": "^1.10.0",
     "micro": "^9.3.4",
     "micro-cors": "^0.1.1",
     "next": "^11.1.0",
