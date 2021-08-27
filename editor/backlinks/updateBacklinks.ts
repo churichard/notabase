@@ -50,9 +50,7 @@ const updateBacklinks = async (newTitle: string, noteId: string) => {
 
         // If there is no custom text, then the link text should be the same as the note title
         if (!linkNode.customText) {
-          for (const linkNodeChild of linkNode.children) {
-            linkNodeChild.text = newTitle;
-          }
+          linkNode.children = [{ text: newTitle }];
         }
       });
     }
