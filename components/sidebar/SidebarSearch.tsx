@@ -63,13 +63,14 @@ export default function SidebarSearch(props: Props) {
           }}
           autoFocus
         />
-        <div className="flex-1 overflow-y-auto">
-          {!searchQuery || searchResultsData.length > 0 ? (
-            <Tree className="px-1" data={searchResultsData} />
-          ) : (
-            <p className="px-4 text-gray-600">No results found.</p>
-          )}
-        </div>
+        {!searchQuery || searchResultsData.length > 0 ? (
+          <Tree
+            className="flex-1 px-1 overflow-y-auto"
+            data={searchResultsData}
+          />
+        ) : (
+          <p className="px-4 text-gray-600">No results found.</p>
+        )}
       </div>
     </ErrorBoundary>
   );

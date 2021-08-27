@@ -1,14 +1,15 @@
-import { memo, useMemo } from 'react';
+import { memo, useMemo, CSSProperties, forwardRef, ForwardedRef } from 'react';
 import { IconCaretDown, IconCaretRight } from '@tabler/icons';
 import { FlattenedTreeNode } from './Tree';
 
 type NodeProps = {
   node: FlattenedTreeNode;
   onClick: (node: FlattenedTreeNode) => void;
+  style?: CSSProperties;
 };
 
-const TreeNode = (props: NodeProps) => {
-  const { node, onClick } = props;
+const TreeNode = (props: NodeProps, ref: ForwardedRef<HTMLDivElement>) => {
+  const { node, onClick, style } = props;
 
   const leftPadding = useMemo(() => {
     let padding = node.depth * 16;
@@ -25,10 +26,11 @@ const TreeNode = (props: NodeProps) => {
 
   return (
     <div
+      ref={ref}
       className={`flex items-center select-none ${
         node.showArrow ? 'hover:cursor-pointer' : ''
       }`}
-      style={{ paddingLeft: `${leftPadding}px` }}
+      style={{ paddingLeft: `${leftPadding}px`, ...style }}
       onClick={node.showArrow ? () => onClick(node) : undefined}
     >
       {node.showArrow ? (
@@ -43,4 +45,4 @@ const TreeNode = (props: NodeProps) => {
   );
 };
 
-export default memo(TreeNode);
+export default memo(forwardRef(TreeNode));

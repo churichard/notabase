@@ -1,4 +1,5 @@
-import { useState, useMemo, useCallback, ReactNode, memo } from 'react';
+import { useState, useMemo, useCallback, ReactNode, memo, useRef } from 'react';
+import { useVirtual } from 'react-virtual';
 import TreeNode from './TreeNode';
 
 type TreeNode = {
@@ -64,15 +65,40 @@ function Tree(props: Props) {
     return result;
   }, [data, flattenNode]);
 
+  const parentRef = useRef<HTMLDivElement | null>(null);
+  const rowVirtualizer = useVirtual({
+    size: flattenedData.length,
+    parentRef,
+  });
+
   return (
-    <div className={`relative flex flex-col ${className}`}>
-      {flattenedData.map((node, index) => (
-        <TreeNode
-          key={node.id}
-          node={flattenedData[index]}
-          onClick={onNodeClick}
-        />
-      ))}
+    <div ref={parentRef} className={className}>
+      <div
+        style={{
+          height: `${rowVirtualizer.totalSize}px`,
+          width: '100%',
+          position: 'relative',
+        }}
+      >
+        {rowVirtualizer.virtualItems.map((virtualRow) => {
+          const node = flattenedData[virtualRow.index];
+          return (
+            <TreeNode
+              key={node.id}
+              ref={virtualRow.measureRef}
+              node={node}
+              onClick={onNodeClick}
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                transform: `translateY(${virtualRow.start}px)`,
+              }}
+            />
+          );
+        })}
+      </div>
     </div>
   );
 }
