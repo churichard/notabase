@@ -42,7 +42,7 @@ import AddLinkPopover from './AddLinkPopover';
 import EditorElement from './elements/EditorElement';
 import withVerticalSpacing from './elements/withVerticalSpacing';
 import withBlockSideMenu from './elements/withBlockSideMenu';
-import EditorLeaf, { EditorLeafProps } from './elements/EditorLeaf';
+import EditorLeaf from './elements/EditorLeaf';
 import LinkAutocompletePopover from './LinkAutocompletePopover';
 
 export type AddLinkPopoverState = {
@@ -87,10 +87,6 @@ export default function Editor(props: Props) {
     );
     return ElementWithSideMenu;
   }, []);
-  const renderLeaf = useCallback(
-    (props: EditorLeafProps) => <EditorLeaf {...props} />,
-    []
-  );
 
   const [addLinkPopoverState, setAddLinkPopoverState] =
     useState<AddLinkPopoverState>({
@@ -281,7 +277,7 @@ export default function Editor(props: Props) {
       <Editable
         className={`overflow-hidden placeholder-gray-300 ${className}`}
         renderElement={renderElement}
-        renderLeaf={renderLeaf}
+        renderLeaf={EditorLeaf}
         placeholder="Start typing here…"
         onKeyDown={onKeyDown}
         onMouseDown={() => setToolbarCanBeVisible(false)}

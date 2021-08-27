@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useMemo } from 'react';
+import { ReactNode, useMemo } from 'react';
 import { RenderElementProps, useFocused, useSelected } from 'slate-react';
 import Link from 'next/link';
 import type {
@@ -13,7 +13,7 @@ import { useStore } from 'lib/store';
 import Tooltip from 'components/Tooltip';
 import useBlockReference from 'editor/backlinks/useBlockReference';
 import { ReadOnlyEditor } from '../ReadOnlyEditor';
-import EditorLeaf, { EditorLeafProps } from './EditorLeaf';
+import EditorLeaf from './EditorLeaf';
 
 export type EditorElementProps = {
   className?: string;
@@ -278,7 +278,7 @@ const BlockRef = (props: BlockRefProps) => {
 
   const blockRefClassName = useMemo(
     () =>
-      `p-0.25 border-b border-gray-200 select-none hover:cursor-alias hover:bg-primary-50 active:bg-primary-100 ${className} ${
+      `p-0.25 border-b border-gray-200 select-none cursor-alias hover:bg-primary-50 active:bg-primary-100 ${className} ${
         selected && focused ? 'bg-blue-100' : ''
       }`,
     [className, selected, focused]
@@ -286,21 +286,6 @@ const BlockRef = (props: BlockRefProps) => {
 
   const noteTitle = useStore((state) =>
     blockReference ? state.notes[blockReference.noteId].title : null
-  );
-
-  const renderElement = useCallback((props: EditorElementProps) => {
-    const { className = '', ...otherProps } = props;
-
-    return (
-      <EditorElement
-        className={`pointer-events-none ${className}`}
-        {...otherProps}
-      />
-    );
-  }, []);
-  const renderLeaf = useCallback(
-    (props: EditorLeafProps) => <EditorLeaf {...props} />,
-    []
   );
 
   return (
@@ -318,8 +303,8 @@ const BlockRef = (props: BlockRefProps) => {
         {blockReference ? (
           <ReadOnlyEditor
             value={[blockReference.element]}
-            renderElement={renderElement}
-            renderLeaf={renderLeaf}
+            renderElement={EditorElement}
+            renderLeaf={EditorLeaf}
           />
         ) : (
           <BlockRefError element={element} />
