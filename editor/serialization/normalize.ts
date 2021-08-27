@@ -63,24 +63,30 @@ export default function normalize(node: MdastNode): MdastNode {
     for (const child of node.children) {
       const normalizedChild = normalize(child); // Normalize child
 
-      // If the child is a paragraph and it contains an image, we want to pull the image out into its own block
+      // If the child contains an image, we want to pull the image out into its own block
       if (
-        normalizedChild.type === 'paragraph' &&
         normalizedChild.children?.some(
           (nestedChild) => nestedChild.type === 'image'
         )
       ) {
+        const blocks: MdastNode[] = [];
+
+        // Split children into separate blocks
         for (const nestedChild of normalizedChild.children) {
-          if (nestedChild.type === 'text') {
-            // Convert text node into paragraph
-            newChildren.push({
-              type: 'paragraph',
-              children: [nestedChild],
-            });
+          if (nestedChild.type === 'image') {
+            blocks.push(nestedChild);
           } else {
-            newChildren.push(nestedChild);
+            let lastBlock = blocks[blocks.length - 1];
+            // Add a new block if it doesn't exist yet
+            if (!lastBlock || !lastBlock.children) {
+              blocks.push({ type: child.type, children: [] });
+              lastBlock = blocks[blocks.length - 1];
+            }
+            lastBlock.children?.push(nestedChild);
           }
         }
+
+        newChildren.push(...blocks);
       } else {
         newChildren.push(normalizedChild);
       }

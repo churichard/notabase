@@ -28,6 +28,7 @@ export default function Changelog() {
           bugFixes={[
             "Fix bug where importing doesn't work properly with note links",
             'Improve nested list support when importing',
+            'Improve image support when importing',
           ]}
         />
         <ChangelogBlock
