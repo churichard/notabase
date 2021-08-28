@@ -36,13 +36,16 @@ export default function HoveringToolbar(props: Props) {
     <Popover placement="top-start">
       <LinkButton
         setAddLinkPopoverState={setAddLinkPopoverState}
-        className="border-r"
+        className="border-r dark:border-gray-700"
       />
       <FormatButton format={Mark.Bold} />
       <FormatButton format={Mark.Italic} />
       <FormatButton format={Mark.Underline} />
       <FormatButton format={Mark.Strikethrough} />
-      <FormatButton format={Mark.Code} className="border-r" />
+      <FormatButton
+        format={Mark.Code}
+        className="border-r dark:border-gray-700"
+      />
       <BlockButton format={ElementType.HeadingOne} />
       <BlockButton format={ElementType.HeadingTwo} />
       <BlockButton format={ElementType.HeadingThree} />
@@ -76,8 +79,10 @@ const ToolbarButton = (props: ToolbarButtonProps) => {
   return (
     <Tooltip content={tooltip} placement="top" disabled={!tooltip}>
       <span
-        className={`flex items-center px-2 py-2 cursor-pointer hover:bg-gray-100 active:bg-gray-200 ${
-          isActive ? 'text-primary-500' : 'text-gray-800'
+        className={`flex items-center px-2 py-2 cursor-pointer hover:bg-gray-100 active:bg-gray-200 dark:hover:bg-gray-700 dark:active:bg-gray-600 ${
+          isActive
+            ? 'text-primary-500 dark:text-primary-400'
+            : 'text-gray-800 dark:text-gray-200'
         } ${className}`}
         onMouseDown={(event) => event.preventDefault()}
         onMouseUp={(event) => {

@@ -185,8 +185,8 @@ const OptionItem = (props: OptionProps) => {
   const { option, isSelected, onClick } = props;
   return (
     <div
-      className={`flex flex-row items-center px-4 py-1 cursor-pointer text-gray-800 hover:bg-gray-100 active:bg-gray-200 ${
-        isSelected ? 'bg-gray-100' : ''
+      className={`flex flex-row items-center px-4 py-1 cursor-pointer text-gray-800 hover:bg-gray-100 active:bg-gray-200 dark:text-gray-200 dark:hover:bg-gray-700 dark:active:bg-gray-600 ${
+        isSelected ? 'bg-gray-100 dark:bg-gray-700' : ''
       }`}
       onMouseDown={(event) => event.preventDefault()}
       onMouseUp={onClick}

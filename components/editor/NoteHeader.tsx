@@ -131,7 +131,7 @@ export default function NoteHeader() {
                 <Portal>
                   <Menu.Items
                     ref={setPopperElement}
-                    className="z-10 overflow-hidden bg-white rounded shadow-popover"
+                    className="z-10 overflow-hidden bg-white rounded shadow-popover dark:bg-gray-800"
                     static
                     style={styles.popper}
                     {...attributes.popper}
@@ -139,8 +139,8 @@ export default function NoteHeader() {
                     <Menu.Item>
                       {({ active }) => (
                         <button
-                          className={`flex w-full items-center px-4 py-2 text-left text-gray-800 ${
-                            active ? 'bg-gray-100' : ''
+                          className={`flex w-full items-center px-4 py-2 text-left text-gray-800 dark:text-gray-200 ${
+                            active ? 'bg-gray-100 dark:bg-gray-700' : ''
                           }`}
                           onClick={onImport}
                         >
@@ -152,8 +152,8 @@ export default function NoteHeader() {
                     <Menu.Item>
                       {({ active }) => (
                         <button
-                          className={`flex w-full items-center px-4 py-2 text-left text-gray-800 ${
-                            active ? 'bg-gray-100' : ''
+                          className={`flex w-full items-center px-4 py-2 text-left text-gray-800 dark:text-gray-200 ${
+                            active ? 'bg-gray-100 dark:bg-gray-700' : ''
                           }`}
                           onClick={onExportClick}
                         >
@@ -165,8 +165,8 @@ export default function NoteHeader() {
                     <Menu.Item>
                       {({ active }) => (
                         <button
-                          className={`flex w-full items-center px-4 py-2 text-left text-gray-800 ${
-                            active ? 'bg-gray-100' : ''
+                          className={`flex w-full items-center px-4 py-2 text-left text-gray-800 dark:text-gray-200 ${
+                            active ? 'bg-gray-100 dark:bg-gray-700' : ''
                           }`}
                           onClick={onExportAllClick}
                         >

@@ -43,15 +43,15 @@ export default function Header(props: Props) {
             </span>
           </Tooltip>
         </Menu.Button>
-        <Menu.Items className="absolute z-10 w-56 overflow-hidden bg-white rounded left-6 top-full shadow-popover">
-          <p className="px-4 pt-2 pb-1 overflow-hidden text-xs text-gray-600 overflow-ellipsis">
+        <Menu.Items className="absolute z-10 w-56 overflow-hidden bg-white rounded left-6 top-full shadow-popover dark:bg-gray-800">
+          <p className="px-4 pt-2 pb-1 overflow-hidden text-xs text-gray-600 overflow-ellipsis dark:text-gray-400">
             {user?.email}
           </p>
           <Menu.Item>
             {({ active }) => (
               <button
-                className={`flex w-full items-center px-4 py-2 text-left text-gray-800 text-sm ${
-                  active ? 'bg-gray-100' : ''
+                className={`flex w-full items-center px-4 py-2 text-left text-gray-800 text-sm dark:text-gray-200 ${
+                  active ? 'bg-gray-100 dark:bg-gray-700' : ''
                 }`}
                 onClick={() => setIsSettingsOpen(true)}
               >
@@ -63,8 +63,8 @@ export default function Header(props: Props) {
           <Menu.Item>
             {({ active }) => (
               <a
-                className={`flex w-full items-center px-4 py-2 text-left text-gray-800 text-sm border-t ${
-                  active ? 'bg-gray-100' : ''
+                className={`flex w-full items-center px-4 py-2 text-left text-gray-800 text-sm border-t dark:text-gray-200 dark:border-gray-700 ${
+                  active ? 'bg-gray-100 dark:bg-gray-700' : ''
                 }`}
                 href="https://8z3pisyojx8.typeform.com/to/tXt36EQM"
                 target="_blank"
@@ -78,8 +78,8 @@ export default function Header(props: Props) {
           <Menu.Item>
             {({ active }) => (
               <a
-                className={`flex w-full items-center px-4 py-2 text-left text-gray-800 text-sm ${
-                  active ? 'bg-gray-100' : ''
+                className={`flex w-full items-center px-4 py-2 text-left text-gray-800 text-sm dark:text-gray-200 ${
+                  active ? 'bg-gray-100 dark:bg-gray-700' : ''
                 }`}
                 href="https://discord.gg/BQKNRu7nv5"
                 target="_blank"
@@ -93,8 +93,8 @@ export default function Header(props: Props) {
           <Menu.Item>
             {({ active }) => (
               <a
-                className={`flex w-full items-center px-4 py-2 text-left text-gray-800 text-sm ${
-                  active ? 'bg-gray-100' : ''
+                className={`flex w-full items-center px-4 py-2 text-left text-gray-800 text-sm dark:text-gray-200 ${
+                  active ? 'bg-gray-100 dark:bg-gray-700' : ''
                 }`}
                 href="https://help.notabase.io"
                 target="_blank"
@@ -108,8 +108,8 @@ export default function Header(props: Props) {
           <Menu.Item>
             {({ active }) => (
               <a
-                className={`flex w-full items-center px-4 py-2 text-left text-gray-800 text-sm ${
-                  active ? 'bg-gray-100' : ''
+                className={`flex w-full items-center px-4 py-2 text-left text-gray-800 text-sm dark:text-gray-200 ${
+                  active ? 'bg-gray-100 dark:bg-gray-700' : ''
                 }`}
                 href="mailto:hello@notabase.io"
                 target="_blank"
@@ -123,8 +123,8 @@ export default function Header(props: Props) {
           <Menu.Item>
             {({ active }) => (
               <button
-                className={`flex w-full items-center px-4 py-2 text-left text-gray-800 text-sm border-t ${
-                  active ? 'bg-gray-100' : ''
+                className={`flex w-full items-center px-4 py-2 text-left text-gray-800 text-sm border-t dark:text-gray-200 dark:border-gray-700 ${
+                  active ? 'bg-gray-100 dark:bg-gray-700' : ''
                 }`}
                 onClick={() => signOut()}
               >

@@ -205,7 +205,10 @@ export default function AppLayout(props: Props) {
   }
 
   return (
-    <div className={`flex h-screen ${darkMode ? 'dark' : ''} ${className}`}>
+    <div
+      id="app-container"
+      className={`flex h-screen ${darkMode ? 'dark' : ''} ${className}`}
+    >
       <Sidebar
         className={!isSidebarOpen ? 'hidden' : undefined}
         setIsFindOrCreateModalOpen={setIsFindOrCreateModalOpen}

@@ -173,7 +173,7 @@ const SortDropdown = (props: SortDropdownProps) => {
         </Menu.Button>
       </Tooltip>
       <Menu.Items
-        className="z-10 w-56 overflow-hidden bg-white rounded shadow-popover"
+        className="z-10 w-56 overflow-hidden bg-white rounded dark:bg-gray-800 shadow-popover"
         ref={setPopperElement}
         style={styles.popper}
         {...attributes.popper}
@@ -184,16 +184,25 @@ const SortDropdown = (props: SortDropdownProps) => {
             <Menu.Item key={sort}>
               {({ active }) => (
                 <button
-                  className={`flex w-full items-center px-4 py-2 text-left text-gray-800 text-sm ${
-                    active ? 'bg-gray-100' : ''
+                  className={`flex w-full items-center px-4 py-2 text-left text-gray-800 dark:text-gray-200 text-sm ${
+                    active ? 'bg-gray-100 dark:bg-gray-700' : ''
                   }`}
                   onClick={() => setCurrentSort(sort)}
                 >
-                  <span className={isActive ? 'text-primary-600' : undefined}>
+                  <span
+                    className={
+                      isActive
+                        ? 'text-primary-600 dark:text-primary-400'
+                        : undefined
+                    }
+                  >
                     {ReadableNameBySort[sort]}
                   </span>
                   {isActive ? (
-                    <IconCheck size={18} className="ml-1 text-primary-600" />
+                    <IconCheck
+                      size={18}
+                      className="ml-1 text-primary-600 dark:text-primary-400"
+                    />
                   ) : null}
                 </button>
               )}
@@ -277,7 +286,7 @@ const NoteLinkDropdown = (props: NoteLinkDropdownProps) => {
               <Portal>
                 <Menu.Items
                   ref={setPopperElement}
-                  className="z-10 w-48 overflow-hidden bg-white rounded shadow-popover"
+                  className="z-10 w-48 overflow-hidden bg-white rounded shadow-popover dark:bg-gray-800"
                   static
                   style={styles.popper}
                   {...attributes.popper}
@@ -285,8 +294,8 @@ const NoteLinkDropdown = (props: NoteLinkDropdownProps) => {
                   <Menu.Item>
                     {({ active }) => (
                       <button
-                        className={`flex w-full items-center px-4 py-2 text-left text-gray-800 ${
-                          active ? 'bg-gray-100' : ''
+                        className={`flex w-full items-center px-4 py-2 text-left text-gray-800 dark:text-gray-200 ${
+                          active ? 'bg-gray-100 dark:bg-gray-700' : ''
                         }`}
                         onClick={onDeleteClick}
                       >
