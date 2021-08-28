@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { IconCreditCard, IconMoon } from '@tabler/icons';
+import { IconBrightnessHalf, IconCreditCard } from '@tabler/icons';
 import useHotkeys from 'utils/useHotkeys';
 import SidebarItem from '../sidebar/SidebarItem';
 import Billing from './Billing';
@@ -71,7 +71,7 @@ const SettingsModalSidebar = (props: SettingsModalSidebarProps) => {
           className="flex items-center flex-1 px-4 py-1 overflow-hidden overflow-ellipsis whitespace-nowrap"
           onClick={() => setCurrentTab(SettingsTab.Appearance)}
         >
-          <IconMoon
+          <IconBrightnessHalf
             size={18}
             className="mr-1 text-gray-800 dark:text-gray-200"
           />
