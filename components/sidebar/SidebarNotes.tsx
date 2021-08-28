@@ -116,11 +116,11 @@ export default function SidebarNotes(props: SidebarNotesProps) {
             >
               <IconPlus
                 size={16}
-                className="text-gray-600 dark:text-gray-200"
+                className="text-gray-600 dark:text-gray-300"
               />
             </button>
           </Tooltip>
-          <span className="p-1 mx-2 my-1 text-xs text-gray-500 dark:text-gray-200">
+          <span className="p-1 mx-2 my-1 text-xs text-gray-500 dark:text-gray-400">
             {notes.length} notes
           </span>
           <div className="mx-2 my-1">
@@ -132,7 +132,7 @@ export default function SidebarNotes(props: SidebarNotesProps) {
               >
                 <IconDownload
                   size={16}
-                  className="text-gray-600 dark:text-gray-200"
+                  className="text-gray-600 dark:text-gray-300"
                 />
               </button>
             </Tooltip>
@@ -168,7 +168,7 @@ const SortDropdown = (props: SortDropdownProps) => {
         >
           <IconSortDescending
             size={16}
-            className="text-gray-600 dark:text-gray-200"
+            className="text-gray-600 dark:text-gray-300"
           />
         </Menu.Button>
       </Tooltip>

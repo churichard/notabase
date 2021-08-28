@@ -228,10 +228,14 @@ export default function Editor(props: Props) {
       });
 
       // Highlight line, but restore original color if mouse is clicked or component is re-rendered
-      const originalColor = domNode.style.backgroundColor;
-      const removeHighlight = () =>
-        (domNode.style.backgroundColor = originalColor);
+      const originalTextColor = domNode.style.color;
+      const originalBgColor = domNode.style.backgroundColor;
+      const removeHighlight = () => {
+        domNode.style.color = originalTextColor;
+        domNode.style.backgroundColor = originalBgColor;
+      };
 
+      domNode.style.color = colors.black;
       domNode.style.backgroundColor = colors.yellow[200];
       domNode.addEventListener('click', removeHighlight, { once: true });
 

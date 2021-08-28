@@ -85,7 +85,7 @@ const SidebarSearchBranch = memo(function SidebarSearchBranch(
 ) {
   const { text } = props;
   return (
-    <p className="py-1 overflow-hidden overflow-ellipsis whitespace-nowrap">
+    <p className="py-1 overflow-hidden overflow-ellipsis whitespace-nowrap dark:text-gray-200">
       {text}
     </p>
   );
@@ -112,7 +112,7 @@ const SidebarSearchLeaf = memo(function SidebarSearchLeaf(
       }}
     >
       <Highlighter
-        className="block text-xs text-gray-600 break-words dark:text-gray-200"
+        className="block text-xs text-gray-600 break-words dark:text-gray-300"
         highlightClassName="bg-yellow-200"
         searchWords={[searchQuery]}
         autoEscape={true}
