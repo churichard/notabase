@@ -6,7 +6,7 @@ type BacklinkReferenceBranchProps = {
 
 const BacklinkReferenceBranch = (props: BacklinkReferenceBranchProps) => {
   const { title } = props;
-  return <p className="py-1 text-gray-800">{title}</p>;
+  return <p className="py-1 text-gray-800 dark:text-gray-100">{title}</p>;
 };
 
 export default memo(BacklinkReferenceBranch);

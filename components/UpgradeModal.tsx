@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useStore } from 'lib/store';
 import useHotkeys from 'utils/useHotkeys';
-import Billing from './Billing';
+import Billing from './settings/Billing';
 
 export default function UpgradeModal() {
   const setIsUpgradeModalOpen = useStore(
@@ -26,7 +26,7 @@ export default function UpgradeModal() {
         onClick={() => setIsUpgradeModalOpen(false)}
       />
       <div className="flex items-center justify-center h-screen p-6">
-        <div className="z-20 flex w-full h-full max-w-full bg-white rounded max-h-128 sm:w-192 xl:w-240 xl:max-h-176 shadow-popover">
+        <div className="z-20 flex w-full h-full max-w-full bg-white rounded dark:bg-gray-800 dark:text-gray-100 max-h-128 sm:w-192 xl:w-240 xl:max-h-176 shadow-popover">
           <Billing />
         </div>
       </div>

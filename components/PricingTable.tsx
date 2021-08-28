@@ -124,13 +124,15 @@ const MobilePricingTable = (props: MobilePricingTableProps) => {
   return (
     <div className="w-full space-y-8 md:hidden">
       <div className="flex items-center justify-center">
-        <span className="text-sm text-gray-600">Annual</span>
+        <span className="text-sm text-gray-600 dark:text-gray-300">Annual</span>
         <Toggle
           className="mx-2"
           isChecked={showMonthly}
           setIsChecked={setShowMonthly}
         />
-        <span className="text-sm text-gray-600">Monthly</span>
+        <span className="text-sm text-gray-600 dark:text-gray-300">
+          Monthly
+        </span>
       </div>
       {plans.map((plan, planIndex) => {
         const isNotBasic = plan.id !== PlanId.Basic;
@@ -148,17 +150,17 @@ const MobilePricingTable = (props: MobilePricingTableProps) => {
               <div className="flex items-baseline text-4xl font-semibold">
                 <span>${plan.monthlyPrice}</span>
                 {isNotBasic ? (
-                  <s className="ml-2 text-2xl text-gray-500">
+                  <s className="ml-2 text-2xl text-gray-500 dark:text-gray-300">
                     {showMonthly ? '$10' : '$8.33'}
                   </s>
                 ) : null}
-                <span className="ml-1 text-2xl text-gray-500 whitespace-nowrap">
+                <span className="ml-1 text-2xl text-gray-500 whitespace-nowrap dark:text-gray-300">
                   / mo
                 </span>
               </div>
             </div>
             {isNotBasic ? (
-              <div className="pb-2 text-gray-500">
+              <div className="pb-2 text-gray-500 dark:text-gray-300">
                 {!showMonthly ? (
                   <span className="text-sm">
                     Billed yearly (${plan.annualPrice} / yr)
@@ -255,11 +257,11 @@ const DesktopPricingTable = (props: DesktopPricingTableProps) => {
               <div className="flex items-baseline text-4xl font-semibold">
                 <span>${plan.monthlyPrice}</span>
                 {plan.id !== PlanId.Basic ? (
-                  <s className="ml-2 text-2xl text-gray-500">
+                  <s className="ml-2 text-2xl text-gray-500 dark:text-gray-300">
                     {showMonthly ? '$10' : '$8.33'}
                   </s>
                 ) : null}
-                <span className="ml-1 text-2xl text-gray-500 whitespace-nowrap">
+                <span className="ml-1 text-2xl text-gray-500 whitespace-nowrap dark:text-gray-300">
                   / mo
                 </span>
               </div>
@@ -269,7 +271,7 @@ const DesktopPricingTable = (props: DesktopPricingTableProps) => {
         <tr>
           <td className="pb-2"></td>
           {plans.map((plan) => (
-            <td key={plan.id} className="pb-2 text-gray-500">
+            <td key={plan.id} className="pb-2 text-gray-500 dark:text-gray-300">
               {plan.id !== PlanId.Basic ? (
                 !showMonthly ? (
                   <span className="text-sm">
@@ -285,13 +287,17 @@ const DesktopPricingTable = (props: DesktopPricingTableProps) => {
         <tr>
           <td className="py-2">
             <div className="flex items-center">
-              <span className="text-sm text-gray-600">Annual</span>
+              <span className="text-sm text-gray-600 dark:text-gray-300">
+                Annual
+              </span>
               <Toggle
                 className="mx-2"
                 isChecked={showMonthly}
                 setIsChecked={setShowMonthly}
               />
-              <span className="text-sm text-gray-600">Monthly</span>
+              <span className="text-sm text-gray-600 dark:text-gray-300">
+                Monthly
+              </span>
             </div>
           </td>
           {plans.map((plan) => (
@@ -314,9 +320,9 @@ const DesktopPricingTable = (props: DesktopPricingTableProps) => {
                   >
                     {typeof datum === 'boolean' ? (
                       datum ? (
-                        <IconCheck className="text-primary-500" />
+                        <IconCheck className="text-primary-500 dark:text-primary-400" />
                       ) : (
-                        <IconMinus className="text-gray-400" />
+                        <IconMinus className="text-gray-400 dark:text-gray-200" />
                       )
                     ) : (
                       datum
@@ -335,37 +341,39 @@ const DesktopPricingTable = (props: DesktopPricingTableProps) => {
 const Faq = () => {
   return (
     <div className="py-12 sm:py-16 lg:py-24">
-      <h2 className="text-3xl font-semibold text-gray-900">FAQ</h2>
+      <h2 className="text-3xl font-semibold text-gray-900 dark:text-gray-100">
+        FAQ
+      </h2>
       <div className="pt-10 mt-6 border-t">
         <div className="grid gap-8 md:grid-cols-2">
           <div>
-            <h3 className="text-lg font-medium text-gray-900">
+            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
               Can I try Notabase for free?
             </h3>
             <div className="mt-2">
-              <p className="text-gray-600">
+              <p className="text-gray-600 dark:text-gray-300">
                 Yes, just sign up with the Basic plan and you can try out
                 Notabase for free for an unlimited amount of time.
               </p>
             </div>
           </div>
           <div>
-            <h3 className="text-lg font-medium text-gray-900">
+            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
               Do I need a credit card to sign up?
             </h3>
             <div className="mt-2">
-              <p className="text-gray-600">
+              <p className="text-gray-600 dark:text-gray-300">
                 You can sign up for Notabase and use the Basic plan without a
                 credit card.
               </p>
             </div>
           </div>
           <div>
-            <h3 className="text-lg font-medium text-gray-900">
+            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
               Can I cancel at any time?
             </h3>
             <div className="mt-2">
-              <p className="text-gray-600">
+              <p className="text-gray-600 dark:text-gray-300">
                 Yes, you can cancel your subscription at any time. You&apos;ll
                 continue to have access for the remainder of your billing
                 period.
@@ -373,22 +381,22 @@ const Faq = () => {
             </div>
           </div>
           <div>
-            <h3 className="text-lg font-medium text-gray-900">
+            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
               What happens if I switch between the monthly and annual plans?
             </h3>
             <div className="mt-2">
-              <p className="text-gray-600">
+              <p className="text-gray-600 dark:text-gray-300">
                 You&apos;ll receive a prorated credit for the time remaining on
                 your current plan and be billed for the new plan.
               </p>
             </div>
           </div>
           <div>
-            <h3 className="text-lg font-medium text-gray-900">
+            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
               What is &ldquo;early bird pricing&rdquo;?
             </h3>
             <div className="mt-2">
-              <p className="text-gray-600">
+              <p className="text-gray-600 dark:text-gray-300">
                 Notabase is in beta. If you subscribe now, you&apos;ll get a 30%
                 lifetime discount as a token of our appreciation. You&apos;ll be
                 locked in at this lower price as long as your subscription
@@ -397,11 +405,11 @@ const Faq = () => {
             </div>
           </div>
           <div>
-            <h3 className="text-lg font-medium text-gray-900">
+            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
               What if I still have questions?
             </h3>
             <div className="mt-2">
-              <p className="text-gray-600">
+              <p className="text-gray-600 dark:text-gray-300">
                 Feel free to{' '}
                 <a
                   href="mailto:hello@notabase.io"

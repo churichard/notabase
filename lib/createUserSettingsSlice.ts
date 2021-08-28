@@ -12,6 +12,8 @@ export const ReadableNameBySort = {
 } as const;
 
 export type UserSettings = {
+  darkMode: boolean;
+  setDarkMode: (value: boolean | ((value: boolean) => boolean)) => void;
   isSidebarOpen: boolean;
   setIsSidebarOpen: (value: boolean | ((value: boolean) => boolean)) => void;
   isPageStackingOn: boolean;
@@ -23,6 +25,8 @@ export type UserSettings = {
 const createUserSettingsSlice = (
   set: (fn: (draft: Draft<Store>) => void) => void
 ) => ({
+  darkMode: false,
+  setDarkMode: setter(set, 'darkMode'),
   isSidebarOpen: true,
   setIsSidebarOpen: setter(set, 'isSidebarOpen'),
   isPageStackingOn: true,

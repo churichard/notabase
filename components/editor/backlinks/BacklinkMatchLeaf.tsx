@@ -35,7 +35,7 @@ const BacklinkMatchLeaf = (props: BacklinkMatchLeafProps) => {
     ),
     [match.lineElement, renderElement, renderLeaf]
   );
-  const containerClassName = `block text-left text-xs text-gray-600 bg-gray-50 rounded p-2 my-1 w-full break-words ${className}`;
+  const containerClassName = `block text-left text-xs text-gray-600 bg-gray-50 dark:text-gray-100 dark:bg-gray-800 rounded p-2 my-1 w-full break-words ${className}`;
 
   return (
     <button
