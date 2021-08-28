@@ -175,14 +175,17 @@ const MobilePricingTable = (props: MobilePricingTableProps) => {
               <tbody>
                 {pricingTableData.map((category) => (
                   <Fragment key={`${category.name}-container`}>
-                    <tr className="border-b" key={`${category.name}-title`}>
+                    <tr
+                      className="border-b dark:border-gray-700"
+                      key={`${category.name}-title`}
+                    >
                       <td className="pt-4 pb-2 font-semibold">
                         {category.name}
                       </td>
                     </tr>
                     {category.data.map((row, rowIndex) => (
                       <tr
-                        className="border-b"
+                        className="border-b dark:border-gray-700"
                         key={`${category.name}-${rowIndex}`}
                       >
                         {row.map((datum, datumIndex) =>
@@ -308,11 +311,17 @@ const DesktopPricingTable = (props: DesktopPricingTableProps) => {
         </tr>
         {pricingTableData.map((category) => (
           <Fragment key={`${category.name}-container`}>
-            <tr className="border-b" key={`${category.name}-title`}>
+            <tr
+              className="border-b dark:border-gray-700"
+              key={`${category.name}-title`}
+            >
               <td className="pt-4 pb-2 font-semibold">{category.name}</td>
             </tr>
             {category.data.map((row, rowIndex) => (
-              <tr className="border-b" key={`${category.name}-${rowIndex}`}>
+              <tr
+                className="border-b dark:border-gray-700"
+                key={`${category.name}-${rowIndex}`}
+              >
                 {row.map((datum, datumIndex) => (
                   <td
                     key={`${category.name}-${rowIndex}-${datumIndex}`}
@@ -344,7 +353,7 @@ const Faq = () => {
       <h2 className="text-3xl font-semibold text-gray-900 dark:text-gray-100">
         FAQ
       </h2>
-      <div className="pt-10 mt-6 border-t">
+      <div className="pt-10 mt-6 border-t dark:border-gray-700">
         <div className="grid gap-8 md:grid-cols-2">
           <div>
             <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
