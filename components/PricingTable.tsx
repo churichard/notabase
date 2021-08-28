@@ -38,7 +38,7 @@ type Props = {
 
 export default function PricingTable(props: Props) {
   const { buttons } = props;
-  const [showMonthly, setShowMonthly] = useState(true);
+  const [showMonthly, setShowMonthly] = useState(false);
 
   const getMonthlyPrice = useCallback(
     (plan: Plan) => {
@@ -124,13 +124,13 @@ const MobilePricingTable = (props: MobilePricingTableProps) => {
   return (
     <div className="w-full space-y-8 md:hidden">
       <div className="flex items-center justify-center">
-        <span className="text-sm text-gray-600">Monthly</span>
+        <span className="text-sm text-gray-600">Annual</span>
         <Toggle
           className="mx-2"
-          isChecked={!showMonthly}
-          setIsChecked={(isChecked) => setShowMonthly(!isChecked)}
+          isChecked={showMonthly}
+          setIsChecked={setShowMonthly}
         />
-        <span className="text-sm text-gray-600">Annual</span>
+        <span className="text-sm text-gray-600">Monthly</span>
       </div>
       {plans.map((plan, planIndex) => {
         const isNotBasic = plan.id !== PlanId.Basic;
@@ -146,14 +146,14 @@ const MobilePricingTable = (props: MobilePricingTableProps) => {
             </div>
             <div className="py-2">
               <div className="flex items-baseline text-4xl font-semibold">
-                <span>${plan.billingPeriodPrice}</span>
+                <span>${plan.monthlyPrice}</span>
                 {isNotBasic ? (
                   <s className="ml-2 text-2xl text-gray-500">
-                    {showMonthly ? '$10' : '$100'}
+                    {showMonthly ? '$10' : '$8.33'}
                   </s>
                 ) : null}
-                <span className="ml-1 text-2xl text-gray-500">
-                  {showMonthly ? '/ mo' : '/ yr'}
+                <span className="ml-1 text-2xl text-gray-500 whitespace-nowrap">
+                  / mo
                 </span>
               </div>
             </div>
@@ -161,12 +161,10 @@ const MobilePricingTable = (props: MobilePricingTableProps) => {
               <div className="pb-2 text-gray-500">
                 {!showMonthly ? (
                   <span className="text-sm">
-                    Billed yearly (${plan.monthlyPrice} / mo)
+                    Billed yearly (${plan.annualPrice} / yr)
                   </span>
                 ) : (
-                  <span className="text-sm">
-                    Billed monthly (${plan.annualPrice} / yr)
-                  </span>
+                  <span className="text-sm">Billed monthly</span>
                 )}
               </div>
             ) : null}
@@ -255,14 +253,14 @@ const DesktopPricingTable = (props: DesktopPricingTableProps) => {
           {plans.map((plan) => (
             <td key={plan.id} className="py-2">
               <div className="flex items-baseline text-4xl font-semibold">
-                <span>${plan.billingPeriodPrice}</span>
+                <span>${plan.monthlyPrice}</span>
                 {plan.id !== PlanId.Basic ? (
                   <s className="ml-2 text-2xl text-gray-500">
-                    {showMonthly ? '$10' : '$100'}
+                    {showMonthly ? '$10' : '$8.33'}
                   </s>
                 ) : null}
-                <span className="ml-1 text-2xl text-gray-500">
-                  {showMonthly ? '/ mo' : '/ yr'}
+                <span className="ml-1 text-2xl text-gray-500 whitespace-nowrap">
+                  / mo
                 </span>
               </div>
             </td>
@@ -275,12 +273,10 @@ const DesktopPricingTable = (props: DesktopPricingTableProps) => {
               {plan.id !== PlanId.Basic ? (
                 !showMonthly ? (
                   <span className="text-sm">
-                    Billed yearly (${plan.monthlyPrice} / mo)
+                    Billed yearly (${plan.annualPrice} / yr)
                   </span>
                 ) : (
-                  <span className="text-sm">
-                    Billed monthly (${plan.annualPrice} / yr)
-                  </span>
+                  <span className="text-sm">Billed monthly</span>
                 )
               ) : null}
             </td>
@@ -289,13 +285,13 @@ const DesktopPricingTable = (props: DesktopPricingTableProps) => {
         <tr>
           <td className="py-2">
             <div className="flex items-center">
-              <span className="text-sm text-gray-600">Monthly</span>
+              <span className="text-sm text-gray-600">Annual</span>
               <Toggle
                 className="mx-2"
-                isChecked={!showMonthly}
-                setIsChecked={(isChecked) => setShowMonthly(!isChecked)}
+                isChecked={showMonthly}
+                setIsChecked={setShowMonthly}
               />
-              <span className="text-sm text-gray-600">Annual</span>
+              <span className="text-sm text-gray-600">Monthly</span>
             </div>
           </td>
           {plans.map((plan) => (
@@ -393,7 +389,7 @@ const Faq = () => {
             </h3>
             <div className="mt-2">
               <p className="text-gray-600">
-                Notabase is in beta. If you subscribe now, you&apos;ll get a
+                Notabase is in beta. If you subscribe now, you&apos;ll get a 30%
                 lifetime discount as a token of our appreciation. You&apos;ll be
                 locked in at this lower price as long as your subscription
                 remains active.
