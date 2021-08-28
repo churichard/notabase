@@ -150,17 +150,17 @@ const MobilePricingTable = (props: MobilePricingTableProps) => {
               <div className="flex items-baseline text-4xl font-semibold">
                 <span>${plan.monthlyPrice}</span>
                 {isNotBasic ? (
-                  <s className="ml-2 text-2xl text-gray-500 dark:text-gray-300">
+                  <s className="ml-2 text-2xl text-gray-500 dark:text-gray-400">
                     {showMonthly ? '$10' : '$8.33'}
                   </s>
                 ) : null}
-                <span className="ml-1 text-2xl text-gray-500 whitespace-nowrap dark:text-gray-300">
+                <span className="ml-1 text-2xl text-gray-500 whitespace-nowrap dark:text-gray-400">
                   / mo
                 </span>
               </div>
             </div>
             {isNotBasic ? (
-              <div className="pb-2 text-gray-500 dark:text-gray-300">
+              <div className="pb-2 text-gray-500 dark:text-gray-400">
                 {!showMonthly ? (
                   <span className="text-sm">
                     Billed yearly (${plan.annualPrice} / yr)
@@ -257,11 +257,11 @@ const DesktopPricingTable = (props: DesktopPricingTableProps) => {
               <div className="flex items-baseline text-4xl font-semibold">
                 <span>${plan.monthlyPrice}</span>
                 {plan.id !== PlanId.Basic ? (
-                  <s className="ml-2 text-2xl text-gray-500 dark:text-gray-300">
+                  <s className="ml-2 text-2xl text-gray-500 dark:text-gray-400">
                     {showMonthly ? '$10' : '$8.33'}
                   </s>
                 ) : null}
-                <span className="ml-1 text-2xl text-gray-500 whitespace-nowrap dark:text-gray-300">
+                <span className="ml-1 text-2xl text-gray-500 whitespace-nowrap dark:text-gray-400">
                   / mo
                 </span>
               </div>
@@ -271,7 +271,7 @@ const DesktopPricingTable = (props: DesktopPricingTableProps) => {
         <tr>
           <td className="pb-2"></td>
           {plans.map((plan) => (
-            <td key={plan.id} className="pb-2 text-gray-500 dark:text-gray-300">
+            <td key={plan.id} className="pb-2 text-gray-500 dark:text-gray-400">
               {plan.id !== PlanId.Basic ? (
                 !showMonthly ? (
                   <span className="text-sm">
