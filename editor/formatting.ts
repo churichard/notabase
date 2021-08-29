@@ -1,6 +1,14 @@
 import { Editor, Element, Transforms, Range, Text, Node } from 'slate';
-import type { ExternalLink, NoteLink, ListElement, Image } from 'types/slate';
+import { store } from 'lib/store';
+import type {
+  ExternalLink,
+  NoteLink,
+  ListElement,
+  Image,
+  BlockReference,
+} from 'types/slate';
 import { ElementType, Mark } from 'types/slate';
+import { computeBlockReference } from './backlinks/useBlockReference';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const isMark = (type: any): type is Mark => {
@@ -196,4 +204,35 @@ export const insertImage = (editor: Editor, url: string) => {
     children: [{ text: '' }],
   };
   Transforms.insertNodes(editor, image);
+};
+
+export const insertBlockReference = (
+  editor: Editor,
+  blockId: string,
+  onOwnLine: boolean
+) => {
+  if (!editor.selection) {
+    return;
+  }
+
+  const blockReference = computeBlockReference(store.getState().notes, blockId);
+  const blockText = blockReference ? Node.string(blockReference.element) : '';
+
+  const blockRef: BlockReference = {
+    type: ElementType.BlockReference,
+    blockId,
+    children: [{ text: blockText }],
+  };
+
+  if (onOwnLine) {
+    // The block ref is on its own line
+    Transforms.setNodes(editor, blockRef);
+    Transforms.insertText(editor, blockText, {
+      at: editor.selection.anchor.path,
+      voids: true,
+    }); // Children are not set with setNodes, so we need to insert the text manually
+  } else {
+    // There's other content on the same line
+    Editor.insertNode(editor, blockRef);
+  }
 };

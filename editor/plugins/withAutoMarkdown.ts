@@ -1,30 +1,15 @@
-import {
-  Editor,
-  Element,
-  Transforms,
-  Range,
-  Point,
-  Text,
-  Node,
-  Path,
-} from 'slate';
+import { Editor, Element, Transforms, Range, Point, Text, Path } from 'slate';
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from 'react-toastify';
-import type {
-  BlockReference,
-  ExternalLink,
-  ListElement,
-  NoteLink,
-} from 'types/slate';
+import type { ExternalLink, ListElement, NoteLink } from 'types/slate';
 import { ElementType, Mark } from 'types/slate';
-import { isListType, isMark } from 'editor/formatting';
+import { insertBlockReference, isListType, isMark } from 'editor/formatting';
 import { isUrl } from 'utils/url';
 import { store } from 'lib/store';
 import upsertNote from 'lib/api/upsertNote';
 import supabase from 'lib/supabase';
 import { caseInsensitiveStringEqual } from 'utils/string';
 import { PlanId } from 'constants/pricing';
-import { computeBlockReference } from 'editor/backlinks/useBlockReference';
 
 const BLOCK_SHORTCUTS: Array<
   | {
@@ -310,31 +295,7 @@ const handleInlineShortcuts = (editor: Editor) => {
       const length = startMark.length + blockId.length + endMark.length;
       deleteText(editor, endOfMatchPoint.path, endOfMatchPoint.offset, length);
 
-      const blockReference = computeBlockReference(
-        store.getState().notes,
-        blockId
-      );
-      const blockText = blockReference
-        ? Node.string(blockReference.element)
-        : '';
-
-      const blockRef: BlockReference = {
-        type: ElementType.BlockReference,
-        blockId,
-        children: [{ text: blockText }],
-      };
-
-      if (elementText === wholeMatch) {
-        // The block ref is on its own line
-        Transforms.setNodes(editor, blockRef);
-        Transforms.insertText(editor, blockText, {
-          at: selectionAnchor.path,
-          voids: true,
-        }); // Children are not set with setNodes, so we need to insert the text manually
-      } else {
-        // There's other content on the same line
-        Editor.insertNode(editor, blockRef);
-      }
+      insertBlockReference(editor, blockId, elementText === wholeMatch);
 
       return;
     }

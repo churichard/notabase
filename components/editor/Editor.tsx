@@ -44,6 +44,7 @@ import withVerticalSpacing from './elements/withVerticalSpacing';
 import withBlockSideMenu from './elements/withBlockSideMenu';
 import EditorLeaf from './elements/EditorLeaf';
 import LinkAutocompletePopover from './LinkAutocompletePopover';
+import BlockAutocompletePopover from './BlockAutocompletePopover';
 
 export type AddLinkPopoverState = {
   isVisible: boolean;
@@ -274,6 +275,7 @@ export default function Editor(props: Props) {
         />
       ) : null}
       <LinkAutocompletePopover />
+      <BlockAutocompletePopover />
       <Editable
         className={`overflow-hidden placeholder-gray-300 ${className}`}
         renderElement={renderElement}
