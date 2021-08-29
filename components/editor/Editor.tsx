@@ -34,6 +34,7 @@ import withNormalization from 'editor/plugins/withNormalization';
 import withCustomDeleteBackward from 'editor/plugins/withCustomDeleteBackward';
 import withImages from 'editor/plugins/withImages';
 import withVoidElements from 'editor/plugins/withVoidElements';
+import { useStore } from 'lib/store';
 import { ElementType, Mark } from 'types/slate';
 import HoveringToolbar from './HoveringToolbar';
 import AddLinkPopover from './AddLinkPopover';
@@ -213,6 +214,7 @@ export default function Editor(props: Props) {
   );
 
   // If highlightedPath is defined, highlight the path
+  const darkMode = useStore((state) => state.darkMode);
   useEffect(() => {
     if (!highlightedPath) {
       return;
@@ -228,15 +230,14 @@ export default function Editor(props: Props) {
       });
 
       // Highlight line, but restore original color if mouse is clicked or component is re-rendered
-      const originalTextColor = domNode.style.color;
       const originalBgColor = domNode.style.backgroundColor;
       const removeHighlight = () => {
-        domNode.style.color = originalTextColor;
         domNode.style.backgroundColor = originalBgColor;
       };
 
-      domNode.style.color = colors.black;
-      domNode.style.backgroundColor = colors.yellow[200];
+      domNode.style.backgroundColor = darkMode
+        ? colors.yellow[800]
+        : colors.yellow[200];
       domNode.addEventListener('click', removeHighlight, { once: true });
 
       return () => {
@@ -246,7 +247,7 @@ export default function Editor(props: Props) {
     } catch (e) {
       // Do nothing if an error occurs, which sometimes happens if the router changes before the editor does
     }
-  }, [editor, highlightedPath]);
+  }, [editor, highlightedPath, darkMode]);
 
   return (
     <Slate
