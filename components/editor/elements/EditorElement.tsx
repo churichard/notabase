@@ -1,4 +1,5 @@
 import { ReactNode, useMemo } from 'react';
+import { Node } from 'slate';
 import { RenderElementProps, useFocused, useSelected } from 'slate-react';
 import Link from 'next/link';
 import type {
@@ -327,10 +328,7 @@ const BlockRefError = (props: BlockRefErrorProps) => {
         Error: no block with id &ldquo;{element.blockId}
         &rdquo;.
       </div>
-      <div>
-        Last saved content:{' '}
-        {element.children.map((value) => value.text).join('')}
-      </div>
+      <div>Last saved content: {Node.string(element)}</div>
     </div>
   );
 };

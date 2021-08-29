@@ -117,7 +117,7 @@ export type BlockReference = {
   id?: string;
   type: ElementType.BlockReference;
   blockId: string;
-  children: FormattedText[];
+  children: Descendant[];
 };
 
 export type ReferenceableBlockElement =
