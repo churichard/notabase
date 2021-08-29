@@ -144,7 +144,7 @@ const NoteLinkElement = (props: NoteLinkElementProps) => {
   const selected = useSelected();
   const focused = useFocused();
   const className = `p-0.25 rounded text-primary-600 cursor-pointer select-none bg-gray-100 hover:bg-gray-200 active:bg-gray-300 dark:text-primary-400 dark:bg-gray-800 dark:hover:bg-gray-700 dark:active:bg-gray-600 ${
-    selected && focused ? 'bg-blue-100 dark:bg-blue-100' : ''
+    selected && focused ? 'bg-primary-100 dark:bg-primary-900' : ''
   }`;
 
   return (
