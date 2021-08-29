@@ -7,7 +7,10 @@ import { insertNoteLink } from 'editor/formatting';
 import { deleteText } from 'editor/transforms';
 import { useAuth } from 'utils/useAuth';
 import useNoteSearch from 'utils/useNoteSearch';
+import useDebounce from 'utils/useDebounce';
 import Popover from './Popover';
+
+const DEBOUNCE_MS = 100;
 
 enum OptionType {
   NOTE,
@@ -25,9 +28,10 @@ export default function LinkAutocompletePopover() {
   const editor = useSlate();
 
   const [isVisible, setIsVisible] = useState(false);
-  const [linkText, setLinkText] = useState('');
-
   const [selectedOptionIndex, setSelectedOptionIndex] = useState<number>(0);
+
+  const [inputText, setInputText] = useState('');
+  const [linkText] = useDebounce(inputText, DEBOUNCE_MS);
 
   const search = useNoteSearch({ numOfResults: 10 });
   const searchResults = useMemo(() => search(linkText), [search, linkText]);
@@ -78,7 +82,7 @@ export default function LinkAutocompletePopover() {
     }
 
     const [, , noteTitle] = result;
-    setLinkText(noteTitle);
+    setInputText(noteTitle);
     setIsVisible(true);
   }, [editor.children, getRegexResult, hidePopover]);
 
