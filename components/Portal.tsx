@@ -12,7 +12,7 @@ export default function Portal({ children, selector }: Props) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    ref.current = document.querySelector(selector ?? '#__next');
+    ref.current = document.querySelector(selector ?? '#app-container');
     setMounted(true);
   }, [selector]);
 

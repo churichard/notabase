@@ -108,26 +108,32 @@ export default function SidebarNotes(props: SidebarNotesProps) {
             <p className="px-6 my-2 text-center text-gray-500">No notes yet</p>
           )}
         </div>
-        <div className="flex items-center justify-between border-t">
+        <div className="flex items-center justify-between border-t dark:border-gray-700">
           <Tooltip content="Create a new note">
             <button
-              className="p-1 mx-2 my-1 rounded hover:bg-gray-200 active:bg-gray-300"
+              className="p-1 mx-2 my-1 rounded hover:bg-gray-200 active:bg-gray-300 dark:hover:bg-gray-700 dark:active:bg-gray-600"
               onClick={() => setIsFindOrCreateModalOpen((isOpen) => !isOpen)}
             >
-              <IconPlus size={16} className="text-gray-600" />
+              <IconPlus
+                size={16}
+                className="text-gray-600 dark:text-gray-300"
+              />
             </button>
           </Tooltip>
-          <span className="p-1 mx-2 my-1 text-xs text-gray-500">
+          <span className="p-1 mx-2 my-1 text-xs text-gray-500 dark:text-gray-400">
             {notes.length} notes
           </span>
           <div className="mx-2 my-1">
             <SortDropdown currentSort={noteSort} setCurrentSort={setNoteSort} />
             <Tooltip content="Import">
               <button
-                className="p-1 rounded hover:bg-gray-200 active:bg-gray-300"
+                className="p-1 rounded hover:bg-gray-200 active:bg-gray-300 dark:hover:bg-gray-700 dark:active:bg-gray-600"
                 onClick={onImport}
               >
-                <IconDownload size={16} className="text-gray-600" />
+                <IconDownload
+                  size={16}
+                  className="text-gray-600 dark:text-gray-300"
+                />
               </button>
             </Tooltip>
           </div>
@@ -157,14 +163,17 @@ const SortDropdown = (props: SortDropdownProps) => {
     <Menu>
       <Tooltip content="Sort notes">
         <Menu.Button
-          className="p-1 rounded hover:bg-gray-200 active:bg-gray-300"
+          className="p-1 rounded hover:bg-gray-200 active:bg-gray-300 dark:hover:bg-gray-700 dark:active:bg-gray-600"
           ref={buttonRef}
         >
-          <IconSortDescending size={16} className="text-gray-600" />
+          <IconSortDescending
+            size={16}
+            className="text-gray-600 dark:text-gray-300"
+          />
         </Menu.Button>
       </Tooltip>
       <Menu.Items
-        className="z-10 w-56 overflow-hidden bg-white rounded shadow-popover"
+        className="z-10 w-56 overflow-hidden bg-white rounded dark:bg-gray-800 shadow-popover"
         ref={setPopperElement}
         style={styles.popper}
         {...attributes.popper}
@@ -175,16 +184,25 @@ const SortDropdown = (props: SortDropdownProps) => {
             <Menu.Item key={sort}>
               {({ active }) => (
                 <button
-                  className={`flex w-full items-center px-4 py-2 text-left text-gray-800 text-sm ${
-                    active ? 'bg-gray-100' : ''
+                  className={`flex w-full items-center px-4 py-2 text-left text-gray-800 dark:text-gray-200 text-sm ${
+                    active ? 'bg-gray-100 dark:bg-gray-700' : ''
                   }`}
                   onClick={() => setCurrentSort(sort)}
                 >
-                  <span className={isActive ? 'text-primary-600' : undefined}>
+                  <span
+                    className={
+                      isActive
+                        ? 'text-primary-600 dark:text-primary-400'
+                        : undefined
+                    }
+                  >
                     {ReadableNameBySort[sort]}
                   </span>
                   {isActive ? (
-                    <IconCheck size={18} className="ml-1 text-primary-600" />
+                    <IconCheck
+                      size={18}
+                      className="ml-1 text-primary-600 dark:text-primary-400"
+                    />
                   ) : null}
                 </button>
               )}
@@ -260,15 +278,15 @@ const NoteLinkDropdown = (props: NoteLinkDropdownProps) => {
         {({ open }) => (
           <>
             <Menu.Button
-              className={`p-1 rounded hover:bg-gray-300 active:bg-gray-400 ${className}`}
+              className={`p-1 rounded hover:bg-gray-300 active:bg-gray-400 dark:hover:bg-gray-600 dark:active:bg-gray-500 ${className}`}
             >
-              <IconDots className="text-gray-600" />
+              <IconDots className="text-gray-600 dark:text-gray-200" />
             </Menu.Button>
             {open && (
               <Portal>
                 <Menu.Items
                   ref={setPopperElement}
-                  className="z-10 w-48 overflow-hidden bg-white rounded shadow-popover"
+                  className="z-10 w-48 overflow-hidden bg-white rounded shadow-popover dark:bg-gray-800"
                   static
                   style={styles.popper}
                   {...attributes.popper}
@@ -276,8 +294,8 @@ const NoteLinkDropdown = (props: NoteLinkDropdownProps) => {
                   <Menu.Item>
                     {({ active }) => (
                       <button
-                        className={`flex w-full items-center px-4 py-2 text-left text-gray-800 ${
-                          active ? 'bg-gray-100' : ''
+                        className={`flex w-full items-center px-4 py-2 text-left text-gray-800 dark:text-gray-200 ${
+                          active ? 'bg-gray-100 dark:bg-gray-700' : ''
                         }`}
                         onClick={onDeleteClick}
                       >

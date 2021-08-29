@@ -10,7 +10,7 @@ import {
 } from 'constants/pricing';
 import { useAuth } from 'utils/useAuth';
 import { BillingDetails, useStore } from 'lib/store';
-import PricingTable from './PricingTable';
+import PricingTable from '../PricingTable';
 
 export default function Billing() {
   const { user } = useAuth();
@@ -92,7 +92,7 @@ export default function Billing() {
         </button>
       );
       const currentPlanBlock = (
-        <div className="block w-full px-4 py-2 text-center text-gray-600 border rounded">
+        <div className="block w-full px-4 py-2 text-center text-gray-600 border rounded dark:text-gray-400">
           Current plan
         </div>
       );
@@ -110,7 +110,7 @@ export default function Billing() {
   );
 
   return (
-    <div className="flex-1 p-6 overflow-y-auto">
+    <div className="flex-1 p-6 overflow-y-auto bg-white dark:bg-gray-800 dark:text-gray-100">
       <BillingBanner
         billingDetails={billingDetails}
         onChangePlan={onChangePlan}
@@ -152,7 +152,7 @@ const BillingBanner = (props: BillingBannerProps) => {
   if (isNotBasicPlan && billingDetails.cancelAtPeriodEnd) {
     // Subscription is cancelling at the end of the current period
     return (
-      <div className="w-full pb-6 mb-6 space-y-2 border-b">
+      <div className="w-full pb-6 mb-6 space-y-2 border-b dark:border-gray-700">
         <p>
           {currentPlanText} Your subscription will be cancelled at the end of
           your billing period on{' '}
@@ -170,7 +170,7 @@ const BillingBanner = (props: BillingBannerProps) => {
   } else if (isNotBasicPlan && !billingDetails.cancelAtPeriodEnd) {
     // Subscription is renewing at the end of the current period
     return (
-      <div className="w-full pb-6 mb-6 space-y-2 border-b">
+      <div className="w-full pb-6 mb-6 space-y-2 border-b dark:border-gray-700">
         <p>
           {currentPlanText} Your subscription will renew on{' '}
           {getReadableDate(billingDetails.currentPeriodEnd)}.
@@ -187,7 +187,7 @@ const BillingBanner = (props: BillingBannerProps) => {
   } else {
     // No current subscription
     return (
-      <p className="w-full pb-6 mb-6 border-b">
+      <p className="w-full pb-6 mb-6 border-b dark:border-gray-700">
         {currentPlanText} Upgrade to get unlimited notes.
       </p>
     );

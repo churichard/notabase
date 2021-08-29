@@ -24,7 +24,7 @@ export default function Sidebar(props: Props) {
 
   return (
     <div
-      className={`flex flex-col flex-none w-64 h-full border-r bg-gray-50 ${className}`}
+      className={`flex flex-col flex-none w-64 h-full border-r bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 ${className}`}
     >
       <SidebarHeader setIsSettingsOpen={setIsSettingsOpen} />
       <SidebarItem>
@@ -36,7 +36,10 @@ export default function Sidebar(props: Props) {
             className="flex items-center w-full px-6 py-1 text-left"
             onClick={() => setIsFindOrCreateModalOpen((isOpen) => !isOpen)}
           >
-            <IconSearch className="mr-1 text-gray-800" size={20} />
+            <IconSearch
+              className="mr-1 text-gray-800 dark:text-gray-300"
+              size={20}
+            />
             <span>Find or Create Note</span>
           </button>
         </Tooltip>
@@ -49,7 +52,10 @@ export default function Sidebar(props: Props) {
           <span>
             <Link href="/app/graph">
               <a className="flex items-center px-6 py-1">
-                <IconAffiliate className="mr-1 text-gray-800" size={20} />
+                <IconAffiliate
+                  className="mr-1 text-gray-800 dark:text-gray-300"
+                  size={20}
+                />
                 <span>Graph View</span>
               </a>
             </Link>

@@ -91,16 +91,20 @@ export default function NoteHeader() {
     saveAs(zipContent, 'notabase-export.zip');
   }, []);
 
+  const buttonClassName =
+    'p-1 rounded hover:bg-gray-300 active:bg-gray-400 dark:hover:bg-gray-700 dark:active:bg-gray-600';
+  const iconClassName = 'text-gray-600 dark:text-gray-300';
+
   return (
-    <div className="flex items-center justify-between w-full px-4 py-1 text-right bg-white">
+    <div className="flex items-center justify-between w-full px-4 py-1 text-right">
       <div>
         {isSidebarButtonVisible ? (
           <Tooltip content="Open sidebar" placement="right">
             <button
-              className="p-1 rounded hover:bg-gray-300 active:bg-gray-400"
+              className={buttonClassName}
               onClick={() => setIsSidebarOpen(true)}
             >
-              <IconMenu2 className="text-gray-600" />
+              <IconMenu2 className={iconClassName} />
             </button>
           </Tooltip>
         ) : null}
@@ -108,11 +112,8 @@ export default function NoteHeader() {
       <div>
         {isCloseButtonVisible ? (
           <Tooltip content="Close pane">
-            <button
-              className="p-1 rounded hover:bg-gray-300 active:bg-gray-400"
-              onClick={onClosePane}
-            >
-              <IconX className="text-gray-600" />
+            <button className={buttonClassName} onClick={onClosePane}>
+              <IconX className={iconClassName} />
             </button>
           </Tooltip>
         ) : null}
@@ -120,9 +121,9 @@ export default function NoteHeader() {
           {({ open }) => (
             <>
               <Tooltip content="Options (export, import, etc.)">
-                <Menu.Button className="p-1 rounded hover:bg-gray-300 active:bg-gray-400">
+                <Menu.Button className={buttonClassName}>
                   <div ref={menuButtonRef}>
-                    <IconDots className="text-gray-600" />
+                    <IconDots className={iconClassName} />
                   </div>
                 </Menu.Button>
               </Tooltip>
@@ -130,7 +131,7 @@ export default function NoteHeader() {
                 <Portal>
                   <Menu.Items
                     ref={setPopperElement}
-                    className="z-10 overflow-hidden bg-white rounded shadow-popover"
+                    className="z-10 overflow-hidden bg-white rounded shadow-popover dark:bg-gray-800"
                     static
                     style={styles.popper}
                     {...attributes.popper}
@@ -138,8 +139,8 @@ export default function NoteHeader() {
                     <Menu.Item>
                       {({ active }) => (
                         <button
-                          className={`flex w-full items-center px-4 py-2 text-left text-gray-800 ${
-                            active ? 'bg-gray-100' : ''
+                          className={`flex w-full items-center px-4 py-2 text-left text-gray-800 dark:text-gray-200 ${
+                            active ? 'bg-gray-100 dark:bg-gray-700' : ''
                           }`}
                           onClick={onImport}
                         >
@@ -151,8 +152,8 @@ export default function NoteHeader() {
                     <Menu.Item>
                       {({ active }) => (
                         <button
-                          className={`flex w-full items-center px-4 py-2 text-left text-gray-800 ${
-                            active ? 'bg-gray-100' : ''
+                          className={`flex w-full items-center px-4 py-2 text-left text-gray-800 dark:text-gray-200 ${
+                            active ? 'bg-gray-100 dark:bg-gray-700' : ''
                           }`}
                           onClick={onExportClick}
                         >
@@ -164,8 +165,8 @@ export default function NoteHeader() {
                     <Menu.Item>
                       {({ active }) => (
                         <button
-                          className={`flex w-full items-center px-4 py-2 text-left text-gray-800 ${
-                            active ? 'bg-gray-100' : ''
+                          className={`flex w-full items-center px-4 py-2 text-left text-gray-800 dark:text-gray-200 ${
+                            active ? 'bg-gray-100 dark:bg-gray-700' : ''
                           }`}
                           onClick={onExportAllClick}
                         >

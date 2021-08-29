@@ -9,6 +9,7 @@ import * as d3 from 'd3';
 import defaultTheme from 'tailwindcss/defaultTheme';
 import colors from 'tailwindcss/colors';
 import { useRouter } from 'next/router';
+import { useStore } from 'lib/store';
 
 export type NodeDatum = {
   id: string;
@@ -33,6 +34,8 @@ export default function ForceGraph(props: Props) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const transform = useRef(d3.zoomIdentity);
   const hoveredNode = useRef<NodeDatum | null>(null);
+
+  const darkMode = useStore((state) => state.darkMode);
 
   const router = useRouter();
 
@@ -85,14 +88,18 @@ export default function ForceGraph(props: Props) {
       context.moveTo(source.x, source.y);
       context.lineWidth = 0.5;
       context.lineTo(target.x, target.y);
-      context.strokeStyle = isLinkHighlighted
-        ? colors.emerald[300]
-        : colors.trueGray[300];
+      if (isLinkHighlighted) {
+        context.strokeStyle = colors.emerald[300];
+      } else if (darkMode) {
+        context.strokeStyle = colors.trueGray[700];
+      } else {
+        context.strokeStyle = colors.trueGray[300];
+      }
       context.stroke();
 
       context.restore();
     },
-    []
+    [darkMode]
   );
 
   const drawNode = useCallback(
@@ -129,7 +136,9 @@ export default function ForceGraph(props: Props) {
       } else {
         context.globalAlpha = 0;
       }
-      context.fillStyle = colors.trueGray[600];
+      context.fillStyle = darkMode
+        ? colors.trueGray[100]
+        : colors.trueGray[600];
       context.font = `4px ${defaultTheme.fontFamily?.sans.join(', ')}`;
 
       const lines = getLines(context, node.name, 50);
@@ -142,7 +151,7 @@ export default function ForceGraph(props: Props) {
 
       context.restore();
     },
-    [areNeighbors]
+    [areNeighbors, darkMode]
   );
 
   const renderCanvas = useCallback(() => {
@@ -308,7 +317,10 @@ export default function ForceGraph(props: Props) {
 
   return (
     <div ref={containerRefCallback} className={`relative ${className}`}>
-      <canvas ref={canvasRef} className="absolute w-full h-full" />
+      <canvas
+        ref={canvasRef}
+        className="absolute w-full h-full dark:bg-gray-800"
+      />
     </div>
   );
 }

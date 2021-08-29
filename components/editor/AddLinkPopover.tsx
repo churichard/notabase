@@ -183,7 +183,7 @@ export default function AddLinkPopover(props: Props) {
       <input
         ref={inputRef}
         type="text"
-        className="mx-4 input"
+        className="mx-4 input dark:bg-gray-700 dark:text-gray-200 dark:border-gray-700"
         value={linkText}
         onChange={(e) => setLinkText(e.target.value)}
         placeholder="Search for a note or enter web page link"
@@ -232,9 +232,9 @@ const OptionItem = (props: OptionProps) => {
 
   return (
     <div
-      className={`flex flex-row items-center px-4 py-1 cursor-pointer text-gray-800 hover:bg-gray-100 active:bg-gray-200 ${
-        isSelected ? 'bg-gray-100' : ''
-      } ${isDisabled ? 'text-gray-400' : ''}`}
+      className={`flex flex-row items-center px-4 py-1 cursor-pointer text-gray-800 hover:bg-gray-100 active:bg-gray-200 dark:text-gray-200 dark:hover:bg-gray-700 dark:active:bg-gray-600 ${
+        isSelected ? 'bg-gray-100 dark:bg-gray-700' : ''
+      } ${isDisabled ? 'text-gray-400 dark:text-gray-600' : ''}`}
       onMouseDown={(event) => event.preventDefault()}
       onMouseUp={onClick}
     >

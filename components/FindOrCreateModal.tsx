@@ -29,7 +29,7 @@ export default function FindOrCreateModal(props: Props) {
       <div className="flex justify-center max-h-screen-80 my-screen-10">
         <FindOrCreateInput
           onOptionClick={() => setIsOpen(false)}
-          className="z-20 w-screen max-w-screen-sm mx-6 bg-white rounded shadow-popover"
+          className="z-20 w-screen max-w-screen-sm mx-6 bg-white rounded shadow-popover dark:bg-gray-800"
         />
       </div>
     </div>

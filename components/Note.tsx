@@ -168,7 +168,7 @@ export default function Note(props: Props) {
   }, [router, isSynced]);
 
   const noteContainerClassName =
-    'flex flex-col flex-shrink-0 md:flex-shrink w-full bg-white';
+    'flex flex-col flex-shrink-0 md:flex-shrink w-full bg-white dark:bg-gray-900 dark:text-gray-100';
   const errorContainerClassName = `${noteContainerClassName} items-center justify-center h-full p-4`;
 
   if (!note) {

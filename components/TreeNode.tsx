@@ -35,7 +35,7 @@ const TreeNode = (props: NodeProps, ref: ForwardedRef<HTMLDivElement>) => {
     >
       {node.showArrow ? (
         <Icon
-          className="flex-shrink-0 mr-1 text-gray-500"
+          className="flex-shrink-0 mr-1 text-gray-500 dark:text-gray-100"
           size={16}
           fill="currentColor"
         />

@@ -12,7 +12,7 @@ import { PlanId } from 'constants/pricing';
 import Sidebar from './sidebar/Sidebar';
 import FindOrCreateModal from './FindOrCreateModal';
 import PageLoading from './PageLoading';
-import SettingsModal from './SettingsModal';
+import SettingsModal from './settings/SettingsModal';
 import UpgradeModal from './UpgradeModal';
 
 const SM_BREAKPOINT = 640;
@@ -118,6 +118,7 @@ export default function AppLayout(props: Props) {
   const [isFindOrCreateModalOpen, setIsFindOrCreateModalOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
+  const darkMode = useStore((state) => state.darkMode);
   const isSidebarOpen = useStore((state) => state.isSidebarOpen);
   const setIsSidebarOpen = useStore((state) => state.setIsSidebarOpen);
   const setIsPageStackingOn = useStore((state) => state.setIsPageStackingOn);
@@ -196,11 +197,18 @@ export default function AppLayout(props: Props) {
   }, [router]);
 
   if (!isPageLoaded) {
-    return <PageLoading />;
+    return (
+      <div className={darkMode ? 'dark' : ''}>
+        <PageLoading />
+      </div>
+    );
   }
 
   return (
-    <div className={`flex h-screen ${className}`}>
+    <div
+      id="app-container"
+      className={`flex h-screen ${darkMode ? 'dark' : ''} ${className}`}
+    >
       <Sidebar
         className={!isSidebarOpen ? 'hidden' : undefined}
         setIsFindOrCreateModalOpen={setIsFindOrCreateModalOpen}

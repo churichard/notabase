@@ -92,7 +92,7 @@ export default function EditorElement(props: Props) {
     case ElementType.CodeBlock:
       return (
         <code
-          className={`block p-2 bg-gray-100 border border-gray-200 rounded ${verticalSpacing}`}
+          className={`block p-2 bg-gray-100 border border-gray-200 rounded dark:bg-gray-800 dark:border-gray-700 ${verticalSpacing}`}
           {...attributes}
         >
           {children}
@@ -143,8 +143,8 @@ const NoteLinkElement = (props: NoteLinkElementProps) => {
   const isPageStackingOn = useStore((state) => state.isPageStackingOn);
   const selected = useSelected();
   const focused = useFocused();
-  const className = `p-0.25 rounded text-primary-600 cursor-pointer select-none bg-gray-100 hover:bg-gray-200 active:bg-gray-300 ${
-    selected && focused ? 'bg-blue-100' : ''
+  const className = `p-0.25 rounded text-primary-600 cursor-pointer select-none bg-gray-100 hover:bg-gray-200 active:bg-gray-300 dark:text-primary-400 dark:bg-gray-800 dark:hover:bg-gray-700 dark:active:bg-gray-600 ${
+    selected && focused ? 'bg-blue-100 dark:bg-blue-100' : ''
   }`;
 
   return (
@@ -222,8 +222,8 @@ const ThematicBreak = (props: ThematicBreakProps) => {
   const focused = useFocused();
   return (
     <div
-      className={`border-t-2 ${className} ${
-        selected && focused ? 'border-blue-100' : ''
+      className={`border-t-2 dark:border-gray-700 ${className} ${
+        selected && focused ? 'border-blue-100 dark:border-blue-100' : ''
       }`}
       {...attributes}
     >
