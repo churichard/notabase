@@ -82,7 +82,10 @@ const OptionsMenuDropdown = (props: OptionsMenuDropdownProps) => {
   const buttonChildren = useMemo(
     () => (
       <span className="flex items-center justify-center w-6 h-6">
-        <IconDotsVertical className="text-gray-500" size={18} />
+        <IconDotsVertical
+          className="text-gray-500 dark:text-gray-400"
+          size={18}
+        />
       </span>
     ),
     []
@@ -90,7 +93,7 @@ const OptionsMenuDropdown = (props: OptionsMenuDropdownProps) => {
 
   const buttonClassName = useMemo(() => {
     const className =
-      'hidden group-hover:block select-none hover:bg-gray-200 active:bg-gray-300 rounded absolute top-0.5';
+      'hidden group-hover:block select-none hover:bg-gray-200 active:bg-gray-300 rounded absolute top-0.5 dark:hover:bg-gray-800 dark:active:bg-gray-700';
     if (element.type === ElementType.ListItem) {
       return `${className} -left-16`;
     } else if (element.type === ElementType.Blockquote) {
@@ -171,7 +174,7 @@ const BacklinksPopover = (props: BacklinksPopoverProps) => {
         <>
           <Popover.Button
             ref={setReferenceElement}
-            className="absolute flex items-center select-none justify-center w-6 h-6 text-sm font-medium rounded text-primary-700 top-0.5 -right-8 hover:bg-gray-100 active:bg-gray-200"
+            className="absolute flex items-center select-none justify-center w-6 h-6 text-sm font-medium rounded text-primary-700 top-0.5 -right-8 hover:bg-gray-100 active:bg-gray-200 dark:text-primary-400 dark:hover:bg-gray-800 dark:active:bg-gray-700"
             contentEditable={false}
           >
             {numOfMatches}
@@ -179,7 +182,7 @@ const BacklinksPopover = (props: BacklinksPopoverProps) => {
           {open && (
             <Portal>
               <Popover.Panel
-                className={`z-10 p-2 overflow-y-auto bg-white rounded shadow-popover w-64 md:w-96 lg:w-128 max-h-128 ${
+                className={`z-10 p-2 overflow-y-auto bg-white rounded shadow-popover w-64 md:w-96 lg:w-128 max-h-128 dark:bg-gray-800 ${
                   state?.modifiersData.hide?.isReferenceHidden
                     ? 'invisible pointer-events-none'
                     : ''

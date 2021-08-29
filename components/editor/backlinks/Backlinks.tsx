@@ -79,7 +79,13 @@ const backlinkToTreeData = (isLinked: boolean) => (backlink: Backlink) => {
     labelNode: <BacklinkNoteBranch backlink={backlink} />,
     children: matches.map((match) => ({
       id: `${idPrefix}-${backlink.id}-${match.path.toString()}`,
-      labelNode: <BacklinkMatchLeaf noteId={backlink.id} match={match} />,
+      labelNode: (
+        <BacklinkMatchLeaf
+          noteId={backlink.id}
+          match={match}
+          className="text-gray-600 bg-gray-50 dark:text-gray-100 dark:bg-gray-800"
+        />
+      ),
       showArrow: false,
     })),
   };
