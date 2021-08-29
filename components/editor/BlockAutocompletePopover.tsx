@@ -37,10 +37,10 @@ export default function BlockAutocompletePopover() {
   const editor = useSlate();
 
   const [isVisible, setIsVisible] = useState(false);
-  const [inputText, setInputText] = useState('');
-
-  const [searchText] = useDebounce(inputText, DEBOUNCE_MS);
   const [selectedOptionIndex, setSelectedOptionIndex] = useState<number>(0);
+
+  const [inputText, setInputText] = useState('');
+  const [searchText] = useDebounce(inputText, DEBOUNCE_MS);
 
   const search = useBlockSearch({ numOfResults: 10 });
   const searchResults = useMemo(() => search(searchText), [search, searchText]);
