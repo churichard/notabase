@@ -24,6 +24,10 @@ export default function Changelog() {
           .
         </p>
         <ChangelogBlock
+          title="August 29, 2021"
+          features={['Add dark mode 🌙']}
+        />
+        <ChangelogBlock
           title="August 27, 2021"
           features={[
             'Improve sidebar performance',
