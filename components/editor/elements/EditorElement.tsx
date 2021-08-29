@@ -278,8 +278,8 @@ const BlockRef = (props: BlockRefProps) => {
 
   const blockRefClassName = useMemo(
     () =>
-      `p-0.25 border-b border-gray-200 select-none cursor-alias hover:bg-primary-50 active:bg-primary-100 ${className} ${
-        selected && focused ? 'bg-blue-100' : ''
+      `p-0.25 border-b border-gray-200 select-none cursor-alias hover:bg-primary-50 active:bg-primary-100 dark:border-gray-700 dark:hover:bg-primary-900 dark:active:bg-primary-800 ${className} ${
+        selected && focused ? 'bg-primary-100 dark:bg-primary-900' : ''
       }`,
     [className, selected, focused]
   );
