@@ -89,7 +89,7 @@ export default function NotePage() {
       <Head>
         <title>{pageTitle}</title>
       </Head>
-      <div className="flex flex-1 overflow-x-auto divide-x divide-gray-200">
+      <div className="flex flex-1 overflow-x-auto divide-x divide-gray-200 dark:divide-gray-700">
         {openNoteIds.length > 0
           ? openNoteIds.map((noteId, index) => (
               <Note
