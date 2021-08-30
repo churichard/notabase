@@ -1,5 +1,6 @@
 import { Editor, Element, Node, Selection, Text, Transforms } from 'slate';
 import { ElementType, Mark } from 'types/slate';
+import { isListType } from 'editor/formatting';
 
 const withNormalization = (editor: Editor) => {
   return withListNormalization(withInlineNormalization(editor));
@@ -72,6 +73,20 @@ const withListNormalization = (editor: Editor) => {
             child.type === ElementType.ListItem)
         ) {
           Transforms.unwrapNodes(editor, { at: childPath });
+          return;
+        }
+      }
+    }
+
+    // Convert paragraphs to list items if they are the children of a list
+    if (Element.isElement(node) && isListType(node.type)) {
+      for (const [child, childPath] of Node.children(editor, path)) {
+        if (Element.isElement(child) && child.type === ElementType.Paragraph) {
+          Transforms.setNodes(
+            editor,
+            { type: ElementType.ListItem },
+            { at: childPath }
+          );
           return;
         }
       }
