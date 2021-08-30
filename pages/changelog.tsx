@@ -29,6 +29,7 @@ export default function Changelog() {
             'You can now sort notes by date modified or created',
             'The date modified or created for each note is now visible in the dropdown',
           ]}
+          bugFixes={['Improve list normalization']}
         />
         <ChangelogBlock
           title="August 29, 2021"
