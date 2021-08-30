@@ -84,10 +84,16 @@ const normalizeImages = (node: MdastNode): MdastNode => {
   for (const child of node.children) {
     const normalizedChild = normalizeImages(child); // Normalize child
 
+    if (!normalizedChild.children) {
+      // No children, just push in normally
+      newChildren.push(normalizedChild);
+      continue;
+    }
+
     // Pull the image out into its own block if it's not the child of a list
     if (
       normalizedChild.type !== 'list' &&
-      normalizedChild.children?.some(
+      normalizedChild.children.some(
         (nestedChild) => nestedChild.type === 'image'
       )
     ) {

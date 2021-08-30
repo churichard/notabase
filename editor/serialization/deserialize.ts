@@ -21,12 +21,16 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+import { Descendant } from 'slate';
 import { ElementType, Mark } from 'types/slate';
 import { MdastNode } from './types';
 
 export type OptionType = Record<string, never>;
 
-export default function deserialize(node: MdastNode, opts?: OptionType) {
+export default function deserialize(
+  node: MdastNode,
+  opts?: OptionType
+): Descendant {
   let children = [{ text: '' }];
 
   if (
@@ -70,23 +74,25 @@ export default function deserialize(node: MdastNode, opts?: OptionType) {
       return { type: ElementType.Paragraph, children };
 
     case 'link':
-      return { type: ElementType.ExternalLink, url: node.url, children };
+      return { type: ElementType.ExternalLink, url: node.url ?? '', children };
     case 'wikiLink':
       // Note ids are omitted and are added later
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       return {
         type: ElementType.NoteLink,
-        noteTitle: node.value,
+        noteTitle: node.value ?? '',
         ...(node.data?.alias && node.data.alias !== node.value
           ? { customText: node.data.alias }
           : {}),
-        children: [{ text: node.value }],
+        children: [{ text: node.value ?? '' }],
       };
 
     case 'image':
       return {
         type: ElementType.Image,
         children: [{ text: '' }],
-        url: node.url,
+        url: node.url ?? '',
         caption: node.alt,
       };
     case 'blockquote':
@@ -95,7 +101,7 @@ export default function deserialize(node: MdastNode, opts?: OptionType) {
       return {
         type: ElementType.CodeBlock,
         // language: node.lang,
-        children: [{ text: node.value }],
+        children: [{ text: node.value ?? '' }],
       };
 
     case 'html':
@@ -122,7 +128,7 @@ export default function deserialize(node: MdastNode, opts?: OptionType) {
     case 'inlineCode':
       return {
         [Mark.Code]: true,
-        text: node.value,
+        text: node.value ?? '',
         ...persistLeafFormats(children),
       };
     case 'thematicBreak':
