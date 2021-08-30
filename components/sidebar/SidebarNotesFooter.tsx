@@ -90,15 +90,16 @@ const SortDropdown = (props: SortDropdownProps) => {
         style={styles.popper}
         {...attributes.popper}
       >
-        {Object.values(Sort).map((sort) => {
+        {Object.values(Sort).map((sort, index, arr) => {
           const isActive = currentSort === sort;
+          const showDivider = (index + 1) % 2 === 0 && index !== arr.length - 1;
           return (
             <Menu.Item key={sort}>
               {({ active }) => (
                 <button
                   className={`flex w-full items-center px-4 py-2 text-left text-gray-800 dark:text-gray-200 text-sm ${
-                    active ? 'bg-gray-100 dark:bg-gray-700' : ''
-                  }`}
+                    showDivider ? 'border-b dark:border-gray-700' : ''
+                  } ${active ? 'bg-gray-100 dark:bg-gray-700' : ''}`}
                   onClick={() => setCurrentSort(sort)}
                 >
                   <span
