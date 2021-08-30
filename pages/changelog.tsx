@@ -24,6 +24,13 @@ export default function Changelog() {
           .
         </p>
         <ChangelogBlock
+          title="August 30, 2021"
+          features={[
+            'You can now sort notes by date modified or created',
+            'The date modified or created for each note is now visible in the dropdown',
+          ]}
+        />
+        <ChangelogBlock
           title="August 29, 2021"
           features={['Add dark mode 🌙']}
         />
