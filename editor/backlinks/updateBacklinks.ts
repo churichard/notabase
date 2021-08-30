@@ -2,8 +2,8 @@ import { Element } from 'slate';
 import produce from 'immer';
 import { ElementType } from 'types/slate';
 import { Note } from 'types/supabase';
-import supabase from 'lib/supabase';
 import { store } from 'lib/store';
+import updateNote from 'lib/api/updateNote';
 import { computeLinkedBacklinks } from './useBacklinks';
 
 /**
@@ -69,12 +69,7 @@ const updateBacklinks = async (newTitle: string, noteId: string) => {
   // See https://github.com/supabase/supabase-js/issues/156
   const promises = [];
   for (const data of updateData) {
-    promises.push(
-      supabase
-        .from<Note>('notes')
-        .update({ content: data.content })
-        .eq('id', data.id)
-    );
+    promises.push(updateNote(data));
   }
   await Promise.all(promises);
 };
