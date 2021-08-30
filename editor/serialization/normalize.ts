@@ -84,13 +84,11 @@ const normalizeImages = (node: MdastNode): MdastNode => {
   for (const child of node.children) {
     const normalizedChild = normalizeImages(child); // Normalize child
 
-    // If the child contains an image and adjacent text, we want to pull the image out into its own block
+    // Pull the image out into its own block if it's not the child of a list
     if (
+      normalizedChild.type !== 'list' &&
       normalizedChild.children?.some(
         (nestedChild) => nestedChild.type === 'image'
-      ) &&
-      normalizedChild.children?.some(
-        (nestedChild) => nestedChild.type === 'text'
       )
     ) {
       const blocks: MdastNode[] = [];
@@ -99,7 +97,9 @@ const normalizeImages = (node: MdastNode): MdastNode => {
       for (const nestedChild of normalizedChild.children) {
         if (nestedChild.type === 'image') {
           blocks.push(nestedChild);
-        } else {
+        }
+        // Nested child is a text node
+        else {
           // Add a new block if it doesn't exist yet
           if (
             blocks.length <= 0 ||
