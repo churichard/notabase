@@ -12,7 +12,7 @@ import Portal from '../Portal';
 import SidebarItem from './SidebarItem';
 
 type Props = {
-  note: Pick<Note, 'id' | 'title'>;
+  note: Note;
   isHighlighted?: boolean;
   style?: CSSProperties;
 };
@@ -39,7 +39,7 @@ export const SidebarNoteLink = (props: Props) => {
 };
 
 type SidebarNoteLinkDropdownProps = {
-  note: Pick<Note, 'id' | 'title'>;
+  note: Note;
   className?: string;
 };
 
@@ -55,7 +55,7 @@ const SidebarNoteLinkDropdown = (props: SidebarNoteLinkDropdownProps) => {
   const { styles, attributes } = usePopper(
     containerRef.current,
     popperElement,
-    { placement: 'right' }
+    { placement: 'right-start' }
   );
 
   const onDeleteClick = useCallback(async () => {
@@ -86,7 +86,7 @@ const SidebarNoteLinkDropdown = (props: SidebarNoteLinkDropdownProps) => {
               <Portal>
                 <Menu.Items
                   ref={setPopperElement}
-                  className="z-10 w-48 overflow-hidden bg-white rounded shadow-popover dark:bg-gray-800"
+                  className="z-10 w-56 overflow-hidden bg-white rounded shadow-popover dark:bg-gray-800"
                   static
                   style={styles.popper}
                   {...attributes.popper}
@@ -104,6 +104,12 @@ const SidebarNoteLinkDropdown = (props: SidebarNoteLinkDropdownProps) => {
                       </button>
                     )}
                   </Menu.Item>
+                  <div className="px-4 py-2 space-y-1 text-xs text-gray-600 border-t dark:border-gray-700 dark:text-gray-400">
+                    <p>
+                      Last modified at {getReadableDatetime(note.updated_at)}
+                    </p>
+                    <p>Created at {getReadableDatetime(note.created_at)}</p>
+                  </div>
                 </Menu.Items>
               </Portal>
             )}
@@ -112,4 +118,11 @@ const SidebarNoteLinkDropdown = (props: SidebarNoteLinkDropdownProps) => {
       </Menu>
     </div>
   );
+};
+
+const getReadableDatetime = (dateStr: string) => {
+  return new Date(dateStr).toLocaleString(undefined, {
+    dateStyle: 'short',
+    timeStyle: 'short',
+  });
 };
