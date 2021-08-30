@@ -47,8 +47,11 @@ const normalizeLists = (node: MdastNode): MdastNode => {
         if (nestedChild.type === 'list') {
           // If the list item child is a list, add it to nestedLists
           nestedLists.push(nestedChild);
-        } else if (nestedChild.type === 'paragraph') {
-          // If the list item child is a paragraph, remove the paragraph wrapper
+        } else if (
+          nestedChild.type === 'paragraph' ||
+          nestedChild.type === 'heading'
+        ) {
+          // If the list item child is a paragraph or heading, remove the wrapper
           newNestedChildren.push(...(nestedChild.children ?? []));
         } else {
           // If the list item child is anything else (e.g. list item), add it normally

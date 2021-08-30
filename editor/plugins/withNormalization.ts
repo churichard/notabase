@@ -1,13 +1,16 @@
 import { Editor, Element, Node, Selection, Text, Transforms } from 'slate';
-import { Mark } from 'types/slate';
+import { ElementType, Mark } from 'types/slate';
 
 const withNormalization = (editor: Editor) => {
+  return withListNormalization(withInlineNormalization(editor));
+};
+
+const withInlineNormalization = (editor: Editor) => {
   const { normalizeNode } = editor;
 
   editor.normalizeNode = (entry) => {
     const [node, path] = entry;
 
-    // Remove inline elements or text elements with marks if they have no text
     if (Element.isElement(node)) {
       const markArr = Object.values(Mark);
 
@@ -39,6 +42,36 @@ const withNormalization = (editor: Editor) => {
             // This ensures the selection doesn't move to the previous line
             Transforms.move(editor, { distance: 1, unit: 'offset' });
           }
+          return;
+        }
+      }
+    }
+
+    // Fall back to the original `normalizeNode` to enforce other constraints.
+    normalizeNode(entry);
+  };
+
+  return editor;
+};
+
+const withListNormalization = (editor: Editor) => {
+  const { normalizeNode } = editor;
+
+  editor.normalizeNode = (entry) => {
+    const [node, path] = entry;
+
+    // Paragraphs, headings, and list items in list items should be stripped out
+    if (Element.isElement(node) && node.type === ElementType.ListItem) {
+      for (const [child, childPath] of Node.children(editor, path)) {
+        if (
+          Element.isElement(child) &&
+          (child.type === ElementType.Paragraph ||
+            child.type === ElementType.HeadingOne ||
+            child.type === ElementType.HeadingTwo ||
+            child.type === ElementType.HeadingThree ||
+            child.type === ElementType.ListItem)
+        ) {
+          Transforms.unwrapNodes(editor, { at: childPath });
           return;
         }
       }
