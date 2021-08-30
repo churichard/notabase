@@ -34,7 +34,7 @@ const normalizeLists = (node: MdastNode): MdastNode => {
     }
 
     // Iterate through the children of the list item
-    if (child.type === 'listItem') {
+    if (normalizedChild.type === 'listItem') {
       const nestedLists = [];
       const newNestedChildren = [];
       for (const nestedChild of normalizedChild.children) {
