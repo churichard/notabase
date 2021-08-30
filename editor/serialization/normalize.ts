@@ -34,7 +34,7 @@ const normalizeLists = (node: MdastNode): MdastNode => {
     }
 
     // Iterate through the children of the list item
-    if (child.type === 'listItem') {
+    if (normalizedChild.type === 'listItem') {
       const nestedLists = [];
       const newNestedChildren = [];
       for (const nestedChild of normalizedChild.children) {
@@ -47,8 +47,11 @@ const normalizeLists = (node: MdastNode): MdastNode => {
         if (nestedChild.type === 'list') {
           // If the list item child is a list, add it to nestedLists
           nestedLists.push(nestedChild);
-        } else if (nestedChild.type === 'paragraph') {
-          // If the list item child is a paragraph, remove the paragraph wrapper
+        } else if (
+          nestedChild.type === 'paragraph' ||
+          nestedChild.type === 'heading'
+        ) {
+          // If the list item child is a paragraph or heading, remove the wrapper
           newNestedChildren.push(...(nestedChild.children ?? []));
         } else {
           // If the list item child is anything else (e.g. list item), add it normally
@@ -81,13 +84,17 @@ const normalizeImages = (node: MdastNode): MdastNode => {
   for (const child of node.children) {
     const normalizedChild = normalizeImages(child); // Normalize child
 
-    // If the child contains an image and adjacent text, we want to pull the image out into its own block
+    if (!normalizedChild.children) {
+      // No children, just push in normally
+      newChildren.push(normalizedChild);
+      continue;
+    }
+
+    // Pull the image out into its own block if it's not the child of a list
     if (
-      normalizedChild.children?.some(
+      normalizedChild.type !== 'list' &&
+      normalizedChild.children.some(
         (nestedChild) => nestedChild.type === 'image'
-      ) &&
-      normalizedChild.children?.some(
-        (nestedChild) => nestedChild.type === 'text'
       )
     ) {
       const blocks: MdastNode[] = [];
@@ -96,7 +103,9 @@ const normalizeImages = (node: MdastNode): MdastNode => {
       for (const nestedChild of normalizedChild.children) {
         if (nestedChild.type === 'image') {
           blocks.push(nestedChild);
-        } else {
+        }
+        // Nested child is a text node
+        else {
           // Add a new block if it doesn't exist yet
           if (
             blocks.length <= 0 ||
