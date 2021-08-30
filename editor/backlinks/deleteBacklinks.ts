@@ -50,7 +50,7 @@ const deleteBacklinks = async (noteId: string) => {
     promises.push(
       supabase
         .from<Note>('notes')
-        .update({ content: data.content })
+        .update({ content: data.content, updated_at: new Date().toISOString() })
         .eq('id', data.id)
     );
   }

@@ -11,7 +11,10 @@ export type NoteUpsert = PickPartial<
 export default async function upsertNote(note: NoteUpsert) {
   const { data } = await supabase
     .from<Note>('notes')
-    .upsert(note, { onConflict: 'user_id, title' })
+    .upsert(
+      { ...note, updated_at: new Date().toISOString() },
+      { onConflict: 'user_id, title' }
+    )
     .single();
 
   // Refreshes the list of notes in the sidebar

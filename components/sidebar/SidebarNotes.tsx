@@ -1,8 +1,9 @@
 import { Dispatch, SetStateAction, useCallback, useMemo, useRef } from 'react';
 import { useVirtual } from 'react-virtual';
-import { useStore, deepEqual } from 'lib/store';
-import { caseInsensitiveStringCompare } from 'utils/string';
+import { useStore } from 'lib/store';
 import { Sort } from 'lib/createUserSettingsSlice';
+import { caseInsensitiveStringCompare } from 'utils/string';
+import { dateCompare } from 'utils/date';
 import ErrorBoundary from '../ErrorBoundary';
 import { SidebarNoteLink } from './SidebarNoteLink';
 import SidebarNotesFooter from './SidebarNotesFooter';
@@ -16,24 +17,26 @@ type SidebarNotesProps = {
 export default function SidebarNotes(props: SidebarNotesProps) {
   const { currentNoteId, className, setIsFindOrCreateModalOpen } = props;
 
-  const notes = useStore(
-    (state) =>
-      Object.values(state.notes).map((note) => ({
-        id: note.id,
-        title: note.title,
-      })),
-    deepEqual
-  );
-
+  const notes = useStore((state) => Object.values(state.notes));
   const noteSort = useStore((state) => state.noteSort);
-
   const sortedNotes = useMemo(
     () =>
       notes.sort((n1, n2) => {
-        if (noteSort === Sort.TitleDescending) {
-          return caseInsensitiveStringCompare(n2.title, n1.title);
-        } else {
-          return caseInsensitiveStringCompare(n1.title, n2.title);
+        switch (noteSort) {
+          case Sort.DateModifiedAscending:
+            return dateCompare(n1.updated_at, n2.updated_at);
+          case Sort.DateModifiedDescending:
+            return dateCompare(n2.updated_at, n1.updated_at);
+          case Sort.DateCreatedAscending:
+            return dateCompare(n1.created_at, n2.created_at);
+          case Sort.DateCreatedDescending:
+            return dateCompare(n2.created_at, n1.created_at);
+          case Sort.TitleAscending:
+            return caseInsensitiveStringCompare(n1.title, n2.title);
+          case Sort.TitleDescending:
+            return caseInsensitiveStringCompare(n2.title, n1.title);
+          default:
+            return caseInsensitiveStringCompare(n1.title, n2.title);
         }
       }),
     [notes, noteSort]

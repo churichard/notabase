@@ -36,7 +36,7 @@ export default function AppLayout(props: Props) {
 
     const { data: notes } = await supabase
       .from<Note>('notes')
-      .select('id, title, content')
+      .select('id, title, content, created_at, updated_at')
       .eq('user_id', user.id)
       .order('title');
 
