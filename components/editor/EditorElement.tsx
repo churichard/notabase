@@ -223,7 +223,7 @@ const ThematicBreak = (props: ThematicBreakProps) => {
   return (
     <div
       className={`border-t-2 dark:border-gray-700 ${className} ${
-        selected && focused ? 'border-blue-100 dark:border-blue-100' : ''
+        selected && focused ? 'border-primary-100 dark:border-primary-900' : ''
       }`}
       {...attributes}
     >
@@ -248,7 +248,9 @@ const Image = (props: ImageProps) => {
       <img
         src={element.url}
         className={`select-none mx-auto max-w-full max-h-full ${
-          selected && focused ? 'ring ring-blue-100' : ''
+          selected && focused
+            ? 'ring ring-primary-100 dark:ring-primary-900'
+            : ''
         }`}
         contentEditable={false}
         alt={element.caption}
