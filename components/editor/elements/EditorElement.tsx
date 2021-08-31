@@ -1,4 +1,4 @@
-import { ReactNode, useMemo } from 'react';
+import { ReactNode, useCallback, useMemo } from 'react';
 import { Node } from 'slate';
 import { RenderElementProps, useFocused, useSelected } from 'slate-react';
 import Link from 'next/link';
@@ -15,6 +15,7 @@ import Tooltip from 'components/Tooltip';
 import useBlockReference from 'editor/backlinks/useBlockReference';
 import { ReadOnlyEditor } from '../ReadOnlyEditor';
 import EditorLeaf from './EditorLeaf';
+import ParagraphElement from './ParagraphElement';
 
 export type EditorElementProps = {
   className?: string;
@@ -120,9 +121,13 @@ export default function EditorElement(props: EditorElementProps) {
       );
     default:
       return (
-        <div className={className} {...attributes}>
+        <ParagraphElement
+          className={className}
+          element={element}
+          attributes={attributes}
+        >
           {children}
-        </div>
+        </ParagraphElement>
       );
   }
 }
@@ -289,6 +294,15 @@ const BlockRef = (props: BlockRefProps) => {
     blockReference ? state.notes[blockReference.noteId].title : null
   );
 
+  const renderElement = useCallback((props: EditorElementProps) => {
+    const elementType = props.element.type;
+    if (elementType === ElementType.ListItem) {
+      return <ParagraphElement {...props} />;
+    } else {
+      return <EditorElement {...props} />;
+    }
+  }, []);
+
   return (
     <Tooltip content={noteTitle} placement="bottom-start" disabled={!noteTitle}>
       <div
@@ -304,7 +318,7 @@ const BlockRef = (props: BlockRefProps) => {
         {blockReference ? (
           <ReadOnlyEditor
             value={[blockReference.element]}
-            renderElement={EditorElement}
+            renderElement={renderElement}
             renderLeaf={EditorLeaf}
           />
         ) : (
