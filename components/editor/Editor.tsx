@@ -26,7 +26,6 @@ import {
   toggleElement,
   toggleMark,
 } from 'editor/formatting';
-import withDeleteBackwardWorkaround from 'editor/plugins/withDeleteBackwardWorkaround';
 import withAutoMarkdown from 'editor/plugins/withAutoMarkdown';
 import withBlockBreakout from 'editor/plugins/withBlockBreakout';
 import withLinks from 'editor/plugins/withLinks';
@@ -62,12 +61,10 @@ export default function Editor(props: Props) {
   if (!editorRef.current) {
     editorRef.current = withNormalization(
       withCustomDeleteBackward(
-        withDeleteBackwardWorkaround(
-          withAutoMarkdown(
-            withBlockBreakout(
-              withVoidElements(
-                withImages(withLinks(withHistory(withReact(createEditor()))))
-              )
+        withAutoMarkdown(
+          withBlockBreakout(
+            withVoidElements(
+              withImages(withLinks(withHistory(withReact(createEditor()))))
             )
           )
         )
