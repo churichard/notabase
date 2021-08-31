@@ -78,10 +78,16 @@ const withListNormalization = (editor: Editor) => {
       }
     }
 
-    // Convert paragraphs to list items if they are the children of a list
+    // Convert paragraphs and headings to list items if they are the children of a list
     if (Element.isElement(node) && isListType(node.type)) {
       for (const [child, childPath] of Node.children(editor, path)) {
-        if (Element.isElement(child) && child.type === ElementType.Paragraph) {
+        if (
+          Element.isElement(child) &&
+          (child.type === ElementType.Paragraph ||
+            child.type === ElementType.HeadingOne ||
+            child.type === ElementType.HeadingTwo ||
+            child.type === ElementType.HeadingThree)
+        ) {
           Transforms.setNodes(
             editor,
             { type: ElementType.ListItem },
