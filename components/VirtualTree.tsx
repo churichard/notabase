@@ -1,24 +1,10 @@
-import { useState, useMemo, useCallback, ReactNode, memo } from 'react';
+import { useState, useMemo, useCallback, memo, useRef } from 'react';
+import { useVirtual } from 'react-virtual';
+import { FlattenedTreeNode, TreeNode as TreeNodeType } from './Tree';
 import TreeNode from './TreeNode';
 
-export type TreeNode = {
-  id: string;
-  labelNode: ReactNode;
-  showArrow?: boolean;
-  children?: TreeNode[];
-};
-
-export type FlattenedTreeNode = {
-  id: string;
-  labelNode: ReactNode;
-  showArrow?: boolean;
-  hasChildren: boolean;
-  depth: number;
-  collapsed: boolean;
-};
-
 type Props = {
-  data: TreeNode[];
+  data: TreeNodeType[];
   className?: string;
 };
 
@@ -35,7 +21,7 @@ function Tree(props: Props) {
   );
 
   const flattenNode = useCallback(
-    (node: TreeNode, depth: number, result: FlattenedTreeNode[]) => {
+    (node: TreeNodeType, depth: number, result: FlattenedTreeNode[]) => {
       const { id, labelNode, children, showArrow } = node;
       const collapsed = closedNodeIds.includes(id);
       result.push({
@@ -64,11 +50,40 @@ function Tree(props: Props) {
     return result;
   }, [data, flattenNode]);
 
+  const parentRef = useRef<HTMLDivElement | null>(null);
+  const rowVirtualizer = useVirtual({
+    size: flattenedData.length,
+    parentRef,
+  });
+
   return (
-    <div className={className}>
-      {flattenedData.map((node) => (
-        <TreeNode key={node.id} node={node} onClick={onNodeClick} />
-      ))}
+    <div ref={parentRef} className={className}>
+      <div
+        style={{
+          height: `${rowVirtualizer.totalSize}px`,
+          width: '100%',
+          position: 'relative',
+        }}
+      >
+        {rowVirtualizer.virtualItems.map((virtualRow) => {
+          const node = flattenedData[virtualRow.index];
+          return (
+            <TreeNode
+              key={node.id}
+              ref={virtualRow.measureRef}
+              node={node}
+              onClick={onNodeClick}
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                transform: `translateY(${virtualRow.start}px)`,
+              }}
+            />
+          );
+        })}
+      </div>
     </div>
   );
 }

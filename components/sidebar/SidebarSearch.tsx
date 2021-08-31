@@ -5,7 +5,7 @@ import Fuse from 'fuse.js';
 import useNoteSearch, { NoteBlock } from 'utils/useNoteSearch';
 import useDebounce from 'utils/useDebounce';
 import ErrorBoundary from '../ErrorBoundary';
-import Tree from '../Tree';
+import VirtualTree from '../VirtualTree';
 
 const DEBOUNCE_MS = 500;
 
@@ -64,7 +64,7 @@ export default function SidebarSearch(props: Props) {
           autoFocus
         />
         {!searchQuery || searchResultsData.length > 0 ? (
-          <Tree
+          <VirtualTree
             className="flex-1 px-1 overflow-y-auto"
             data={searchResultsData}
           />
