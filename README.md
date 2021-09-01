@@ -26,6 +26,10 @@ Notabase is in beta. It is under active development.
 - **Block references**: embed a block of text from another note, which auto-updates when the original block changes
 - **Open source**, allowing community involvement and transparent development
 
+## Documentation & Support
+
+If you need help getting started with Notabase, check out our [Help Center](https://help.notabase.io).
+
 ## Self-hosting / running locally
 
 Notabase is currently focused on the hosted experience, but it is possible for you to self-host it as well. Here's a list of steps that you need to take to get it running locally (not tested):
