@@ -94,15 +94,19 @@ const getBlockReferenceFromPath = (
   const editor = createEditor();
   editor.children = note.content;
 
-  const [element] = Editor.node(editor, path);
+  try {
+    const [element] = Editor.node(editor, path);
 
-  if (
-    Element.isElement(element) &&
-    Editor.isBlock(editor, element) &&
-    isReferenceableBlockElement(element) &&
-    element.id === blockId
-  ) {
-    return { noteId: note.id, element, path };
+    if (
+      Element.isElement(element) &&
+      Editor.isBlock(editor, element) &&
+      isReferenceableBlockElement(element) &&
+      element.id === blockId
+    ) {
+      return { noteId: note.id, element, path };
+    }
+  } catch (e) {
+    // Do nothing. Sometimes the path is outdated and it errors.
   }
 
   return null;
