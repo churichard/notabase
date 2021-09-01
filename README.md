@@ -17,15 +17,14 @@ Notabase is in beta. It is under active development.
 
 ## Features
 
-- Browse your notes with page stacking / sliding panes (similar to [Andy's working notes](https://notes.andymatuschak.org/About_these_notes))
-- WYSIWYG editor with markdown support makes it easy to read and edit notes
-- Linked/unlinked references let you see other notes that reference a specific note
-- Your notes are synced to the cloud and can be accessed on any device
-- Use the graph view to analyze your knowledge graph
-- Full-text search lets you easily find relevant notes
-- Block references (coming soon)
-- Offline support (coming soon)
-- Open source, allowing community involvement and transparent development
+- Browse your notes with **page stacking** (similar to [Andy's working notes](https://notes.andymatuschak.org/About_these_notes))
+- **WYSIWYG editor** with markdown support makes it easy to read and edit notes
+- **Linked/unlinked references** let you see other notes that reference a specific note
+- Your notes are **synced to the cloud** and can be **accessed on any device**
+- Use the **graph view** to analyze your knowledge graph
+- **Full-text search** lets you easily find relevant notes
+- **Block references**: embed a block of text from another note, which auto-updates when the original block changes
+- **Open source**, allowing community involvement and transparent development
 
 ## Self-hosting / running locally
 
