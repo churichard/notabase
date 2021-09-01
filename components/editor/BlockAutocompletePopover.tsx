@@ -170,7 +170,6 @@ export default function BlockAutocompletePopover() {
         }
 
         insertBlockReference(editor, blockId, onOwnLine);
-        // Transforms.move(editor, { distance: 1, unit: 'offset' }); // Focus after the block ref
       } else {
         throw new Error(`Option type ${option.type} is not supported`);
       }
