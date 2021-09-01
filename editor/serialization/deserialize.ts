@@ -23,6 +23,7 @@ THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 import { Descendant } from 'slate';
 import { ElementType, Mark } from 'types/slate';
+import { createNodeId } from 'editor/plugins/withNodeId';
 import { MdastNode } from './types';
 
 export type OptionType = Record<string, never>;
@@ -55,31 +56,38 @@ export default function deserialize(
   switch (node.type) {
     case 'heading':
       if (node.depth === 1) {
-        return { type: ElementType.HeadingOne, children };
+        return { id: createNodeId(), type: ElementType.HeadingOne, children };
       } else if (node.depth === 2) {
-        return { type: ElementType.HeadingTwo, children };
+        return { id: createNodeId(), type: ElementType.HeadingTwo, children };
       } else {
-        return { type: ElementType.HeadingThree, children };
+        return { id: createNodeId(), type: ElementType.HeadingThree, children };
       }
     case 'list':
       return {
+        id: createNodeId(),
         type: node.ordered
           ? ElementType.NumberedList
           : ElementType.BulletedList,
         children,
       };
     case 'listItem':
-      return { type: ElementType.ListItem, children };
+      return { id: createNodeId(), type: ElementType.ListItem, children };
     case 'paragraph':
-      return { type: ElementType.Paragraph, children };
+      return { id: createNodeId(), type: ElementType.Paragraph, children };
 
     case 'link':
-      return { type: ElementType.ExternalLink, url: node.url ?? '', children };
+      return {
+        id: createNodeId(),
+        type: ElementType.ExternalLink,
+        url: node.url ?? '',
+        children,
+      };
     case 'wikiLink':
       // Note ids are omitted and are added later
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       return {
+        id: createNodeId(),
         type: ElementType.NoteLink,
         noteTitle: node.value ?? '',
         ...(node.data?.alias && node.data.alias !== node.value
@@ -90,15 +98,17 @@ export default function deserialize(
 
     case 'image':
       return {
+        id: createNodeId(),
         type: ElementType.Image,
         children: [{ text: '' }],
         url: node.url ?? '',
         caption: node.alt,
       };
     case 'blockquote':
-      return { type: ElementType.Blockquote, children };
+      return { id: createNodeId(), type: ElementType.Blockquote, children };
     case 'code':
       return {
+        id: createNodeId(),
         type: ElementType.CodeBlock,
         // language: node.lang,
         children: [{ text: node.value ?? '' }],
@@ -133,6 +143,7 @@ export default function deserialize(
       };
     case 'thematicBreak':
       return {
+        id: createNodeId(),
         type: ElementType.ThematicBreak,
         children: [{ text: '' }],
       };

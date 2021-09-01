@@ -2,6 +2,7 @@ import type { Point } from 'slate';
 import { Editor, Element, Transforms, Range, Text, Path } from 'slate';
 import { isListType } from 'editor/formatting';
 import { ElementType } from 'types/slate';
+import { createNodeId } from './withNodeId';
 
 /**
  * When enter is pressed in the middle or at the end of a block,
@@ -74,6 +75,7 @@ const withBlockBreakout = (editor: Editor) => {
       // We insert after the current node
       Transforms.select(editor, lineEnd);
       Transforms.insertNodes(editor, {
+        id: createNodeId(),
         type: insertElementType,
         children: [{ text: '' }],
       });
@@ -83,6 +85,7 @@ const withBlockBreakout = (editor: Editor) => {
       // We insert before the current node
       Transforms.select(editor, lineStart);
       Transforms.insertNodes(editor, {
+        id: createNodeId(),
         type: insertElementType,
         children: [{ text: '' }],
       });

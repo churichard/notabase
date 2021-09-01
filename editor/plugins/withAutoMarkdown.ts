@@ -10,6 +10,7 @@ import upsertNote from 'lib/api/upsertNote';
 import supabase from 'lib/supabase';
 import { caseInsensitiveStringEqual } from 'utils/string';
 import { PlanId } from 'constants/pricing';
+import { createNodeId } from './withNodeId';
 
 const BLOCK_SHORTCUTS: Array<
   | {
@@ -145,6 +146,7 @@ const handleBlockShortcuts = (editor: Editor) => {
 
       if (shortcut.type === ElementType.ListItem) {
         const list: ListElement = {
+          id: createNodeId(),
           type: shortcut.listType,
           children: [],
         };
@@ -157,6 +159,7 @@ const handleBlockShortcuts = (editor: Editor) => {
       } else if (shortcut.type === ElementType.ThematicBreak) {
         // Insert a new paragraph below thematic break
         Transforms.insertNodes(editor, {
+          id: createNodeId(),
           type: ElementType.Paragraph,
           children: [{ text: '' }],
         });
@@ -219,6 +222,7 @@ const handleInlineShortcuts = (editor: Editor) => {
         endMark: middleMark.length + linkUrl.length + endMark.length,
       });
       const link: ExternalLink = {
+        id: createNodeId(),
         type: ElementType.ExternalLink,
         url: linkUrl,
         children: [],
@@ -246,6 +250,7 @@ const handleInlineShortcuts = (editor: Editor) => {
         endMark: endMark.length,
       });
       const link: NoteLink = {
+        id: createNodeId(),
         type: ElementType.NoteLink,
         noteId,
         noteTitle,
@@ -275,6 +280,7 @@ const handleInlineShortcuts = (editor: Editor) => {
         endMark: middleMark.length + noteTitle.length + endMark.length,
       });
       const link: NoteLink = {
+        id: createNodeId(),
         type: ElementType.NoteLink,
         noteId,
         noteTitle,

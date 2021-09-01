@@ -56,6 +56,7 @@ const OptionsMenuDropdown = (props: OptionsMenuDropdownProps) => {
   const onCopyBlockRef = useCallback(async () => {
     let blockId;
 
+    // We still need this because there are cases where block ids might not exist
     if (!element.id) {
       // Generate block id if it doesn't exist
       blockId = createNodeId();

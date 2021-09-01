@@ -137,6 +137,7 @@ export default function BlockAutocompletePopover() {
       if (option.type === OptionType.BLOCK) {
         let blockId;
 
+        // We still need this because there are cases where block ids might not exist
         if (!option.blockId) {
           // Generate block id if it doesn't exist
           blockId = createNodeId();

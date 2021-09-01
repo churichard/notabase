@@ -90,6 +90,9 @@ const withNodeId = (editor: Editor): Editor => {
         node.id &&
         isDuplicateId(node.id)
       ) {
+        // id will be set later, ignore this error
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         node = { ...node, id: undefined };
       }
 

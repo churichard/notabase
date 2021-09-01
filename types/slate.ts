@@ -30,62 +30,62 @@ export enum Mark {
 }
 
 export type ParagraphElement = {
-  id?: string;
+  id: string;
   type: ElementType.Paragraph;
   children: Descendant[];
 };
 
 export type HeadingOneElement = {
-  id?: string;
+  id: string;
   type: ElementType.HeadingOne;
   children: Descendant[];
 };
 
 export type HeadingTwoElement = {
-  id?: string;
+  id: string;
   type: ElementType.HeadingTwo;
   children: Descendant[];
 };
 
 export type HeadingThreeElement = {
-  id?: string;
+  id: string;
   type: ElementType.HeadingThree;
   children: Descendant[];
 };
 
 export type ListItem = {
-  id?: string;
+  id: string;
   type: ElementType.ListItem;
   children: Descendant[];
 };
 
 export type BulletedList = {
-  id?: string;
+  id: string;
   type: ElementType.BulletedList;
   children: Descendant[];
 };
 
 export type NumberedList = {
-  id?: string;
+  id: string;
   type: ElementType.NumberedList;
   children: Descendant[];
 };
 
 export type Blockquote = {
-  id?: string;
+  id: string;
   type: ElementType.Blockquote;
   children: Descendant[];
 };
 
 export type ExternalLink = {
-  id?: string;
+  id: string;
   type: ElementType.ExternalLink;
   url: string;
   children: Descendant[];
 };
 
 export type NoteLink = {
-  id?: string;
+  id: string;
   type: ElementType.NoteLink;
   noteId: string;
   noteTitle: string;
@@ -94,19 +94,19 @@ export type NoteLink = {
 };
 
 export type CodeBlock = {
-  id?: string;
+  id: string;
   type: ElementType.CodeBlock;
   children: Descendant[];
 };
 
 export type ThematicBreak = {
-  id?: string;
+  id: string;
   type: ElementType.ThematicBreak;
   children: Descendant[];
 };
 
 export type Image = {
-  id?: string;
+  id: string;
   type: ElementType.Image;
   url: string;
   caption?: string;
@@ -114,7 +114,7 @@ export type Image = {
 };
 
 export type BlockReference = {
-  id?: string;
+  id: string;
   type: ElementType.BlockReference;
   blockId: string;
   children: Descendant[];

@@ -9,6 +9,7 @@ import type {
 } from 'types/slate';
 import { ElementType, Mark } from 'types/slate';
 import { computeBlockReference } from './backlinks/useBlockReference';
+import { createNodeId } from './plugins/withNodeId';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const isMark = (type: any): type is Mark => {
@@ -66,7 +67,11 @@ export const toggleElement = (editor: Editor, format: ElementType) => {
   Transforms.setNodes(editor, newProperties);
 
   if (!isActive && isListType(format)) {
-    const block: ListElement = { type: format, children: [] };
+    const block: ListElement = {
+      id: createNodeId(),
+      type: format,
+      children: [],
+    };
     Transforms.wrapNodes(editor, block);
   }
 };
@@ -74,11 +79,13 @@ export const toggleElement = (editor: Editor, format: ElementType) => {
 export const handleIndent = (editor: Editor) => {
   if (isElementActive(editor, ElementType.BulletedList)) {
     Transforms.wrapNodes(editor, {
+      id: createNodeId(),
       type: ElementType.BulletedList,
       children: [],
     });
   } else if (isElementActive(editor, ElementType.NumberedList)) {
     Transforms.wrapNodes(editor, {
+      id: createNodeId(),
       type: ElementType.NumberedList,
       children: [],
     });
@@ -169,6 +176,7 @@ export const insertExternalLink = (
 
   const isCollapsed = selection && Range.isCollapsed(selection);
   const link: ExternalLink = {
+    id: createNodeId(),
     type: ElementType.ExternalLink,
     url,
     children: isCollapsed ? [{ text: text ?? url }] : [],
@@ -188,6 +196,7 @@ export const insertNoteLink = (
 
   const isCollapsed = selection && Range.isCollapsed(selection);
   const link: NoteLink = {
+    id: createNodeId(),
     type: ElementType.NoteLink,
     noteId,
     noteTitle,
@@ -199,6 +208,7 @@ export const insertNoteLink = (
 
 export const insertImage = (editor: Editor, url: string) => {
   const image: Image = {
+    id: createNodeId(),
     type: ElementType.Image,
     url,
     children: [{ text: '' }],
@@ -219,6 +229,7 @@ export const insertBlockReference = (
   const blockText = blockReference ? Node.string(blockReference.element) : '';
 
   const blockRef: BlockReference = {
+    id: createNodeId(),
     type: ElementType.BlockReference,
     blockId,
     children: [{ text: blockText }],
