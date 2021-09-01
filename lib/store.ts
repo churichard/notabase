@@ -12,7 +12,6 @@ import createUserSettingsSlice, {
 import type { NoteUpdate } from './api/updateNote';
 
 export { default as shallowEqual } from 'zustand/shallow';
-export { default as deepEqual } from 'fast-deep-equal';
 
 const immer =
   <T extends State>(

@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
 import Editor from 'components/editor/Editor';
 import Title from 'components/editor/Title';
-import { deepEqual, store, useStore } from 'lib/store';
+import { shallowEqual, store, useStore } from 'lib/store';
 import type { NoteUpdate } from 'lib/api/updateNote';
 import updateDbNote from 'lib/api/updateNote';
 import { ProvideCurrentNote } from 'utils/useCurrentNote';
@@ -32,7 +32,7 @@ export default function Note(props: Props) {
 
   const note = useStore<NoteType | undefined>(
     (state) => state.notes[noteId],
-    deepEqual
+    shallowEqual
   );
   const updateNote = useStore((state) => state.updateNote);
 

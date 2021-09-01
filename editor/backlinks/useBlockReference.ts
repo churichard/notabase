@@ -1,7 +1,7 @@
 import { useMemo, useRef } from 'react';
 import { createEditor, Editor, Element, Path } from 'slate';
 import type { Notes } from 'lib/store';
-import { useStore, deepEqual } from 'lib/store';
+import { useStore } from 'lib/store';
 import useDebounce from 'utils/useDebounce';
 import { Note } from 'types/supabase';
 import { isReferenceableBlockElement } from '../checks';
@@ -16,7 +16,7 @@ export type BlockReference = {
 
 export default function useBlockReference(blockId: string) {
   const [notes] = useDebounce(
-    useStore((state) => state.notes, deepEqual),
+    useStore((state) => state.notes),
     DEBOUNCE_MS
   );
   const cachedPath = useRef<{ noteId: string; path: Path } | null>(null);

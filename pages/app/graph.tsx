@@ -6,11 +6,11 @@ import { ElementType } from 'types/slate';
 import type { GraphData } from 'components/ForceGraph';
 import ForceGraph from 'components/ForceGraph';
 import GraphHeader from 'components/GraphHeader';
-import { useStore, deepEqual } from 'lib/store';
+import { useStore } from 'lib/store';
 import ErrorBoundary from 'components/ErrorBoundary';
 
 export default function Graph() {
-  const notes = useStore((state) => state.notes, deepEqual);
+  const notes = useStore((state) => state.notes);
 
   // Compute graph data
   const graphData: GraphData = useMemo(() => {

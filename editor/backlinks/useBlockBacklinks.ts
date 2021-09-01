@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { createEditor, Editor, Element, Descendant } from 'slate';
 import type { Notes } from 'lib/store';
-import { useStore, deepEqual } from 'lib/store';
+import { useStore } from 'lib/store';
 import useDebounce from 'utils/useDebounce';
 import { ElementType } from 'types/slate';
 import { Backlink, BacklinkMatch } from './useBacklinks';
@@ -10,7 +10,7 @@ const DEBOUNCE_MS = 1000;
 
 export default function useBlockBacklinks(blockId: string | null) {
   const [notes] = useDebounce(
-    useStore((state) => state.notes, deepEqual),
+    useStore((state) => state.notes),
     DEBOUNCE_MS
   );
   return useMemo(() => computeBlockBacklinks(notes, blockId), [notes, blockId]);
