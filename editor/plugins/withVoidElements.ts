@@ -5,6 +5,7 @@ const VOID_ELEMENTS: Array<ElementType> = [
   ElementType.NoteLink,
   ElementType.ThematicBreak,
   ElementType.Image,
+  ElementType.BlockReference,
 ];
 
 const withVoidElements = (editor: Editor) => {

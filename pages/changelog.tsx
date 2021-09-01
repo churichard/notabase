@@ -24,6 +24,12 @@ export default function Changelog() {
           .
         </p>
         <ChangelogBlock
+          title="September 1, 2021"
+          features={[
+            'Block references are here 🔥. Now you can embed blocks of text from other notes. These block references auto-update when the original block changes.',
+          ]}
+        />
+        <ChangelogBlock
           title="August 30, 2021"
           features={[
             'You can now sort notes by date modified or created',

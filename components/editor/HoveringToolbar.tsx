@@ -24,7 +24,7 @@ import {
 } from 'editor/formatting';
 import { ElementType, Mark } from 'types/slate';
 import Tooltip from 'components/Tooltip';
-import Popover from './Popover';
+import EditorPopover from './EditorPopover';
 import type { AddLinkPopoverState } from './Editor';
 
 type Props = {
@@ -33,7 +33,7 @@ type Props = {
 export default function HoveringToolbar(props: Props) {
   const { setAddLinkPopoverState } = props;
   return (
-    <Popover placement="top-start">
+    <EditorPopover placement="top-start">
       <LinkButton
         setAddLinkPopoverState={setAddLinkPopoverState}
         className="border-r dark:border-gray-700"
@@ -53,7 +53,7 @@ export default function HoveringToolbar(props: Props) {
       <BlockButton format={ElementType.NumberedList} />
       <BlockButton format={ElementType.Blockquote} />
       <BlockButton format={ElementType.CodeBlock} />
-    </Popover>
+    </EditorPopover>
   );
 }
 

@@ -23,6 +23,7 @@ THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 import { Element, Text } from 'slate';
 import {
+  BlockReference,
   ElementType,
   ExternalLink,
   FormattedText,
@@ -30,6 +31,8 @@ import {
   NoteLink,
 } from 'types/slate';
 import { isVoid } from 'editor/plugins/withVoidElements';
+import { computeBlockReference } from 'editor/backlinks/useBlockReference';
+import { store } from 'lib/store';
 
 type LeafType = FormattedText & { parentType?: string };
 
@@ -48,7 +51,7 @@ const BREAK_TAG = '';
 export default function serialize(
   chunk: BlockType | LeafType,
   opts: Options = {}
-) {
+): string | undefined {
   const { listDepth = 0 } = opts;
   const text: string = (chunk as LeafType).text || '';
   const type: ElementType = (chunk as BlockType).type || '';
@@ -167,11 +170,25 @@ export default function serialize(
       }
       return `${spacer}${isNumberedList ? '1.' : '-'} ${children}\n`;
     }
+
     case ElementType.Paragraph:
       return `${children}\n\n`;
 
     case ElementType.ThematicBreak:
       return `---\n\n`;
+
+    case ElementType.BlockReference: {
+      const blockRef = chunk as BlockReference;
+      const reference = computeBlockReference(
+        store.getState().notes,
+        blockRef.blockId
+      );
+      if (reference) {
+        return `${serialize(reference.element)}\n\n`;
+      } else {
+        return `${children}\n\n`;
+      }
+    }
 
     default:
       return children;

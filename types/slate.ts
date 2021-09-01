@@ -18,6 +18,7 @@ export enum ElementType {
   CodeBlock = 'code-block',
   ThematicBreak = 'thematic-break',
   Image = 'image',
+  BlockReference = 'block-reference',
 }
 
 export enum Mark {
@@ -29,52 +30,62 @@ export enum Mark {
 }
 
 export type ParagraphElement = {
+  id: string;
   type: ElementType.Paragraph;
   children: Descendant[];
 };
 
 export type HeadingOneElement = {
+  id: string;
   type: ElementType.HeadingOne;
   children: Descendant[];
 };
 
 export type HeadingTwoElement = {
+  id: string;
   type: ElementType.HeadingTwo;
   children: Descendant[];
 };
 
 export type HeadingThreeElement = {
+  id: string;
   type: ElementType.HeadingThree;
   children: Descendant[];
 };
 
 export type ListItem = {
+  id: string;
   type: ElementType.ListItem;
   children: Descendant[];
 };
 
 export type BulletedList = {
+  id: string;
   type: ElementType.BulletedList;
   children: Descendant[];
 };
 
 export type NumberedList = {
+  id: string;
   type: ElementType.NumberedList;
   children: Descendant[];
 };
 
 export type Blockquote = {
+  id: string;
   type: ElementType.Blockquote;
   children: Descendant[];
 };
 
 export type ExternalLink = {
+  id: string;
   type: ElementType.ExternalLink;
   url: string;
   children: Descendant[];
 };
 
 export type NoteLink = {
+  id: string;
   type: ElementType.NoteLink;
   noteId: string;
   noteTitle: string;
@@ -83,38 +94,52 @@ export type NoteLink = {
 };
 
 export type CodeBlock = {
+  id: string;
   type: ElementType.CodeBlock;
   children: Descendant[];
 };
 
 export type ThematicBreak = {
+  id: string;
   type: ElementType.ThematicBreak;
   children: Descendant[];
 };
 
 export type Image = {
+  id: string;
   type: ElementType.Image;
   url: string;
   caption?: string;
   children: Descendant[];
 };
 
-export type NotabaseElement =
+export type BlockReference = {
+  id: string;
+  type: ElementType.BlockReference;
+  blockId: string;
+  children: Descendant[];
+};
+
+export type ReferenceableBlockElement =
   | ParagraphElement
   | HeadingOneElement
   | HeadingTwoElement
   | HeadingThreeElement
   | ListItem
-  | BulletedList
-  | NumberedList
   | Blockquote
-  | ExternalLink
-  | NoteLink
   | CodeBlock
   | ThematicBreak
-  | Image;
+  | Image
+  | BlockReference;
+
+export type InlineElement = ExternalLink | NoteLink;
 
 export type ListElement = BulletedList | NumberedList;
+
+export type NotabaseElement =
+  | ReferenceableBlockElement
+  | ListElement
+  | InlineElement;
 
 export type FormattedText = { text: string } & Partial<Record<Mark, boolean>>;
 

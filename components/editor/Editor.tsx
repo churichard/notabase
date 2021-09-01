@@ -33,13 +33,18 @@ import withNormalization from 'editor/plugins/withNormalization';
 import withCustomDeleteBackward from 'editor/plugins/withCustomDeleteBackward';
 import withImages from 'editor/plugins/withImages';
 import withVoidElements from 'editor/plugins/withVoidElements';
+import withNodeId from 'editor/plugins/withNodeId';
+import withBlockReferences from 'editor/plugins/withBlockReferences';
 import { useStore } from 'lib/store';
 import { ElementType, Mark } from 'types/slate';
 import HoveringToolbar from './HoveringToolbar';
 import AddLinkPopover from './AddLinkPopover';
-import EditorElement from './EditorElement';
-import EditorLeaf from './EditorLeaf';
+import EditorElement from './elements/EditorElement';
+import withVerticalSpacing from './elements/withVerticalSpacing';
+import withBlockSideMenu from './elements/withBlockSideMenu';
+import EditorLeaf from './elements/EditorLeaf';
 import LinkAutocompletePopover from './LinkAutocompletePopover';
+import BlockAutocompletePopover from './BlockAutocompletePopover';
 
 export type AddLinkPopoverState = {
   isVisible: boolean;
@@ -64,7 +69,11 @@ export default function Editor(props: Props) {
         withAutoMarkdown(
           withBlockBreakout(
             withVoidElements(
-              withImages(withLinks(withHistory(withReact(createEditor()))))
+              withBlockReferences(
+                withImages(
+                  withLinks(withNodeId(withHistory(withReact(createEditor()))))
+                )
+              )
             )
           )
         )
@@ -73,11 +82,12 @@ export default function Editor(props: Props) {
   }
   const editor = editorRef.current;
 
-  const renderElement = useCallback(
-    (props) => <EditorElement {...props} />,
-    []
-  );
-  const renderLeaf = useCallback((props) => <EditorLeaf {...props} />, []);
+  const renderElement = useMemo(() => {
+    const ElementWithSideMenu = withBlockSideMenu(
+      withVerticalSpacing(EditorElement)
+    );
+    return ElementWithSideMenu;
+  }, []);
 
   const [addLinkPopoverState, setAddLinkPopoverState] =
     useState<AddLinkPopoverState>({
@@ -265,10 +275,11 @@ export default function Editor(props: Props) {
         />
       ) : null}
       <LinkAutocompletePopover />
+      <BlockAutocompletePopover />
       <Editable
         className={`overflow-hidden placeholder-gray-300 ${className}`}
         renderElement={renderElement}
-        renderLeaf={renderLeaf}
+        renderLeaf={EditorLeaf}
         placeholder="Start typing here…"
         onKeyDown={onKeyDown}
         onMouseDown={() => setToolbarCanBeVisible(false)}
