@@ -40,20 +40,16 @@ export type BillingDetails = {
 
 export type Store = {
   billingDetails: BillingDetails;
-  setBillingDetails: (
-    value: BillingDetails | ((value: BillingDetails) => BillingDetails)
-  ) => void;
+  setBillingDetails: Setter<BillingDetails>;
   notes: Notes;
-  setNotes: (value: Notes | ((value: Notes) => Notes)) => void;
+  setNotes: Setter<Notes>;
   upsertNote: (note: Note) => void;
   updateNote: (note: NoteUpdate) => void;
   deleteNote: (noteId: string) => void;
   openNoteIds: string[];
   setOpenNoteIds: (openNoteIds: string[], index?: number) => void;
   isUpgradeModalOpen: boolean;
-  setIsUpgradeModalOpen: (
-    value: boolean | ((value: boolean) => boolean)
-  ) => void;
+  setIsUpgradeModalOpen: Setter<boolean>;
 } & UserSettings;
 
 type FunctionPropertyNames<T> = {
@@ -63,6 +59,7 @@ type FunctionPropertyNames<T> = {
 
 type StoreWithoutFunctions = Omit<Store, FunctionPropertyNames<Store>>;
 
+export type Setter<T> = (value: T | ((value: T) => T)) => void;
 export const setter =
   <K extends keyof StoreWithoutFunctions>(
     set: (fn: (draft: Draft<Store>) => void) => void,

@@ -1,5 +1,5 @@
 import { Draft } from 'immer';
-import { setter, Store } from './store';
+import { setter, Setter, Store } from './store';
 
 export enum Sort {
   TitleAscending = 'TITLE_ASCENDING',
@@ -21,13 +21,13 @@ export const ReadableNameBySort = {
 
 export type UserSettings = {
   darkMode: boolean;
-  setDarkMode: (value: boolean | ((value: boolean) => boolean)) => void;
+  setDarkMode: Setter<boolean>;
   isSidebarOpen: boolean;
-  setIsSidebarOpen: (value: boolean | ((value: boolean) => boolean)) => void;
+  setIsSidebarOpen: Setter<boolean>;
   isPageStackingOn: boolean;
-  setIsPageStackingOn: (value: boolean | ((value: boolean) => boolean)) => void;
+  setIsPageStackingOn: Setter<boolean>;
   noteSort: Sort;
-  setNoteSort: (value: Sort | ((value: Sort) => Sort)) => void;
+  setNoteSort: Setter<Sort>;
 };
 
 const createUserSettingsSlice = (
