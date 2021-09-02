@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction, useCallback, useMemo, useRef } from 'react';
 import { useVirtual } from 'react-virtual';
-import { useStore } from 'lib/store';
+import { shallowEqual, useStore } from 'lib/store';
 import { Sort } from 'lib/createUserSettingsSlice';
 import { caseInsensitiveStringCompare } from 'utils/string';
 import { dateCompare } from 'utils/date';
@@ -17,7 +17,7 @@ type SidebarNotesProps = {
 export default function SidebarNotes(props: SidebarNotesProps) {
   const { currentNoteId, className, setIsFindOrCreateModalOpen } = props;
 
-  const notes = useStore((state) => Object.values(state.notes));
+  const notes = useStore((state) => Object.values(state.notes), shallowEqual);
   const noteSort = useStore((state) => state.noteSort);
   const sortedNotes = useMemo(
     () =>
