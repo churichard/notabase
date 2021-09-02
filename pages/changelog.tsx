@@ -24,6 +24,10 @@ export default function Changelog() {
           .
         </p>
         <ChangelogBlock
+          title="September 2, 2021"
+          bugFixes={['Improve performance when calculating block backlinks']}
+        />
+        <ChangelogBlock
           title="September 1, 2021"
           features={[
             'Block references are here 🔥. Now you can embed blocks of text from other notes. These block references auto-update when the original block changes.',
