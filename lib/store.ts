@@ -6,6 +6,7 @@ import localforage from 'localforage';
 import type { Note } from 'types/supabase';
 import { BillingFrequency, PlanId } from 'constants/pricing';
 import { caseInsensitiveStringEqual } from 'utils/string';
+import { Backlink } from 'editor/backlinks/useBacklinks';
 import createUserSettingsSlice, {
   UserSettings,
 } from './createUserSettingsSlice';
@@ -50,6 +51,8 @@ export type Store = {
   setOpenNoteIds: (openNoteIds: string[], index?: number) => void;
   isUpgradeModalOpen: boolean;
   setIsUpgradeModalOpen: Setter<boolean>;
+  blockIdToBacklinksMap: Record<string, Backlink[] | undefined>;
+  setBlockIdToBacklinksMap: Setter<Record<string, Backlink[] | undefined>>;
 } & UserSettings;
 
 type FunctionPropertyNames<T> = {
@@ -157,6 +160,8 @@ export const store = createVanilla<Store>(
       },
       isUpgradeModalOpen: false,
       setIsUpgradeModalOpen: setter(set, 'isUpgradeModalOpen'),
+      blockIdToBacklinksMap: {},
+      setBlockIdToBacklinksMap: setter(set, 'blockIdToBacklinksMap'),
       ...createUserSettingsSlice(set),
     })),
     {

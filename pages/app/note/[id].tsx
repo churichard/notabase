@@ -7,6 +7,7 @@ import Note from 'components/Note';
 import { useStore } from 'lib/store';
 import usePrevious from 'utils/usePrevious';
 import { queryParamToArray } from 'utils/url';
+import useBlockBacklinks from 'editor/backlinks/useBlockBacklinks';
 
 export default function NotePage() {
   const router = useRouter();
@@ -24,6 +25,8 @@ export default function NotePage() {
     }
     return state.notes[noteId].title;
   });
+
+  useBlockBacklinks();
 
   const [highlightedPath, setHighlightedPath] = useState<{
     index: number;

@@ -9,7 +9,7 @@ import { isPartialElement } from './withNodeId';
 
 const replaceBlockRefs = async (editor: Editor, blockId: string) => {
   const notes = store.getState().notes;
-  const backlinks = computeBlockBacklinks(notes, blockId);
+  const backlinks = computeBlockBacklinks(notes)[blockId] ?? [];
 
   // Update the block refs in the current editor to be paragraphs
   const updatedNodes = [];

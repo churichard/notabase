@@ -16,9 +16,9 @@ import { ReferenceableBlockElement, ElementType } from 'types/slate';
 import Dropdown, { DropdownItem } from 'components/Dropdown';
 import Portal from 'components/Portal';
 import { isReferenceableBlockElement } from 'editor/checks';
-import useBlockBacklinks from 'editor/backlinks/useBlockBacklinks';
 import updateBlockBacklinks from 'editor/backlinks/updateBlockBacklinks';
 import { createNodeId } from 'editor/plugins/withNodeId';
+import { shallowEqual, Store, useStore } from 'lib/store';
 import BlockBacklinks from '../backlinks/BlockBacklinks';
 import { getNumOfMatches } from '../backlinks/Backlinks';
 import { EditorElementProps } from './EditorElement';
@@ -121,12 +121,12 @@ const OptionsMenuDropdown = (props: OptionsMenuDropdownProps) => {
 
 const UPDATE_BLOCK_BACKLINKS_DEBOUNCE_MS = 500;
 
-type BacklinksPopoverProps = { element: ReferenceableBlockElement };
+type BacklinksPopoverProps = {
+  element: ReferenceableBlockElement;
+};
 
 const BacklinksPopover = (props: BacklinksPopoverProps) => {
   const { element } = props;
-  const elementId = element.id ?? null;
-  const blockBacklinks = useBlockBacklinks(elementId);
 
   const [referenceElement, setReferenceElement] =
     useState<HTMLButtonElement | null>(null);
@@ -142,6 +142,11 @@ const BacklinksPopover = (props: BacklinksPopoverProps) => {
     }
   );
 
+  const blockBacklinksSelector = useCallback(
+    (state: Store) => state.blockIdToBacklinksMap[element.id] ?? [],
+    [element.id]
+  );
+  const blockBacklinks = useStore(blockBacklinksSelector, shallowEqual);
   const numOfMatches = useMemo(
     () => getNumOfMatches(blockBacklinks),
     [blockBacklinks]
