@@ -41,7 +41,7 @@ import HoveringToolbar from './HoveringToolbar';
 import AddLinkPopover from './AddLinkPopover';
 import EditorElement from './elements/EditorElement';
 import withVerticalSpacing from './elements/withVerticalSpacing';
-import withBlockSideMenu from './elements/withBlockSideMenu';
+import withBlockSideMenu from './blockmenu/withBlockSideMenu';
 import EditorLeaf from './elements/EditorLeaf';
 import LinkAutocompletePopover from './LinkAutocompletePopover';
 import BlockAutocompletePopover from './BlockAutocompletePopover';

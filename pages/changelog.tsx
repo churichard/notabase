@@ -24,6 +24,13 @@ export default function Changelog() {
           .
         </p>
         <ChangelogBlock
+          title="September 3, 2021"
+          features={[
+            'Move block formatting options to block menu',
+            'Add image button to block menu',
+          ]}
+        />
+        <ChangelogBlock
           title="September 2, 2021"
           bugFixes={['Improve performance when calculating block backlinks']}
         />

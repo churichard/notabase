@@ -7,21 +7,9 @@ import {
   IconUnderline,
   IconStrikethrough,
   IconCode,
-  IconH1,
-  IconH2,
-  IconH3,
-  IconBlockquote,
-  IconList,
-  IconListNumbers,
   IconLink,
-  IconBraces,
 } from '@tabler/icons';
-import {
-  toggleMark,
-  isMarkActive,
-  toggleElement,
-  isElementActive,
-} from 'editor/formatting';
+import { toggleMark, isMarkActive, isElementActive } from 'editor/formatting';
 import { ElementType, Mark } from 'types/slate';
 import Tooltip from 'components/Tooltip';
 import EditorPopover from './EditorPopover';
@@ -42,17 +30,7 @@ export default function HoveringToolbar(props: Props) {
       <FormatButton format={Mark.Italic} />
       <FormatButton format={Mark.Underline} />
       <FormatButton format={Mark.Strikethrough} />
-      <FormatButton
-        format={Mark.Code}
-        className="border-r dark:border-gray-700"
-      />
-      <BlockButton format={ElementType.HeadingOne} />
-      <BlockButton format={ElementType.HeadingTwo} />
-      <BlockButton format={ElementType.HeadingThree} />
-      <BlockButton format={ElementType.BulletedList} />
-      <BlockButton format={ElementType.NumberedList} />
-      <BlockButton format={ElementType.Blockquote} />
-      <BlockButton format={ElementType.CodeBlock} />
+      <FormatButton format={Mark.Code} />
     </EditorPopover>
   );
 }
@@ -66,7 +44,7 @@ type ToolbarButtonProps = {
   className?: string;
 };
 
-const ToolbarButton = (props: ToolbarButtonProps) => {
+export const ToolbarButton = (props: ToolbarButtonProps) => {
   const {
     icon: Icon,
     onClick,
@@ -148,68 +126,6 @@ const FormatButton = ({ format, className = '' }: FormatButtonProps) => {
     <ToolbarButton
       icon={Icon}
       onClick={() => toggleMark(editor, format)}
-      isActive={isActive}
-      className={className}
-      tooltip={tooltip}
-    />
-  );
-};
-
-type BlockButtonProps = {
-  format: ElementType;
-  className?: string;
-};
-
-const BlockButton = ({ format, className = '' }: BlockButtonProps) => {
-  const editor = useSlate();
-  const isActive = isElementActive(editor, format);
-
-  const Icon = useMemo(() => {
-    switch (format) {
-      case ElementType.HeadingOne:
-        return IconH1;
-      case ElementType.HeadingTwo:
-        return IconH2;
-      case ElementType.HeadingThree:
-        return IconH3;
-      case ElementType.BulletedList:
-        return IconList;
-      case ElementType.NumberedList:
-        return IconListNumbers;
-      case ElementType.Blockquote:
-        return IconBlockquote;
-      case ElementType.CodeBlock:
-        return IconBraces;
-      default:
-        throw new Error(`Format ${format} is not a valid format`);
-    }
-  }, [format]);
-
-  const tooltip = useMemo(() => {
-    switch (format) {
-      case ElementType.HeadingOne:
-        return 'Heading 1';
-      case ElementType.HeadingTwo:
-        return 'Heading 2';
-      case ElementType.HeadingThree:
-        return 'Heading 3';
-      case ElementType.BulletedList:
-        return 'Bulleted List';
-      case ElementType.NumberedList:
-        return 'Numbered List';
-      case ElementType.Blockquote:
-        return 'Quote Block';
-      case ElementType.CodeBlock:
-        return 'Code Block';
-      default:
-        return undefined;
-    }
-  }, [format]);
-
-  return (
-    <ToolbarButton
-      icon={Icon}
-      onClick={() => toggleElement(editor, format)}
       isActive={isActive}
       className={className}
       tooltip={tooltip}

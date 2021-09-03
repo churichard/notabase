@@ -1,4 +1,4 @@
-import { Editor, Element, Transforms, Range, Text, Node } from 'slate';
+import { Editor, Element, Transforms, Range, Text, Node, Path } from 'slate';
 import { store } from 'lib/store';
 import type {
   ExternalLink,
@@ -10,6 +10,7 @@ import type {
 import { ElementType, Mark } from 'types/slate';
 import { computeBlockReference } from './backlinks/useBlockReference';
 import { createNodeId } from './plugins/withNodeId';
+import { isTextType } from './checks';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const isMark = (type: any): type is Mark => {
@@ -40,8 +41,13 @@ export const toggleMark = (editor: Editor, format: Mark) => {
   }
 };
 
-export const isElementActive = (editor: Editor, format: ElementType) => {
+export const isElementActive = (
+  editor: Editor,
+  format: ElementType,
+  path?: Path
+) => {
   const [match] = Editor.nodes(editor, {
+    ...(path ? { at: path } : {}),
     match: (n) =>
       !Editor.isEditor(n) && Element.isElement(n) && n.type === format,
   });
@@ -49,22 +55,52 @@ export const isElementActive = (editor: Editor, format: ElementType) => {
   return !!match;
 };
 
-export const toggleElement = (editor: Editor, format: ElementType) => {
+export const toggleElement = (
+  editor: Editor,
+  format: ElementType,
+  path?: Path
+) => {
+  const pathRef = path ? Editor.pathRef(editor, path) : null;
   const isActive = isElementActive(editor, format);
 
-  Transforms.unwrapNodes(editor, {
-    match: (n) =>
-      !Editor.isEditor(n) && Element.isElement(n) && isListType(n.type),
-    split: true,
-  });
-  const newProperties: Partial<Element> = {
-    type: isActive
-      ? ElementType.Paragraph
-      : isListType(format)
-      ? ElementType.ListItem
-      : format,
+  // Returns the current path
+  const getCurrentLocation = () => pathRef?.current ?? undefined;
+
+  // If we're switching to a text type element that's not currently active,
+  // then we want to fully unwrap the list.
+  const continueUnwrappingList = () => {
+    // format is text type and is not currently active
+    const formatIsTextAndNotActive = !isActive && isTextType(format);
+
+    // there is a list element above the current path/selection
+    const hasListTypeAbove = Editor.above(editor, {
+      at: getCurrentLocation(),
+      match: (n) =>
+        !Editor.isEditor(n) && Element.isElement(n) && isListType(n.type),
+    });
+
+    return formatIsTextAndNotActive && hasListTypeAbove;
   };
-  Transforms.setNodes(editor, newProperties);
+
+  do {
+    Transforms.unwrapNodes(editor, {
+      at: getCurrentLocation(),
+      match: (n) =>
+        !Editor.isEditor(n) && Element.isElement(n) && isListType(n.type),
+      split: true,
+    });
+  } while (continueUnwrappingList());
+
+  let newType;
+  if (isActive) {
+    newType = ElementType.Paragraph;
+  } else if (isListType(format)) {
+    newType = ElementType.ListItem;
+  } else {
+    newType = format;
+  }
+  const newProperties: Partial<Element> = { type: newType };
+  Transforms.setNodes(editor, newProperties, { at: getCurrentLocation() });
 
   if (!isActive && isListType(format)) {
     const block: ListElement = {
@@ -72,7 +108,7 @@ export const toggleElement = (editor: Editor, format: ElementType) => {
       type: format,
       children: [],
     };
-    Transforms.wrapNodes(editor, block);
+    Transforms.wrapNodes(editor, block, { at: getCurrentLocation() });
   }
 };
 
@@ -206,14 +242,21 @@ export const insertNoteLink = (
   wrapLink(editor, link);
 };
 
-export const insertImage = (editor: Editor, url: string) => {
+export const insertImage = (editor: Editor, url: string, path?: Path) => {
   const image: Image = {
     id: createNodeId(),
     type: ElementType.Image,
     url,
     children: [{ text: '' }],
   };
-  Transforms.insertNodes(editor, image);
+
+  if (path) {
+    // Set the node at the given path to be an image
+    Transforms.setNodes(editor, image, { at: path });
+  } else {
+    // Insert a new image node
+    Transforms.insertNodes(editor, image);
+  }
 };
 
 export const insertBlockReference = (

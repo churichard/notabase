@@ -1,5 +1,4 @@
 import {
-  ComponentType,
   useCallback,
   useMemo,
   useState,
@@ -7,117 +6,15 @@ import {
   useRef,
   Fragment,
 } from 'react';
-import { Element, Node, Transforms } from 'slate';
-import { ReactEditor, useSlateStatic } from 'slate-react';
-import { IconDotsVertical, IconLink } from '@tabler/icons';
+import { Node } from 'slate';
 import { Popover } from '@headlessui/react';
 import { usePopper } from 'react-popper';
-import { ReferenceableBlockElement, ElementType } from 'types/slate';
-import Dropdown, { DropdownItem } from 'components/Dropdown';
+import { ReferenceableBlockElement } from 'types/slate';
 import Portal from 'components/Portal';
-import { isReferenceableBlockElement } from 'editor/checks';
 import updateBlockBacklinks from 'editor/backlinks/updateBlockBacklinks';
-import { createNodeId } from 'editor/plugins/withNodeId';
 import { shallowEqual, Store, useStore } from 'lib/store';
 import BlockBacklinks from '../backlinks/BlockBacklinks';
 import { getNumOfMatches } from '../backlinks/Backlinks';
-import { EditorElementProps } from './EditorElement';
-
-export default function withBlockSideMenu(
-  EditorElement: ComponentType<EditorElementProps>
-) {
-  const ElementWithSideMenu = (props: EditorElementProps) => {
-    const { element } = props;
-
-    if (!isReferenceableBlockElement(element)) {
-      return <EditorElement {...props} />;
-    }
-
-    return (
-      <div className="relative w-full group before:absolute before:top-0 before:bottom-0 before:w-full before:right-full">
-        <EditorElement {...props} />
-        <OptionsMenuDropdown element={element} />
-        <BacklinksPopover element={element} />
-      </div>
-    );
-  };
-
-  return ElementWithSideMenu;
-}
-
-type OptionsMenuDropdownProps = {
-  element: ReferenceableBlockElement;
-};
-
-const OptionsMenuDropdown = (props: OptionsMenuDropdownProps) => {
-  const { element } = props;
-  const editor = useSlateStatic();
-
-  const onCopyBlockRef = useCallback(async () => {
-    let blockId;
-
-    // We still need this because there are cases where block ids might not exist
-    if (!element.id) {
-      // Generate block id if it doesn't exist
-      blockId = createNodeId();
-      const path = ReactEditor.findPath(editor, element);
-      Transforms.setNodes(
-        editor,
-        { id: blockId },
-        {
-          at: path,
-          match: (n) =>
-            Element.isElement(n) &&
-            isReferenceableBlockElement(n) &&
-            n.type === element.type,
-        }
-      );
-    } else {
-      // Use the existing block id
-      blockId = element.id;
-    }
-
-    navigator.clipboard.writeText(`((${blockId}))`);
-  }, [editor, element]);
-
-  const buttonChildren = useMemo(
-    () => (
-      <span className="flex items-center justify-center w-6 h-6">
-        <IconDotsVertical
-          className="text-gray-500 dark:text-gray-400"
-          size={18}
-        />
-      </span>
-    ),
-    []
-  );
-
-  const buttonClassName = useMemo(() => {
-    const className =
-      'hidden group-hover:block select-none hover:bg-gray-200 active:bg-gray-300 rounded absolute top-0.5 dark:hover:bg-gray-800 dark:active:bg-gray-700';
-    if (element.type === ElementType.ListItem) {
-      return `${className} -left-16`;
-    } else {
-      return `${className} -left-8`;
-    }
-  }, [element.type]);
-
-  return (
-    <Dropdown
-      buttonChildren={buttonChildren}
-      buttonClassName={buttonClassName}
-      placement="left"
-      offset={[0, 6]}
-      tooltipContent={<span className="text-xs">Click to open menu</span>}
-      tooltipPlacement="bottom"
-    >
-      <DropdownItem onClick={onCopyBlockRef}>
-        <IconLink size={18} className="mr-1" />
-        <span>Copy block reference</span>
-      </DropdownItem>
-    </Dropdown>
-  );
-};
 
 const UPDATE_BLOCK_BACKLINKS_DEBOUNCE_MS = 500;
 
@@ -125,7 +22,7 @@ type BacklinksPopoverProps = {
   element: ReferenceableBlockElement;
 };
 
-const BacklinksPopover = (props: BacklinksPopoverProps) => {
+export default function BacklinksPopover(props: BacklinksPopoverProps) {
   const { element } = props;
 
   const [referenceElement, setReferenceElement] =
@@ -205,4 +102,4 @@ const BacklinksPopover = (props: BacklinksPopoverProps) => {
       )}
     </Popover>
   ) : null;
-};
+}
