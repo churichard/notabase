@@ -197,11 +197,7 @@ export default function AppLayout(props: Props) {
   }, [router]);
 
   if (!isPageLoaded) {
-    return (
-      <div className={darkMode ? 'dark' : ''}>
-        <PageLoading />
-      </div>
-    );
+    return <PageLoading />;
   }
 
   return (
