@@ -242,14 +242,21 @@ export const insertNoteLink = (
   wrapLink(editor, link);
 };
 
-export const insertImage = (editor: Editor, url: string) => {
+export const insertImage = (editor: Editor, url: string, path?: Path) => {
   const image: Image = {
     id: createNodeId(),
     type: ElementType.Image,
     url,
     children: [{ text: '' }],
   };
-  Transforms.insertNodes(editor, image);
+
+  if (path) {
+    // Set the node at the given path to be an image
+    Transforms.setNodes(editor, image, { at: path });
+  } else {
+    // Insert a new image node
+    Transforms.insertNodes(editor, image);
+  }
 };
 
 export const insertBlockReference = (

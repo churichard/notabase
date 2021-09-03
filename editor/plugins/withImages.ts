@@ -1,4 +1,4 @@
-import { Editor } from 'slate';
+import { Editor, Path } from 'slate';
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from 'react-toastify';
 import { insertImage } from 'editor/formatting';
@@ -45,7 +45,11 @@ const isImageUrl = (url: string) => {
   return false;
 };
 
-const uploadAndInsertImage = async (editor: Editor, file: File) => {
+export const uploadAndInsertImage = async (
+  editor: Editor,
+  file: File,
+  path?: Path
+) => {
   const user = supabase.auth.user();
 
   if (!user) {
@@ -83,7 +87,7 @@ const uploadAndInsertImage = async (editor: Editor, file: File) => {
     .createSignedUrl(key, expiresIn);
 
   if (signedURL) {
-    insertImage(editor, signedURL);
+    insertImage(editor, signedURL, path);
   } else if (signedUrlError) {
     toast.error(signedUrlError);
   }
