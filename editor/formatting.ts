@@ -1,4 +1,4 @@
-import { Editor, Element, Transforms, Range, Text, Node } from 'slate';
+import { Editor, Element, Transforms, Range, Text, Node, Path } from 'slate';
 import { store } from 'lib/store';
 import type {
   ExternalLink,
@@ -40,31 +40,72 @@ export const toggleMark = (editor: Editor, format: Mark) => {
   }
 };
 
-export const isElementActive = (editor: Editor, format: ElementType) => {
-  const [match] = Editor.nodes(editor, {
+export const inChildOfElementType = (
+  editor: Editor,
+  format: ElementType,
+  path?: Path
+) => {
+  const parentElement = Editor.above<Element>(editor, {
+    ...(path ? { at: path } : {}),
     match: (n) =>
-      !Editor.isEditor(n) && Element.isElement(n) && n.type === format,
+      !Editor.isEditor(n) &&
+      Element.isElement(n) &&
+      (!isListType(format) || n.type !== ElementType.ListItem), // If format is a list, we want to skip list items
+  });
+  return parentElement ? parentElement[0].type === format : false;
+};
+
+export const isElementActive = (
+  editor: Editor,
+  format: ElementType,
+  path?: Path
+) => {
+  let formatToMatch = format;
+  if (isListType(format)) {
+    if (!inChildOfElementType(editor, format, path)) {
+      return false;
+    }
+    formatToMatch = ElementType.ListItem;
+  }
+
+  const [match] = Editor.nodes(editor, {
+    ...(path ? { at: path } : {}),
+    match: (n) =>
+      !Editor.isEditor(n) && Element.isElement(n) && n.type === formatToMatch,
   });
 
   return !!match;
 };
 
-export const toggleElement = (editor: Editor, format: ElementType) => {
+export const toggleElement = (
+  editor: Editor,
+  format: ElementType,
+  path?: Path
+) => {
+  const pathRef = path ? Editor.pathRef(editor, path) : null;
   const isActive = isElementActive(editor, format);
 
+  // Returns the current path
+  const getCurrentLocation = () => pathRef?.current ?? undefined;
+
+  // Unwrap list
   Transforms.unwrapNodes(editor, {
+    at: getCurrentLocation(),
     match: (n) =>
       !Editor.isEditor(n) && Element.isElement(n) && isListType(n.type),
     split: true,
   });
-  const newProperties: Partial<Element> = {
-    type: isActive
-      ? ElementType.Paragraph
-      : isListType(format)
-      ? ElementType.ListItem
-      : format,
-  };
-  Transforms.setNodes(editor, newProperties);
+
+  let newType;
+  if (isActive) {
+    newType = ElementType.Paragraph;
+  } else if (isListType(format)) {
+    newType = ElementType.ListItem;
+  } else {
+    newType = format;
+  }
+  const newProperties: Partial<Element> = { type: newType };
+  Transforms.setNodes(editor, newProperties, { at: getCurrentLocation() });
 
   if (!isActive && isListType(format)) {
     const block: ListElement = {
@@ -72,7 +113,7 @@ export const toggleElement = (editor: Editor, format: ElementType) => {
       type: format,
       children: [],
     };
-    Transforms.wrapNodes(editor, block);
+    Transforms.wrapNodes(editor, block, { at: getCurrentLocation() });
   }
 };
 

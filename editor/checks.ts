@@ -18,3 +18,18 @@ export const isReferenceableBlockElement = (
     element.type === ElementType.BlockReference
   );
 };
+
+export const isTextType = (
+  type: ElementType
+): type is
+  | ElementType.Paragraph
+  | ElementType.HeadingOne
+  | ElementType.HeadingTwo
+  | ElementType.HeadingThree => {
+  return (
+    type === ElementType.Paragraph ||
+    type === ElementType.HeadingOne ||
+    type === ElementType.HeadingTwo ||
+    type === ElementType.HeadingThree
+  );
+};

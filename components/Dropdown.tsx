@@ -1,4 +1,4 @@
-import { useState, ReactNode } from 'react';
+import { useState, ReactNode, MouseEventHandler } from 'react';
 import { usePopper } from 'react-popper';
 import { Menu } from '@headlessui/react';
 import { Placement } from '@popperjs/core';
@@ -60,7 +60,7 @@ export default function Dropdown(props: Props) {
             <Portal>
               <Menu.Items
                 ref={setPopperElement}
-                className={`z-10 w-48 overflow-hidden text-sm bg-white rounded shadow-popover dark:bg-gray-800 ${itemsClassName}`}
+                className={`z-10 w-52 overflow-hidden text-sm bg-white rounded shadow-popover dark:bg-gray-800 ${itemsClassName}`}
                 static
                 style={styles.popper}
                 {...attributes.popper}
@@ -76,7 +76,7 @@ export default function Dropdown(props: Props) {
 }
 
 type DropdownItemProps = {
-  onClick: () => void;
+  onClick: MouseEventHandler<HTMLButtonElement>;
   children: ReactNode;
   className?: string;
 };
@@ -87,7 +87,7 @@ export function DropdownItem(props: DropdownItemProps) {
     <Menu.Item>
       {({ active }) => (
         <button
-          className={`flex w-full items-center px-4 py-2 text-left text-gray-800 dark:text-gray-200 ${
+          className={`flex w-full items-center px-4 py-2 text-left text-gray-800 dark:text-gray-200 select-none ${
             active ? 'bg-gray-100 dark:bg-gray-700' : ''
           } ${className}`}
           onClick={onClick}
