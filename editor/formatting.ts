@@ -10,6 +10,7 @@ import type {
 import { ElementType, Mark } from 'types/slate';
 import { computeBlockReference } from './backlinks/useBlockReference';
 import { createNodeId } from './plugins/withNodeId';
+import { isTextType } from './checks';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const isMark = (type: any): type is Mark => {
@@ -40,38 +41,15 @@ export const toggleMark = (editor: Editor, format: Mark) => {
   }
 };
 
-export const inChildOfElementType = (
-  editor: Editor,
-  format: ElementType,
-  path?: Path
-) => {
-  const parentElement = Editor.above<Element>(editor, {
-    ...(path ? { at: path } : {}),
-    match: (n) =>
-      !Editor.isEditor(n) &&
-      Element.isElement(n) &&
-      (!isListType(format) || n.type !== ElementType.ListItem), // If format is a list, we want to skip list items
-  });
-  return parentElement ? parentElement[0].type === format : false;
-};
-
 export const isElementActive = (
   editor: Editor,
   format: ElementType,
   path?: Path
 ) => {
-  let formatToMatch = format;
-  if (isListType(format)) {
-    if (!inChildOfElementType(editor, format, path)) {
-      return false;
-    }
-    formatToMatch = ElementType.ListItem;
-  }
-
   const [match] = Editor.nodes(editor, {
     ...(path ? { at: path } : {}),
     match: (n) =>
-      !Editor.isEditor(n) && Element.isElement(n) && n.type === formatToMatch,
+      !Editor.isEditor(n) && Element.isElement(n) && n.type === format,
   });
 
   return !!match;
@@ -88,13 +66,30 @@ export const toggleElement = (
   // Returns the current path
   const getCurrentLocation = () => pathRef?.current ?? undefined;
 
-  // Unwrap list
-  Transforms.unwrapNodes(editor, {
-    at: getCurrentLocation(),
-    match: (n) =>
-      !Editor.isEditor(n) && Element.isElement(n) && isListType(n.type),
-    split: true,
-  });
+  // If we're switching to a text type element that's not currently active,
+  // then we want to fully unwrap the list.
+  const continueUnwrappingList = () => {
+    // format is text type and is not currently active
+    const formatIsTextAndNotActive = !isActive && isTextType(format);
+
+    // there is a list element above the current path/selection
+    const hasListTypeAbove = Editor.above(editor, {
+      at: getCurrentLocation(),
+      match: (n) =>
+        !Editor.isEditor(n) && Element.isElement(n) && isListType(n.type),
+    });
+
+    return formatIsTextAndNotActive && hasListTypeAbove;
+  };
+
+  do {
+    Transforms.unwrapNodes(editor, {
+      at: getCurrentLocation(),
+      match: (n) =>
+        !Editor.isEditor(n) && Element.isElement(n) && isListType(n.type),
+      split: true,
+    });
+  } while (continueUnwrappingList());
 
   let newType;
   if (isActive) {
