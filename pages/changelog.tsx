@@ -28,6 +28,7 @@ export default function Changelog() {
           features={[
             'Move block formatting options to block menu',
             'Add image button to block menu',
+            'Enable full-screen mode when adding to home screen',
           ]}
         />
         <ChangelogBlock
