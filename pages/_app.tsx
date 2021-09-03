@@ -43,6 +43,7 @@ export default function MyApp({ Component, pageProps, router }: AppProps) {
           sizes="16x16"
           href="/favicon-16x16.png"
         />
+        <link rel="manifest" href="/manifest.json" />
         <meta property="og:title" content="Notabase" />
         <meta property="og:description" content={DESCRIPTION} />
         <meta property="og:image" content="https://notabase.io/banner.png" />
