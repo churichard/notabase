@@ -78,7 +78,10 @@ export default function BlockMenuDropdown(props: BlockMenuDropdownProps) {
         <IconLink size={18} className="mr-1" />
         <span>Copy block reference</span>
       </DropdownItem>
-      <ChangeBlockOptions element={element} />
+      <ChangeBlockOptions
+        element={element}
+        className="px-4 py-2 border-t dark:border-gray-700"
+      />
     </Dropdown>
   );
 }

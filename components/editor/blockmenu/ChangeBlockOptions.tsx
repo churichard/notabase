@@ -8,7 +8,6 @@ import {
   IconList,
   IconListNumbers,
   IconBraces,
-  IconSwitch,
   IconTypography,
   TablerIcon,
 } from '@tabler/icons';
@@ -20,17 +19,14 @@ import { DropdownItem } from 'components/Dropdown';
 
 type ChangeBlockOptionsProps = {
   element: Element;
+  className?: string;
 };
 
 export default function ChangeBlockOptions(props: ChangeBlockOptionsProps) {
-  const { element } = props;
+  const { element, className = '' } = props;
   return (
-    <div className="px-4 py-2">
-      <p className="flex items-center pb-2 select-none dark:text-gray-200">
-        <IconSwitch size={18} className="mr-1" />
-        <span>Turn block into:</span>
-      </p>
-      <div className="flex items-center justify-center pb-2 space-x-2">
+    <div className={`space-y-2 ${className}`}>
+      <div className="flex items-center justify-center space-x-2">
         <BlockButton
           format={ElementType.Paragraph}
           element={element}
@@ -69,6 +65,8 @@ export default function ChangeBlockOptions(props: ChangeBlockOptionsProps) {
           Icon={IconListNumbers}
           tooltip="Numbered List"
         />
+      </div>
+      <div className="flex items-center justify-center space-x-2">
         <BlockButton
           format={ElementType.Blockquote}
           element={element}
