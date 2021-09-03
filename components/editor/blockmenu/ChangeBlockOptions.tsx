@@ -14,7 +14,8 @@ import {
 import { Element } from 'slate';
 import { toggleElement, isElementActive } from 'editor/formatting';
 import { ElementType } from 'types/slate';
-import { ToolbarButton } from '../HoveringToolbar';
+import Tooltip from 'components/Tooltip';
+import { DropdownItem } from 'components/Dropdown';
 
 type ChangeBlockOptionsProps = {
   element: Element;
@@ -105,12 +106,22 @@ const BlockButton = ({ format, element, className = '' }: BlockButtonProps) => {
   }, [format]);
 
   return (
-    <ToolbarButton
-      icon={Icon}
-      onClick={() => toggleElement(editor, format, path)}
-      isActive={isActive}
-      className={`border rounded dark:border-gray-700 ${className}`}
-      tooltip={tooltip}
-    />
+    <Tooltip content={tooltip} placement="top" disabled={!tooltip}>
+      <span>
+        <DropdownItem
+          className={`flex items-center px-2 py-2 cursor-pointer border rounded hover:bg-gray-100 active:bg-gray-200 dark:hover:bg-gray-700 dark:active:bg-gray-600 dark:border-gray-700 ${className}`}
+          onClick={() => toggleElement(editor, format, path)}
+        >
+          <Icon
+            size={18}
+            className={
+              isActive
+                ? 'text-primary-500 dark:text-primary-400'
+                : 'text-gray-800 dark:text-gray-200'
+            }
+          />
+        </DropdownItem>
+      </span>
+    </Tooltip>
   );
 };
