@@ -10,6 +10,7 @@ import {
   IconBraces,
   IconSwitch,
   IconTypography,
+  TablerIcon,
 } from '@tabler/icons';
 import { Element } from 'slate';
 import { toggleElement, isElementActive } from 'editor/formatting';
@@ -30,16 +31,56 @@ export default function ChangeBlockOptions(props: ChangeBlockOptionsProps) {
         <span>Turn block into:</span>
       </p>
       <div className="flex items-center justify-center pb-2 space-x-2">
-        <BlockButton format={ElementType.Paragraph} element={element} />
-        <BlockButton format={ElementType.HeadingOne} element={element} />
-        <BlockButton format={ElementType.HeadingTwo} element={element} />
-        <BlockButton format={ElementType.HeadingThree} element={element} />
+        <BlockButton
+          format={ElementType.Paragraph}
+          element={element}
+          Icon={IconTypography}
+          tooltip="Paragraph"
+        />
+        <BlockButton
+          format={ElementType.HeadingOne}
+          element={element}
+          Icon={IconH1}
+          tooltip="Heading 1"
+        />
+        <BlockButton
+          format={ElementType.HeadingTwo}
+          element={element}
+          Icon={IconH2}
+          tooltip="Heading 2"
+        />
+        <BlockButton
+          format={ElementType.HeadingThree}
+          element={element}
+          Icon={IconH3}
+          tooltip="Heading 3"
+        />
       </div>
       <div className="flex items-center justify-center space-x-2">
-        <BlockButton format={ElementType.BulletedList} element={element} />
-        <BlockButton format={ElementType.NumberedList} element={element} />
-        <BlockButton format={ElementType.Blockquote} element={element} />
-        <BlockButton format={ElementType.CodeBlock} element={element} />
+        <BlockButton
+          format={ElementType.BulletedList}
+          element={element}
+          Icon={IconList}
+          tooltip="Bulleted List"
+        />
+        <BlockButton
+          format={ElementType.NumberedList}
+          element={element}
+          Icon={IconListNumbers}
+          tooltip="Numbered List"
+        />
+        <BlockButton
+          format={ElementType.Blockquote}
+          element={element}
+          Icon={IconBlockquote}
+          tooltip="Quote Block"
+        />
+        <BlockButton
+          format={ElementType.CodeBlock}
+          element={element}
+          Icon={IconBraces}
+          tooltip="Code Block"
+        />
       </div>
     </div>
   );
@@ -48,62 +89,24 @@ export default function ChangeBlockOptions(props: ChangeBlockOptionsProps) {
 type BlockButtonProps = {
   format: ElementType;
   element: Element;
+  Icon: TablerIcon;
+  tooltip?: string;
   className?: string;
 };
 
-const BlockButton = ({ format, element, className = '' }: BlockButtonProps) => {
+const BlockButton = ({
+  format,
+  element,
+  Icon,
+  tooltip,
+  className = '',
+}: BlockButtonProps) => {
   const editor = useSlate();
   const path = useMemo(
     () => ReactEditor.findPath(editor, element),
     [editor, element]
   );
   const isActive = isElementActive(editor, format, path);
-
-  const Icon = useMemo(() => {
-    switch (format) {
-      case ElementType.Paragraph:
-        return IconTypography;
-      case ElementType.HeadingOne:
-        return IconH1;
-      case ElementType.HeadingTwo:
-        return IconH2;
-      case ElementType.HeadingThree:
-        return IconH3;
-      case ElementType.BulletedList:
-        return IconList;
-      case ElementType.NumberedList:
-        return IconListNumbers;
-      case ElementType.Blockquote:
-        return IconBlockquote;
-      case ElementType.CodeBlock:
-        return IconBraces;
-      default:
-        throw new Error(`Format ${format} is not a valid format`);
-    }
-  }, [format]);
-
-  const tooltip = useMemo(() => {
-    switch (format) {
-      case ElementType.Paragraph:
-        return 'Paragraph';
-      case ElementType.HeadingOne:
-        return 'Heading 1';
-      case ElementType.HeadingTwo:
-        return 'Heading 2';
-      case ElementType.HeadingThree:
-        return 'Heading 3';
-      case ElementType.BulletedList:
-        return 'Bulleted List';
-      case ElementType.NumberedList:
-        return 'Numbered List';
-      case ElementType.Blockquote:
-        return 'Quote Block';
-      case ElementType.CodeBlock:
-        return 'Code Block';
-      default:
-        return undefined;
-    }
-  }, [format]);
 
   return (
     <Tooltip content={tooltip} placement="top" disabled={!tooltip}>
