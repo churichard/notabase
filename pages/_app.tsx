@@ -44,6 +44,8 @@ export default function MyApp({ Component, pageProps, router }: AppProps) {
           href="/favicon-16x16.png"
         />
         <link rel="manifest" href="/manifest.json" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="mobile-web-app-capable" content="yes" />
         <meta property="og:title" content="Notabase" />
         <meta property="og:description" content={DESCRIPTION} />
         <meta property="og:image" content="https://notabase.io/banner.png" />
