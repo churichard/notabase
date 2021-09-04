@@ -20,7 +20,7 @@ const pricingTableData = [
       ['Full-text search', true, true],
       ['Graph view', true, true],
       ['Import / export', true, true],
-      ['Block references (coming soon)', true, true],
+      ['Block references', true, true],
     ],
   },
   {
