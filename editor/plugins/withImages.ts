@@ -71,12 +71,18 @@ export const uploadAndInsertImage = async (
     return;
   }
 
+  const uploadingToast = toast.info('Uploading image, please wait...', {
+    autoClose: false,
+    closeButton: false,
+    draggable: false,
+  });
   const key = `${user.id}/${uuidv4()}.png`;
   const { error: uploadError } = await supabase.storage
     .from('user-assets')
     .upload(key, file, { upsert: false });
 
   if (uploadError) {
+    toast.dismiss(uploadingToast);
     toast.error(uploadError);
     return;
   }
@@ -86,10 +92,15 @@ export const uploadAndInsertImage = async (
     .from('user-assets')
     .createSignedUrl(key, expiresIn);
 
+  toast.dismiss(uploadingToast);
   if (signedURL) {
     insertImage(editor, signedURL, path);
   } else if (signedUrlError) {
     toast.error(signedUrlError);
+  } else {
+    toast.error(
+      'There was a problem uploading your image. Please try again later.'
+    );
   }
 };
 
