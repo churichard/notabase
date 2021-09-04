@@ -35,7 +35,11 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     event = stripe.webhooks.constructEvent(buf.toString(), sig, webhookSecret);
   } catch (err) {
-    res.status(400).send(`Webhook Error: ${err.message}`);
+    const message =
+      err instanceof Error
+        ? err.message
+        : 'There was a problem constructing the Stripe webhook event.';
+    res.status(400).send(`Webhook Error: ${message}`);
     return;
   }
 
