@@ -32,6 +32,10 @@ export default async function handler(
     );
     res.status(200).end();
   } catch (e) {
-    res.status(500).json({ message: e.message });
+    const message =
+      e instanceof Error
+        ? e.message
+        : 'There was a problem updating the email list.';
+    res.status(500).json({ message });
   }
 }

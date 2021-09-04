@@ -55,6 +55,10 @@ export default async function handler(
     });
     res.json({ sessionId: session.id });
   } catch (e) {
-    res.status(500).json({ message: e.message });
+    const message =
+      e instanceof Error
+        ? e.message
+        : 'There was a problem creating the checkout session.';
+    res.status(500).json({ message });
   }
 }
