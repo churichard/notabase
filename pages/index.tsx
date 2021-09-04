@@ -29,6 +29,7 @@ export default function Home() {
                   autoPlay
                   loop
                   muted
+                  playsInline
                 >
                   <source src="/demo.mp4" type="video/mp4" />
                 </video>
@@ -38,6 +39,7 @@ export default function Home() {
                   autoPlay
                   loop
                   muted
+                  playsInline
                 >
                   <source src="/demo_mobile.mp4" type="video/mp4" />
                 </video>
@@ -71,6 +73,7 @@ export default function Home() {
                   autoPlay
                   loop
                   muted
+                  playsInline
                 >
                   <source src="/graph.mp4" type="video/mp4" />
                 </video>
@@ -87,6 +90,7 @@ export default function Home() {
                   autoPlay
                   loop
                   muted
+                  playsInline
                 >
                   <source src="/rich_text.mp4" type="video/mp4" />
                 </video>
