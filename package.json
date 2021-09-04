@@ -52,7 +52,7 @@
     "zustand": "^3.5.10"
   },
   "devDependencies": {
-    "@next/bundle-analyzer": "^11.1.0",
+    "@next/bundle-analyzer": "^11.1.2",
     "@types/d3": "^6.7.4",
     "@types/file-saver": "^2.0.3",
     "@types/micro": "^7.3.6",
