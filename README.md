@@ -24,6 +24,7 @@ Notabase is in beta. It is under active development.
 - Use the **graph view** to analyze your knowledge graph
 - **Full-text search** lets you easily find relevant notes
 - **Block references**: embed a block of text from another note, which auto-updates when the original block changes
+- **Import** or **export** your notes at any time
 - **Open source**, allowing community involvement and transparent development
 
 ## Documentation & Support
