@@ -74,9 +74,7 @@ export default function Billing() {
 
   const pricingButtons = useCallback(
     (showMonthly: boolean) => {
-      const currentPlanId = billingDetails
-        ? billingDetails.planId
-        : PlanId.Basic;
+      const currentPlanId = billingDetails.planId;
 
       const switchPlanButton = (
         <button className="block w-full px-4 py-2 btn" onClick={onChangePlan}>
@@ -121,16 +119,12 @@ export default function Billing() {
 }
 
 type BillingBannerProps = {
-  billingDetails: BillingDetails | null;
+  billingDetails: BillingDetails;
   onChangePlan: () => void;
 };
 
 const BillingBanner = (props: BillingBannerProps) => {
   const { billingDetails, onChangePlan } = props;
-
-  if (!billingDetails) {
-    return null;
-  }
 
   const planId = billingDetails.planId;
   const isNotBasicPlan = planId !== PlanId.Basic;

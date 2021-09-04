@@ -32,12 +32,14 @@ const storage: StateStorage = {
 
 export type Notes = Record<Note['id'], Note>;
 
-export type BillingDetails = {
-  planId: PlanId;
-  frequency: BillingFrequency;
-  currentPeriodEnd: Date;
-  cancelAtPeriodEnd: boolean;
-} | null;
+export type BillingDetails =
+  | { planId: PlanId.Basic }
+  | {
+      planId: PlanId;
+      frequency: BillingFrequency;
+      currentPeriodEnd: Date;
+      cancelAtPeriodEnd: boolean;
+    };
 
 export type Store = {
   billingDetails: BillingDetails;
@@ -83,7 +85,7 @@ export const setter =
 export const store = createVanilla<Store>(
   persist(
     immer((set) => ({
-      billingDetails: null,
+      billingDetails: { planId: PlanId.Basic },
       setBillingDetails: setter(set, 'billingDetails'),
       /**
        * An array of saved notes

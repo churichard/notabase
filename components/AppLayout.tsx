@@ -101,8 +101,6 @@ export default function AppLayout(props: Props) {
           currentPeriodEnd: new Date(data.current_period_end),
           cancelAtPeriodEnd: data.cancel_at_period_end,
         });
-      } else {
-        setBillingDetails(null);
       }
     },
     [setBillingDetails]
@@ -211,7 +209,7 @@ export default function AppLayout(props: Props) {
         setIsSettingsOpen={setIsSettingsOpen}
       />
       <div className="flex flex-col flex-1 overflow-y-hidden">
-        {billingDetails?.planId === PlanId.Basic && numOfNotes >= 40 ? (
+        {billingDetails.planId === PlanId.Basic && numOfNotes >= 45 ? (
           <button
             className="block w-full py-1 font-semibold text-center bg-yellow-300"
             onClick={() => setIsUpgradeModalOpen(true)}

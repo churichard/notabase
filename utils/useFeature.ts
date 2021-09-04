@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Feature, PlanId, PRICING_PLANS } from 'constants/pricing';
+import { Feature, PRICING_PLANS } from 'constants/pricing';
 import { useStore } from 'lib/store';
 
 export default function useFeature(feature: Feature) {
@@ -9,9 +9,9 @@ export default function useFeature(feature: Feature) {
 
   // Whether or not the particular user can actually use the feature
   const isEnabled = useMemo(() => {
-    const planFeature = PRICING_PLANS[
-      billingDetails?.planId ?? PlanId.Basic
-    ].features.find((f) => f.name === feature);
+    const planFeature = PRICING_PLANS[billingDetails.planId].features.find(
+      (f) => f.name === feature
+    );
 
     if (!planFeature) {
       return false;
