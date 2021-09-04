@@ -154,21 +154,26 @@ const ImageButton = ({
     input.type = 'file';
     input.accept = 'image/*';
     input.multiple = false;
+    input.className = 'absolute invisible hidden w-0 h-0';
 
     input.onchange = async (e) => {
       if (!e.target) {
+        document.body.removeChild(input);
         return;
       }
 
       const inputElement = e.target as HTMLInputElement;
 
       if (!inputElement.files || inputElement.files.length <= 0) {
+        document.body.removeChild(input);
         return;
       }
 
       await uploadAndInsertImage(editor, inputElement.files[0], path);
+      document.body.removeChild(input);
     };
 
+    document.body.appendChild(input);
     input.click();
   }, [editor, path]);
 
