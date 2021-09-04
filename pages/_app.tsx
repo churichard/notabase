@@ -74,6 +74,7 @@ export default function MyApp({ Component, pageProps, router }: AppProps) {
         position="top-center"
         hideProgressBar
         newestOnTop={true}
+        theme="colored"
       />
     </>
   );
