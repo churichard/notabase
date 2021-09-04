@@ -24,6 +24,10 @@ export default function Changelog() {
           .
         </p>
         <ChangelogBlock
+          title="September 4, 2021"
+          features={['Fix image uploading on iOS Safari']}
+        />
+        <ChangelogBlock
           title="September 3, 2021"
           features={[
             'Move block formatting options to block menu',

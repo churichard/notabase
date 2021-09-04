@@ -15,6 +15,8 @@ const withImages = (editor: Editor) => {
     const text = data.getData('text/plain');
     const { files } = data;
 
+    // TODO: there is a bug on iOS Safari where the files array is empty
+    // See https://github.com/ianstormtaylor/slate/issues/4491
     if (files && files.length > 0) {
       for (const file of files) {
         const [mime] = file.type.split('/');
