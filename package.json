@@ -12,7 +12,7 @@
     "analyze": "env ANALYZE=true next build"
   },
   "dependencies": {
-    "@headlessui/react": "^1.4.0",
+    "@headlessui/react": "^1.4.1",
     "@popperjs/core": "^2.9.3",
     "@sentry/nextjs": "^6.11.0",
     "@stripe/stripe-js": "^1.17.1",
