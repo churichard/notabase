@@ -23,7 +23,7 @@ type Props = {
 };
 
 export default function AppLayout(props: Props) {
-  const { children, className } = props;
+  const { children, className = '' } = props;
   const { user, isLoaded } = useAuth();
   const router = useRouter();
 
@@ -204,7 +204,9 @@ export default function AppLayout(props: Props) {
       className={`flex h-screen ${darkMode ? 'dark' : ''} ${className}`}
     >
       <Sidebar
-        className={!isSidebarOpen ? 'hidden' : undefined}
+        className={`transition-width duration-75 ${
+          !isSidebarOpen ? 'w-0 border-r-0' : 'w-64 border-r'
+        }`}
         setIsFindOrCreateModalOpen={setIsFindOrCreateModalOpen}
         setIsSettingsOpen={setIsSettingsOpen}
       />

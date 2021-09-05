@@ -21,7 +21,7 @@ export const SidebarNoteLink = (props: Props) => {
   const { note, isHighlighted, style } = props;
   return (
     <SidebarItem
-      className="relative flex items-center justify-between group"
+      className="relative flex items-center justify-between overflow-x-hidden group"
       isHighlighted={isHighlighted}
       style={style}
     >

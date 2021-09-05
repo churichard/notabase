@@ -37,7 +37,10 @@ export default function Header(props: Props) {
           <Tooltip content="Collapse sidebar" placement="right">
             <span
               className="p-1 mr-2 rounded hover:bg-gray-300 active:bg-gray-400 dark:hover:bg-gray-600 dark:active:bg-gray-500"
-              onClick={() => setIsSidebarOpen(false)}
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsSidebarOpen(false);
+              }}
             >
               <IconChevronsLeft className="text-gray-500 dark:text-gray-400" />
             </span>
