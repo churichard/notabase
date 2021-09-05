@@ -5,7 +5,6 @@ import type { NoteLink } from 'types/slate';
 import { ElementType } from 'types/slate';
 import type { GraphData } from 'components/ForceGraph';
 import ForceGraph from 'components/ForceGraph';
-import GraphHeader from 'components/GraphHeader';
 import { useStore } from 'lib/store';
 import ErrorBoundary from 'components/ErrorBoundary';
 
@@ -68,10 +67,7 @@ export default function Graph() {
         <title>Graph View | Notabase</title>
       </Head>
       <ErrorBoundary>
-        <div className="flex flex-1">
-          <GraphHeader />
-          <ForceGraph data={graphData} className="flex-1" />
-        </div>
+        <ForceGraph data={graphData} className="flex-1" />
       </ErrorBoundary>
     </>
   );

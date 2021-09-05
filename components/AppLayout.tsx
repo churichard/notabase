@@ -14,6 +14,7 @@ import FindOrCreateModal from './FindOrCreateModal';
 import PageLoading from './PageLoading';
 import SettingsModal from './settings/SettingsModal';
 import UpgradeModal from './UpgradeModal';
+import OpenSidebarButton from './sidebar/OpenSidebarButton';
 
 const SM_BREAKPOINT = 640;
 
@@ -204,12 +205,15 @@ export default function AppLayout(props: Props) {
       className={`flex h-screen ${darkMode ? 'dark' : ''} ${className}`}
     >
       <Sidebar
-        className={`transition-width duration-75 ${
+        className={`transition-width duration-100 ${
           !isSidebarOpen ? 'w-0 border-r-0' : 'w-64 border-r'
         }`}
         setIsFindOrCreateModalOpen={setIsFindOrCreateModalOpen}
         setIsSettingsOpen={setIsSettingsOpen}
       />
+      {!isSidebarOpen ? (
+        <OpenSidebarButton className="fixed top-0 left-0 z-10 mx-4 my-1" />
+      ) : null}
       <div className="flex flex-col flex-1 overflow-y-hidden">
         {billingDetails.planId === PlanId.Basic && numOfNotes >= 45 ? (
           <button

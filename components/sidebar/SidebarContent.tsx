@@ -48,7 +48,7 @@ const Tabs = (props: TabsProps) => {
     <div className="flex">
       <Tooltip content="Notes List">
         <button
-          className={`flex justify-center flex-1 py-1.5 rounded-t hover:bg-gray-100 active:bg-gray-200 dark:hover:bg-gray-700 dark:active:bg-gray-600 dark:border-gray-700 ${
+          className={`flex justify-center flex-1 py-1.5 px-6 rounded-t hover:bg-gray-100 active:bg-gray-200 dark:hover:bg-gray-700 dark:active:bg-gray-600 dark:border-gray-700 ${
             activeTab === SidebarTab.Notes
               ? 'bg-gray-50 border-t border-r dark:bg-gray-800'
               : 'border-b'
@@ -67,7 +67,7 @@ const Tabs = (props: TabsProps) => {
       </Tooltip>
       <Tooltip content="Search">
         <button
-          className={`flex justify-center flex-1 py-1.5 rounded-t hover:bg-gray-100 active:bg-gray-200 dark:hover:bg-gray-700 dark:active:bg-gray-600 dark:border-gray-700 ${
+          className={`flex justify-center flex-1 py-1.5 px-6 rounded-t hover:bg-gray-100 active:bg-gray-200 dark:hover:bg-gray-700 dark:active:bg-gray-600 dark:border-gray-700 ${
             activeTab === SidebarTab.Search
               ? 'bg-gray-50 border-t border-l dark:bg-gray-800'
               : 'border-b'
