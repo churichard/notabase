@@ -211,10 +211,10 @@ export default function AppLayout(props: Props) {
         setIsFindOrCreateModalOpen={setIsFindOrCreateModalOpen}
         setIsSettingsOpen={setIsSettingsOpen}
       />
-      {!isSidebarOpen ? (
-        <OpenSidebarButton className="fixed top-0 left-0 z-10 mx-4 my-1" />
-      ) : null}
-      <div className="flex flex-col flex-1 overflow-y-hidden">
+      <div className="relative flex flex-col flex-1 overflow-y-hidden">
+        {!isSidebarOpen ? (
+          <OpenSidebarButton className="absolute top-0 left-0 z-10 mx-4 my-1" />
+        ) : null}
         {billingDetails.planId === PlanId.Basic && numOfNotes >= 45 ? (
           <button
             className="block w-full py-1 font-semibold text-center bg-yellow-300"
