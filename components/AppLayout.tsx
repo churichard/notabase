@@ -10,6 +10,7 @@ import { Note, Subscription, SubscriptionStatus } from 'types/supabase';
 import { useAuth } from 'utils/useAuth';
 import useHotkeys from 'utils/useHotkeys';
 import { PlanId } from 'constants/pricing';
+import { SPRING_CONFIG } from 'constants/spring';
 import Sidebar from './sidebar/Sidebar';
 import FindOrCreateModal from './FindOrCreateModal';
 import PageLoading from './PageLoading';
@@ -196,11 +197,12 @@ export default function AppLayout(props: Props) {
     }
   }, [router]);
 
-  const transitions = useTransition(isSidebarOpen, {
+  const sidebarTransition = useTransition(isSidebarOpen, {
+    initial: { width: '16rem' },
     from: { width: '0rem' },
     enter: { width: '16rem' },
     leave: { width: '0rem' },
-    config: { mass: 1, tension: 170, friction: 23 },
+    config: SPRING_CONFIG,
     expires: false,
   });
 
@@ -213,7 +215,7 @@ export default function AppLayout(props: Props) {
       id="app-container"
       className={`flex h-screen ${darkMode ? 'dark' : ''} ${className}`}
     >
-      {transitions((styles, item) => (
+      {sidebarTransition((styles, item) => (
         <animated.div className={!item ? 'hidden' : undefined} style={styles}>
           <Sidebar
             className={!item ? 'border-r-0' : 'border-r dark:border-gray-700'}

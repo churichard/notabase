@@ -48,9 +48,6 @@ module.exports = {
       cursor: {
         alias: 'alias',
       },
-      transitionProperty: {
-        width: 'width',
-      },
       typography: {
         DEFAULT: {
           css: {
