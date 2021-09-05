@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import { useRouter } from 'next/router';
 import { toast } from 'react-toastify';
 import type { User } from '@supabase/supabase-js';
+import { useTransition, animated } from '@react-spring/web';
 import { useStore, store } from 'lib/store';
 import supabase from 'lib/supabase';
 import { Note, Subscription, SubscriptionStatus } from 'types/supabase';
@@ -195,6 +196,14 @@ export default function AppLayout(props: Props) {
     }
   }, [router]);
 
+  const transitions = useTransition(isSidebarOpen, {
+    from: { width: '0rem' },
+    enter: { width: '16rem' },
+    leave: { width: '0rem' },
+    config: { mass: 1, tension: 170, friction: 23 },
+    expires: false,
+  });
+
   if (!isPageLoaded) {
     return <PageLoading />;
   }
@@ -204,13 +213,15 @@ export default function AppLayout(props: Props) {
       id="app-container"
       className={`flex h-screen ${darkMode ? 'dark' : ''} ${className}`}
     >
-      <Sidebar
-        className={`transition-width duration-100 ${
-          !isSidebarOpen ? 'w-0 border-r-0' : 'w-64 border-r'
-        }`}
-        setIsFindOrCreateModalOpen={setIsFindOrCreateModalOpen}
-        setIsSettingsOpen={setIsSettingsOpen}
-      />
+      {transitions((styles, item) => (
+        <animated.div className={!item ? 'hidden' : undefined} style={styles}>
+          <Sidebar
+            className={!item ? 'border-r-0' : 'border-r dark:border-gray-700'}
+            setIsFindOrCreateModalOpen={setIsFindOrCreateModalOpen}
+            setIsSettingsOpen={setIsSettingsOpen}
+          />
+        </animated.div>
+      ))}
       <div className="relative flex flex-col flex-1 overflow-y-hidden">
         {!isSidebarOpen ? (
           <OpenSidebarButton className="absolute top-0 left-0 z-10 mx-4 my-1" />
