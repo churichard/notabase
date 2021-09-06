@@ -12,6 +12,7 @@ import {
 import { toggleMark, isMarkActive, isElementActive } from 'editor/formatting';
 import { ElementType, Mark } from 'types/slate';
 import Tooltip from 'components/Tooltip';
+import { isMobile } from 'utils/device';
 import EditorPopover from './EditorPopover';
 import type { AddLinkPopoverState } from './Editor';
 
@@ -21,7 +22,7 @@ type Props = {
 export default function HoveringToolbar(props: Props) {
   const { setAddLinkPopoverState } = props;
   return (
-    <EditorPopover placement="top-start">
+    <EditorPopover placement={isMobile() ? 'bottom-start' : 'top-start'}>
       <LinkButton
         setAddLinkPopoverState={setAddLinkPopoverState}
         className="border-r dark:border-gray-700"
