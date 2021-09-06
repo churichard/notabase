@@ -29,6 +29,9 @@ export default function Changelog() {
             'Add sidebar animation',
             'Improve sidebar behavior on mobile',
           ]}
+          bugFixes={[
+            'Fix find/create modal sometimes resizing when typing on small screens',
+          ]}
         />
         <ChangelogBlock
           title="September 4, 2021"
