@@ -193,17 +193,17 @@ export default function Note(props: Props) {
           <div className="flex flex-col flex-1 overflow-x-hidden overflow-y-auto">
             <div className="flex flex-col flex-1 w-full mx-auto md:w-128 lg:w-160 xl:w-192">
               <Title
-                className="px-12 pt-12 pb-1"
+                className="px-8 pt-8 pb-1 md:pt-12 md:px-12"
                 value={noteTitle}
                 onChange={onTitleChange}
               />
               <Editor
-                className="flex-1 px-12 pt-2 pb-12"
+                className="flex-1 px-8 pt-2 pb-8 md:pb-12 md:px-12"
                 value={note.content}
                 setValue={setEditorValue}
                 highlightedPath={highlightedPath}
               />
-              <Backlinks className="mx-8 mb-12" />
+              <Backlinks className="mx-4 mb-8 md:mx-8 md:mb-12" />
             </div>
           </div>
         </div>
