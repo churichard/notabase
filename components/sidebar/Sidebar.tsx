@@ -40,7 +40,9 @@ export default function Sidebar(props: Props) {
               className="flex-shrink-0 mr-1 text-gray-800 dark:text-gray-300"
               size={20}
             />
-            <span className="whitespace-nowrap">Find or Create Note</span>
+            <span className="overflow-x-hidden overflow-ellipsis whitespace-nowrap">
+              Find or Create Note
+            </span>
           </button>
         </Tooltip>
       </SidebarItem>
@@ -56,7 +58,9 @@ export default function Sidebar(props: Props) {
                   className="flex-shrink-0 mr-1 text-gray-800 dark:text-gray-300 "
                   size={20}
                 />
-                <span className="whitespace-nowrap">Graph View</span>
+                <span className="overflow-x-hidden overflow-ellipsis whitespace-nowrap">
+                  Graph View
+                </span>
               </a>
             </Link>
           </span>

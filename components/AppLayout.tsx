@@ -197,13 +197,16 @@ export default function AppLayout(props: Props) {
     }
   }, [router]);
 
-  const sidebarTransition = useTransition(isSidebarOpen, {
-    initial: { width: '16rem' },
-    from: { width: '0rem' },
-    enter: { width: '16rem' },
-    leave: { width: '0rem' },
+  const sidebarTransition = useTransition<
+    boolean,
+    { width: string; dspl: number }
+  >(isSidebarOpen, {
+    initial: { width: '16rem', dspl: 1 },
+    from: { width: '0rem', dspl: 0 },
+    enter: { width: '16rem', dspl: 1 },
+    leave: { width: '0rem', dspl: 0 },
     config: SPRING_CONFIG,
-    expires: false,
+    expires: (item) => !item,
   });
 
   if (!isPageLoaded) {
@@ -215,15 +218,26 @@ export default function AppLayout(props: Props) {
       id="app-container"
       className={`flex h-screen ${darkMode ? 'dark' : ''} ${className}`}
     >
-      {sidebarTransition((styles, item) => (
-        <animated.div className={!item ? 'hidden' : undefined} style={styles}>
-          <Sidebar
-            className={!item ? 'border-r-0' : 'border-r dark:border-gray-700'}
-            setIsFindOrCreateModalOpen={setIsFindOrCreateModalOpen}
-            setIsSettingsOpen={setIsSettingsOpen}
-          />
-        </animated.div>
-      ))}
+      {sidebarTransition(
+        (styles, item) =>
+          item && (
+            <animated.div
+              className="fixed top-0 bottom-0 left-0 z-20 md:static md:z-0"
+              style={{
+                ...styles,
+                display: styles.dspl.to((displ) =>
+                  displ === 0 ? 'none' : 'initial'
+                ),
+              }}
+            >
+              <Sidebar
+                className="border-r dark:border-gray-700"
+                setIsFindOrCreateModalOpen={setIsFindOrCreateModalOpen}
+                setIsSettingsOpen={setIsSettingsOpen}
+              />
+            </animated.div>
+          )
+      )}
       <div className="relative flex flex-col flex-1 overflow-y-hidden">
         {!isSidebarOpen ? (
           <OpenSidebarButton className="absolute top-0 left-0 z-10 mx-4 my-1" />
