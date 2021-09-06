@@ -36,10 +36,10 @@ function SidebarNotesFooter(props: Props) {
           <IconPlus size={16} className="text-gray-600 dark:text-gray-300" />
         </button>
       </Tooltip>
-      <span className="p-1 mx-2 my-1 text-xs text-gray-500 dark:text-gray-400">
+      <span className="p-1 mx-2 my-1 overflow-hidden text-xs text-gray-500 dark:text-gray-400 overflow-ellipsis whitespace-nowrap">
         {numOfNotes} notes
       </span>
-      <div className="mx-2 my-1">
+      <div className="flex mx-2 my-1">
         <SidebarNotesSortDropdown
           currentSort={noteSort}
           setCurrentSort={setNoteSort}
