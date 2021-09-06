@@ -35,7 +35,7 @@ const SidebarNotesSortDropdown = (props: Props) => {
         </Menu.Button>
       </Tooltip>
       <Menu.Items
-        className="z-10 w-56 overflow-hidden bg-white rounded dark:bg-gray-800 shadow-popover"
+        className="z-20 w-56 overflow-hidden bg-white rounded dark:bg-gray-800 shadow-popover"
         ref={setPopperElement}
         style={styles.popper}
         {...attributes.popper}

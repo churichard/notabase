@@ -20,9 +20,9 @@ export default function UpgradeModal() {
   useHotkeys(hotkeys);
 
   return (
-    <div className="fixed inset-0 overflow-y-auto">
+    <div className="fixed inset-0 z-10 overflow-y-auto">
       <div
-        className="fixed inset-0 z-10 bg-black opacity-30"
+        className="fixed inset-0 bg-black opacity-30"
         onClick={() => setIsUpgradeModalOpen(false)}
       />
       <div className="flex items-center justify-center h-screen p-6">

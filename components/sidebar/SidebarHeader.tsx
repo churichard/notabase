@@ -13,6 +13,7 @@ import {
 import { useAuth } from 'utils/useAuth';
 import { useStore } from 'lib/store';
 import Tooltip from 'components/Tooltip';
+import { isMobile } from 'utils/device';
 
 type Props = {
   setIsSettingsOpen: Dispatch<SetStateAction<boolean>>;
@@ -46,7 +47,7 @@ export default function Header(props: Props) {
             </span>
           </Tooltip>
         </Menu.Button>
-        <Menu.Items className="absolute z-10 w-56 overflow-hidden bg-white rounded left-6 top-full shadow-popover dark:bg-gray-800">
+        <Menu.Items className="absolute z-20 w-56 overflow-hidden bg-white rounded left-6 top-full shadow-popover dark:bg-gray-800">
           <p className="px-4 pt-2 pb-1 overflow-hidden text-xs text-gray-600 overflow-ellipsis dark:text-gray-400">
             {user?.email}
           </p>
@@ -56,7 +57,12 @@ export default function Header(props: Props) {
                 className={`flex w-full items-center px-4 py-2 text-left text-gray-800 text-sm dark:text-gray-200 ${
                   active ? 'bg-gray-100 dark:bg-gray-700' : ''
                 }`}
-                onClick={() => setIsSettingsOpen(true)}
+                onClick={() => {
+                  if (isMobile()) {
+                    setIsSidebarOpen(false);
+                  }
+                  setIsSettingsOpen(true);
+                }}
               >
                 <IconSettings size={18} className="mr-1" />
                 <span>Settings & Billing</span>
