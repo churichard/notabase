@@ -3,14 +3,12 @@ import type { ReactNode } from 'react';
 import { useRouter } from 'next/router';
 import { toast } from 'react-toastify';
 import type { User } from '@supabase/supabase-js';
-import { useTransition, animated } from '@react-spring/web';
 import { useStore, store } from 'lib/store';
 import supabase from 'lib/supabase';
 import { Note, Subscription, SubscriptionStatus } from 'types/supabase';
 import { useAuth } from 'utils/useAuth';
 import useHotkeys from 'utils/useHotkeys';
 import { PlanId } from 'constants/pricing';
-import { SPRING_CONFIG } from 'constants/spring';
 import { isMobile } from 'utils/device';
 import Sidebar from './sidebar/Sidebar';
 import FindOrCreateModal from './FindOrCreateModal';
@@ -196,48 +194,6 @@ export default function AppLayout(props: Props) {
     }
   }, [router]);
 
-  const sidebarTransition = useTransition<
-    boolean,
-    {
-      width: string;
-      dspl: number;
-      opacity: number;
-      backgroundOpacity: number;
-      backgroundColor: string;
-    }
-  >(isSidebarOpen, {
-    initial: {
-      width: '16rem',
-      dspl: 1,
-      opacity: 1,
-      backgroundOpacity: 0.3,
-      backgroundColor: 'black',
-    },
-    from: {
-      width: '0rem',
-      dspl: 0,
-      opacity: 0,
-      backgroundOpacity: 0,
-      backgroundColor: 'transparent',
-    },
-    enter: {
-      width: '16rem',
-      dspl: 1,
-      opacity: 1,
-      backgroundOpacity: 0.3,
-      backgroundColor: 'black',
-    },
-    leave: {
-      width: '0rem',
-      dspl: 0,
-      opacity: 0,
-      backgroundOpacity: 0,
-      backgroundColor: 'transparent',
-    },
-    config: SPRING_CONFIG,
-    expires: (item) => !item,
-  });
-
   if (!isPageLoaded) {
     return <PageLoading />;
   }
@@ -247,41 +203,10 @@ export default function AppLayout(props: Props) {
       id="app-container"
       className={`flex h-screen ${darkMode ? 'dark' : ''} ${className}`}
     >
-      {sidebarTransition(
-        (styles, item) =>
-          item && (
-            <>
-              {isMobile() ? (
-                <animated.div
-                  className="fixed inset-0 z-10"
-                  style={{
-                    backgroundColor: styles.backgroundColor,
-                    opacity: styles.backgroundOpacity,
-                    display: styles.dspl.to((displ) =>
-                      displ === 0 ? 'none' : 'initial'
-                    ),
-                  }}
-                  onClick={() => setIsSidebarOpen(false)}
-                />
-              ) : null}
-              <animated.div
-                className="fixed top-0 bottom-0 left-0 z-20 shadow-popover md:shadow-none md:static md:z-0"
-                style={{
-                  width: styles.width,
-                  opacity: styles.opacity,
-                  display: styles.dspl.to((displ) =>
-                    displ === 0 ? 'none' : 'initial'
-                  ),
-                }}
-              >
-                <Sidebar
-                  setIsFindOrCreateModalOpen={setIsFindOrCreateModalOpen}
-                  setIsSettingsOpen={setIsSettingsOpen}
-                />
-              </animated.div>
-            </>
-          )
-      )}
+      <Sidebar
+        setIsFindOrCreateModalOpen={setIsFindOrCreateModalOpen}
+        setIsSettingsOpen={setIsSettingsOpen}
+      />
       <div className="relative flex flex-col flex-1 overflow-y-hidden">
         {!isSidebarOpen ? (
           <OpenSidebarButton className="absolute top-0 left-0 z-10 mx-4 my-1" />
