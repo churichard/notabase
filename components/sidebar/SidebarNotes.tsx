@@ -1,11 +1,18 @@
-import { Dispatch, SetStateAction, useCallback, useMemo, useRef } from 'react';
+import {
+  Dispatch,
+  memo,
+  SetStateAction,
+  useCallback,
+  useMemo,
+  useRef,
+} from 'react';
 import { useVirtual } from 'react-virtual';
 import { shallowEqual, useStore } from 'lib/store';
 import { Sort } from 'lib/createUserSettingsSlice';
 import { caseInsensitiveStringCompare } from 'utils/string';
 import { dateCompare } from 'utils/date';
 import ErrorBoundary from '../ErrorBoundary';
-import { SidebarNoteLink } from './SidebarNoteLink';
+import SidebarNoteLink from './SidebarNoteLink';
 import SidebarNotesFooter from './SidebarNotesFooter';
 
 type SidebarNotesProps = {
@@ -14,7 +21,7 @@ type SidebarNotesProps = {
   setIsFindOrCreateModalOpen: Dispatch<SetStateAction<boolean>>;
 };
 
-export default function SidebarNotes(props: SidebarNotesProps) {
+function SidebarNotes(props: SidebarNotesProps) {
   const { currentNoteId, className, setIsFindOrCreateModalOpen } = props;
 
   const notes = useStore((state) => Object.values(state.notes), shallowEqual);
@@ -49,6 +56,28 @@ export default function SidebarNotes(props: SidebarNotesProps) {
     estimateSize: useCallback(() => 32, []),
   });
 
+  const renderVirtualRow = useCallback(
+    (virtualRow) => {
+      const note = sortedNotes[virtualRow.index];
+      return (
+        <SidebarNoteLink
+          key={note.id}
+          note={note}
+          isHighlighted={note.id === currentNoteId}
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: `${virtualRow.size}px`,
+            transform: `translateY(${virtualRow.start}px)`,
+          }}
+        />
+      );
+    },
+    [currentNoteId, sortedNotes]
+  );
+
   return (
     <ErrorBoundary>
       <div className={`flex flex-col flex-1 overflow-x-hidden ${className}`}>
@@ -61,24 +90,7 @@ export default function SidebarNotes(props: SidebarNotesProps) {
                 position: 'relative',
               }}
             >
-              {rowVirtualizer.virtualItems.map((virtualRow) => {
-                const note = sortedNotes[virtualRow.index];
-                return (
-                  <SidebarNoteLink
-                    key={note.id}
-                    note={note}
-                    isHighlighted={note.id === currentNoteId}
-                    style={{
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      width: '100%',
-                      height: `${virtualRow.size}px`,
-                      transform: `translateY(${virtualRow.start}px)`,
-                    }}
-                  />
-                );
-              })}
+              {rowVirtualizer.virtualItems.map(renderVirtualRow)}
             </div>
           ) : (
             <p className="px-6 my-2 text-center text-gray-500">No notes yet</p>
@@ -93,3 +105,5 @@ export default function SidebarNotes(props: SidebarNotesProps) {
     </ErrorBoundary>
   );
 }
+
+export default memo(SidebarNotes);

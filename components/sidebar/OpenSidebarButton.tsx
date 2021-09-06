@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { IconMenu2 } from '@tabler/icons';
 import Tooltip from 'components/Tooltip';
 import { useStore } from 'lib/store';
@@ -6,7 +7,7 @@ type Props = {
   className?: string;
 };
 
-export default function OpenSidebarButton(props: Props) {
+function OpenSidebarButton(props: Props) {
   const { className = '' } = props;
   const setIsSidebarOpen = useStore((state) => state.setIsSidebarOpen);
 
@@ -21,3 +22,5 @@ export default function OpenSidebarButton(props: Props) {
     </Tooltip>
   );
 }
+
+export default memo(OpenSidebarButton);

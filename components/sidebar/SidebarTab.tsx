@@ -1,4 +1,4 @@
-import { ForwardedRef, forwardRef } from 'react';
+import { ForwardedRef, forwardRef, memo } from 'react';
 import { TablerIcon } from '@tabler/icons';
 
 type Props = {
@@ -31,4 +31,4 @@ const SidebarTab = (
   );
 };
 
-export default forwardRef(SidebarTab);
+export default memo(forwardRef(SidebarTab));

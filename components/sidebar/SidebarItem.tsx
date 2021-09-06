@@ -1,4 +1,4 @@
-import { CSSProperties, ReactNode } from 'react';
+import { CSSProperties, memo, ReactNode } from 'react';
 
 type SidebarItemProps = {
   children: ReactNode;
@@ -8,7 +8,7 @@ type SidebarItemProps = {
   onClick?: () => void;
 };
 
-export default function SidebarItem(props: SidebarItemProps) {
+function SidebarItem(props: SidebarItemProps) {
   const { children, className = '', isHighlighted, style, onClick } = props;
   return (
     <div
@@ -22,3 +22,5 @@ export default function SidebarItem(props: SidebarItemProps) {
     </div>
   );
 }
+
+export default memo(SidebarItem);

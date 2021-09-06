@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 import type { Dispatch, SetStateAction } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -16,7 +16,7 @@ type Props = {
   className?: string;
 };
 
-export default function Sidebar(props: Props) {
+function Sidebar(props: Props) {
   const { setIsFindOrCreateModalOpen, setIsSettingsOpen, className } = props;
   const router = useRouter();
   const currentNoteId = useMemo(() => {
@@ -86,3 +86,5 @@ export default function Sidebar(props: Props) {
     </div>
   );
 }
+
+export default memo(Sidebar);
