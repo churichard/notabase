@@ -40,6 +40,7 @@ function Sidebar(props: Props) {
         <Tooltip
           content="Quickly jump to a note, or create a new note (Ctrl+P)"
           placement="right"
+          touch={false}
         >
           <button
             className="flex items-center w-full px-6 py-1 text-left"
@@ -49,7 +50,7 @@ function Sidebar(props: Props) {
               className="flex-shrink-0 mr-1 text-gray-800 dark:text-gray-300"
               size={20}
             />
-            <span className="overflow-x-hidden overflow-ellipsis whitespace-nowrap">
+            <span className="overflow-x-hidden select-none overflow-ellipsis whitespace-nowrap">
               Find or Create Note
             </span>
           </button>
@@ -62,6 +63,7 @@ function Sidebar(props: Props) {
         <Tooltip
           content="Visualization of all of your notes as a network"
           placement="right"
+          touch={false}
         >
           <span>
             <Link href="/app/graph">
@@ -70,7 +72,7 @@ function Sidebar(props: Props) {
                   className="flex-shrink-0 mr-1 text-gray-800 dark:text-gray-300 "
                   size={20}
                 />
-                <span className="overflow-x-hidden overflow-ellipsis whitespace-nowrap">
+                <span className="overflow-x-hidden select-none overflow-ellipsis whitespace-nowrap">
                   Graph View
                 </span>
               </a>

@@ -250,7 +250,7 @@ export default function AppLayout(props: Props) {
                 />
               ) : null}
               <animated.div
-                className="fixed top-0 bottom-0 left-0 z-20 shadow-popover md:shadow-none md:static md:z-0"
+                className="fixed top-0 bottom-0 left-0 z-10 shadow-popover md:shadow-none md:static md:z-0"
                 style={{
                   width: styles.width,
                   display: styles.dspl.to((displ) =>

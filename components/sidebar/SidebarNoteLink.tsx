@@ -20,14 +20,16 @@ const SidebarNoteLink = (props: Props) => {
       className="relative flex items-center justify-between overflow-x-hidden group"
       isHighlighted={isHighlighted}
       style={style}
-      onClick={() => {
-        if (isMobile()) {
-          setIsSidebarOpen(false);
-        }
-      }}
     >
       <Link href={`/app/note/${note.id}`}>
-        <a className="flex-1 px-6 py-1 overflow-hidden overflow-ellipsis whitespace-nowrap">
+        <a
+          className="flex-1 px-6 py-1 overflow-hidden overflow-ellipsis whitespace-nowrap"
+          onClick={() => {
+            if (isMobile()) {
+              setIsSidebarOpen(false);
+            }
+          }}
+        >
           {note.title}
         </a>
       </Link>
