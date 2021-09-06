@@ -198,25 +198,40 @@ export default function AppLayout(props: Props) {
 
   const sidebarTransition = useTransition<
     boolean,
-    { width: string; dspl: number; opacity: number; backgroundColor: string }
+    {
+      width: string;
+      dspl: number;
+      opacity: number;
+      backgroundOpacity: number;
+      backgroundColor: string;
+    }
   >(isSidebarOpen, {
     initial: {
       width: '16rem',
       dspl: 1,
-      opacity: 0.3,
+      opacity: 1,
+      backgroundOpacity: 0.3,
       backgroundColor: 'black',
     },
     from: {
       width: '0rem',
       dspl: 0,
       opacity: 0,
+      backgroundOpacity: 0,
       backgroundColor: 'transparent',
     },
-    enter: { width: '16rem', dspl: 1, opacity: 0.3, backgroundColor: 'black' },
+    enter: {
+      width: '16rem',
+      dspl: 1,
+      opacity: 1,
+      backgroundOpacity: 0.3,
+      backgroundColor: 'black',
+    },
     leave: {
       width: '0rem',
       dspl: 0,
       opacity: 0,
+      backgroundOpacity: 0,
       backgroundColor: 'transparent',
     },
     config: SPRING_CONFIG,
@@ -241,7 +256,7 @@ export default function AppLayout(props: Props) {
                   className="fixed inset-0 z-10"
                   style={{
                     backgroundColor: styles.backgroundColor,
-                    opacity: styles.opacity,
+                    opacity: styles.backgroundOpacity,
                     display: styles.dspl.to((displ) =>
                       displ === 0 ? 'none' : 'initial'
                     ),
@@ -253,6 +268,7 @@ export default function AppLayout(props: Props) {
                 className="fixed top-0 bottom-0 left-0 z-20 shadow-popover md:shadow-none md:static md:z-0"
                 style={{
                   width: styles.width,
+                  opacity: styles.opacity,
                   display: styles.dspl.to((displ) =>
                     displ === 0 ? 'none' : 'initial'
                   ),
