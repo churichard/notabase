@@ -1,4 +1,4 @@
-import { useRef, useState, Dispatch, SetStateAction } from 'react';
+import { useRef, useState, Dispatch, SetStateAction, useCallback } from 'react';
 import { Menu } from '@headlessui/react';
 import {
   IconSortDescending,
@@ -11,6 +11,7 @@ import { useStore } from 'lib/store';
 import useImport from 'utils/useImport';
 import { ReadableNameBySort, Sort } from 'lib/createUserSettingsSlice';
 import Tooltip from 'components/Tooltip';
+import { isMobile } from 'utils/device';
 
 type Props = {
   noteSort: Sort;
@@ -23,13 +24,20 @@ export default function SidebarNotesFooter(props: Props) {
   const onImport = useImport();
 
   const setNoteSort = useStore((state) => state.setNoteSort);
+  const setIsSidebarOpen = useStore((state) => state.setIsSidebarOpen);
+  const onCreateNoteClick = useCallback(() => {
+    if (isMobile()) {
+      setIsSidebarOpen(false);
+    }
+    setIsFindOrCreateModalOpen((isOpen) => !isOpen);
+  }, [setIsSidebarOpen, setIsFindOrCreateModalOpen]);
 
   return (
     <div className="flex items-center justify-between border-t dark:border-gray-700">
       <Tooltip content="Create a new note">
         <button
           className="p-1 mx-2 my-1 rounded hover:bg-gray-200 active:bg-gray-300 dark:hover:bg-gray-700 dark:active:bg-gray-600"
-          onClick={() => setIsFindOrCreateModalOpen((isOpen) => !isOpen)}
+          onClick={onCreateNoteClick}
         >
           <IconPlus size={16} className="text-gray-600 dark:text-gray-300" />
         </button>

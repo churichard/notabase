@@ -1,9 +1,11 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import type { Dispatch, SetStateAction } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { IconAffiliate, IconSearch } from '@tabler/icons';
 import Tooltip from 'components/Tooltip';
+import { isMobile } from 'utils/device';
+import { useStore } from 'lib/store';
 import SidebarItem from './SidebarItem';
 import SidebarContent from './SidebarContent';
 import SidebarHeader from './SidebarHeader';
@@ -22,12 +24,19 @@ export default function Sidebar(props: Props) {
     return id && typeof id === 'string' ? id : undefined;
   }, [router]);
 
+  const setIsSidebarOpen = useStore((state) => state.setIsSidebarOpen);
+  const onSidebarItemClick = useCallback(() => {
+    if (isMobile()) {
+      setIsSidebarOpen(false);
+    }
+  }, [setIsSidebarOpen]);
+
   return (
     <div
       className={`flex flex-col flex-none h-full bg-gray-50 dark:bg-gray-800 dark:text-gray-300 ${className}`}
     >
       <SidebarHeader setIsSettingsOpen={setIsSettingsOpen} />
-      <SidebarItem>
+      <SidebarItem onClick={onSidebarItemClick}>
         <Tooltip
           content="Quickly jump to a note, or create a new note (Ctrl+P)"
           placement="right"
@@ -46,7 +55,10 @@ export default function Sidebar(props: Props) {
           </button>
         </Tooltip>
       </SidebarItem>
-      <SidebarItem isHighlighted={router.pathname.includes('/app/graph')}>
+      <SidebarItem
+        isHighlighted={router.pathname.includes('/app/graph')}
+        onClick={onSidebarItemClick}
+      >
         <Tooltip
           content="Visualization of all of your notes as a network"
           placement="right"

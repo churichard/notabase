@@ -8,6 +8,7 @@ import { Note } from 'types/supabase';
 import { store, useStore } from 'lib/store';
 import deleteNote from 'lib/api/deleteNote';
 import deleteBacklinks from 'editor/backlinks/deleteBacklinks';
+import { isMobile } from 'utils/device';
 import Portal from '../Portal';
 import SidebarItem from './SidebarItem';
 
@@ -19,11 +20,17 @@ type Props = {
 
 export const SidebarNoteLink = (props: Props) => {
   const { note, isHighlighted, style } = props;
+  const setIsSidebarOpen = useStore((state) => state.setIsSidebarOpen);
   return (
     <SidebarItem
       className="relative flex items-center justify-between overflow-x-hidden group"
       isHighlighted={isHighlighted}
       style={style}
+      onClick={() => {
+        if (isMobile()) {
+          setIsSidebarOpen(false);
+        }
+      }}
     >
       <Link href={`/app/note/${note.id}`}>
         <a className="flex-1 px-6 py-1 overflow-hidden overflow-ellipsis whitespace-nowrap">

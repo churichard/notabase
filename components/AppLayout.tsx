@@ -11,14 +11,13 @@ import { useAuth } from 'utils/useAuth';
 import useHotkeys from 'utils/useHotkeys';
 import { PlanId } from 'constants/pricing';
 import { SPRING_CONFIG } from 'constants/spring';
+import { isMobile } from 'utils/device';
 import Sidebar from './sidebar/Sidebar';
 import FindOrCreateModal from './FindOrCreateModal';
 import PageLoading from './PageLoading';
 import SettingsModal from './settings/SettingsModal';
 import UpgradeModal from './UpgradeModal';
 import OpenSidebarButton from './sidebar/OpenSidebarButton';
-
-const SM_BREAKPOINT = 640;
 
 type Props = {
   children: ReactNode;
@@ -136,7 +135,7 @@ export default function AppLayout(props: Props) {
   const deleteNote = useStore((state) => state.deleteNote);
 
   useEffect(() => {
-    if (window.innerWidth <= SM_BREAKPOINT) {
+    if (isMobile()) {
       setIsSidebarOpen(false);
       setIsPageStackingOn(false);
     }
@@ -237,7 +236,7 @@ export default function AppLayout(props: Props) {
         (styles, item) =>
           item && (
             <>
-              {window.innerWidth <= SM_BREAKPOINT ? (
+              {isMobile() ? (
                 <animated.div
                   className="fixed inset-0 z-10"
                   style={{
