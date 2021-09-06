@@ -199,12 +199,27 @@ export default function AppLayout(props: Props) {
 
   const sidebarTransition = useTransition<
     boolean,
-    { width: string; dspl: number }
+    { width: string; dspl: number; opacity: number; backgroundColor: string }
   >(isSidebarOpen, {
-    initial: { width: '16rem', dspl: 1 },
-    from: { width: '0rem', dspl: 0 },
-    enter: { width: '16rem', dspl: 1 },
-    leave: { width: '0rem', dspl: 0 },
+    initial: {
+      width: '16rem',
+      dspl: 1,
+      opacity: 0.3,
+      backgroundColor: 'black',
+    },
+    from: {
+      width: '0rem',
+      dspl: 0,
+      opacity: 0,
+      backgroundColor: 'transparent',
+    },
+    enter: { width: '16rem', dspl: 1, opacity: 0.3, backgroundColor: 'black' },
+    leave: {
+      width: '0rem',
+      dspl: 0,
+      opacity: 0,
+      backgroundColor: 'transparent',
+    },
     config: SPRING_CONFIG,
     expires: (item) => !item,
   });
@@ -221,21 +236,36 @@ export default function AppLayout(props: Props) {
       {sidebarTransition(
         (styles, item) =>
           item && (
-            <animated.div
-              className="fixed top-0 bottom-0 left-0 z-20 md:static md:z-0"
-              style={{
-                ...styles,
-                display: styles.dspl.to((displ) =>
-                  displ === 0 ? 'none' : 'initial'
-                ),
-              }}
-            >
-              <Sidebar
-                className="border-r dark:border-gray-700"
-                setIsFindOrCreateModalOpen={setIsFindOrCreateModalOpen}
-                setIsSettingsOpen={setIsSettingsOpen}
-              />
-            </animated.div>
+            <>
+              {window.innerWidth <= SM_BREAKPOINT ? (
+                <animated.div
+                  className="fixed inset-0 z-10"
+                  style={{
+                    backgroundColor: styles.backgroundColor,
+                    opacity: styles.opacity,
+                    display: styles.dspl.to((displ) =>
+                      displ === 0 ? 'none' : 'initial'
+                    ),
+                  }}
+                  onClick={() => setIsSidebarOpen(false)}
+                />
+              ) : null}
+              <animated.div
+                className="fixed top-0 bottom-0 left-0 z-20 shadow-popover md:shadow-none md:static md:z-0"
+                style={{
+                  width: styles.width,
+                  display: styles.dspl.to((displ) =>
+                    displ === 0 ? 'none' : 'initial'
+                  ),
+                }}
+              >
+                <Sidebar
+                  className="border-r dark:border-gray-700"
+                  setIsFindOrCreateModalOpen={setIsFindOrCreateModalOpen}
+                  setIsSettingsOpen={setIsSettingsOpen}
+                />
+              </animated.div>
+            </>
           )
       )}
       <div className="relative flex flex-col flex-1 overflow-y-hidden">
