@@ -28,6 +28,7 @@ export default function Changelog() {
           features={[
             'Add sidebar animation',
             'Improve sidebar behavior on mobile',
+            'Mobile UI improvements',
           ]}
           bugFixes={[
             'Fix find/create modal sometimes resizing when typing on small screens',
