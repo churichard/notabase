@@ -24,8 +24,15 @@ export default function Changelog() {
           .
         </p>
         <ChangelogBlock
+          title="September 6, 2021"
+          features={[
+            'Add sidebar animation',
+            'Improve sidebar behavior on mobile',
+          ]}
+        />
+        <ChangelogBlock
           title="September 4, 2021"
-          features={['Fix image uploading on iOS Safari']}
+          bugFixes={['Fix image uploading on iOS Safari']}
         />
         <ChangelogBlock
           title="September 3, 2021"
