@@ -13,6 +13,7 @@ import {
 import { useAuth } from 'utils/useAuth';
 import { useStore } from 'lib/store';
 import Tooltip from 'components/Tooltip';
+import { isMobile } from 'utils/device';
 
 type Props = {
   setIsSettingsOpen: Dispatch<SetStateAction<boolean>>;
@@ -26,9 +27,9 @@ export default function Header(props: Props) {
   return (
     <div className="relative">
       <Menu>
-        <Menu.Button className="flex items-center justify-between w-full py-2 pl-6 text-left text-gray-800 hover:bg-gray-200 active:bg-gray-300 dark:text-gray-200 dark:hover:bg-gray-700 dark:active:bg-gray-600">
+        <Menu.Button className="flex items-center justify-between w-full py-2 pl-6 overflow-x-hidden text-left text-gray-800 hover:bg-gray-200 active:bg-gray-300 dark:text-gray-200 dark:hover:bg-gray-700 dark:active:bg-gray-600 overflow-ellipsis whitespace-nowrap">
           <div className="flex items-center flex-1">
-            <span className="mr-1 font-semibold">Notabase</span>
+            <span className="mr-1 font-semibold select-none">Notabase</span>
             <IconSelector
               size={18}
               className="text-gray-500 dark:text-gray-400"
@@ -37,13 +38,16 @@ export default function Header(props: Props) {
           <Tooltip content="Collapse sidebar" placement="right">
             <span
               className="p-1 mr-2 rounded hover:bg-gray-300 active:bg-gray-400 dark:hover:bg-gray-600 dark:active:bg-gray-500"
-              onClick={() => setIsSidebarOpen(false)}
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsSidebarOpen(false);
+              }}
             >
               <IconChevronsLeft className="text-gray-500 dark:text-gray-400" />
             </span>
           </Tooltip>
         </Menu.Button>
-        <Menu.Items className="absolute z-10 w-56 overflow-hidden bg-white rounded left-6 top-full shadow-popover dark:bg-gray-800">
+        <Menu.Items className="absolute z-20 w-56 overflow-hidden bg-white rounded left-6 top-full shadow-popover dark:bg-gray-800">
           <p className="px-4 pt-2 pb-1 overflow-hidden text-xs text-gray-600 overflow-ellipsis dark:text-gray-400">
             {user?.email}
           </p>
@@ -53,7 +57,12 @@ export default function Header(props: Props) {
                 className={`flex w-full items-center px-4 py-2 text-left text-gray-800 text-sm dark:text-gray-200 ${
                   active ? 'bg-gray-100 dark:bg-gray-700' : ''
                 }`}
-                onClick={() => setIsSettingsOpen(true)}
+                onClick={() => {
+                  if (isMobile()) {
+                    setIsSidebarOpen(false);
+                  }
+                  setIsSettingsOpen(true);
+                }}
               >
                 <IconSettings size={18} className="mr-1" />
                 <span>Settings & Billing</span>

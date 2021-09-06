@@ -9,13 +9,13 @@ import { Note, Subscription, SubscriptionStatus } from 'types/supabase';
 import { useAuth } from 'utils/useAuth';
 import useHotkeys from 'utils/useHotkeys';
 import { PlanId } from 'constants/pricing';
+import { isMobile } from 'utils/device';
 import Sidebar from './sidebar/Sidebar';
 import FindOrCreateModal from './FindOrCreateModal';
 import PageLoading from './PageLoading';
 import SettingsModal from './settings/SettingsModal';
 import UpgradeModal from './UpgradeModal';
-
-const SM_BREAKPOINT = 640;
+import OpenSidebarButton from './sidebar/OpenSidebarButton';
 
 type Props = {
   children: ReactNode;
@@ -23,7 +23,7 @@ type Props = {
 };
 
 export default function AppLayout(props: Props) {
-  const { children, className } = props;
+  const { children, className = '' } = props;
   const { user, isLoaded } = useAuth();
   const router = useRouter();
 
@@ -133,7 +133,7 @@ export default function AppLayout(props: Props) {
   const deleteNote = useStore((state) => state.deleteNote);
 
   useEffect(() => {
-    if (window.innerWidth <= SM_BREAKPOINT) {
+    if (isMobile()) {
       setIsSidebarOpen(false);
       setIsPageStackingOn(false);
     }
@@ -204,11 +204,13 @@ export default function AppLayout(props: Props) {
       className={`flex h-screen ${darkMode ? 'dark' : ''} ${className}`}
     >
       <Sidebar
-        className={!isSidebarOpen ? 'hidden' : undefined}
         setIsFindOrCreateModalOpen={setIsFindOrCreateModalOpen}
         setIsSettingsOpen={setIsSettingsOpen}
       />
-      <div className="flex flex-col flex-1 overflow-y-hidden">
+      <div className="relative flex flex-col flex-1 overflow-y-hidden">
+        {!isSidebarOpen ? (
+          <OpenSidebarButton className="absolute top-0 left-0 z-10 mx-4 my-1" />
+        ) : null}
         {billingDetails.planId === PlanId.Basic && numOfNotes >= 45 ? (
           <button
             className="block w-full py-1 font-semibold text-center bg-yellow-300"
