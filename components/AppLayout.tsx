@@ -259,7 +259,6 @@ export default function AppLayout(props: Props) {
                 }}
               >
                 <Sidebar
-                  className="border-r dark:border-gray-700"
                   setIsFindOrCreateModalOpen={setIsFindOrCreateModalOpen}
                   setIsSettingsOpen={setIsSettingsOpen}
                 />
