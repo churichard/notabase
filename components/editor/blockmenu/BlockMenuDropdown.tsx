@@ -59,7 +59,7 @@ export default function BlockMenuDropdown(props: BlockMenuDropdownProps) {
     const className =
       'hidden group-hover:block select-none hover:bg-gray-200 active:bg-gray-300 rounded absolute top-0.5 dark:hover:bg-gray-800 dark:active:bg-gray-700';
     if (element.type === ElementType.ListItem) {
-      return `${className} -left-16`;
+      return `${className} -left-14 md:-left-16`;
     } else {
       return `${className} -left-8`;
     }
