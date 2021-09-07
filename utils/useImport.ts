@@ -13,7 +13,7 @@ import remarkToSlate from 'editor/serialization/remarkToSlate';
 import { caseInsensitiveStringEqual } from 'utils/string';
 import { ElementType, NoteLink } from 'types/slate';
 import { Note } from 'types/supabase';
-import { Feature } from 'constants/pricing';
+import { Feature, PlanId } from 'constants/pricing';
 import { useAuth } from './useAuth';
 import useFeature from './useFeature';
 
@@ -47,6 +47,16 @@ export default function useImport() {
       const inputElement = e.target as HTMLInputElement;
 
       if (!inputElement.files) {
+        return;
+      }
+
+      const planId = store.getState().billingDetails.planId;
+      const totalNotes =
+        Object.keys(store.getState().notes).length + inputElement.files.length;
+      if (planId === PlanId.Basic && totalNotes > 50) {
+        toast.error(
+          'You cannot have more than 50 notes on the Basic plan. Upgrade to the Pro plan for unlimited notes.'
+        );
         return;
       }
 
