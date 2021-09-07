@@ -289,4 +289,9 @@ export const insertBlockReference = (
     // There's other content on the same line
     Editor.insertNode(editor, blockRef);
   }
+  // This fixes a bug where you can't change your selection after adding a block ref
+  Transforms.setSelection(editor, {
+    anchor: { ...editor.selection.anchor, offset: 0 },
+    focus: { ...editor.selection.focus, offset: 0 },
+  });
 };

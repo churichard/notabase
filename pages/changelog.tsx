@@ -28,7 +28,10 @@ export default function Changelog() {
           features={[
             'Automatically collapse references if there are more than 50 matches',
           ]}
-          bugFixes={['Improve button responsiveness for editor popovers']}
+          bugFixes={[
+            'Improve button responsiveness for editor popovers',
+            "Fix bug where sometimes you can't change your selection after adding a block reference",
+          ]}
         />
         <ChangelogBlock
           title="September 6, 2021"
