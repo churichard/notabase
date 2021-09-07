@@ -70,6 +70,10 @@ export const ToolbarButton = (props: ToolbarButtonProps) => {
             onClick();
           }
         }}
+        onTouchEnd={(event) => {
+          event.preventDefault();
+          onClick();
+        }}
       >
         <Icon size={18} />
         {text ? (

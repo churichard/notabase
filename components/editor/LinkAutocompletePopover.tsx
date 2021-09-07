@@ -1,4 +1,3 @@
-import type { MouseEvent } from 'react';
 import { useMemo, useState, useCallback, useEffect } from 'react';
 import { Editor, Range, Transforms } from 'slate';
 import { useSlate } from 'slate-react';
@@ -167,12 +166,7 @@ export default function LinkAutocompletePopover() {
           key={option.id}
           option={option}
           isSelected={index === selectedOptionIndex}
-          onClick={(event) => {
-            if (event.button === 0) {
-              event.preventDefault();
-              onOptionClick(option);
-            }
-          }}
+          onClick={() => onOptionClick(option)}
         />
       ))}
     </EditorPopover>
@@ -182,7 +176,7 @@ export default function LinkAutocompletePopover() {
 type OptionProps = {
   option: Option;
   isSelected: boolean;
-  onClick: (event: MouseEvent) => void;
+  onClick: () => void;
 };
 
 const OptionItem = (props: OptionProps) => {
@@ -193,7 +187,16 @@ const OptionItem = (props: OptionProps) => {
         isSelected ? 'bg-gray-100 dark:bg-gray-700' : ''
       }`}
       onMouseDown={(event) => event.preventDefault()}
-      onMouseUp={onClick}
+      onMouseUp={(event) => {
+        if (event.button === 0) {
+          event.preventDefault();
+          onClick();
+        }
+      }}
+      onTouchEnd={(event) => {
+        event.preventDefault();
+        onClick();
+      }}
     >
       {option.icon ? (
         <option.icon size={18} className="flex-shrink-0 mr-1" />

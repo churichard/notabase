@@ -1,4 +1,3 @@
-import type { MouseEvent } from 'react';
 import { useMemo, useRef, useState, useCallback } from 'react';
 import { Transforms } from 'slate';
 import { ReactEditor, useSlate } from 'slate-react';
@@ -202,12 +201,7 @@ export default function AddLinkPopover(props: Props) {
             key={option.id}
             option={option}
             isSelected={index === selectedOptionIndex}
-            onClick={(event) => {
-              if (event.button === 0) {
-                event.preventDefault();
-                onOptionClick(option);
-              }
-            }}
+            onClick={() => onOptionClick(option)}
           />
         ))}
       </div>
@@ -218,7 +212,7 @@ export default function AddLinkPopover(props: Props) {
 type OptionProps = {
   option: Option;
   isSelected: boolean;
-  onClick: (event: MouseEvent) => void;
+  onClick: () => void;
 };
 
 const OptionItem = (props: OptionProps) => {
@@ -236,7 +230,16 @@ const OptionItem = (props: OptionProps) => {
         isSelected ? 'bg-gray-100 dark:bg-gray-700' : ''
       } ${isDisabled ? 'text-gray-400 dark:text-gray-600' : ''}`}
       onMouseDown={(event) => event.preventDefault()}
-      onMouseUp={onClick}
+      onMouseUp={(event) => {
+        if (event.button === 0) {
+          event.preventDefault();
+          onClick();
+        }
+      }}
+      onTouchEnd={(event) => {
+        event.preventDefault();
+        onClick();
+      }}
     >
       {isDisabled ? (
         <UpgradeButton feature={Feature.NumOfNotes} className="mr-1" />
