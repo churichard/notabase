@@ -6,11 +6,14 @@ import TreeNode from './TreeNode';
 type Props = {
   data: TreeNodeType[];
   className?: string;
+  collapseAll?: boolean;
 };
 
-function Tree(props: Props) {
-  const { data, className } = props;
-  const [closedNodeIds, setClosedNodeIds] = useState<string[]>([]);
+function VirtualTree(props: Props) {
+  const { data, className, collapseAll = false } = props;
+  const [closedNodeIds, setClosedNodeIds] = useState<string[]>(
+    collapseAll ? data.map((node) => node.id) : []
+  );
 
   const onNodeClick = useCallback(
     (node: FlattenedTreeNode) =>
@@ -88,4 +91,4 @@ function Tree(props: Props) {
   );
 }
 
-export default memo(Tree);
+export default memo(VirtualTree);

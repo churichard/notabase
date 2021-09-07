@@ -7,6 +7,8 @@ import BacklinkReferenceBranch from './BacklinkReferenceBranch';
 import BacklinkMatchLeaf from './BacklinkMatchLeaf';
 import BacklinkNoteBranch from './BacklinkNoteBranch';
 
+const MAX_EXPANDED_MATCHES = 50;
+
 type Props = {
   className?: string;
 };
@@ -21,7 +23,18 @@ export default function Backlinks(props: Props) {
     [linkedBacklinks, unlinkedBacklinks]
   );
 
-  return <Tree data={backlinkData} className={className} />;
+  const collapseAll = useMemo(() => {
+    const numOfLinkedMatches = getNumOfMatches(linkedBacklinks);
+    const numOfUnlinkedMatches = getNumOfMatches(unlinkedBacklinks);
+    return (
+      numOfLinkedMatches > MAX_EXPANDED_MATCHES ||
+      numOfUnlinkedMatches > MAX_EXPANDED_MATCHES
+    );
+  }, [linkedBacklinks, unlinkedBacklinks]);
+
+  return (
+    <Tree data={backlinkData} className={className} collapseAll={collapseAll} />
+  );
 }
 
 export const getNumOfMatches = (backlinks: Backlink[]) =>

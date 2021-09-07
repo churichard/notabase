@@ -20,11 +20,14 @@ export type FlattenedTreeNode = {
 type Props = {
   data: TreeNode[];
   className?: string;
+  collapseAll?: boolean;
 };
 
 function Tree(props: Props) {
-  const { data, className } = props;
-  const [closedNodeIds, setClosedNodeIds] = useState<string[]>([]);
+  const { data, className, collapseAll = false } = props;
+  const [closedNodeIds, setClosedNodeIds] = useState<string[]>(
+    collapseAll ? data.map((node) => node.id) : []
+  );
 
   const onNodeClick = useCallback(
     (node: FlattenedTreeNode) =>
