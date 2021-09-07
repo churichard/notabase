@@ -92,7 +92,7 @@ function Leaf(props: LeafProps) {
   return (
     <>
       {renderLeaf({
-        attributes: { 'data-slate-leaf': true },
+        attributes: { 'data-slate-leaf': true, contentEditable: false },
         children: <span>{leaf.text}</span>,
         leaf,
         text: leaf,

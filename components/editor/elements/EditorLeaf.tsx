@@ -1,6 +1,8 @@
 import { RenderLeafProps } from 'slate-react';
 
-export type EditorLeafProps = RenderLeafProps;
+export type EditorLeafProps = {
+  attributes: { contentEditable?: boolean };
+} & RenderLeafProps;
 
 const EditorLeaf = ({ attributes, children, leaf }: EditorLeafProps) => {
   if (leaf.bold) {
