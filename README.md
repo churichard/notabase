@@ -63,3 +63,9 @@ If you have any feedback about these instructions or have ways to make it better
 ## Sponsors
 
 [Become a sponsor](https://github.com/sponsors/churichard)
+
+## License
+
+Notabase is licensed under the AGPL license, and is free for personal use.
+
+If you'd like to use Notabase for commercial use, please contact me.
