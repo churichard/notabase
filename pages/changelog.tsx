@@ -24,6 +24,13 @@ export default function Changelog() {
           .
         </p>
         <ChangelogBlock
+          title="September 7, 2021"
+          features={[
+            'Automatically collapse references if there are more than 50 matches',
+          ]}
+          bugFixes={['Improve button responsiveness for editor popovers']}
+        />
+        <ChangelogBlock
           title="September 6, 2021"
           features={[
             'Add sidebar animation',
