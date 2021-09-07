@@ -32,6 +32,11 @@ const storage: StateStorage = {
 
 export type Notes = Record<Note['id'], Note>;
 
+export type NoteTreeItem = {
+  id: Note['id'];
+  children: NoteTreeItem[];
+};
+
 export type BillingDetails =
   | { planId: PlanId.Basic }
   | {
@@ -51,6 +56,8 @@ export type Store = {
   deleteNote: (noteId: string) => void;
   openNoteIds: string[];
   setOpenNoteIds: (openNoteIds: string[], index?: number) => void;
+  noteTree: NoteTreeItem[];
+  setNoteTree: Setter<NoteTreeItem[]>;
   isUpgradeModalOpen: boolean;
   setIsUpgradeModalOpen: Setter<boolean>;
   blockIdToBacklinksMap: Record<string, Backlink[] | undefined>;
@@ -85,10 +92,13 @@ export const setter =
 export const store = createVanilla<Store>(
   persist(
     immer((set) => ({
+      /**
+       * The billing details of the current user
+       */
       billingDetails: { planId: PlanId.Basic },
       setBillingDetails: setter(set, 'billingDetails'),
       /**
-       * An array of saved notes
+       * Map of note id to notes
        */
       notes: {},
       /**
@@ -160,8 +170,19 @@ export const store = createVanilla<Store>(
           );
         });
       },
+      /**
+       * The tree of notes visible in the sidebar
+       */
+      noteTree: [],
+      setNoteTree: setter(set, 'noteTree'),
+      /**
+       * Whether or not the upgrade modal is open
+       */
       isUpgradeModalOpen: false,
       setIsUpgradeModalOpen: setter(set, 'isUpgradeModalOpen'),
+      /**
+       * Cache of block id to backlinks
+       */
       blockIdToBacklinksMap: {},
       setBlockIdToBacklinksMap: setter(set, 'blockIdToBacklinksMap'),
       ...createUserSettingsSlice(set),

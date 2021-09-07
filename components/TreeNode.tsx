@@ -2,13 +2,13 @@ import { memo, useMemo, CSSProperties, forwardRef, ForwardedRef } from 'react';
 import { IconCaretDown, IconCaretRight } from '@tabler/icons';
 import { FlattenedTreeNode } from './Tree';
 
-type NodeProps = {
+type Props = {
   node: FlattenedTreeNode;
   onClick: (node: FlattenedTreeNode) => void;
   style?: CSSProperties;
 };
 
-const TreeNode = (props: NodeProps, ref: ForwardedRef<HTMLDivElement>) => {
+const TreeNode = (props: Props, ref: ForwardedRef<HTMLDivElement>) => {
   const { node, onClick, style } = props;
 
   const leftPadding = useMemo(() => {

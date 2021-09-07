@@ -11,13 +11,12 @@ enum SidebarTabType {
 }
 
 type Props = {
-  currentNoteId?: string;
   className?: string;
   setIsFindOrCreateModalOpen: Dispatch<SetStateAction<boolean>>;
 };
 
 export default function SidebarContent(props: Props) {
-  const { currentNoteId, className, setIsFindOrCreateModalOpen } = props;
+  const { className, setIsFindOrCreateModalOpen } = props;
   const [activeTab, setActiveTab] = useState<SidebarTabType>(
     SidebarTabType.Notes
   );
@@ -28,7 +27,6 @@ export default function SidebarContent(props: Props) {
       <div className="flex flex-col flex-1 overflow-x-hidden">
         <SidebarNotes
           className={activeTab !== SidebarTabType.Notes ? 'hidden' : undefined}
-          currentNoteId={currentNoteId}
           setIsFindOrCreateModalOpen={setIsFindOrCreateModalOpen}
         />
         <SidebarSearch
