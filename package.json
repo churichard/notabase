@@ -47,7 +47,7 @@
     "slate-history": "^0.65.3",
     "slate-react": "^0.65.3",
     "stripe": "^8.174.0",
-    "tailwindcss": "^2.2.10",
+    "tailwindcss": "^2.2.14",
     "unified": "^9.2.1",
     "uuid": "^8.3.2",
     "zustand": "^3.5.10"
