@@ -33,32 +33,25 @@ If you need help getting started with Notabase, check out our [Help Center](http
 
 ## Self-hosting / running locally
 
-Notabase is currently focused on the hosted experience, but it is possible for you to self-host it as well. Here's a list of steps that you need to take to get it running locally (not tested):
+Notabase is currently focused on the hosted experience, but it is possible for you to self-host it as well. Here are some steps that you need to take to get it running locally:
 
-1. Notabase uses Supabase as the backend (for authentication and the database), so you'll have to make a [Supabase](https://supabase.io) account. If you prefer to self-host Supabase as well, you can follow the instructions in their [docs](https://supabase.io/docs/guides/self-hosting).
-2. Copy `.env.local.example` into `.env.local` and fill in the environment variables from your [Supabase dashboard](https://app.supabase.io). Go to `Settings` and click on `API`. `NEXT_PUBLIC_SUPABASE_URL` is the `Config URL` and `NEXT_PUBLIC_SUPABASE_KEY` is the public `anon` key.
-3. Go to the Table Editor on the Supabase dashboard and create two new tables: `users` and `notes`. `users` requires a `id` column with type `uuid`. `notes` requires a `id` column with type `uuid`, a `user_id` column that is a foreign key for the `users` `id` column, a `title` column with type `text`, and a `content` column with type `jsonb`.
-4. You'll want to create a stored procedure that creates a new user in the `users` table whenever a new user is created through Supabase authentication. Go to the SQL tab on the Supabase dashboard and create a new query. Paste the following inside:
+1. Notabase uses Supabase as the backend (for authentication, database, and storage), so you'll have to make a [Supabase](https://supabase.io) account. If you prefer to self-host Supabase, you can follow the instructions in their [docs](https://supabase.io/docs/guides/self-hosting).
+2. Copy `.env.local.example` into `.env.local` and fill in the `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_KEY`, and `SUPABASE_SERVICE_KEY` variables from your [Supabase dashboard](https://app.supabase.io). The other environment variables are optional.
+3. Go to the Table Editor in the Supabase dashboard and create two new tables: `users` and `notes`.
+   | users | |
+   | ----------- | ----------- |
+   | id | uuid |
 
-   ```
-   create function public.handle_new_user()
-   returns trigger as $$
-   begin
-     insert into public.users (id)
-     values (new.id);
-     return new;
-   end;
-   $$ language plpgsql security definer;
-   create trigger on_auth_user_created
-     after insert on auth.users
-     for each row execute procedure public.handle_new_user();
-   ```
+   | notes      |             |
+   | ---------- | ----------- |
+   | id         | uuid        |
+   | user_id    | uuid        |
+   | title      | text        |
+   | content    | jsonb       |
+   | created_at | timestamptz |
+   | updated_at | timestamptz |
 
-   Then run the query.
-
-5. In your local development environment, install the packages using `npm install`, and then run the project using `npm run dev`.
-
-If you have any feedback about these instructions or have ways to make it better, please let me know.
+4. In your local development environment, install the packages using `npm install`, and then run the project using `npm run dev`.
 
 ## Sponsors
 
