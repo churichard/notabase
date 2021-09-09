@@ -49,6 +49,7 @@ const DraggableSidebarNoteLink = (
       style={{
         ...style,
         transition,
+        touchAction: 'none',
         // transform: CSS.Transform.toString(transform),
       }}
       {...attributes}
