@@ -35,6 +35,7 @@ export type Notes = Record<Note['id'], Note>;
 export type NoteTreeItem = {
   id: Note['id'];
   children: NoteTreeItem[];
+  collapsed: boolean;
 };
 
 export type BillingDetails =
@@ -58,6 +59,8 @@ export type Store = {
   setOpenNoteIds: (openNoteIds: string[], index?: number) => void;
   noteTree: NoteTreeItem[];
   setNoteTree: Setter<NoteTreeItem[]>;
+  moveNoteTreeItem: (noteId: string, newParentNoteId: string) => void;
+  toggleNoteTreeItemCollapsed: (noteId: string) => void;
   isUpgradeModalOpen: boolean;
   setIsUpgradeModalOpen: Setter<boolean>;
   blockIdToBacklinksMap: Record<string, Backlink[] | undefined>;
@@ -176,6 +179,29 @@ export const store = createVanilla<Store>(
       noteTree: [],
       setNoteTree: setter(set, 'noteTree'),
       /**
+       * Moves the tree item with the given noteId to the given newParentNoteId's children
+       */
+      moveNoteTreeItem: (noteId: string, newParentNoteId: string) => {
+        // Don't do anything if the note ids are the same
+        if (noteId === newParentNoteId) {
+          return;
+        }
+        set((state) => {
+          const item = deleteTreeItem(state.noteTree, noteId);
+          if (item) {
+            insertTreeItem(state.noteTree, item, newParentNoteId);
+          }
+        });
+      },
+      /**
+       * Expands or collapses the tree item with the given noteId
+       */
+      toggleNoteTreeItemCollapsed: (noteId: string) => {
+        set((state) => {
+          toggleNoteTreeItemCollapsed(state.noteTree, noteId);
+        });
+      },
+      /**
        * Whether or not the upgrade modal is open
        */
       isUpgradeModalOpen: false,
@@ -197,3 +223,70 @@ export const store = createVanilla<Store>(
 );
 
 export const useStore = create(store);
+
+/**
+ * Deletes the tree item with the given id and returns it.
+ */
+const deleteTreeItem = (
+  tree: NoteTreeItem[],
+  id: string
+): NoteTreeItem | null => {
+  for (let i = 0; i < tree.length; i++) {
+    const item = tree[i];
+    if (item.id === id) {
+      tree.splice(i, 1);
+      return item;
+    } else if (item.children.length > 0) {
+      const result = deleteTreeItem(item.children, id);
+      if (result) {
+        return result;
+      }
+    }
+  }
+  return null;
+};
+
+/**
+ * Inserts the given item into the tree as a child of the item with targetId, and returns true if it was inserted.
+ */
+const insertTreeItem = (
+  tree: NoteTreeItem[],
+  item: NoteTreeItem,
+  targetId: string
+): boolean => {
+  for (let i = 0; i < tree.length; i++) {
+    const treeItem = tree[i];
+    if (treeItem.id === targetId) {
+      tree[i].children.push(item);
+      return true;
+    } else if (treeItem.children.length > 0) {
+      const result = insertTreeItem(treeItem.children, item, targetId);
+      if (result) {
+        return result;
+      }
+    }
+  }
+  return false;
+};
+
+/**
+ * Expands or collapses the tree item with the given id, and returns true if it was updated.
+ */
+const toggleNoteTreeItemCollapsed = (
+  tree: NoteTreeItem[],
+  id: string
+): boolean => {
+  for (let i = 0; i < tree.length; i++) {
+    const item = tree[i];
+    if (item.id === id) {
+      tree[i] = { ...item, collapsed: !item.collapsed };
+      return true;
+    } else if (item.children.length > 0) {
+      const result = toggleNoteTreeItemCollapsed(item.children, id);
+      if (result) {
+        return result;
+      }
+    }
+  }
+  return false;
+};

@@ -167,7 +167,7 @@ const GraphButton = (props: GraphButtonProps) => {
           <Link href="/app/graph">
             <a className="flex items-center px-6 py-1">
               <IconAffiliate
-                className="flex-shrink-0 mr-1 text-gray-800 dark:text-gray-300 "
+                className="flex-shrink-0 mr-1 text-gray-800 dark:text-gray-300"
                 size={20}
               />
               <span className="overflow-x-hidden select-none overflow-ellipsis whitespace-nowrap">

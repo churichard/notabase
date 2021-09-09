@@ -28,6 +28,7 @@ export default function AppLayout(props: Props) {
 
   const [isPageLoaded, setIsPageLoaded] = useState(false);
   const setNotes = useStore((state) => state.setNotes);
+  const setNoteTree = useStore((state) => state.setNoteTree);
   const initData = useCallback(async () => {
     if (!user) {
       return;
@@ -66,8 +67,12 @@ export default function AppLayout(props: Props) {
     }, {});
 
     setNotes(notesAsObj);
+    // TODO: update this to read from the database
+    setNoteTree(
+      notes.map((note) => ({ id: note.id, children: [], collapsed: true }))
+    );
     setIsPageLoaded(true);
-  }, [user, router, setNotes]);
+  }, [user, router, setNotes, setNoteTree]);
 
   useEffect(() => {
     if (isLoaded && !user) {
