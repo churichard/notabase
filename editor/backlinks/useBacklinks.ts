@@ -158,8 +158,8 @@ const computeUnlinkedMatches = (nodes: Descendant[], noteTitle: string) => {
       const [lineElement, linePath] = block;
       // We calculate the number of matches in the string and push for each one
       // This ensures that the calculated number of unlinked matches is accurate
-      const re = new RegExp(noteTitle, 'g');
-      const numOfMatches = (node.text.match(re) ?? []).length;
+      const re = new RegExp(noteTitle.toLowerCase(), 'g');
+      const numOfMatches = (node.text.toLowerCase().match(re) ?? []).length;
       for (let i = 0; i < numOfMatches; i++) {
         result.push({ lineElement, linePath, path });
       }

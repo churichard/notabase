@@ -24,6 +24,12 @@ export default function Changelog() {
           .
         </p>
         <ChangelogBlock
+          title="September 9, 2021"
+          bugFixes={[
+            'Fix bug where unlinked references with different casing were not being displayed',
+          ]}
+        />
+        <ChangelogBlock
           title="September 7, 2021"
           features={[
             'Automatically collapse references if there are more than 50 matches',
