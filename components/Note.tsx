@@ -59,8 +59,9 @@ export default function Note(props: Props) {
         const newTitle = title || getUntitledTitle(note.id);
         const notesArr = Object.values(store.getState().notes);
         if (
-          notesArr.findIndex((note) =>
-            caseInsensitiveStringEqual(note.title, title)
+          notesArr.findIndex(
+            (n) =>
+              n.id !== note.id && caseInsensitiveStringEqual(n.title, title)
           ) === -1
         ) {
           updateNote({ id: note.id, title: newTitle });

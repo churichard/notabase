@@ -27,6 +27,7 @@ export default function Changelog() {
           title="September 9, 2021"
           bugFixes={[
             'Fix bug where unlinked references with different casing were not being displayed',
+            "Fix bug where you can't change note title casing",
           ]}
         />
         <ChangelogBlock
