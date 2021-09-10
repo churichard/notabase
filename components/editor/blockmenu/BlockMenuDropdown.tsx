@@ -10,10 +10,11 @@ import ChangeBlockOptions from './ChangeBlockOptions';
 
 type BlockMenuDropdownProps = {
   element: ReferenceableBlockElement;
+  className?: string;
 };
 
 export default function BlockMenuDropdown(props: BlockMenuDropdownProps) {
-  const { element } = props;
+  const { element, className = '' } = props;
   const editor = useSlateStatic();
 
   const onCopyBlockRef = useCallback(async () => {
@@ -56,14 +57,13 @@ export default function BlockMenuDropdown(props: BlockMenuDropdownProps) {
   );
 
   const buttonClassName = useMemo(() => {
-    const className =
-      'hidden group-hover:block select-none hover:bg-gray-200 active:bg-gray-300 rounded absolute top-0.5 dark:hover:bg-gray-800 dark:active:bg-gray-700';
+    const buttonClassName = `select-none hover:bg-gray-200 active:bg-gray-300 rounded absolute top-0.5 dark:hover:bg-gray-800 dark:active:bg-gray-700 ${className}`;
     if (element.type === ElementType.ListItem) {
-      return `${className} -left-14 md:-left-16`;
+      return `${buttonClassName} -left-14 md:-left-16`;
     } else {
-      return `${className} -left-8`;
+      return `${buttonClassName} -left-8`;
     }
-  }, [element.type]);
+  }, [element.type, className]);
 
   return (
     <Dropdown
