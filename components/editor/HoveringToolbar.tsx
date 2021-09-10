@@ -63,16 +63,12 @@ export const ToolbarButton = (props: ToolbarButtonProps) => {
             ? 'text-primary-500 dark:text-primary-400'
             : 'text-gray-800 dark:text-gray-200'
         } ${className}`}
-        onMouseDown={(event) => event.preventDefault()}
-        onMouseUp={(event) => {
+        onPointerDown={(event) => event.preventDefault()}
+        onPointerUp={(event) => {
           if (event.button === 0) {
             event.preventDefault();
             onClick();
           }
-        }}
-        onTouchEnd={(event) => {
-          event.preventDefault();
-          onClick();
         }}
       >
         <Icon size={18} />

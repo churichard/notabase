@@ -282,8 +282,8 @@ export default function Editor(props: Props) {
         renderLeaf={EditorLeaf}
         placeholder="Start typing here…"
         onKeyDown={onKeyDown}
-        onMouseDown={() => setToolbarCanBeVisible(false)}
-        onMouseUp={() => setTimeout(() => setToolbarCanBeVisible(true), 100)}
+        onPointerDown={() => setToolbarCanBeVisible(false)}
+        onPointerUp={() => setTimeout(() => setToolbarCanBeVisible(true), 100)}
         spellCheck
       />
     </Slate>
