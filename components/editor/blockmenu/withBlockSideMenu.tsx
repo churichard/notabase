@@ -8,18 +8,24 @@ export default function withBlockSideMenu(
   EditorElement: ComponentType<EditorElementProps>
 ) {
   const ElementWithSideMenu = (props: EditorElementProps) => {
-    const { element } = props;
+    const { children, className = '', ...otherProps } = props;
 
-    if (!isReferenceableBlockElement(element)) {
+    if (!isReferenceableBlockElement(props.element)) {
       return <EditorElement {...props} />;
     }
 
     return (
-      <div className="relative w-full group before:absolute before:top-0 before:bottom-0 before:w-full before:right-full">
-        <EditorElement {...props} />
-        <BlockMenuDropdown element={element} />
-        <BacklinksPopover element={element} />
-      </div>
+      <EditorElement
+        className={`relative group before:absolute before:top-0 before:bottom-0 before:w-full before:right-full ${className}`}
+        {...otherProps}
+      >
+        {children}
+        <BlockMenuDropdown
+          element={props.element}
+          className="hidden group-hover:block"
+        />
+        <BacklinksPopover element={props.element} />
+      </EditorElement>
     );
   };
 
