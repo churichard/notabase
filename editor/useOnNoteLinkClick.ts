@@ -54,9 +54,6 @@ export default function useOnNoteLinkClick() {
       }
 
       const newNoteIndex = currentNoteIndex + 1;
-      const hash = highlightedPath
-        ? `${newNoteIndex}-${highlightedPath}`
-        : undefined;
 
       // Replace the notes after the current note with the new note
       const stackedNoteIds = queryParamToArray(stackQuery);
@@ -68,6 +65,9 @@ export default function useOnNoteLinkClick() {
 
       // Open new note (either as a stacked note or as a new page)
       if (isPageStackingOn) {
+        const hash = highlightedPath
+          ? `${newNoteIndex}-${highlightedPath}`
+          : undefined;
         router.push(
           {
             pathname: router.pathname,
@@ -78,7 +78,12 @@ export default function useOnNoteLinkClick() {
           { shallow: true }
         );
       } else {
-        router.push(`/app/note/${noteId}${hash}`);
+        const hash = highlightedPath ? `0-${highlightedPath}` : undefined;
+        router.push({
+          pathname: router.pathname,
+          query: { id: noteId },
+          hash,
+        });
       }
     },
     [router, openNoteIds, currentNote, stackQuery, isPageStackingOn]

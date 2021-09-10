@@ -24,6 +24,12 @@ export default function Changelog() {
           .
         </p>
         <ChangelogBlock
+          title="September 10, 2021"
+          bugFixes={[
+            "Fix bug where jumping to a block didn't work properly when page stacking was off",
+          ]}
+        />
+        <ChangelogBlock
           title="September 9, 2021"
           bugFixes={[
             'Fix bug where unlinked references with different casing were not being displayed',
