@@ -22,7 +22,12 @@ export default function withBlockSideMenu(
         {children}
         <BlockMenuDropdown
           element={props.element}
-          className="hidden group-hover:block"
+          /**
+           * We're using opacity 0.001 here to support iOS Safari.
+           * If we use anything else to hide this element, it would
+           * require two taps to edit text (the first tap would display this element).
+           */
+          className="opacity-0.1 group-hover:opacity-100"
         />
         <BacklinksPopover element={props.element} />
       </EditorElement>
