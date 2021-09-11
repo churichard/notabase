@@ -27,6 +27,7 @@ export default function Changelog() {
           title="September 10, 2021"
           bugFixes={[
             "Fix bug where jumping to a block didn't work properly when page stacking was off",
+            'Fix bug where editing text on iOS Safari requires two taps',
           ]}
         />
         <ChangelogBlock
