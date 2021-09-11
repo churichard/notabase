@@ -15,7 +15,6 @@ import FindOrCreateModal from './FindOrCreateModal';
 import PageLoading from './PageLoading';
 import SettingsModal from './settings/SettingsModal';
 import UpgradeModal from './UpgradeModal';
-import OpenSidebarButton from './sidebar/OpenSidebarButton';
 
 type Props = {
   children: ReactNode;
@@ -117,7 +116,6 @@ export default function AppLayout(props: Props) {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   const darkMode = useStore((state) => state.darkMode);
-  const isSidebarOpen = useStore((state) => state.isSidebarOpen);
   const setIsSidebarOpen = useStore((state) => state.setIsSidebarOpen);
   const setIsPageStackingOn = useStore((state) => state.setIsPageStackingOn);
 
@@ -208,9 +206,6 @@ export default function AppLayout(props: Props) {
         setIsSettingsOpen={setIsSettingsOpen}
       />
       <div className="relative flex flex-col flex-1 overflow-y-hidden">
-        {!isSidebarOpen ? (
-          <OpenSidebarButton className="absolute top-0 left-0 z-10 mx-4 my-1" />
-        ) : null}
         {billingDetails.planId === PlanId.Basic && numOfNotes >= 45 ? (
           <button
             className="block w-full py-1 font-semibold text-center bg-yellow-300"

@@ -7,9 +7,11 @@ import type { GraphData } from 'components/ForceGraph';
 import ForceGraph from 'components/ForceGraph';
 import { useStore } from 'lib/store';
 import ErrorBoundary from 'components/ErrorBoundary';
+import OpenSidebarButton from 'components/sidebar/OpenSidebarButton';
 
 export default function Graph() {
   const notes = useStore((state) => state.notes);
+  const isSidebarOpen = useStore((state) => state.isSidebarOpen);
 
   // Compute graph data
   const graphData: GraphData = useMemo(() => {
@@ -67,6 +69,9 @@ export default function Graph() {
         <title>Graph View | Notabase</title>
       </Head>
       <ErrorBoundary>
+        {!isSidebarOpen ? (
+          <OpenSidebarButton className="absolute top-0 left-0 z-10 mx-4 my-1" />
+        ) : null}
         <ForceGraph data={graphData} className="flex-1" />
       </ErrorBoundary>
     </>

@@ -76,7 +76,7 @@ export default function NotePage() {
           <title>Not Found | Notabase</title>
         </Head>
         <div className="flex flex-col items-center justify-center flex-1 h-screen p-4">
-          <p className="text-2xl">
+          <p className="text-2xl text-center">
             Whoops&mdash;it doesn&apos;t look like this note exists!
           </p>
           <Link href="/app">
