@@ -75,7 +75,7 @@ function SidebarNotesTree(props: Props) {
       const collapsed = node.collapsed;
       result.push({ id, depth, collapsed });
 
-      if (!collapsed && children) {
+      if (!collapsed && children.length > 0) {
         for (const child of children) {
           flattenNode(child, depth + 1, result);
         }
