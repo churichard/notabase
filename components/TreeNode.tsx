@@ -1,5 +1,5 @@
 import { memo, useMemo, CSSProperties, forwardRef, ForwardedRef } from 'react';
-import { IconCaretDown, IconCaretRight } from '@tabler/icons';
+import { IconCaretRight } from '@tabler/icons';
 import { FlattenedTreeNode } from './Tree';
 
 type Props = {
@@ -19,11 +19,6 @@ const TreeNode = (props: Props, ref: ForwardedRef<HTMLDivElement>) => {
     return padding;
   }, [node.depth, node.showArrow]);
 
-  const Icon = useMemo(
-    () => (node.collapsed ? IconCaretRight : IconCaretDown),
-    [node.collapsed]
-  );
-
   return (
     <div
       ref={ref}
@@ -34,8 +29,10 @@ const TreeNode = (props: Props, ref: ForwardedRef<HTMLDivElement>) => {
       onClick={node.showArrow ? () => onClick(node) : undefined}
     >
       {node.showArrow ? (
-        <Icon
-          className="flex-shrink-0 mr-1 text-gray-500 dark:text-gray-100"
+        <IconCaretRight
+          className={`flex-shrink-0 mr-1 text-gray-500 dark:text-gray-100 transform transition-transform ${
+            !node.collapsed ? 'rotate-90' : ''
+          }`}
           size={16}
           fill="currentColor"
         />

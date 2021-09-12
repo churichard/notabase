@@ -1,6 +1,6 @@
 import { ForwardedRef, forwardRef, HTMLAttributes, memo, useMemo } from 'react';
 import Link from 'next/link';
-import { IconCaretDown, IconCaretRight } from '@tabler/icons';
+import { IconCaretRight } from '@tabler/icons';
 import { useStore } from 'lib/store';
 import { isMobile } from 'utils/device';
 import SidebarItem from './SidebarItem';
@@ -32,11 +32,6 @@ const SidebarNoteLink = (
   // We add 16px for every level of nesting, plus 8px base padding
   const leftPadding = useMemo(() => node.depth * 16 + 8, [node.depth]);
 
-  const Icon = useMemo(
-    () => (node.collapsed ? IconCaretRight : IconCaretDown),
-    [node.collapsed]
-  );
-
   return (
     <SidebarItem
       ref={forwardedRef}
@@ -64,8 +59,10 @@ const SidebarNoteLink = (
               onArrowClick?.();
             }}
           >
-            <Icon
-              className="flex-shrink-0 text-gray-500 dark:text-gray-100"
+            <IconCaretRight
+              className={`flex-shrink-0 text-gray-500 dark:text-gray-100 transform transition-transform ${
+                !node.collapsed ? 'rotate-90' : ''
+              }`}
               size={16}
               fill="currentColor"
             />
