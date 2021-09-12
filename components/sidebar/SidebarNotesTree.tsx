@@ -18,6 +18,7 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { NoteTreeItem, useStore } from 'lib/store';
+import Portal from 'components/Portal';
 import SidebarNoteLink from './SidebarNoteLink';
 import DraggableSidebarNoteLink from './DraggableSidebarNoteLink';
 
@@ -153,20 +154,22 @@ function SidebarNotesTree(props: Props) {
               );
             })}
           </SortableContext>
-          <DragOverlay>
-            {activeId ? (
-              <SidebarNoteLink
-                node={
-                  flattenedData.find((node) => node.id === activeId) ?? {
-                    id: activeId,
-                    depth: 0,
-                    collapsed: false,
+          <Portal>
+            <DragOverlay>
+              {activeId ? (
+                <SidebarNoteLink
+                  node={
+                    flattenedData.find((node) => node.id === activeId) ?? {
+                      id: activeId,
+                      depth: 0,
+                      collapsed: false,
+                    }
                   }
-                }
-                className="shadow-popover !bg-gray-50 dark:!bg-gray-800"
-              />
-            ) : null}
-          </DragOverlay>
+                  className="shadow-popover !bg-gray-50 dark:!bg-gray-800"
+                />
+              ) : null}
+            </DragOverlay>
+          </Portal>
         </DndContext>
       </div>
     </div>
