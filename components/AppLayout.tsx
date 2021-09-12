@@ -5,7 +5,12 @@ import { toast } from 'react-toastify';
 import type { User } from '@supabase/supabase-js';
 import { useStore, store } from 'lib/store';
 import supabase from 'lib/supabase';
-import { Note, Subscription, SubscriptionStatus } from 'types/supabase';
+import {
+  Note,
+  Subscription,
+  SubscriptionStatus,
+  User as DbUser,
+} from 'types/supabase';
 import { useAuth } from 'utils/useAuth';
 import useHotkeys from 'utils/useHotkeys';
 import { MAX_NUM_OF_BASIC_NOTES, PlanId } from 'constants/pricing';
@@ -61,16 +66,29 @@ export default function AppLayout(props: Props) {
       return;
     }
 
+    // Set notes
     const notesAsObj = notes.reduce<Record<Note['id'], Note>>((acc, note) => {
       acc[note.id] = note;
       return acc;
     }, {});
-
     setNotes(notesAsObj);
-    // TODO: update this to read from the database
-    setNoteTree(
-      notes.map((note) => ({ id: note.id, children: [], collapsed: true }))
-    );
+
+    // Set note tree
+    const { data: userData } = await supabase
+      .from<DbUser>('users')
+      .select('note_tree')
+      .eq('id', user.id)
+      .single();
+    if (userData?.note_tree) {
+      // Use the note tree saved in the database
+      setNoteTree(userData.note_tree);
+    } else {
+      // No note tree in database, just use notes
+      setNoteTree(
+        notes.map((note) => ({ id: note.id, children: [], collapsed: true }))
+      );
+    }
+
     setIsPageLoaded(true);
   }, [user, router, setNotes, setNoteTree]);
 
