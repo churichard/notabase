@@ -4,7 +4,6 @@ import { useRouter } from 'next/router';
 import {
   DndContext,
   closestCenter,
-  KeyboardSensor,
   useSensor,
   useSensors,
   DragOverlay,
@@ -15,7 +14,6 @@ import {
 } from '@dnd-kit/core';
 import {
   SortableContext,
-  sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { toast } from 'react-toastify';
@@ -65,9 +63,6 @@ function SidebarNotesTree(props: Props) {
         delay: 250,
         tolerance: 5,
       },
-    }),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
     })
   );
 

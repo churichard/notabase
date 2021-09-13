@@ -1,12 +1,14 @@
 import { memo, useCallback, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 import { Menu } from '@headlessui/react';
-import { IconDots, IconTrash } from '@tabler/icons';
+import { IconCornerDownRight, IconDots, IconTrash } from '@tabler/icons';
 import { usePopper } from 'react-popper';
 import { Note } from 'types/supabase';
 import { store, useStore } from 'lib/store';
 import deleteNote from 'lib/api/deleteNote';
 import deleteBacklinks from 'editor/backlinks/deleteBacklinks';
+import { DropdownItem } from 'components/Dropdown';
+import MoveToModal from 'components/MoveToModal';
 import Portal from '../Portal';
 
 type Props = {
@@ -29,6 +31,8 @@ const SidebarNoteLinkDropdown = (props: Props) => {
     { placement: 'right-start' }
   );
 
+  const [isMoveToModalOpen, setIsMoveToModalOpen] = useState(false);
+
   const onDeleteClick = useCallback(async () => {
     await deleteNote(note.id);
     await deleteBacklinks(note.id);
@@ -42,6 +46,10 @@ const SidebarNoteLinkDropdown = (props: Props) => {
       router.push(`/app/note/${newNoteId}`, undefined, { shallow: true });
     }
   }, [router, note.id, openNoteIds]);
+
+  const onMoveToClick = useCallback(async () => {
+    setIsMoveToModalOpen(true);
+  }, []);
 
   return (
     <div ref={containerRef}>
@@ -62,19 +70,14 @@ const SidebarNoteLinkDropdown = (props: Props) => {
                   style={styles.popper}
                   {...attributes.popper}
                 >
-                  <Menu.Item>
-                    {({ active }) => (
-                      <button
-                        className={`flex w-full items-center px-4 py-2 text-left text-gray-800 dark:text-gray-200 ${
-                          active ? 'bg-gray-100 dark:bg-gray-700' : ''
-                        }`}
-                        onClick={onDeleteClick}
-                      >
-                        <IconTrash size={18} className="mr-1" />
-                        <span>Delete</span>
-                      </button>
-                    )}
-                  </Menu.Item>
+                  <DropdownItem onClick={onDeleteClick}>
+                    <IconTrash size={18} className="mr-1" />
+                    <span>Delete</span>
+                  </DropdownItem>
+                  <DropdownItem onClick={onMoveToClick}>
+                    <IconCornerDownRight size={18} className="mr-1" />
+                    <span>Move to</span>
+                  </DropdownItem>
                   <div className="px-4 py-2 space-y-1 text-xs text-gray-600 border-t dark:border-gray-700 dark:text-gray-400">
                     <p>
                       Last modified at {getReadableDatetime(note.updated_at)}
@@ -87,6 +90,11 @@ const SidebarNoteLinkDropdown = (props: Props) => {
           </>
         )}
       </Menu>
+      {isMoveToModalOpen ? (
+        <Portal>
+          <MoveToModal noteId={note.id} setIsOpen={setIsMoveToModalOpen} />
+        </Portal>
+      ) : null}
     </div>
   );
 };

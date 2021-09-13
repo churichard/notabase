@@ -59,7 +59,7 @@ export type Store = {
   setOpenNoteIds: (openNoteIds: string[], index?: number) => void;
   noteTree: NoteTreeItem[];
   setNoteTree: Setter<NoteTreeItem[]>;
-  moveNoteTreeItem: (noteId: string, newParentNoteId: string) => void;
+  moveNoteTreeItem: (noteId: string, newParentNoteId: string | null) => void;
   toggleNoteTreeItemCollapsed: (noteId: string) => void;
   isUpgradeModalOpen: boolean;
   setIsUpgradeModalOpen: Setter<boolean>;
@@ -181,7 +181,7 @@ export const store = createVanilla<Store>(
       /**
        * Moves the tree item with the given noteId to the given newParentNoteId's children
        */
-      moveNoteTreeItem: (noteId: string, newParentNoteId: string) => {
+      moveNoteTreeItem: (noteId: string, newParentNoteId: string | null) => {
         // Don't do anything if the note ids are the same
         if (noteId === newParentNoteId) {
           return;
@@ -248,12 +248,18 @@ const deleteTreeItem = (
 
 /**
  * Inserts the given item into the tree as a child of the item with targetId, and returns true if it was inserted.
+ * If targetId is null, inserts the item into the root level.
  */
 const insertTreeItem = (
   tree: NoteTreeItem[],
   item: NoteTreeItem,
-  targetId: string
+  targetId: string | null
 ): boolean => {
+  if (targetId === null) {
+    tree.push(item);
+    return true;
+  }
+
   for (let i = 0; i < tree.length; i++) {
     const treeItem = tree[i];
     if (treeItem.id === targetId) {
