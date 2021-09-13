@@ -82,13 +82,19 @@ function SidebarNotesTree(props: Props) {
       const collapsed = node.collapsed;
       result.push({ id, depth, collapsed });
 
-      if (!collapsed && children.length > 0) {
+      /**
+       * Only push in children if:
+       * 1. The node is not collapsed
+       * 2. The node has children
+       * 3. The node is not the active node (i.e. being dragged)
+       */
+      if (!collapsed && children.length > 0 && node.id !== activeId) {
         for (const child of children) {
           flattenNode(child, depth + 1, result);
         }
       }
     },
-    []
+    [activeId]
   );
 
   const flattenedData = useMemo(() => {
