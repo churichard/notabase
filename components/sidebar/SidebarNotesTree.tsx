@@ -5,12 +5,13 @@ import {
   DndContext,
   closestCenter,
   KeyboardSensor,
-  PointerSensor,
   useSensor,
   useSensors,
   DragOverlay,
   DragStartEvent,
   DragEndEvent,
+  MouseSensor,
+  TouchSensor,
 } from '@dnd-kit/core';
 import {
   SortableContext,
@@ -54,9 +55,15 @@ function SidebarNotesTree(props: Props) {
 
   const [activeId, setActiveId] = useState<string | null>(null);
   const sensors = useSensors(
-    useSensor(PointerSensor, {
+    useSensor(MouseSensor, {
       activationConstraint: {
         distance: 10,
+      },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 250,
+        tolerance: 5,
       },
     }),
     useSensor(KeyboardSensor, {
