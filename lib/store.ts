@@ -241,6 +241,9 @@ const deleteTreeItem = (
     const item = tree[i];
     if (item.id === id) {
       tree.splice(i, 1);
+      if (item.children.length > 0) {
+        tree.push(...item.children);
+      }
       return item;
     } else if (item.children.length > 0) {
       const result = deleteTreeItem(item.children, id);
