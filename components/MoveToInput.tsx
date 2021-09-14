@@ -1,20 +1,16 @@
 import type { ForwardedRef } from 'react';
 import { forwardRef, useCallback, useMemo, useState } from 'react';
-import { useRouter } from 'next/router';
-import type { TablerIcon } from '@tabler/icons';
-import { IconFilePlus, IconSearch } from '@tabler/icons';
-import upsertNote from 'lib/api/upsertNote';
+import { IconChevronsUp, IconSearch, TablerIcon } from '@tabler/icons';
 import { useAuth } from 'utils/useAuth';
 import useNoteSearch from 'utils/useNoteSearch';
-import { caseInsensitiveStringEqual } from 'utils/string';
-import useFeature from 'utils/useFeature';
-import { Feature } from 'constants/pricing';
-import { useStore } from 'lib/store';
-import UpgradeButton from './UpgradeButton';
+import supabase from 'lib/supabase';
+import { store, useStore } from 'lib/store';
+import { User } from 'types/supabase';
+import { caseInsensitiveStringCompare } from 'utils/string';
 
 enum OptionType {
   NOTE,
-  NEW_NOTE,
+  ROOT,
 }
 
 type Option = {
@@ -25,52 +21,63 @@ type Option = {
 };
 
 type Props = {
+  noteId: string;
   onOptionClick?: () => void;
   className?: string;
 };
 
-function FindOrCreateInput(props: Props, ref: ForwardedRef<HTMLInputElement>) {
-  const { onOptionClick: onOptionClickCallback, className = '' } = props;
+function MoveToInput(props: Props, ref: ForwardedRef<HTMLInputElement>) {
+  const {
+    noteId,
+    onOptionClick: onOptionClickCallback,
+    className = '',
+  } = props;
   const { user } = useAuth();
-  const router = useRouter();
 
   const [inputText, setInputText] = useState('');
   const [selectedOptionIndex, setSelectedOptionIndex] = useState<number>(0);
+
+  const noteTree = useStore((state) => state.noteTree);
+  const moveNoteTreeItem = useStore((state) => state.moveNoteTreeItem);
 
   const search = useNoteSearch({ numOfResults: 10 });
   const searchResults = useMemo(() => search(inputText), [search, inputText]);
 
   const options = useMemo(() => {
-    const result: Array<Option> = [];
-    // Show new note option if there isn't already a note called `inputText`
-    // (We assume if there is a note, then it will be the first result)
-    if (
-      inputText &&
-      (searchResults.length <= 0 ||
-        !caseInsensitiveStringEqual(inputText, searchResults[0].item.title))
-    ) {
+    const result: Option[] = [];
+    if (!inputText) {
+      const notes = store.getState().notes;
+      // Include the root and nine top-level notes sorted alphabetically
       result.push({
-        id: 'NEW_NOTE',
-        type: OptionType.NEW_NOTE,
-        text: `New note: ${inputText}`,
-        icon: IconFilePlus,
+        id: 'root',
+        type: OptionType.ROOT,
+        text: 'Move to root',
+        icon: IconChevronsUp,
       });
+      result.push(
+        ...noteTree
+          .filter((item) => item.id !== noteId)
+          .map((item) => ({
+            id: item.id,
+            type: OptionType.NOTE,
+            text: notes[item.id].title,
+          }))
+          .sort((n1, n2) => caseInsensitiveStringCompare(n1.text, n2.text))
+          .slice(0, 9)
+      );
+    } else {
+      result.push(
+        ...searchResults
+          .filter((result) => result.item.id !== noteId)
+          .map((result) => ({
+            id: result.item.id,
+            type: OptionType.NOTE,
+            text: result.item.title,
+          }))
+      );
     }
-    // Show notes that match `inputText`
-    result.push(
-      ...searchResults.map((result) => ({
-        id: result.item.id,
-        type: OptionType.NOTE,
-        text: result.item.title,
-      }))
-    );
     return result;
-  }, [searchResults, inputText]);
-
-  const canCreateNote = useFeature(Feature.NumOfNotes);
-  const setIsUpgradeModalOpen = useStore(
-    (state) => state.setIsUpgradeModalOpen
-  );
+  }, [searchResults, noteId, inputText, noteTree]);
 
   const onOptionClick = useCallback(
     async (option: Option) => {
@@ -80,32 +87,20 @@ function FindOrCreateInput(props: Props, ref: ForwardedRef<HTMLInputElement>) {
 
       onOptionClickCallback?.();
 
-      if (option.type === OptionType.NEW_NOTE) {
-        if (!canCreateNote) {
-          setIsUpgradeModalOpen(true);
-          return;
-        }
-
-        const note = await upsertNote({ user_id: user.id, title: inputText });
-        if (!note) {
-          throw new Error(`There was an error creating the note ${inputText}.`);
-        }
-
-        router.push(`/app/note/${note.id}`);
+      if (option.type === OptionType.ROOT) {
+        moveNoteTreeItem(noteId, null);
       } else if (option.type === OptionType.NOTE) {
-        router.push(`/app/note/${option.id}`);
+        moveNoteTreeItem(noteId, option.id);
       } else {
         throw new Error(`Option type ${option.type} is not supported`);
       }
+
+      await supabase
+        .from<User>('users')
+        .update({ note_tree: store.getState().noteTree })
+        .eq('id', user.id);
     },
-    [
-      user,
-      router,
-      canCreateNote,
-      inputText,
-      onOptionClickCallback,
-      setIsUpgradeModalOpen,
-    ]
+    [user, onOptionClickCallback, noteId, moveNoteTreeItem]
   );
 
   const onKeyDown = useCallback(
@@ -136,7 +131,7 @@ function FindOrCreateInput(props: Props, ref: ForwardedRef<HTMLInputElement>) {
           className={`w-full py-4 px-2 text-xl border-none rounded-tl rounded-tr focus:ring-0 dark:bg-gray-800 dark:text-gray-200 ${
             options.length <= 0 ? 'rounded-bl rounded-br' : ''
           }`}
-          placeholder="Find or create a note"
+          placeholder="Search note to move to"
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
           onKeyDown={onKeyDown}
@@ -173,23 +168,13 @@ type OptionProps = {
 
 const OptionItem = (props: OptionProps) => {
   const { option, isSelected, onClick } = props;
-  const canCreateNote = useFeature(Feature.NumOfNotes);
-
-  const isDisabled = useMemo(
-    () => !canCreateNote && option.type === OptionType.NEW_NOTE,
-    [canCreateNote, option]
-  );
-
   return (
     <button
       className={`flex flex-row w-full items-center px-4 py-2 text-gray-800 hover:bg-gray-100 active:bg-gray-200 dark:text-gray-200 dark:hover:bg-gray-700 dark:active:bg-gray-600 ${
         isSelected ? 'bg-gray-100 dark:bg-gray-700' : ''
-      } ${isDisabled ? 'text-gray-400 dark:text-gray-600' : ''}`}
+      }`}
       onClick={onClick}
     >
-      {isDisabled ? (
-        <UpgradeButton feature={Feature.NumOfNotes} className="mr-1" />
-      ) : null}
       {option.icon ? (
         <option.icon size={18} className="flex-shrink-0 mr-1" />
       ) : null}
@@ -200,4 +185,4 @@ const OptionItem = (props: OptionProps) => {
   );
 };
 
-export default forwardRef(FindOrCreateInput);
+export default forwardRef(MoveToInput);

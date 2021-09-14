@@ -1,4 +1,4 @@
-import { useState, ReactNode, MouseEventHandler } from 'react';
+import { useState, ReactNode, MouseEventHandler, useRef } from 'react';
 import { usePopper } from 'react-popper';
 import { Menu } from '@headlessui/react';
 import { Placement } from '@popperjs/core';
@@ -28,22 +28,25 @@ export default function Dropdown(props: Props) {
     tooltipPlacement,
   } = props;
 
-  const [referenceElement, setReferenceElement] =
-    useState<HTMLButtonElement | null>(null);
+  const referenceElementRef = useRef<HTMLButtonElement | null>(null);
   const [popperElement, setPopperElement] = useState<HTMLDivElement | null>(
     null
   );
-  const { styles, attributes } = usePopper(referenceElement, popperElement, {
-    placement,
-    modifiers: [{ name: 'offset', options: { offset } }],
-  });
+  const { styles, attributes } = usePopper(
+    referenceElementRef.current,
+    popperElement,
+    {
+      placement,
+      modifiers: [{ name: 'offset', options: { offset } }],
+    }
+  );
 
   return (
     <Menu>
       {({ open }) => (
         <>
           <Menu.Button
-            ref={setReferenceElement}
+            ref={referenceElementRef}
             className={buttonClassName}
             contentEditable={false}
           >
@@ -87,7 +90,7 @@ export function DropdownItem(props: DropdownItemProps) {
     <Menu.Item>
       {({ active }) => (
         <button
-          className={`flex w-full items-center px-4 py-2 text-left text-gray-800 dark:text-gray-200 select-none ${
+          className={`flex w-full items-center px-4 py-2 text-left text-sm text-gray-800 dark:text-gray-200 select-none ${
             active ? 'bg-gray-100 dark:bg-gray-700' : ''
           } ${className}`}
           onClick={onClick}

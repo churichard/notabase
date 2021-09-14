@@ -1,4 +1,4 @@
-import { memo, useCallback, useMemo } from 'react';
+import { memo, useCallback } from 'react';
 import type { Dispatch, SetStateAction } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -20,11 +20,6 @@ type Props = {
 
 function Sidebar(props: Props) {
   const { setIsFindOrCreateModalOpen, setIsSettingsOpen, className } = props;
-  const router = useRouter();
-  const currentNoteId = useMemo(() => {
-    const id = router.query.id;
-    return id && typeof id === 'string' ? id : undefined;
-  }, [router]);
 
   const isSidebarOpen = useStore((state) => state.isSidebarOpen);
   const setIsSidebarOpen = useStore((state) => state.setIsSidebarOpen);
@@ -111,7 +106,6 @@ function Sidebar(props: Props) {
               <GraphButton onClick={hideSidebarOnMobile} />
               <SidebarContent
                 className="flex-1 mt-3 overflow-x-hidden overflow-y-auto"
-                currentNoteId={currentNoteId}
                 setIsFindOrCreateModalOpen={setIsFindOrCreateModalOpen}
               />
             </div>
@@ -173,7 +167,7 @@ const GraphButton = (props: GraphButtonProps) => {
           <Link href="/app/graph">
             <a className="flex items-center px-6 py-1">
               <IconAffiliate
-                className="flex-shrink-0 mr-1 text-gray-800 dark:text-gray-300 "
+                className="flex-shrink-0 mr-1 text-gray-800 dark:text-gray-300"
                 size={20}
               />
               <span className="overflow-x-hidden select-none overflow-ellipsis whitespace-nowrap">

@@ -1,12 +1,12 @@
 import { memo, useCallback, useRef, useState } from 'react';
-import { useRouter } from 'next/router';
 import { Menu } from '@headlessui/react';
-import { IconDots, IconTrash } from '@tabler/icons';
+import { IconCornerDownRight, IconDots, IconTrash } from '@tabler/icons';
 import { usePopper } from 'react-popper';
 import { Note } from 'types/supabase';
-import { store, useStore } from 'lib/store';
-import deleteNote from 'lib/api/deleteNote';
-import deleteBacklinks from 'editor/backlinks/deleteBacklinks';
+import { DropdownItem } from 'components/Dropdown';
+import MoveToModal from 'components/MoveToModal';
+import NoteMetadata from 'components/NoteMetadata';
+import useDeleteNote from 'utils/useDeleteNote';
 import Portal from '../Portal';
 
 type Props = {
@@ -16,8 +16,6 @@ type Props = {
 
 const SidebarNoteLinkDropdown = (props: Props) => {
   const { note, className } = props;
-  const router = useRouter();
-  const openNoteIds = useStore((state) => state.openNoteIds);
 
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [popperElement, setPopperElement] = useState<HTMLDivElement | null>(
@@ -29,19 +27,10 @@ const SidebarNoteLinkDropdown = (props: Props) => {
     { placement: 'right-start' }
   );
 
-  const onDeleteClick = useCallback(async () => {
-    await deleteNote(note.id);
-    await deleteBacklinks(note.id);
+  const [isMoveToModalOpen, setIsMoveToModalOpen] = useState(false);
+  const onMoveToClick = useCallback(() => setIsMoveToModalOpen(true), []);
 
-    const deletedNoteIndex = openNoteIds.findIndex(
-      (openNoteId) => openNoteId === note.id
-    );
-    if (deletedNoteIndex !== -1) {
-      // Redirect if one of the notes that was deleted was open
-      const newNoteId = Object.keys(store.getState().notes)[0];
-      router.push(`/app/note/${newNoteId}`, undefined, { shallow: true });
-    }
-  }, [router, note.id, openNoteIds]);
+  const onDeleteClick = useDeleteNote(note.id);
 
   return (
     <div ref={containerRef}>
@@ -62,40 +51,28 @@ const SidebarNoteLinkDropdown = (props: Props) => {
                   style={styles.popper}
                   {...attributes.popper}
                 >
-                  <Menu.Item>
-                    {({ active }) => (
-                      <button
-                        className={`flex w-full items-center px-4 py-2 text-left text-gray-800 dark:text-gray-200 ${
-                          active ? 'bg-gray-100 dark:bg-gray-700' : ''
-                        }`}
-                        onClick={onDeleteClick}
-                      >
-                        <IconTrash size={18} className="mr-1" />
-                        <span>Delete</span>
-                      </button>
-                    )}
-                  </Menu.Item>
-                  <div className="px-4 py-2 space-y-1 text-xs text-gray-600 border-t dark:border-gray-700 dark:text-gray-400">
-                    <p>
-                      Last modified at {getReadableDatetime(note.updated_at)}
-                    </p>
-                    <p>Created at {getReadableDatetime(note.created_at)}</p>
-                  </div>
+                  <DropdownItem onClick={onDeleteClick}>
+                    <IconTrash size={18} className="mr-1" />
+                    <span>Delete</span>
+                  </DropdownItem>
+                  <DropdownItem onClick={onMoveToClick}>
+                    <IconCornerDownRight size={18} className="mr-1" />
+                    <span>Move to</span>
+                  </DropdownItem>
+                  <NoteMetadata note={note} />
                 </Menu.Items>
               </Portal>
             )}
           </>
         )}
       </Menu>
+      {isMoveToModalOpen ? (
+        <Portal>
+          <MoveToModal noteId={note.id} setIsOpen={setIsMoveToModalOpen} />
+        </Portal>
+      ) : null}
     </div>
   );
 };
 
 export default memo(SidebarNoteLinkDropdown);
-
-const getReadableDatetime = (dateStr: string) => {
-  return new Date(dateStr).toLocaleString(undefined, {
-    dateStyle: 'short',
-    timeStyle: 'short',
-  });
-};

@@ -1,5 +1,6 @@
 import type { Descendant } from 'slate';
 import { BillingFrequency, PlanId } from 'constants/pricing';
+import { NoteTreeItem } from 'lib/store';
 
 export enum SubscriptionStatus {
   Active = 'active',
@@ -9,6 +10,7 @@ export enum SubscriptionStatus {
 export type User = {
   id: string;
   subscription_id: Subscription['id'] | null;
+  note_tree: NoteTreeItem[];
 };
 
 export type Note = {

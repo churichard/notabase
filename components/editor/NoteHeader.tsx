@@ -6,6 +6,8 @@ import {
   IconUpload,
   IconCloudDownload,
   IconX,
+  IconTrash,
+  IconCornerDownRight,
 } from '@tabler/icons';
 import { usePopper } from 'react-popper';
 import { saveAs } from 'file-saver';
@@ -20,6 +22,10 @@ import useImport from 'utils/useImport';
 import { queryParamToArray } from 'utils/url';
 import Tooltip from 'components/Tooltip';
 import OpenSidebarButton from 'components/sidebar/OpenSidebarButton';
+import { DropdownItem } from 'components/Dropdown';
+import useDeleteNote from 'utils/useDeleteNote';
+import NoteMetadata from 'components/NoteMetadata';
+import MoveToModal from 'components/MoveToModal';
 
 export default function NoteHeader() {
   const currentNote = useCurrentNote();
@@ -32,10 +38,10 @@ export default function NoteHeader() {
   const isSidebarButtonVisible = useStore(
     (state) => !state.isSidebarOpen && state.openNoteIds?.[0] === currentNote.id
   );
-
   const isCloseButtonVisible = useStore(
     (state) => state.openNoteIds?.[0] !== currentNote.id
   );
+  const note = useStore((state) => state.notes[currentNote.id]);
 
   const onClosePane = useCallback(() => {
     const currentNoteIndex = store
@@ -63,7 +69,7 @@ export default function NoteHeader() {
     );
   }, [currentNote.id, stackQuery, router]);
 
-  const menuButtonRef = useRef<HTMLDivElement | null>(null);
+  const menuButtonRef = useRef<HTMLButtonElement | null>(null);
   const [popperElement, setPopperElement] = useState<HTMLDivElement | null>(
     null
   );
@@ -74,9 +80,8 @@ export default function NoteHeader() {
   );
 
   const onExportClick = useCallback(async () => {
-    const note = store.getState().notes[currentNote.id];
     saveAs(getNoteAsBlob(note), `${note.title}.md`);
-  }, [currentNote.id]);
+  }, [note]);
 
   const onExportAllClick = useCallback(async () => {
     const zip = new JSZip();
@@ -90,8 +95,13 @@ export default function NoteHeader() {
     saveAs(zipContent, 'notabase-export.zip');
   }, []);
 
+  const onDeleteClick = useDeleteNote(currentNote.id);
+
+  const [isMoveToModalOpen, setIsMoveToModalOpen] = useState(false);
+  const onMoveToClick = useCallback(() => setIsMoveToModalOpen(true), []);
+
   const buttonClassName =
-    'p-1 rounded hover:bg-gray-300 active:bg-gray-400 dark:hover:bg-gray-700 dark:active:bg-gray-600';
+    'rounded hover:bg-gray-300 active:bg-gray-400 dark:hover:bg-gray-700 dark:active:bg-gray-600';
   const iconClassName = 'text-gray-600 dark:text-gray-300';
 
   return (
@@ -108,61 +118,46 @@ export default function NoteHeader() {
         <Menu>
           {({ open }) => (
             <>
-              <Tooltip content="Options (export, import, etc.)">
-                <Menu.Button className={buttonClassName}>
-                  <div ref={menuButtonRef}>
+              <Menu.Button ref={menuButtonRef} className={buttonClassName}>
+                <Tooltip content="Options (export, import, etc.)">
+                  <span className="flex items-center justify-center w-8 h-8">
                     <IconDots className={iconClassName} />
-                  </div>
-                </Menu.Button>
-              </Tooltip>
+                  </span>
+                </Tooltip>
+              </Menu.Button>
               {open && (
                 <Portal>
                   <Menu.Items
                     ref={setPopperElement}
-                    className="z-10 overflow-hidden bg-white rounded shadow-popover dark:bg-gray-800"
+                    className="z-10 w-56 overflow-hidden bg-white rounded shadow-popover dark:bg-gray-800"
                     static
                     style={styles.popper}
                     {...attributes.popper}
                   >
-                    <Menu.Item>
-                      {({ active }) => (
-                        <button
-                          className={`flex w-full items-center px-4 py-2 text-left text-gray-800 dark:text-gray-200 ${
-                            active ? 'bg-gray-100 dark:bg-gray-700' : ''
-                          }`}
-                          onClick={onImport}
-                        >
-                          <IconDownload size={18} className="mr-1" />
-                          <span>Import</span>
-                        </button>
-                      )}
-                    </Menu.Item>
-                    <Menu.Item>
-                      {({ active }) => (
-                        <button
-                          className={`flex w-full items-center px-4 py-2 text-left text-gray-800 dark:text-gray-200 ${
-                            active ? 'bg-gray-100 dark:bg-gray-700' : ''
-                          }`}
-                          onClick={onExportClick}
-                        >
-                          <IconUpload size={18} className="mr-1" />
-                          <span>Export</span>
-                        </button>
-                      )}
-                    </Menu.Item>
-                    <Menu.Item>
-                      {({ active }) => (
-                        <button
-                          className={`flex w-full items-center px-4 py-2 text-left text-gray-800 dark:text-gray-200 ${
-                            active ? 'bg-gray-100 dark:bg-gray-700' : ''
-                          }`}
-                          onClick={onExportAllClick}
-                        >
-                          <IconCloudDownload size={18} className="mr-1" />
-                          <span>Export All</span>
-                        </button>
-                      )}
-                    </Menu.Item>
+                    <DropdownItem onClick={onImport}>
+                      <IconDownload size={18} className="mr-1" />
+                      <span>Import</span>
+                    </DropdownItem>
+                    <DropdownItem onClick={onExportClick}>
+                      <IconUpload size={18} className="mr-1" />
+                      <span>Export</span>
+                    </DropdownItem>
+                    <DropdownItem onClick={onExportAllClick}>
+                      <IconCloudDownload size={18} className="mr-1" />
+                      <span>Export All</span>
+                    </DropdownItem>
+                    <DropdownItem
+                      onClick={onDeleteClick}
+                      className="border-t dark:border-gray-700"
+                    >
+                      <IconTrash size={18} className="mr-1" />
+                      <span>Delete</span>
+                    </DropdownItem>
+                    <DropdownItem onClick={onMoveToClick}>
+                      <IconCornerDownRight size={18} className="mr-1" />
+                      <span>Move to</span>
+                    </DropdownItem>
+                    <NoteMetadata note={note} />
                   </Menu.Items>
                 </Portal>
               )}
@@ -170,6 +165,14 @@ export default function NoteHeader() {
           )}
         </Menu>
       </div>
+      {isMoveToModalOpen ? (
+        <Portal>
+          <MoveToModal
+            noteId={currentNote.id}
+            setIsOpen={setIsMoveToModalOpen}
+          />
+        </Portal>
+      ) : null}
     </div>
   );
 }

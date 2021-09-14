@@ -29,6 +29,7 @@ export default function Changelog() {
         <ChangelogBlock
           title="September 14, 2021"
           features={[
+            'Nested notes are here! You can now organize notes in the sidebar by dragging and dropping them within each other.',
             'Increase the number of notes you can have on the Basic plan to 100',
           ]}
         />
