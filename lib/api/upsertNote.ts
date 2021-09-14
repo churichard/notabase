@@ -1,6 +1,6 @@
 import { store } from 'lib/store';
 import supabase from 'lib/supabase';
-import type { Note } from 'types/supabase';
+import type { Note, User } from 'types/supabase';
 import type { PickPartial } from 'types/utils';
 
 export type NoteUpsert = PickPartial<
@@ -20,6 +20,9 @@ export default async function upsertNote(note: NoteUpsert) {
   // Refreshes the list of notes in the sidebar
   if (data) {
     store.getState().upsertNote(data);
+    await supabase
+      .from<User>('users')
+      .update({ note_tree: store.getState().noteTree });
   }
 
   return data;

@@ -302,3 +302,24 @@ const toggleNoteTreeItemCollapsed = (
   }
   return false;
 };
+
+/**
+ * Gets the note tree item corresponding to the given noteId.
+ */
+export const getNoteTreeItem = (
+  tree: NoteTreeItem[],
+  id: string
+): NoteTreeItem | null => {
+  for (let i = 0; i < tree.length; i++) {
+    const item = tree[i];
+    if (item.id === id) {
+      return item;
+    } else if (item.children.length > 0) {
+      const result = getNoteTreeItem(item.children, id);
+      if (result) {
+        return result;
+      }
+    }
+  }
+  return null;
+};

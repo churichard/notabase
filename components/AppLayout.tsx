@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 import { useRouter } from 'next/router';
 import { toast } from 'react-toastify';
 import type { User } from '@supabase/supabase-js';
-import { useStore, store } from 'lib/store';
+import { useStore, store, NoteTreeItem, getNoteTreeItem } from 'lib/store';
 import supabase from 'lib/supabase';
 import {
   Note,
@@ -80,8 +80,15 @@ export default function AppLayout(props: Props) {
       .eq('id', user.id)
       .single();
     if (userData?.note_tree) {
+      const noteTree: NoteTreeItem[] = [...userData.note_tree];
+      // If there are notes that are not in the note tree, add them
+      for (const note of notes) {
+        if (getNoteTreeItem(noteTree, note.id) === null) {
+          noteTree.push({ id: note.id, children: [], collapsed: true });
+        }
+      }
       // Use the note tree saved in the database
-      setNoteTree(userData.note_tree);
+      setNoteTree(noteTree);
     } else {
       // No note tree in database, just use notes
       setNoteTree(
