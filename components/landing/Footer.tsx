@@ -14,8 +14,9 @@ export default function Footer(props: Props) {
           <div className="inline-block">
             <LogoWithText />
           </div>
-          <p className="pt-0.5 text-gray-700">
-            A personal knowledge base for networked thinking.
+          <p className="pt-0.5 text-gray-700 max-w-sm">
+            Clean, powerful, and easy-to-use note-taking app for networked
+            thinking.
           </p>
         </div>
         <div className="flex flex-wrap flex-1 space-x-16 lg:justify-end">
