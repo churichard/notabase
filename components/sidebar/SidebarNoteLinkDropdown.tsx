@@ -28,12 +28,9 @@ const SidebarNoteLinkDropdown = (props: Props) => {
   );
 
   const [isMoveToModalOpen, setIsMoveToModalOpen] = useState(false);
+  const onMoveToClick = useCallback(() => setIsMoveToModalOpen(true), []);
 
   const onDeleteClick = useDeleteNote(note.id);
-
-  const onMoveToClick = useCallback(async () => {
-    setIsMoveToModalOpen(true);
-  }, []);
 
   return (
     <div ref={containerRef}>

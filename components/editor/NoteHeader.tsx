@@ -7,6 +7,7 @@ import {
   IconCloudDownload,
   IconX,
   IconTrash,
+  IconCornerDownRight,
 } from '@tabler/icons';
 import { usePopper } from 'react-popper';
 import { saveAs } from 'file-saver';
@@ -24,6 +25,7 @@ import OpenSidebarButton from 'components/sidebar/OpenSidebarButton';
 import { DropdownItem } from 'components/Dropdown';
 import useDeleteNote from 'utils/useDeleteNote';
 import NoteMetadata from 'components/NoteMetadata';
+import MoveToModal from 'components/MoveToModal';
 
 export default function NoteHeader() {
   const currentNote = useCurrentNote();
@@ -95,6 +97,9 @@ export default function NoteHeader() {
 
   const onDeleteClick = useDeleteNote(currentNote.id);
 
+  const [isMoveToModalOpen, setIsMoveToModalOpen] = useState(false);
+  const onMoveToClick = useCallback(() => setIsMoveToModalOpen(true), []);
+
   const buttonClassName =
     'p-1 rounded hover:bg-gray-300 active:bg-gray-400 dark:hover:bg-gray-700 dark:active:bg-gray-600';
   const iconClassName = 'text-gray-600 dark:text-gray-300';
@@ -148,6 +153,10 @@ export default function NoteHeader() {
                       <IconTrash size={18} className="mr-1" />
                       <span>Delete</span>
                     </DropdownItem>
+                    <DropdownItem onClick={onMoveToClick}>
+                      <IconCornerDownRight size={18} className="mr-1" />
+                      <span>Move to</span>
+                    </DropdownItem>
                     <NoteMetadata note={note} />
                   </Menu.Items>
                 </Portal>
@@ -156,6 +165,14 @@ export default function NoteHeader() {
           )}
         </Menu>
       </div>
+      {isMoveToModalOpen ? (
+        <Portal>
+          <MoveToModal
+            noteId={currentNote.id}
+            setIsOpen={setIsMoveToModalOpen}
+          />
+        </Portal>
+      ) : null}
     </div>
   );
 }
