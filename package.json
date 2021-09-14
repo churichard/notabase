@@ -47,7 +47,7 @@
     "remark-wiki-link": "^1.0.4",
     "slate": "^0.66.0",
     "slate-history": "^0.66.0",
-    "slate-react": "^0.66.0",
+    "slate-react": "^0.66.1",
     "stripe": "^8.174.0",
     "tailwindcss": "^2.2.15",
     "unified": "^9.2.1",
