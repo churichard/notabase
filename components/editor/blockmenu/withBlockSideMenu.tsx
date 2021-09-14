@@ -8,20 +8,17 @@ export default function withBlockSideMenu(
   EditorElement: ComponentType<EditorElementProps>
 ) {
   const ElementWithSideMenu = (props: EditorElementProps) => {
-    const { children, className = '', ...otherProps } = props;
+    const { element } = props;
 
-    if (!isReferenceableBlockElement(props.element)) {
+    if (!isReferenceableBlockElement(element)) {
       return <EditorElement {...props} />;
     }
 
     return (
-      <EditorElement
-        className={`relative group before:absolute before:top-0 before:bottom-0 before:w-full before:right-full ${className}`}
-        {...otherProps}
-      >
-        {children}
+      <div className="relative w-full group before:absolute before:top-0 before:bottom-0 before:w-full before:right-full">
+        <EditorElement {...props} />
         <BlockMenuDropdown
-          element={props.element}
+          element={element}
           /**
            * We're using opacity 0.001 here to support iOS Safari.
            * If we use anything else to hide this element, it would
@@ -29,8 +26,8 @@ export default function withBlockSideMenu(
            */
           className="opacity-0.1 group-hover:opacity-100"
         />
-        <BacklinksPopover element={props.element} />
-      </EditorElement>
+        <BacklinksPopover element={element} />
+      </div>
     );
   };
 
