@@ -82,6 +82,7 @@ export default function AppLayout(props: Props) {
     if (userData?.note_tree) {
       const noteTree: NoteTreeItem[] = [...userData.note_tree];
       // If there are notes that are not in the note tree, add them
+      // This is just a sanity check to make sure there are no orphaned notes
       for (const note of notes) {
         if (getNoteTreeItem(noteTree, note.id) === null) {
           noteTree.push({ id: note.id, children: [], collapsed: true });

@@ -153,7 +153,12 @@ export const store = createVanilla<Store>(
       deleteNote: (noteId: string) => {
         set((state) => {
           delete state.notes[noteId];
-          deleteTreeItem(state.noteTree, noteId);
+          const item = deleteTreeItem(state.noteTree, noteId);
+          if (item && item.children.length > 0) {
+            for (const child of item.children) {
+              insertTreeItem(state.noteTree, child, null);
+            }
+          }
         });
       },
       /**
@@ -241,9 +246,6 @@ const deleteTreeItem = (
     const item = tree[i];
     if (item.id === id) {
       tree.splice(i, 1);
-      if (item.children.length > 0) {
-        tree.push(...item.children);
-      }
       return item;
     } else if (item.children.length > 0) {
       const result = deleteTreeItem(item.children, id);
