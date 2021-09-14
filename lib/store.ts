@@ -128,6 +128,11 @@ export const store = createVanilla<Store>(
             } else {
               // Insert new note
               state.notes[note.id] = note;
+              insertTreeItem(
+                state.noteTree,
+                { id: note.id, children: [], collapsed: true },
+                null
+              );
             }
           }
         });
@@ -148,6 +153,7 @@ export const store = createVanilla<Store>(
       deleteNote: (noteId: string) => {
         set((state) => {
           delete state.notes[noteId];
+          deleteTreeItem(state.noteTree, noteId);
         });
       },
       /**
