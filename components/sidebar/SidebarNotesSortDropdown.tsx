@@ -26,17 +26,19 @@ const SidebarNotesSortDropdown = (props: Props) => {
     <Menu>
       {({ open }) => (
         <>
-          <Tooltip content="Sort notes">
-            <Menu.Button
-              className="p-1 rounded hover:bg-gray-200 active:bg-gray-300 dark:hover:bg-gray-700 dark:active:bg-gray-600"
-              ref={buttonRef}
-            >
-              <IconSortDescending
-                size={16}
-                className="text-gray-600 dark:text-gray-300"
-              />
-            </Menu.Button>
-          </Tooltip>
+          <Menu.Button
+            className="rounded hover:bg-gray-200 active:bg-gray-300 dark:hover:bg-gray-700 dark:active:bg-gray-600"
+            ref={buttonRef}
+          >
+            <Tooltip content="Sort notes">
+              <span className="flex items-center justify-center w-6 h-6">
+                <IconSortDescending
+                  size={16}
+                  className="text-gray-600 dark:text-gray-300"
+                />
+              </span>
+            </Tooltip>
+          </Menu.Button>
           {open && (
             <Portal>
               <Menu.Items

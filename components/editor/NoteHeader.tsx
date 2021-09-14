@@ -69,7 +69,7 @@ export default function NoteHeader() {
     );
   }, [currentNote.id, stackQuery, router]);
 
-  const menuButtonRef = useRef<HTMLDivElement | null>(null);
+  const menuButtonRef = useRef<HTMLButtonElement | null>(null);
   const [popperElement, setPopperElement] = useState<HTMLDivElement | null>(
     null
   );
@@ -101,7 +101,7 @@ export default function NoteHeader() {
   const onMoveToClick = useCallback(() => setIsMoveToModalOpen(true), []);
 
   const buttonClassName =
-    'p-1 rounded hover:bg-gray-300 active:bg-gray-400 dark:hover:bg-gray-700 dark:active:bg-gray-600';
+    'rounded hover:bg-gray-300 active:bg-gray-400 dark:hover:bg-gray-700 dark:active:bg-gray-600';
   const iconClassName = 'text-gray-600 dark:text-gray-300';
 
   return (
@@ -118,13 +118,13 @@ export default function NoteHeader() {
         <Menu>
           {({ open }) => (
             <>
-              <Tooltip content="Options (export, import, etc.)">
-                <Menu.Button className={buttonClassName}>
-                  <div ref={menuButtonRef}>
+              <Menu.Button ref={menuButtonRef} className={buttonClassName}>
+                <Tooltip content="Options (export, import, etc.)">
+                  <span className="flex items-center justify-center w-8 h-8">
                     <IconDots className={iconClassName} />
-                  </div>
-                </Menu.Button>
-              </Tooltip>
+                  </span>
+                </Tooltip>
+              </Menu.Button>
               {open && (
                 <Portal>
                   <Menu.Items
