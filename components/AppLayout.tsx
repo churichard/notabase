@@ -8,7 +8,7 @@ import supabase from 'lib/supabase';
 import { Note, Subscription, SubscriptionStatus } from 'types/supabase';
 import { useAuth } from 'utils/useAuth';
 import useHotkeys from 'utils/useHotkeys';
-import { PlanId } from 'constants/pricing';
+import { MAX_NUM_OF_BASIC_NOTES, PlanId } from 'constants/pricing';
 import { isMobile } from 'utils/device';
 import Sidebar from './sidebar/Sidebar';
 import FindOrCreateModal from './FindOrCreateModal';
@@ -206,13 +206,15 @@ export default function AppLayout(props: Props) {
         setIsSettingsOpen={setIsSettingsOpen}
       />
       <div className="relative flex flex-col flex-1 overflow-y-hidden">
-        {billingDetails.planId === PlanId.Basic && numOfNotes >= 45 ? (
+        {billingDetails.planId === PlanId.Basic &&
+        numOfNotes >= MAX_NUM_OF_BASIC_NOTES - 10 ? (
           <button
             className="block w-full py-1 font-semibold text-center bg-yellow-300"
             onClick={() => setIsUpgradeModalOpen(true)}
           >
-            You have {numOfNotes < 50 ? 'almost' : ''} reached your 50 note
-            limit. Upgrade now for unlimited notes and uninterrupted access.
+            You have {numOfNotes < MAX_NUM_OF_BASIC_NOTES ? 'almost' : ''}{' '}
+            reached your {MAX_NUM_OF_BASIC_NOTES} note limit. Upgrade now for
+            unlimited notes and uninterrupted access.
           </button>
         ) : null}
         {children}

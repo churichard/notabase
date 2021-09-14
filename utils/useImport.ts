@@ -13,7 +13,7 @@ import remarkToSlate from 'editor/serialization/remarkToSlate';
 import { caseInsensitiveStringEqual } from 'utils/string';
 import { ElementType, NoteLink } from 'types/slate';
 import { Note } from 'types/supabase';
-import { Feature, PlanId } from 'constants/pricing';
+import { Feature, MAX_NUM_OF_BASIC_NOTES, PlanId } from 'constants/pricing';
 import { useAuth } from './useAuth';
 import useFeature from './useFeature';
 
@@ -53,9 +53,9 @@ export default function useImport() {
       const planId = store.getState().billingDetails.planId;
       const totalNotes =
         Object.keys(store.getState().notes).length + inputElement.files.length;
-      if (planId === PlanId.Basic && totalNotes > 50) {
+      if (planId === PlanId.Basic && totalNotes > MAX_NUM_OF_BASIC_NOTES) {
         toast.error(
-          'You cannot have more than 50 notes on the Basic plan. Upgrade to the Pro plan for unlimited notes.'
+          `You cannot have more than ${MAX_NUM_OF_BASIC_NOTES} notes on the Basic plan. Upgrade to the Pro plan for unlimited notes.`
         );
         return;
       }

@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { IconArrowUpCircle } from '@tabler/icons';
-import { Feature } from 'constants/pricing';
+import { Feature, MAX_NUM_OF_BASIC_NOTES } from 'constants/pricing';
 import { useStore } from 'lib/store';
 import Tooltip from './Tooltip';
 
@@ -18,7 +18,7 @@ export default function UpgradeButton(props: Props) {
 
   const content = useMemo(() => {
     if (feature === Feature.NumOfNotes) {
-      return 'You have reached your 50 note limit. Upgrade to Pro for unlimited notes.';
+      return `You have reached your ${MAX_NUM_OF_BASIC_NOTES} note limit. Upgrade to Pro for unlimited notes.`;
     } else {
       return 'Upgrade to Pro to access all features.';
     }

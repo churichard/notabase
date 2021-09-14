@@ -38,6 +38,8 @@ export type Plan = {
 
 type Plans = { basic: Plan; pro: Plan };
 
+export const MAX_NUM_OF_BASIC_NOTES = 100;
+
 export const PRICING_PLANS: Plans = {
   [PlanId.Basic]: {
     id: PlanId.Basic,
@@ -53,7 +55,7 @@ export const PRICING_PLANS: Plans = {
         amount: 0,
       },
     },
-    features: [{ name: Feature.NumOfNotes, amount: 50 }],
+    features: [{ name: Feature.NumOfNotes, amount: MAX_NUM_OF_BASIC_NOTES }],
   },
   [PlanId.Pro]: {
     id: PlanId.Pro,

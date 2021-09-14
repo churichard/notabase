@@ -27,6 +27,12 @@ export default function Changelog() {
           .
         </p>
         <ChangelogBlock
+          title="September 14, 2021"
+          features={[
+            'Increase the number of notes you can have on the Basic plan to 100',
+          ]}
+        />
+        <ChangelogBlock
           title="September 10, 2021"
           bugFixes={[
             "Fix bug where jumping to a block didn't work properly when page stacking was off",

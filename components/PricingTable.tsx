@@ -1,13 +1,18 @@
 import { Fragment, ReactNode, useCallback, useState, useMemo } from 'react';
 import { IconCheck, IconMinus } from '@tabler/icons';
-import { Plan, PlanId, PRICING_PLANS } from 'constants/pricing';
+import {
+  MAX_NUM_OF_BASIC_NOTES,
+  Plan,
+  PlanId,
+  PRICING_PLANS,
+} from 'constants/pricing';
 import Toggle from './Toggle';
 
 const pricingTableData = [
   {
     name: 'Usage',
     data: [
-      ['Notes', '50', 'Unlimited'],
+      ['Notes', MAX_NUM_OF_BASIC_NOTES, 'Unlimited'],
       ['Image upload', '5 MB', '20 MB'],
     ],
   },

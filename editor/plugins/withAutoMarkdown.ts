@@ -9,7 +9,7 @@ import { store } from 'lib/store';
 import upsertNote from 'lib/api/upsertNote';
 import supabase from 'lib/supabase';
 import { caseInsensitiveStringEqual } from 'utils/string';
-import { PlanId } from 'constants/pricing';
+import { MAX_NUM_OF_BASIC_NOTES, PlanId } from 'constants/pricing';
 import { createNodeId } from './withNodeId';
 
 const BLOCK_SHORTCUTS: Array<
@@ -325,10 +325,10 @@ const getOrCreateNoteId = (noteTitle: string): string | null => {
     const billingDetails = store.getState().billingDetails;
     if (
       (!billingDetails || billingDetails.planId === PlanId.Basic) &&
-      notesArr.length >= 50
+      notesArr.length >= MAX_NUM_OF_BASIC_NOTES
     ) {
       toast.error(
-        'You have reached your 50 note limit. New notes will not be created or linked. For unlimited notes, please upgrade to the Pro plan.'
+        `You have reached your ${MAX_NUM_OF_BASIC_NOTES} note limit. New notes will not be created or linked. For unlimited notes, please upgrade to the Pro plan.`
       );
       return null;
     }
