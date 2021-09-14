@@ -12,7 +12,7 @@
     "analyze": "env ANALYZE=true next build"
   },
   "dependencies": {
-    "@dnd-kit/core": "^4.0.0-next-202181324619",
+    "@dnd-kit/core": "^4.0.0-next-2021812203234",
     "@dnd-kit/sortable": "^5.0.0-next-202181324619",
     "@headlessui/react": "^1.4.1",
     "@popperjs/core": "^2.10.1",
