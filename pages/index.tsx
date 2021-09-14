@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { IconArrowRight } from '@tabler/icons';
 import Footer from 'components/landing/Footer';
 import Navbar from 'components/landing/Navbar';
 import LandingLayout from 'components/landing/LandingLayout';
@@ -13,14 +14,19 @@ export default function Home() {
             <div className="pt-10 pb-16 md:pb-32 md:pt-24">
               <div className="container px-6 text-center">
                 <h1 className="text-4xl font-semibold leading-tight text-gray-900 md:leading-tight md:text-5xl">
-                  Empower your writing, research, and ideas
+                  Think more clearly. Be more productive.
                 </h1>
-                <p className="pt-6 text-2xl text-gray-700 md:pt-8 md:text-3xl">
-                  Notabase is a personal knowledge base for networked thinking.
+                <p className="max-w-3xl pt-6 mx-auto text-xl text-gray-700 md:pt-8 md:text-2xl">
+                  Notabase is a clean, powerful, and easy-to-use note-taking
+                  app. Connect your ideas together and write more effortlessly.
                 </p>
                 <Link href="/signup">
-                  <a className="inline-block mt-6 md:mt-8 btn hover:shadow-lg">
-                    Start your knowledge base
+                  <a className="inline-flex items-center mt-6 md:mt-8 btn hover:shadow-lg group">
+                    Take better notes{' '}
+                    <IconArrowRight
+                      size={18}
+                      className="ml-1 group-hover:animate-bounce-x"
+                    />
                   </a>
                 </Link>
                 <video
@@ -50,7 +56,7 @@ export default function Home() {
             <div className="container flex flex-col items-center px-6 md:flex-row">
               <div className="flex-1 md:mx-8">
                 <h2 className="text-3xl font-semibold md:text-4xl">
-                  Write the way you think
+                  Write better
                 </h2>
                 <div className="max-w-3xl pt-6 mx-auto md:pt-8">
                   <p className="text-lg leading-relaxed text-gray-700 md:text-xl md:leading-relaxed">
@@ -98,19 +104,20 @@ export default function Home() {
               </div>
               <div className="flex-1 md:mx-8">
                 <h2 className="text-3xl font-semibold md:text-4xl">
-                  Easy to use; it just works
+                  Easy to use &mdash; it just works
                 </h2>
                 <div className="max-w-3xl pt-6 mx-auto md:pt-8">
                   <p className="text-lg leading-relaxed text-gray-700 md:text-xl md:leading-relaxed">
-                    With our powerful editor, reading and writing happens in one
-                    fluid experience. Never context switch again.
+                    With our clean and powerful editor, reading and writing
+                    happens in one fluid experience. Never context switch again.
                   </p>
                   <p className="mt-4 text-lg leading-relaxed text-gray-700 md:text-xl md:leading-relaxed">
                     Your notes are automatically synced across all of your
                     devices, so they&apos;re accessible from anywhere.
                   </p>
                   <p className="mt-4 text-lg leading-relaxed text-gray-700 md:text-xl md:leading-relaxed">
-                    No setup, no hassle&mdash;everything works out of the box.
+                    No setup, no hassle&mdash;everything works out of the box,
+                    exactly as you would expect.
                   </p>
                 </div>
               </div>
@@ -123,8 +130,7 @@ export default function Home() {
               </h2>
               <div className="max-w-3xl pt-6 mx-auto md:pt-8">
                 <p className="text-lg leading-relaxed text-gray-700 md:text-xl md:leading-relaxed">
-                  Notabase is an open, transparent, and privacy-friendly
-                  platform.
+                  Notabase is open, transparent, and privacy-friendly.
                 </p>
                 <p className="mt-4 text-lg leading-relaxed text-gray-700 md:text-xl md:leading-relaxed">
                   It&apos;s{' '}
@@ -149,8 +155,7 @@ export default function Home() {
                   >
                     roadmap
                   </a>
-                  . Development happens transparently, and the entire community
-                  is involved.
+                  . Development happens transparently with community feedback.
                 </p>
                 <p className="mt-4 text-lg leading-relaxed text-gray-700 md:text-xl md:leading-relaxed">
                   You have full ownership over your notes. Notabase will never
@@ -163,15 +168,21 @@ export default function Home() {
             <div className="px-8 py-12 md:space-x-6 lg:py-16 lg:px-16 md:flex md:items-center md:justify-between">
               <div>
                 <h2 className="text-2xl font-medium text-primary-900 lg:text-3xl">
-                  Empower your writing and thinking.
+                  Think more clearly. Be more productive.
                 </h2>
                 <h2 className="mt-1 text-2xl font-medium text-primary-600 lg:text-3xl">
-                  Start your personal knowledge base today.
+                  Start taking better notes today.
                 </h2>
               </div>
               <div className="mt-8 md:flex-shrink-0 md:mt-0">
                 <Link href="/signup">
-                  <a className="btn">Start your knowledge base</a>
+                  <a className="inline-flex items-center btn group">
+                    Get started for free{' '}
+                    <IconArrowRight
+                      size={18}
+                      className="ml-1 group-hover:animate-bounce-x"
+                    />
+                  </a>
                 </Link>
               </div>
             </div>

@@ -11,8 +11,11 @@ export default function Changelog() {
         <h1>Changelog</h1>
         <p>
           This page lists when major features and bug fixes are added to
-          Notabase. Note that Notabase is constantly being updated and this page
-          may not be comprehensive. For a full list of technical changes, go to{' '}
+          Notabase.
+        </p>
+        <p>
+          Notabase is updated regularly and this page may not be comprehensive.
+          For a full list of technical changes, go to{' '}
           <a
             className="link"
             href="https://github.com/churichard/notabase/commits/main"

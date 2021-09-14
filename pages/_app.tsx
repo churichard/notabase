@@ -15,14 +15,14 @@ Router.events.on('routeChangeComplete', () => NProgress.done());
 Router.events.on('routeChangeError', () => NProgress.done());
 
 const DESCRIPTION =
-  "Notabase is a personal knowledge base for networked thinking. It's powerful, easy-to-use, and open source.";
+  'Notabase is a clean, powerful, and easy-to-use note-taking app. Connect your ideas together and write more effortlessly.';
 
 export default function MyApp({ Component, pageProps, router }: AppProps) {
   return (
     <>
       <Head>
         <title>
-          Notabase | A personal knowledge base for networked thinking
+          Notabase | Clean and powerful note-taking app for networked thinking
         </title>
         <meta name="description" content={DESCRIPTION} />
         <link rel="icon" href="/favicon.ico" />
