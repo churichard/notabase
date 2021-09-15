@@ -6,6 +6,7 @@ import ImageElement from './ImageElement';
 import ThematicBreakElement from './ThematicBreakElement';
 import ExternalLinkElement from './ExternalLinkElement';
 import NoteLinkElement from './NoteLinkElement';
+import CheckListItemElement from './CheckListItemElement';
 
 export type EditorElementProps = {
   className?: string;
@@ -54,6 +55,16 @@ export default function EditorElement(props: EditorElementProps) {
         >
           {children}
         </ol>
+      );
+    case ElementType.CheckListItem:
+      return (
+        <CheckListItemElement
+          className={className}
+          element={element}
+          attributes={attributes}
+        >
+          {children}
+        </CheckListItemElement>
       );
     case ElementType.Blockquote:
       return (

@@ -45,10 +45,27 @@ const withBlockBreakout = (editor: Editor) => {
     }
 
     const lineElementType = lineElement.type;
-    const insertElementType =
-      lineElementType === ElementType.ListItem
-        ? lineElementType
-        : ElementType.Paragraph;
+    let nodeToInsert: Element;
+    if (lineElementType === ElementType.ListItem) {
+      nodeToInsert = {
+        id: createNodeId(),
+        type: ElementType.ListItem,
+        children: [{ text: '' }],
+      };
+    } else if (lineElementType === ElementType.CheckListItem) {
+      nodeToInsert = {
+        id: createNodeId(),
+        type: ElementType.CheckListItem,
+        children: [{ text: '' }],
+        checked: false,
+      };
+    } else {
+      nodeToInsert = {
+        id: createNodeId(),
+        type: ElementType.Paragraph,
+        children: [{ text: '' }],
+      };
+    }
 
     // The element is a list item and the line is empty
     if (lineElementType === ElementType.ListItem && lineText.length === 0) {
@@ -66,6 +83,14 @@ const withBlockBreakout = (editor: Editor) => {
         Transforms.setNodes(editor, { type: ElementType.Paragraph });
       }
     }
+    // The element is a check list item and the line is empty
+    else if (
+      lineElementType === ElementType.CheckListItem &&
+      lineText.length === 0
+    ) {
+      // Turn the element into a paragraph
+      Transforms.setNodes(editor, { type: ElementType.Paragraph });
+    }
     // The cursor is at the end of the line, or the line element is a void and block element
     else if (
       isAtLineEnd ||
@@ -74,21 +99,13 @@ const withBlockBreakout = (editor: Editor) => {
     ) {
       // We insert after the current node
       Transforms.select(editor, lineEnd);
-      Transforms.insertNodes(editor, {
-        id: createNodeId(),
-        type: insertElementType,
-        children: [{ text: '' }],
-      });
+      Transforms.insertNodes(editor, nodeToInsert);
     }
     // The cursor is at the start of the line
     else if (isAtLineStart) {
       // We insert before the current node
       Transforms.select(editor, lineStart);
-      Transforms.insertNodes(editor, {
-        id: createNodeId(),
-        type: insertElementType,
-        children: [{ text: '' }],
-      });
+      Transforms.insertNodes(editor, nodeToInsert);
       Transforms.move(editor); // Moves the cursor to the next line
     }
     // The cursor is in the middle of the text

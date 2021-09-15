@@ -11,6 +11,7 @@ import {
   IconTypography,
   TablerIcon,
   IconPhoto,
+  IconListCheck,
 } from '@tabler/icons';
 import { Element } from 'slate';
 import { toggleElement, isElementActive } from 'editor/formatting';
@@ -66,6 +67,12 @@ export default function ChangeBlockOptions(props: ChangeBlockOptionsProps) {
           element={element}
           Icon={IconListNumbers}
           tooltip="Numbered List"
+        />
+        <BlockButton
+          format={ElementType.CheckListItem}
+          element={element}
+          Icon={IconListCheck}
+          tooltip="Checklist"
         />
       </div>
       <div className="flex items-center justify-center space-x-2">
