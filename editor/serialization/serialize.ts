@@ -33,10 +33,11 @@ import {
 import { isVoid } from 'editor/plugins/withVoidElements';
 import { computeBlockReference } from 'editor/backlinks/useBlockReference';
 import { store } from 'lib/store';
+import { isListType } from 'editor/formatting';
 
-type LeafType = FormattedText & { parentType?: string };
+type LeafType = FormattedText & { parentType?: ElementType };
 
-type BlockType = Element & { parentType?: string };
+type BlockType = Element & { parentType?: ElementType };
 
 type Options = {
   listDepth?: number;
@@ -56,8 +57,6 @@ export default function serialize(
   const text: string = (chunk as LeafType).text || '';
   const type: ElementType = (chunk as BlockType).type || '';
 
-  const LIST_TYPES = [ElementType.BulletedList, ElementType.NumberedList];
-
   let children = text;
 
   if (!isLeafNode(chunk)) {
@@ -67,7 +66,7 @@ export default function serialize(
           { ...c, parentType: type },
           {
             // track depth of nested lists so we can add proper spacing
-            listDepth: LIST_TYPES.includes((c as BlockType).type || '')
+            listDepth: isListType((c as BlockType).type || '')
               ? listDepth + 1
               : listDepth,
           }
@@ -157,8 +156,11 @@ export default function serialize(
     }
 
     case ElementType.BulletedList:
-    case ElementType.NumberedList:
-      return `${children}\n`;
+    case ElementType.NumberedList: {
+      const newLine =
+        chunk.parentType && isListType(chunk.parentType) ? '' : '\n';
+      return `${children}${newLine}`;
+    }
 
     case ElementType.ListItem: {
       const isNumberedList =
@@ -184,9 +186,9 @@ export default function serialize(
         blockRef.blockId
       );
       if (reference) {
-        return `${serialize(reference.element)}\n\n`;
+        return serialize(reference.element);
       } else {
-        return `${children}\n\n`;
+        return children;
       }
     }
 
