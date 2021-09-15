@@ -31,6 +31,7 @@ export default function Changelog() {
           bugFixes={[
             'Improve newline insertion handling when exporting',
             'Improve auth session restoration',
+            "Fix bug where changing block type sometimes doesn't work",
           ]}
         />
         <ChangelogBlock

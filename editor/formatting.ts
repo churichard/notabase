@@ -61,7 +61,7 @@ export const toggleElement = (
   path?: Path
 ) => {
   const pathRef = path ? Editor.pathRef(editor, path) : null;
-  const isActive = isElementActive(editor, format);
+  const isActive = isElementActive(editor, format, path);
 
   // Returns the current path
   const getCurrentLocation = () => pathRef?.current ?? undefined;
