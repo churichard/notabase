@@ -35,9 +35,9 @@ function useProvideAuth(): AuthContextType {
   // Initialize the user based on the stored session
   const initUser = useCallback(async () => {
     const session = supabase.auth.session();
-    await supabase.auth.signIn({
-      refreshToken: session?.refresh_token,
-    });
+    if (session) {
+      setUser(session.user);
+    }
     setIsLoaded(true);
   }, []);
 
