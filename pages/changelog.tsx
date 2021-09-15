@@ -27,6 +27,13 @@ export default function Changelog() {
           .
         </p>
         <ChangelogBlock
+          title="September 15, 2021"
+          bugFixes={[
+            'Improve newline insertion handling when exporting',
+            'Improve auth session restoration',
+          ]}
+        />
+        <ChangelogBlock
           title="September 14, 2021"
           features={[
             'Nested notes are here! You can now organize notes in the sidebar by dragging and dropping them within each other.',
