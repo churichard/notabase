@@ -37,22 +37,19 @@ export default function EditorElement(props: EditorElementProps) {
       );
     case ElementType.ListItem:
       return (
-        <li className={`md:pl-1 ${className}`} {...attributes}>
+        <li className={className} {...attributes}>
           {children}
         </li>
       );
     case ElementType.BulletedList:
       return (
-        <ul className={`ml-6 md:ml-8 list-disc ${className}`} {...attributes}>
+        <ul className={`ml-6 list-disc ${className}`} {...attributes}>
           {children}
         </ul>
       );
     case ElementType.NumberedList:
       return (
-        <ol
-          className={`ml-6 md:ml-8 list-decimal ${className}`}
-          {...attributes}
-        >
+        <ol className={`ml-6 list-decimal ${className}`} {...attributes}>
           {children}
         </ol>
       );

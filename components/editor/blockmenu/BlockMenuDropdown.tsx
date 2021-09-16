@@ -59,7 +59,7 @@ export default function BlockMenuDropdown(props: BlockMenuDropdownProps) {
   const buttonClassName = useMemo(() => {
     const buttonClassName = `select-none hover:bg-gray-200 active:bg-gray-300 rounded absolute top-0.5 dark:hover:bg-gray-800 dark:active:bg-gray-700 ${className}`;
     if (element.type === ElementType.ListItem) {
-      return `${buttonClassName} -left-14 md:-left-16`;
+      return `${buttonClassName} -left-14`;
     } else {
       return `${buttonClassName} -left-8`;
     }
