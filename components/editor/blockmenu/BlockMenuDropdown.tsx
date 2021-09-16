@@ -80,7 +80,7 @@ export default function BlockMenuDropdown(props: BlockMenuDropdownProps) {
       </DropdownItem>
       <ChangeBlockOptions
         element={element}
-        className="px-4 py-2 border-t dark:border-gray-700"
+        className="px-8 border-t dark:border-gray-700"
       />
     </Dropdown>
   );
