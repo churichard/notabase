@@ -40,6 +40,7 @@ const BLOCK_SHORTCUTS: Array<
   { match: /^```$/, type: ElementType.CodeBlock },
   { match: /^---$/, type: ElementType.ThematicBreak },
   { match: /^\*\*\*$/, type: ElementType.ThematicBreak },
+  { match: /^\[\]$/, type: ElementType.CheckListItem },
 ];
 
 enum CustomInlineShortcuts {
