@@ -62,6 +62,7 @@ export default function deserialize(
       } else {
         return { id: createNodeId(), type: ElementType.HeadingThree, children };
       }
+
     case 'list':
       return {
         id: createNodeId(),
@@ -70,8 +71,21 @@ export default function deserialize(
           : ElementType.BulletedList,
         children,
       };
-    case 'listItem':
-      return { id: createNodeId(), type: ElementType.ListItem, children };
+
+    case 'listItem': {
+      const checked = node.checked;
+      if (typeof checked === 'boolean') {
+        return {
+          id: createNodeId(),
+          type: ElementType.CheckListItem,
+          checked,
+          children,
+        };
+      } else {
+        return { id: createNodeId(), type: ElementType.ListItem, children };
+      }
+    }
+
     case 'paragraph':
       return { id: createNodeId(), type: ElementType.Paragraph, children };
 

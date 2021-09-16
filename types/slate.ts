@@ -12,6 +12,7 @@ export enum ElementType {
   ListItem = 'list-item',
   BulletedList = 'bulleted-list',
   NumberedList = 'numbered-list',
+  CheckListItem = 'check-list-item',
   Blockquote = 'block-quote',
   ExternalLink = 'link',
   NoteLink = 'note-link',
@@ -71,6 +72,13 @@ export type NumberedList = {
   children: Descendant[];
 };
 
+export type CheckListItem = {
+  id: string;
+  type: ElementType.CheckListItem;
+  checked: boolean;
+  children: Descendant[];
+};
+
 export type Blockquote = {
   id: string;
   type: ElementType.Blockquote;
@@ -126,6 +134,7 @@ export type ReferenceableBlockElement =
   | HeadingTwoElement
   | HeadingThreeElement
   | ListItem
+  | CheckListItem
   | Blockquote
   | CodeBlock
   | ThematicBreak

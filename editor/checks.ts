@@ -15,7 +15,8 @@ export const isReferenceableBlockElement = (
     element.type === ElementType.CodeBlock ||
     element.type === ElementType.ThematicBreak ||
     element.type === ElementType.Image ||
-    element.type === ElementType.BlockReference
+    element.type === ElementType.BlockReference ||
+    element.type === ElementType.CheckListItem
   );
 };
 

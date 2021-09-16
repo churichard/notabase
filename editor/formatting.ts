@@ -91,15 +91,16 @@ export const toggleElement = (
     });
   } while (continueUnwrappingList());
 
-  let newType;
+  let newProperties: Partial<Element>;
   if (isActive) {
-    newType = ElementType.Paragraph;
+    newProperties = { type: ElementType.Paragraph };
   } else if (isListType(format)) {
-    newType = ElementType.ListItem;
+    newProperties = { type: ElementType.ListItem };
+  } else if (format === ElementType.CheckListItem) {
+    newProperties = { type: ElementType.CheckListItem, checked: false };
   } else {
-    newType = format;
+    newProperties = { type: format };
   }
-  const newProperties: Partial<Element> = { type: newType };
   Transforms.setNodes(editor, newProperties, { at: getCurrentLocation() });
 
   if (!isActive && isListType(format)) {

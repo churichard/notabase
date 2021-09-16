@@ -4,7 +4,7 @@ import { MdastNode } from './types';
  * This plugin normalizes the MdastNode format to conform to Notabase's slate schema.
  */
 export default function normalize(node: MdastNode): MdastNode {
-  return normalizeImages(normalizeLists(node));
+  return normalizeImages(normalizeCheckListItems(normalizeLists(node)));
 }
 
 /**
@@ -64,6 +64,57 @@ const normalizeLists = (node: MdastNode): MdastNode => {
       newChildren.push(...nestedLists);
     } else {
       // Push in normally if it is not a list item
+      newChildren.push(normalizedChild);
+    }
+  }
+
+  return { ...node, children: newChildren };
+};
+
+const isCheckListItem = (node: MdastNode): boolean => {
+  return typeof node.checked === 'boolean';
+};
+
+/**
+ * This function pulls checklist items out of lists (splitting the list)
+ */
+const normalizeCheckListItems = (node: MdastNode): MdastNode => {
+  if (!node.children) {
+    return node;
+  }
+
+  const newChildren = [];
+  for (const child of node.children) {
+    const normalizedChild = normalizeCheckListItems(child);
+
+    if (!normalizedChild.children) {
+      // No children, just push in normally
+      newChildren.push(normalizedChild);
+      continue;
+    }
+
+    if (normalizedChild.type === 'list') {
+      const blocks: MdastNode[] = [];
+
+      for (const listChild of normalizedChild.children) {
+        if (isCheckListItem(listChild)) {
+          // Checklist items should be pulled out
+          blocks.push(listChild);
+        } else {
+          // Add a new block if it doesn't exist yet
+          if (
+            blocks.length <= 0 ||
+            isCheckListItem(blocks[blocks.length - 1])
+          ) {
+            blocks.push({ type: normalizedChild.type, children: [] });
+          }
+          // Push in listChild at the same level
+          blocks[blocks.length - 1].children?.push(listChild);
+        }
+      }
+
+      newChildren.push(...blocks);
+    } else {
       newChildren.push(normalizedChild);
     }
   }

@@ -1,8 +1,9 @@
 import { useCallback } from 'react';
-import { unified } from 'unified';
 import { Descendant, Element } from 'slate';
 import { toast } from 'react-toastify';
+import { unified } from 'unified';
 import remarkParse from 'remark-parse';
+import remarkGfm from 'remark-gfm';
 import wikiLinkPlugin from 'remark-wiki-link';
 import { v4 as uuidv4 } from 'uuid';
 import { store, useStore } from 'lib/store';
@@ -79,6 +80,7 @@ export default function useImport() {
 
         const { result } = unified()
           .use(remarkParse)
+          .use(remarkGfm)
           .use(wikiLinkPlugin, { aliasDivider: '|' })
           .use(remarkToSlate)
           .processSync(fileContent);

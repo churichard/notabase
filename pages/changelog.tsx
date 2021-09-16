@@ -27,6 +27,10 @@ export default function Changelog() {
           .
         </p>
         <ChangelogBlock
+          title="September 16, 2021"
+          features={['Add checklists', 'Update block menu UI']}
+        />
+        <ChangelogBlock
           title="September 15, 2021"
           bugFixes={[
             'Improve newline insertion handling when exporting',

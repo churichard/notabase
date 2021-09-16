@@ -11,6 +11,7 @@ import {
   IconTypography,
   TablerIcon,
   IconPhoto,
+  IconListCheck,
 } from '@tabler/icons';
 import { Element } from 'slate';
 import { toggleElement, isElementActive } from 'editor/formatting';
@@ -27,8 +28,8 @@ type ChangeBlockOptionsProps = {
 export default function ChangeBlockOptions(props: ChangeBlockOptionsProps) {
   const { element, className = '' } = props;
   return (
-    <div className={`space-y-2 ${className}`}>
-      <div className="flex items-center justify-center space-x-2">
+    <div className={`divide-y dark:divide-gray-700 ${className}`}>
+      <div className="flex items-center justify-center">
         <BlockButton
           format={ElementType.Paragraph}
           element={element}
@@ -54,7 +55,7 @@ export default function ChangeBlockOptions(props: ChangeBlockOptionsProps) {
           tooltip="Heading 3"
         />
       </div>
-      <div className="flex items-center justify-center space-x-2">
+      <div className="flex items-center justify-center">
         <BlockButton
           format={ElementType.BulletedList}
           element={element}
@@ -67,8 +68,14 @@ export default function ChangeBlockOptions(props: ChangeBlockOptionsProps) {
           Icon={IconListNumbers}
           tooltip="Numbered List"
         />
+        <BlockButton
+          format={ElementType.CheckListItem}
+          element={element}
+          Icon={IconListCheck}
+          tooltip="Checklist"
+        />
       </div>
-      <div className="flex items-center justify-center space-x-2">
+      <div className="flex items-center justify-center">
         <ImageButton
           format={ElementType.Image}
           element={element}
@@ -118,7 +125,7 @@ const BlockButton = ({
     <Tooltip content={tooltip} placement="top" disabled={!tooltip}>
       <span>
         <DropdownItem
-          className={`flex items-center px-2 py-2 cursor-pointer border rounded hover:bg-gray-100 active:bg-gray-200 dark:hover:bg-gray-700 dark:active:bg-gray-600 dark:border-gray-700 ${className}`}
+          className={`flex items-center px-2 py-2 cursor-pointer rounded hover:bg-gray-100 active:bg-gray-200 dark:hover:bg-gray-700 dark:active:bg-gray-600 ${className}`}
           onClick={() => toggleElement(editor, format, path)}
         >
           <Icon
@@ -181,7 +188,7 @@ const ImageButton = ({
     <Tooltip content={tooltip} placement="top" disabled={!tooltip}>
       <span>
         <DropdownItem
-          className={`flex items-center px-2 py-2 cursor-pointer border rounded hover:bg-gray-100 active:bg-gray-200 dark:hover:bg-gray-700 dark:active:bg-gray-600 dark:border-gray-700 ${className}`}
+          className={`flex items-center px-2 py-2 cursor-pointer rounded hover:bg-gray-100 active:bg-gray-200 dark:hover:bg-gray-700 dark:active:bg-gray-600 ${className}`}
           onClick={onClick}
         >
           <Icon

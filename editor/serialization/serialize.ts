@@ -24,6 +24,7 @@ THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 import { Element, Text } from 'slate';
 import {
   BlockReference,
+  CheckListItem,
   ElementType,
   ExternalLink,
   FormattedText,
@@ -171,6 +172,12 @@ export default function serialize(
         spacer += '   ';
       }
       return `${spacer}${isNumberedList ? '1.' : '-'} ${children}\n`;
+    }
+
+    case ElementType.CheckListItem: {
+      const checklistItem = chunk as CheckListItem;
+      const check = checklistItem.checked ? 'x' : ' ';
+      return `- [${check}] ${children}\n\n`;
     }
 
     case ElementType.Paragraph:

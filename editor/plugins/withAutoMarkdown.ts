@@ -40,6 +40,7 @@ const BLOCK_SHORTCUTS: Array<
   { match: /^```$/, type: ElementType.CodeBlock },
   { match: /^---$/, type: ElementType.ThematicBreak },
   { match: /^\*\*\*$/, type: ElementType.ThematicBreak },
+  { match: /^\[\]$/, type: ElementType.CheckListItem },
 ];
 
 enum CustomInlineShortcuts {
@@ -163,6 +164,8 @@ const handleBlockShortcuts = (editor: Editor) => {
           type: ElementType.Paragraph,
           children: [{ text: '' }],
         });
+      } else if (shortcut.type === ElementType.CheckListItem) {
+        Transforms.setNodes(editor, { checked: false });
       }
       return;
     }
