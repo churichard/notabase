@@ -158,10 +158,14 @@ export default function Editor(props: Props) {
       },
       {
         hotkey: 'mod+shift+6',
-        callback: () => toggleElement(editor, ElementType.Blockquote),
+        callback: () => toggleElement(editor, ElementType.CheckListItem),
       },
       {
         hotkey: 'mod+shift+7',
+        callback: () => toggleElement(editor, ElementType.Blockquote),
+      },
+      {
+        hotkey: 'mod+shift+8',
         callback: () => toggleElement(editor, ElementType.CodeBlock),
       },
       {
