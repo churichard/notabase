@@ -29,6 +29,9 @@ export default function Changelog() {
         <ChangelogBlock
           title="September 16, 2021"
           features={['Add checklists', 'Update block menu UI']}
+          bugFixes={[
+            'Fix bug where an error would be thrown if there was no content in the editor',
+          ]}
         />
         <ChangelogBlock
           title="September 15, 2021"

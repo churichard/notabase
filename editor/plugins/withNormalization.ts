@@ -1,10 +1,38 @@
 import { Editor, Element, Node, Selection, Text, Transforms } from 'slate';
-import { ElementType, Mark } from 'types/slate';
+import { ElementType, Mark, ParagraphElement } from 'types/slate';
 import { isListType } from 'editor/formatting';
 import { isTextType } from 'editor/checks';
+import { createNodeId } from './withNodeId';
 
 const withNormalization = (editor: Editor) => {
-  return withListNormalization(withInlineNormalization(editor));
+  return withListNormalization(
+    withInlineNormalization(withLayoutNormalization(editor))
+  );
+};
+
+const withLayoutNormalization = (editor: Editor) => {
+  const { normalizeNode } = editor;
+
+  editor.normalizeNode = (entry) => {
+    const [, path] = entry;
+
+    // Make sure there is at least a paragraph in the editor
+    if (path.length === 0) {
+      if (editor.children.length < 1) {
+        const paragraph: ParagraphElement = {
+          id: createNodeId(),
+          type: ElementType.Paragraph,
+          children: [{ text: '' }],
+        };
+        Transforms.insertNodes(editor, paragraph, { at: path.concat(0) });
+      }
+    }
+
+    // Fall back to the original `normalizeNode` to enforce other constraints.
+    normalizeNode(entry);
+  };
+
+  return editor;
 };
 
 const withInlineNormalization = (editor: Editor) => {
