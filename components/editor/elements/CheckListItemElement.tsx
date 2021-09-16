@@ -26,11 +26,18 @@ export default function CheckListItemElement(props: Props) {
       if (readOnly) {
         return;
       }
-      const path = ReactEditor.findPath(editor, element);
-      const newProperties: Partial<CheckListItem> = {
-        checked: event.target.checked,
-      };
-      Transforms.setNodes(editor, newProperties, { at: path });
+      try {
+        const path = ReactEditor.findPath(editor, element);
+        const newProperties: Partial<CheckListItem> = {
+          checked: event.target.checked,
+        };
+        Transforms.setNodes(editor, newProperties, { at: path });
+      } catch (e) {
+        const message = e instanceof Error ? e.message : e;
+        console.error(
+          `There was an error updating the checklist item: ${message}`
+        );
+      }
     },
     [editor, element, readOnly]
   );
