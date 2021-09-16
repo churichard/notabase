@@ -24,6 +24,7 @@ module.exports = (phase) => {
 
   return withSentryConfig(
     withBundleAnalyzer({
+      experimental: { esmExternals: true },
       i18n: {
         locales: ['en-US'],
         defaultLocale: 'en-US',
