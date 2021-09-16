@@ -164,6 +164,8 @@ const handleBlockShortcuts = (editor: Editor) => {
           type: ElementType.Paragraph,
           children: [{ text: '' }],
         });
+      } else if (shortcut.type === ElementType.CheckListItem) {
+        Transforms.setNodes(editor, { checked: false });
       }
       return;
     }
