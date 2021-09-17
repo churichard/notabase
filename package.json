@@ -49,7 +49,7 @@
     "slate": "^0.66.1",
     "slate-history": "^0.66.0",
     "slate-react": "^0.66.1",
-    "stripe": "^8.175.0",
+    "stripe": "^8.176.0",
     "tailwindcss": "^2.2.15",
     "unified": "^10.1.0",
     "uuid": "^8.3.2",
