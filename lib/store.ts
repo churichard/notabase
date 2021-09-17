@@ -228,7 +228,13 @@ export const store = createVanilla<Store>(
       name: 'notabase-storage',
       version: 1,
       getStorage: () => storage,
-      whitelist: ['openNoteIds', 'isSidebarOpen', 'noteSort', 'darkMode'],
+      whitelist: [
+        'openNoteIds',
+        'isSidebarOpen',
+        'noteSort',
+        'darkMode',
+        'isPageStackingOn',
+      ],
     }
   )
 );

@@ -1,7 +1,7 @@
 import { ForwardedRef, forwardRef, HTMLAttributes, memo, useMemo } from 'react';
 import Link from 'next/link';
 import { IconCaretRight } from '@tabler/icons';
-import { useStore } from 'lib/store';
+import { store, useStore } from 'lib/store';
 import { isMobile } from 'utils/device';
 import useOnNoteLinkClick from 'editor/useOnNoteLinkClick';
 import SidebarItem from './SidebarItem';
@@ -51,7 +51,9 @@ const SidebarNoteLink = (
           onClick={(e) => {
             if (e.shiftKey) {
               e.preventDefault();
-              onNoteLinkClick(note.id, false);
+              // If page stacking is on, we want to keep the default behavior.
+              // If page stacking is off, we want to reverse the default behavior.
+              onNoteLinkClick(note.id, !store.getState().isPageStackingOn);
             }
             if (isMobile()) {
               setIsSidebarOpen(false);
