@@ -6,6 +6,7 @@ import useOnNoteLinkClick from 'editor/useOnNoteLinkClick';
 import { useStore } from 'lib/store';
 import Tooltip from 'components/Tooltip';
 import useBlockReference from 'editor/backlinks/useBlockReference';
+import { useCurrentNote } from 'utils/useCurrentNote';
 import { ReadOnlyEditor } from '../ReadOnlyEditor';
 import EditorLeaf from './EditorLeaf';
 import ParagraphElement from './ParagraphElement';
@@ -24,7 +25,8 @@ export default function BlockRefElement(props: BlockRefElementProps) {
   const focused = useFocused();
 
   const blockReference = useBlockReference(element.blockId);
-  const onBlockRefClick = useOnNoteLinkClick();
+  const currentNote = useCurrentNote();
+  const onBlockRefClick = useOnNoteLinkClick(currentNote.id);
 
   const blockRefClassName = useMemo(
     () =>
@@ -54,7 +56,11 @@ export default function BlockRefElement(props: BlockRefElementProps) {
         onClick={(e) => {
           e.stopPropagation();
           if (blockReference) {
-            onBlockRefClick(e, blockReference.noteId, blockReference.path);
+            onBlockRefClick(
+              blockReference.noteId,
+              e.shiftKey,
+              blockReference.path
+            );
           }
         }}
         {...attributes}

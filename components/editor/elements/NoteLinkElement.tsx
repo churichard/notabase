@@ -5,6 +5,7 @@ import { NoteLink } from 'types/slate';
 import useOnNoteLinkClick from 'editor/useOnNoteLinkClick';
 import { useStore } from 'lib/store';
 import Tooltip from 'components/Tooltip';
+import { useCurrentNote } from 'utils/useCurrentNote';
 
 type NoteLinkElementProps = {
   element: NoteLink;
@@ -15,7 +16,8 @@ type NoteLinkElementProps = {
 
 export default function NoteLinkElement(props: NoteLinkElementProps) {
   const { className = '', element, children, attributes } = props;
-  const onNoteLinkClick = useOnNoteLinkClick();
+  const currentNote = useCurrentNote();
+  const onNoteLinkClick = useOnNoteLinkClick(currentNote.id);
   const isPageStackingOn = useStore((state) => state.isPageStackingOn);
   const selected = useSelected();
   const focused = useFocused();
@@ -30,7 +32,7 @@ export default function NoteLinkElement(props: NoteLinkElementProps) {
           className={noteLinkClassName}
           onClick={(e) => {
             e.stopPropagation();
-            onNoteLinkClick(e, element.noteId);
+            onNoteLinkClick(element.noteId, e.shiftKey);
           }}
           contentEditable={false}
           {...attributes}

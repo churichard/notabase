@@ -1,21 +1,23 @@
-import { MouseEvent, useCallback } from 'react';
+import { useCallback } from 'react';
 import { useRouter } from 'next/router';
 import { Path } from 'slate';
-import { useCurrentNote } from 'utils/useCurrentNote';
 import { useStore } from 'lib/store';
 import { queryParamToArray } from 'utils/url';
 
-export default function useOnNoteLinkClick() {
+export default function useOnNoteLinkClick(currentNoteId: string) {
   const router = useRouter();
   const {
     query: { stack: stackQuery },
   } = router;
-  const currentNote = useCurrentNote();
   const openNoteIds = useStore((state) => state.openNoteIds);
   const isPageStackingOn = useStore((state) => state.isPageStackingOn);
 
   const onClick = useCallback(
-    (e: MouseEvent, noteId: string, highlightedPath?: Path) => {
+    (
+      noteId: string,
+      reverseDefaultBehavior = false,
+      highlightedPath?: Path
+    ) => {
       /**
        * If the note is already open, scroll it into view
        */
@@ -47,7 +49,7 @@ export default function useOnNoteLinkClick() {
        * If the note is not open, add it to the open notes
        */
       const currentNoteIndex = openNoteIds.findIndex(
-        (openNoteId) => openNoteId === currentNote.id
+        (openNoteId) => openNoteId === currentNoteId
       );
       if (currentNoteIndex < 0) {
         return;
@@ -65,8 +67,8 @@ export default function useOnNoteLinkClick() {
 
       // Open new note (either as a stacked note or as a new page)
       if (
-        (isPageStackingOn && !e.shiftKey) ||
-        (!isPageStackingOn && e.shiftKey)
+        (isPageStackingOn && !reverseDefaultBehavior) ||
+        (!isPageStackingOn && reverseDefaultBehavior)
       ) {
         const hash = highlightedPath
           ? `${newNoteIndex}-${highlightedPath}`
@@ -89,7 +91,7 @@ export default function useOnNoteLinkClick() {
         });
       }
     },
-    [router, openNoteIds, currentNote, stackQuery, isPageStackingOn]
+    [router, openNoteIds, currentNoteId, stackQuery, isPageStackingOn]
   );
 
   return onClick;

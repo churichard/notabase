@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { IconCaretRight } from '@tabler/icons';
 import { useStore } from 'lib/store';
 import { isMobile } from 'utils/device';
+import useOnNoteLinkClick from 'editor/useOnNoteLinkClick';
 import SidebarItem from './SidebarItem';
 import SidebarNoteLinkDropdown from './SidebarNoteLinkDropdown';
 import { FlattenedNoteTreeItem } from './SidebarNotesTree';
@@ -28,6 +29,10 @@ const SidebarNoteLink = (
 
   const note = useStore((state) => state.notes[node.id]);
   const setIsSidebarOpen = useStore((state) => state.setIsSidebarOpen);
+  const lastOpenNoteId = useStore(
+    (state) => state.openNoteIds[state.openNoteIds.length - 1]
+  );
+  const onNoteLinkClick = useOnNoteLinkClick(lastOpenNoteId);
 
   // We add 16px for every level of nesting, plus 8px base padding
   const leftPadding = useMemo(() => node.depth * 16 + 8, [node.depth]);
@@ -43,7 +48,11 @@ const SidebarNoteLink = (
       <Link href={`/app/note/${note.id}`}>
         <a
           className="flex items-center flex-1 px-2 py-1 overflow-hidden overflow-ellipsis whitespace-nowrap"
-          onClick={() => {
+          onClick={(e) => {
+            if (e.shiftKey) {
+              e.preventDefault();
+              onNoteLinkClick(note.id, false);
+            }
             if (isMobile()) {
               setIsSidebarOpen(false);
             }

@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { BacklinkMatch } from 'editor/backlinks/useBacklinks';
 import useOnNoteLinkClick from 'editor/useOnNoteLinkClick';
 import { useStore } from 'lib/store';
+import { useCurrentNote } from 'utils/useCurrentNote';
 import EditorElement from '../elements/EditorElement';
 import EditorLeaf from '../elements/EditorLeaf';
 import { ReadOnlyEditor } from '../ReadOnlyEditor';
@@ -15,7 +16,8 @@ type BacklinkMatchLeafProps = {
 
 const BacklinkMatchLeaf = (props: BacklinkMatchLeafProps) => {
   const { noteId, match, className } = props;
-  const onNoteLinkClick = useOnNoteLinkClick();
+  const currentNote = useCurrentNote();
+  const onNoteLinkClick = useOnNoteLinkClick(currentNote.id);
   const isPageStackingOn = useStore((state) => state.isPageStackingOn);
   const router = useRouter();
 
@@ -36,7 +38,7 @@ const BacklinkMatchLeaf = (props: BacklinkMatchLeafProps) => {
       className={containerClassName}
       onClick={(e) => {
         if (isPageStackingOn) {
-          onNoteLinkClick(e, noteId, match.linePath);
+          onNoteLinkClick(noteId, e.shiftKey, match.linePath);
         } else {
           const hash = `#0-${match.linePath}`;
           router.push(`/app/note/${noteId}${hash}`);
