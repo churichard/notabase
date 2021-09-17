@@ -4,12 +4,11 @@ import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
 import Editor from 'components/editor/Editor';
 import Title from 'components/editor/Title';
-import { shallowEqual, store, useStore } from 'lib/store';
+import { store, useStore } from 'lib/store';
 import type { NoteUpdate } from 'lib/api/updateNote';
 import updateDbNote from 'lib/api/updateNote';
 import { ProvideCurrentNote } from 'utils/useCurrentNote';
 import { caseInsensitiveStringEqual } from 'utils/string';
-import { Note as NoteType } from 'types/supabase';
 import updateBacklinks from 'editor/backlinks/updateBacklinks';
 import Backlinks from './editor/backlinks/Backlinks';
 import NoteHeader from './editor/NoteHeader';
@@ -30,15 +29,8 @@ export default function Note(props: Props) {
   const { noteId, highlightedPath, className } = props;
   const router = useRouter();
 
-  const note = useStore<NoteType | undefined>(
-    (state) => state.notes[noteId],
-    shallowEqual
-  );
   const updateNote = useStore((state) => state.updateNote);
 
-  // Having a separate note title state makes it so that the title can be a "staging" area
-  // where it is possible for it to be empty, yet have the actual note title be something like "Untitled"
-  const [noteTitle, setNoteTitle] = useState(note?.title ?? '');
   const [syncState, setSyncState] = useState<{
     isTitleSynced: boolean;
     isContentSynced: boolean;
@@ -53,37 +45,32 @@ export default function Note(props: Props) {
 
   const onTitleChange = useCallback(
     (title: string) => {
-      if (note && note.title !== title) {
-        setNoteTitle(title);
-        // Only update note title in storage if there isn't already a note with that title
-        const newTitle = title || getUntitledTitle(note.id);
-        const notesArr = Object.values(store.getState().notes);
-        if (
-          notesArr.findIndex(
-            (n) =>
-              n.id !== note.id && caseInsensitiveStringEqual(n.title, title)
-          ) === -1
-        ) {
-          updateNote({ id: note.id, title: newTitle });
-          setSyncState((syncState) => ({ ...syncState, isTitleSynced: false }));
-        } else {
-          toast.error(
-            `There's already a note called ${title}. Please use a different title.`
-          );
-        }
+      // Only update note title in storage if there isn't already a note with that title
+      const newTitle = title || getUntitledTitle(noteId);
+      const notesArr = Object.values(store.getState().notes);
+      const isTitleUnique =
+        notesArr.findIndex(
+          (n) =>
+            n.id !== noteId && caseInsensitiveStringEqual(n.title, newTitle)
+        ) === -1;
+      if (isTitleUnique) {
+        updateNote({ id: noteId, title: newTitle });
+        setSyncState((syncState) => ({ ...syncState, isTitleSynced: false }));
+      } else {
+        toast.error(
+          `There's already a note called ${newTitle}. Please use a different title.`
+        );
       }
     },
-    [note, updateNote]
+    [noteId, updateNote]
   );
 
-  const setEditorValue = useCallback(
+  const onEditorValueChange = useCallback(
     (content: Descendant[]) => {
-      if (note && note.content !== content) {
-        updateNote({ id: note.id, content });
-        setSyncState((syncState) => ({ ...syncState, isContentSynced: false }));
-      }
+      updateNote({ id: noteId, content });
+      setSyncState((syncState) => ({ ...syncState, isContentSynced: false }));
     },
-    [note, updateNote]
+    [noteId, updateNote]
   );
 
   const handleNoteUpdate = useCallback(async (note: NoteUpdate) => {
@@ -116,29 +103,30 @@ export default function Note(props: Props) {
 
   // Save the note in the database if it changes and it hasn't been saved yet
   useEffect(() => {
+    const note = store.getState().notes[noteId];
     if (!note) {
       return;
     }
 
-    const newNote: NoteUpdate = { id: note.id };
+    const noteUpdate: NoteUpdate = { id: noteId };
     if (!syncState.isContentSynced) {
-      newNote.content = note.content;
+      noteUpdate.content = note.content;
     }
     if (!syncState.isTitleSynced) {
-      newNote.title = note.title;
+      noteUpdate.title = note.title;
     }
 
-    if (newNote.title || newNote.content) {
+    if (noteUpdate.title || noteUpdate.content) {
       const handler = setTimeout(
-        () => handleNoteUpdate(newNote),
+        () => handleNoteUpdate(noteUpdate),
         SYNC_DEBOUNCE_MS
       );
       return () => clearTimeout(handler);
     }
   }, [
-    syncState.isContentSynced,
+    noteId,
     syncState.isTitleSynced,
-    note,
+    syncState.isContentSynced,
     handleNoteUpdate,
   ]);
 
@@ -172,7 +160,10 @@ export default function Note(props: Props) {
     'flex flex-col flex-shrink-0 md:flex-shrink w-full bg-white dark:bg-gray-900 dark:text-gray-100';
   const errorContainerClassName = `${noteContainerClassName} items-center justify-center h-full p-4`;
 
-  if (!note) {
+  const currentNoteValue = useMemo(() => ({ id: noteId }), [noteId]);
+
+  const noteExists = useMemo(() => !!store.getState().notes[noteId], [noteId]);
+  if (!noteExists) {
     return (
       <div className={errorContainerClassName}>
         <p>Whoops&mdash;it doesn&apos;t look like this note exists!</p>
@@ -188,20 +179,20 @@ export default function Note(props: Props) {
         </div>
       }
     >
-      <ProvideCurrentNote value={note}>
-        <div id={note.id} className={`${noteContainerClassName} ${className}`}>
+      <ProvideCurrentNote value={currentNoteValue}>
+        <div id={noteId} className={`${noteContainerClassName} ${className}`}>
           <NoteHeader />
           <div className="flex flex-col flex-1 overflow-x-hidden overflow-y-auto">
             <div className="flex flex-col flex-1 w-full mx-auto md:w-128 lg:w-160 xl:w-192">
               <Title
                 className="px-8 pt-8 pb-1 md:pt-12 md:px-12"
-                value={noteTitle}
+                noteId={noteId}
                 onChange={onTitleChange}
               />
               <Editor
                 className="flex-1 px-8 pt-2 pb-8 md:pb-12 md:px-12"
-                value={note.content}
-                setValue={setEditorValue}
+                noteId={noteId}
+                onChange={onEditorValueChange}
                 highlightedPath={highlightedPath}
               />
               <Backlinks className="mx-4 mb-8 md:mx-8 md:mb-12" />

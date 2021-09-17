@@ -5,6 +5,7 @@ import {
   useState,
   KeyboardEvent,
   useEffect,
+  memo,
 } from 'react';
 import {
   createEditor,
@@ -35,8 +36,9 @@ import withImages from 'editor/plugins/withImages';
 import withVoidElements from 'editor/plugins/withVoidElements';
 import withNodeId from 'editor/plugins/withNodeId';
 import withBlockReferences from 'editor/plugins/withBlockReferences';
-import { useStore } from 'lib/store';
+import { store, useStore } from 'lib/store';
 import { ElementType, Mark } from 'types/slate';
+import { DEFAULT_EDITOR_VALUE } from 'editor/constants';
 import HoveringToolbar from './HoveringToolbar';
 import AddLinkPopover from './AddLinkPopover';
 import EditorElement from './elements/EditorElement';
@@ -53,14 +55,18 @@ export type AddLinkPopoverState = {
 };
 
 type Props = {
+  noteId: string;
+  onChange: (value: Descendant[]) => void;
   className?: string;
-  value: Descendant[];
-  setValue: (value: Descendant[]) => void;
   highlightedPath?: Path;
 };
 
-export default function Editor(props: Props) {
-  const { className, value, setValue, highlightedPath } = props;
+function Editor(props: Props) {
+  const { noteId, onChange, className = '', highlightedPath } = props;
+
+  const [value, setValue] = useState<Descendant[]>(
+    store.getState().notes[noteId]?.content ?? DEFAULT_EDITOR_VALUE
+  );
 
   const editorRef = useRef<SlateEditor>();
   if (!editorRef.current) {
@@ -224,6 +230,19 @@ export default function Editor(props: Props) {
     [hotkeys]
   );
 
+  const onSlateChange = useCallback(
+    (newValue: Descendant[]) => {
+      setSelection(editor.selection);
+      // We need this check because this function is called every time
+      // the selection changes
+      if (newValue !== value) {
+        setValue(newValue);
+        onChange(newValue);
+      }
+    },
+    [editor.selection, onChange, value]
+  );
+
   // If highlightedPath is defined, highlight the path
   const darkMode = useStore((state) => state.darkMode);
   useEffect(() => {
@@ -261,14 +280,7 @@ export default function Editor(props: Props) {
   }, [editor, highlightedPath, darkMode]);
 
   return (
-    <Slate
-      editor={editor}
-      value={value}
-      onChange={(value) => {
-        setValue(value);
-        setSelection(editor.selection);
-      }}
-    >
+    <Slate editor={editor} value={value} onChange={onSlateChange}>
       {isToolbarVisible ? (
         <HoveringToolbar setAddLinkPopoverState={setAddLinkPopoverState} />
       ) : null}
@@ -293,3 +305,5 @@ export default function Editor(props: Props) {
     </Slate>
   );
 }
+
+export default memo(Editor);
