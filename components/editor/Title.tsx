@@ -1,13 +1,14 @@
 import { memo, useEffect, useRef } from 'react';
+import { store } from 'lib/store';
 
 type Props = {
-  className?: string;
-  value: string;
+  noteId: string;
   onChange: (value: string) => void;
+  className?: string;
 };
 
 function Title(props: Props) {
-  const { className, value, onChange } = props;
+  const { noteId, onChange, className = '' } = props;
   const titleRef = useRef<HTMLDivElement | null>(null);
 
   const emitChange = () => {
@@ -23,8 +24,9 @@ function Title(props: Props) {
     if (!titleRef.current || titleRef.current.textContent) {
       return;
     }
-    titleRef.current.textContent = value;
-  }, [value]);
+    const initialValue = store.getState().notes[noteId]?.title ?? '';
+    titleRef.current.textContent = initialValue;
+  }, [noteId]);
 
   return (
     <>
@@ -47,7 +49,6 @@ function Title(props: Props) {
           document.execCommand('insertText', false, text);
         }}
         onInput={emitChange}
-        onBlur={emitChange}
         contentEditable
         spellCheck
       />
