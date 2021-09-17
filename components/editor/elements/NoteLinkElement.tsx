@@ -30,7 +30,7 @@ export default function NoteLinkElement(props: NoteLinkElementProps) {
           className={noteLinkClassName}
           onClick={(e) => {
             e.stopPropagation();
-            onNoteLinkClick(element.noteId);
+            onNoteLinkClick(e, element.noteId);
           }}
           contentEditable={false}
           {...attributes}

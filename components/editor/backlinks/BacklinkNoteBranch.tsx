@@ -18,7 +18,7 @@ const BacklinkNoteBranch = (props: BacklinkNoteBranchProps) => {
       className="py-1 link"
       onClick={(e) => {
         e.stopPropagation();
-        onNoteLinkClick(backlink.id);
+        onNoteLinkClick(e, backlink.id);
       }}
     >
       {backlink.title}

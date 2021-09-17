@@ -54,7 +54,7 @@ export default function BlockRefElement(props: BlockRefElementProps) {
         onClick={(e) => {
           e.stopPropagation();
           if (blockReference) {
-            onBlockRefClick(blockReference.noteId, blockReference.path);
+            onBlockRefClick(e, blockReference.noteId, blockReference.path);
           }
         }}
         {...attributes}

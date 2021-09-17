@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { MouseEvent, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import { Path } from 'slate';
 import { useCurrentNote } from 'utils/useCurrentNote';
@@ -15,7 +15,7 @@ export default function useOnNoteLinkClick() {
   const isPageStackingOn = useStore((state) => state.isPageStackingOn);
 
   const onClick = useCallback(
-    (noteId: string, highlightedPath?: Path) => {
+    (e: MouseEvent, noteId: string, highlightedPath?: Path) => {
       /**
        * If the note is already open, scroll it into view
        */
@@ -64,7 +64,10 @@ export default function useOnNoteLinkClick() {
       );
 
       // Open new note (either as a stacked note or as a new page)
-      if (isPageStackingOn) {
+      if (
+        (isPageStackingOn && !e.shiftKey) ||
+        (!isPageStackingOn && e.shiftKey)
+      ) {
         const hash = highlightedPath
           ? `${newNoteIndex}-${highlightedPath}`
           : undefined;
