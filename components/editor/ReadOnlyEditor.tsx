@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { memo, useRef } from 'react';
 import { createEditor, Descendant, Editor } from 'slate';
 import { Editable, Slate, withReact } from 'slate-react';
 import withVoidElements from 'editor/plugins/withVoidElements';
@@ -12,7 +12,7 @@ type Props = {
   renderLeaf: (props: EditorLeafProps) => JSX.Element;
 };
 
-export function ReadOnlyEditor(props: Props) {
+function ReadOnlyEditor(props: Props) {
   const { value, renderElement, renderLeaf } = props;
 
   const editorRef = useRef<Editor>();
@@ -39,3 +39,5 @@ export function ReadOnlyEditor(props: Props) {
     </Slate>
   );
 }
+
+export default memo(ReadOnlyEditor);

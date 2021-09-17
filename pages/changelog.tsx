@@ -27,6 +27,12 @@ export default function Changelog() {
           .
         </p>
         <ChangelogBlock
+          title="September 17, 2021"
+          features={[
+            'Page stacking can now be turned on and off, and the opposite behavior can be achieved by shift-clicking',
+          ]}
+        />
+        <ChangelogBlock
           title="September 16, 2021"
           features={['Add checklists', 'Update block menu UI']}
           bugFixes={[

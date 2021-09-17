@@ -39,6 +39,7 @@ import withBlockReferences from 'editor/plugins/withBlockReferences';
 import { store, useStore } from 'lib/store';
 import { ElementType, Mark } from 'types/slate';
 import { DEFAULT_EDITOR_VALUE } from 'editor/constants';
+import useIsMounted from 'utils/useIsMounted';
 import HoveringToolbar from './HoveringToolbar';
 import AddLinkPopover from './AddLinkPopover';
 import EditorElement from './elements/EditorElement';
@@ -63,6 +64,7 @@ type Props = {
 
 function Editor(props: Props) {
   const { noteId, onChange, className = '', highlightedPath } = props;
+  const isMounted = useIsMounted();
 
   const [value, setValue] = useState<Descendant[]>(
     store.getState().notes[noteId]?.content ?? DEFAULT_EDITOR_VALUE
@@ -299,7 +301,11 @@ function Editor(props: Props) {
         placeholder="Start typing here…"
         onKeyDown={onKeyDown}
         onPointerDown={() => setToolbarCanBeVisible(false)}
-        onPointerUp={() => setTimeout(() => setToolbarCanBeVisible(true), 100)}
+        onPointerUp={() =>
+          setTimeout(() => {
+            if (isMounted()) setToolbarCanBeVisible(true);
+          }, 100)
+        }
         spellCheck
       />
     </Slate>

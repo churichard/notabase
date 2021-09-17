@@ -6,7 +6,8 @@ import useOnNoteLinkClick from 'editor/useOnNoteLinkClick';
 import { useStore } from 'lib/store';
 import Tooltip from 'components/Tooltip';
 import useBlockReference from 'editor/backlinks/useBlockReference';
-import { ReadOnlyEditor } from '../ReadOnlyEditor';
+import { useCurrentNote } from 'utils/useCurrentNote';
+import ReadOnlyEditor from '../ReadOnlyEditor';
 import EditorLeaf from './EditorLeaf';
 import ParagraphElement from './ParagraphElement';
 import EditorElement, { EditorElementProps } from './EditorElement';
@@ -24,7 +25,9 @@ export default function BlockRefElement(props: BlockRefElementProps) {
   const focused = useFocused();
 
   const blockReference = useBlockReference(element.blockId);
-  const onBlockRefClick = useOnNoteLinkClick();
+  const currentNote = useCurrentNote();
+  const { onClick: onBlockRefClick, defaultStackingBehavior } =
+    useOnNoteLinkClick(currentNote.id);
 
   const blockRefClassName = useMemo(
     () =>
@@ -47,6 +50,11 @@ export default function BlockRefElement(props: BlockRefElementProps) {
     }
   }, []);
 
+  const editorValue = useMemo(
+    () => (blockReference ? [blockReference.element] : []),
+    [blockReference]
+  );
+
   return (
     <Tooltip content={noteTitle} placement="bottom-start" disabled={!noteTitle}>
       <div
@@ -54,14 +62,18 @@ export default function BlockRefElement(props: BlockRefElementProps) {
         onClick={(e) => {
           e.stopPropagation();
           if (blockReference) {
-            onBlockRefClick(blockReference.noteId, blockReference.path);
+            onBlockRefClick(
+              blockReference.noteId,
+              defaultStackingBehavior(e),
+              blockReference.path
+            );
           }
         }}
         {...attributes}
       >
         {blockReference ? (
           <ReadOnlyEditor
-            value={[blockReference.element]}
+            value={editorValue}
             renderElement={renderElement}
             renderLeaf={EditorLeaf}
           />

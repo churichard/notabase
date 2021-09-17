@@ -1,12 +1,14 @@
 import { useMemo, useState } from 'react';
-import { IconBrightnessHalf, IconCreditCard } from '@tabler/icons';
+import { IconBrightnessHalf, IconCreditCard, IconPencil } from '@tabler/icons';
 import useHotkeys from 'utils/useHotkeys';
 import SidebarItem from '../sidebar/SidebarItem';
 import Billing from './Billing';
 import Appearance from './Appearance';
+import EditorSettings from './EditorSettings';
 
 enum SettingsTab {
   Appearance = 'appearance',
+  Editor = 'editor',
   Billing = 'billing',
 }
 
@@ -44,6 +46,7 @@ export default function SettingsModal(props: Props) {
             setCurrentTab={setCurrentTab}
           />
           {currentTab === SettingsTab.Appearance ? <Appearance /> : null}
+          {currentTab === SettingsTab.Editor ? <EditorSettings /> : null}
           {currentTab === SettingsTab.Billing ? <Billing /> : null}
         </div>
       </div>
@@ -76,6 +79,21 @@ const SettingsModalSidebar = (props: SettingsModalSidebarProps) => {
             className="mr-1 text-gray-800 dark:text-gray-200"
           />
           <span>Appearance</span>
+        </button>
+      </SidebarItem>
+      <SidebarItem
+        className="flex"
+        isHighlighted={currentTab === SettingsTab.Editor}
+      >
+        <button
+          className="flex items-center flex-1 px-4 py-1 overflow-hidden overflow-ellipsis whitespace-nowrap"
+          onClick={() => setCurrentTab(SettingsTab.Editor)}
+        >
+          <IconPencil
+            size={18}
+            className="mr-1 text-gray-800 dark:text-gray-200"
+          />
+          <span>Editor</span>
         </button>
       </SidebarItem>
       <SidebarItem
