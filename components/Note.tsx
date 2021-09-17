@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import type { Descendant, Path } from 'slate';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
@@ -25,22 +25,17 @@ type Props = {
   className?: string;
 };
 
-export default function Note(props: Props) {
+function Note(props: Props) {
   const { noteId, highlightedPath, className } = props;
   const router = useRouter();
 
   const updateNote = useStore((state) => state.updateNote);
 
-  const [syncState, setSyncState] = useState<{
-    isTitleSynced: boolean;
-    isContentSynced: boolean;
-  }>({
-    isTitleSynced: true,
-    isContentSynced: true,
-  });
+  const [isTitleSynced, setIsTitleSynced] = useState(true);
+  const [isContentSynced, setIsContentSynced] = useState(true);
   const isSynced = useMemo(
-    () => syncState.isTitleSynced && syncState.isContentSynced,
-    [syncState]
+    () => isTitleSynced && isContentSynced,
+    [isTitleSynced, isContentSynced]
   );
 
   const onTitleChange = useCallback(
@@ -55,7 +50,7 @@ export default function Note(props: Props) {
         ) === -1;
       if (isTitleUnique) {
         updateNote({ id: noteId, title: newTitle });
-        setSyncState((syncState) => ({ ...syncState, isTitleSynced: false }));
+        setIsTitleSynced(false);
       } else {
         toast.error(
           `There's already a note called ${newTitle}. Please use a different title.`
@@ -68,7 +63,7 @@ export default function Note(props: Props) {
   const onEditorValueChange = useCallback(
     (content: Descendant[]) => {
       updateNote({ id: noteId, content });
-      setSyncState((syncState) => ({ ...syncState, isContentSynced: false }));
+      setIsContentSynced(false);
     },
     [noteId, updateNote]
   );
@@ -98,7 +93,8 @@ export default function Note(props: Props) {
     if (note.title) {
       await updateBacklinks(note.title, note.id);
     }
-    setSyncState({ isTitleSynced: true, isContentSynced: true });
+    setIsTitleSynced(true);
+    setIsContentSynced(true);
   }, []);
 
   // Save the note in the database if it changes and it hasn't been saved yet
@@ -109,26 +105,21 @@ export default function Note(props: Props) {
     }
 
     const noteUpdate: NoteUpdate = { id: noteId };
-    if (!syncState.isContentSynced) {
+    if (!isContentSynced) {
       noteUpdate.content = note.content;
     }
-    if (!syncState.isTitleSynced) {
+    if (!isTitleSynced) {
       noteUpdate.title = note.title;
     }
 
-    if (noteUpdate.title || noteUpdate.content) {
+    if (!isTitleSynced || !isContentSynced) {
       const handler = setTimeout(
         () => handleNoteUpdate(noteUpdate),
         SYNC_DEBOUNCE_MS
       );
       return () => clearTimeout(handler);
     }
-  }, [
-    noteId,
-    syncState.isTitleSynced,
-    syncState.isContentSynced,
-    handleNoteUpdate,
-  ]);
+  }, [noteId, isTitleSynced, isContentSynced, handleNoteUpdate]);
 
   // Prompt the user with a dialog box about unsaved changes if they navigate away
   useEffect(() => {
@@ -203,6 +194,8 @@ export default function Note(props: Props) {
     </ErrorBoundary>
   );
 }
+
+export default memo(Note);
 
 // Get a unique "Untitled" title, ignoring the specified noteId.
 const getUntitledTitle = (noteId: string) => {
