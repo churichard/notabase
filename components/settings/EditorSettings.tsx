@@ -10,9 +10,9 @@ export default function EditorSettings() {
       <div className="mb-4">
         <h1 className="text-lg font-medium">Page Stacking</h1>
         <p className="mt-2 text-sm text-gray-700">
-          If page stacking is on, clicking on note links will open the note on
-          the side, and shift-click will open a note by itself. If page stacking
-          is off, this behavior is reversed.
+          If page stacking is on, clicking a note link will open the note on the
+          side, and shift-clicking a note link will open the note by itself. If
+          page stacking is off, this behavior is reversed.
         </p>
       </div>
       <div className="flex items-center">
