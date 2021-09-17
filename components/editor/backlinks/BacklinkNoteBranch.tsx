@@ -1,8 +1,6 @@
 import { memo } from 'react';
-import Link from 'next/link';
 import { Backlink } from 'editor/backlinks/useBacklinks';
 import useOnNoteLinkClick from 'editor/useOnNoteLinkClick';
-import { useStore } from 'lib/store';
 import { useCurrentNote } from 'utils/useCurrentNote';
 
 type BacklinkNoteBranchProps = {
@@ -12,25 +10,19 @@ type BacklinkNoteBranchProps = {
 const BacklinkNoteBranch = (props: BacklinkNoteBranchProps) => {
   const { backlink } = props;
   const currentNote = useCurrentNote();
-  const onNoteLinkClick = useOnNoteLinkClick(currentNote.id);
-  const isPageStackingOn = useStore((state) => state.isPageStackingOn);
+  const { onClick: onNoteLinkClick, defaultStackingBehavior } =
+    useOnNoteLinkClick(currentNote.id);
 
-  return isPageStackingOn ? (
+  return (
     <button
       className="py-1 link"
       onClick={(e) => {
         e.stopPropagation();
-        onNoteLinkClick(backlink.id, e.shiftKey);
+        onNoteLinkClick(backlink.id, defaultStackingBehavior(e));
       }}
     >
       {backlink.title}
     </button>
-  ) : (
-    <Link href={`/app/note/${backlink.id}`}>
-      <a className="py-1 link" onClick={(e) => e.stopPropagation()}>
-        {backlink.title}
-      </a>
-    </Link>
   );
 };
 

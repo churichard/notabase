@@ -1,12 +1,10 @@
 import { memo, useMemo } from 'react';
-import { useRouter } from 'next/router';
 import { BacklinkMatch } from 'editor/backlinks/useBacklinks';
 import useOnNoteLinkClick from 'editor/useOnNoteLinkClick';
-import { useStore } from 'lib/store';
 import { useCurrentNote } from 'utils/useCurrentNote';
 import EditorElement from '../elements/EditorElement';
 import EditorLeaf from '../elements/EditorLeaf';
-import { ReadOnlyEditor } from '../ReadOnlyEditor';
+import ReadOnlyEditor from '../ReadOnlyEditor';
 
 type BacklinkMatchLeafProps = {
   noteId: string;
@@ -17,35 +15,24 @@ type BacklinkMatchLeafProps = {
 const BacklinkMatchLeaf = (props: BacklinkMatchLeafProps) => {
   const { noteId, match, className } = props;
   const currentNote = useCurrentNote();
-  const onNoteLinkClick = useOnNoteLinkClick(currentNote.id);
-  const isPageStackingOn = useStore((state) => state.isPageStackingOn);
-  const router = useRouter();
+  const { onClick: onNoteLinkClick, defaultStackingBehavior } =
+    useOnNoteLinkClick(currentNote.id);
 
-  const backlinkMatch = useMemo(
-    () => (
-      <ReadOnlyEditor
-        value={[match.lineElement]}
-        renderElement={EditorElement}
-        renderLeaf={EditorLeaf}
-      />
-    ),
-    [match.lineElement]
-  );
+  const editorValue = useMemo(() => [match.lineElement], [match.lineElement]);
   const containerClassName = `block text-left text-xs rounded p-2 my-1 w-full break-words ${className}`;
 
   return (
     <button
       className={containerClassName}
-      onClick={(e) => {
-        if (isPageStackingOn) {
-          onNoteLinkClick(noteId, e.shiftKey, match.linePath);
-        } else {
-          const hash = `#0-${match.linePath}`;
-          router.push(`/app/note/${noteId}${hash}`);
-        }
-      }}
+      onClick={(e) =>
+        onNoteLinkClick(noteId, defaultStackingBehavior(e), match.linePath)
+      }
     >
-      {backlinkMatch}
+      <ReadOnlyEditor
+        value={editorValue}
+        renderElement={EditorElement}
+        renderLeaf={EditorLeaf}
+      />
     </button>
   );
 };
