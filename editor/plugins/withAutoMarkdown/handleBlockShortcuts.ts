@@ -52,49 +52,54 @@ const handleBlockShortcuts = (editor: Editor) => {
 
   // Handle block shortcuts
   for (const shortcut of BLOCK_SHORTCUTS) {
-    if (beforeText.match(shortcut.match)) {
-      // Delete markdown text
-      Transforms.select(editor, beforeRange);
-      Transforms.delete(editor);
+    const { match, type } = shortcut;
 
-      // Unwrap lists if there are any
-      Transforms.unwrapNodes(editor, {
-        match: (n) =>
-          !Editor.isEditor(n) && Element.isElement(n) && isListType(n.type),
-        split: true,
-      });
-
-      // Update node type
-      Transforms.setNodes(
-        editor,
-        { type: shortcut.type },
-        { match: (n) => Editor.isBlock(editor, n) }
-      );
-
-      if (shortcut.type === ElementType.ListItem) {
-        const list: ListElement = {
-          id: createNodeId(),
-          type: shortcut.listType,
-          children: [],
-        };
-        Transforms.wrapNodes(editor, list, {
-          match: (n) =>
-            !Editor.isEditor(n) &&
-            Element.isElement(n) &&
-            n.type === ElementType.ListItem,
-        });
-      } else if (shortcut.type === ElementType.ThematicBreak) {
-        // Insert a new paragraph below thematic break
-        Transforms.insertNodes(editor, {
-          id: createNodeId(),
-          type: ElementType.Paragraph,
-          children: [{ text: '' }],
-        });
-      } else if (shortcut.type === ElementType.CheckListItem) {
-        Transforms.setNodes(editor, { checked: false });
-      }
-      return;
+    if (!beforeText.match(match)) {
+      continue;
     }
+
+    // Delete markdown text
+    Transforms.select(editor, beforeRange);
+    Transforms.delete(editor);
+
+    // Unwrap lists if there are any
+    Transforms.unwrapNodes(editor, {
+      match: (n) =>
+        !Editor.isEditor(n) && Element.isElement(n) && isListType(n.type),
+      split: true,
+    });
+
+    // Update node type
+    Transforms.setNodes(
+      editor,
+      { type },
+      { match: (n) => Editor.isBlock(editor, n) }
+    );
+
+    if (type === ElementType.ListItem) {
+      const list: ListElement = {
+        id: createNodeId(),
+        type: shortcut.listType,
+        children: [],
+      };
+      Transforms.wrapNodes(editor, list, {
+        match: (n) =>
+          !Editor.isEditor(n) &&
+          Element.isElement(n) &&
+          n.type === ElementType.ListItem,
+      });
+    } else if (type === ElementType.ThematicBreak) {
+      // Insert a new paragraph below thematic break
+      Transforms.insertNodes(editor, {
+        id: createNodeId(),
+        type: ElementType.Paragraph,
+        children: [{ text: '' }],
+      });
+    } else if (type === ElementType.CheckListItem) {
+      Transforms.setNodes(editor, { checked: false });
+    }
+
+    return;
   }
 };
 
