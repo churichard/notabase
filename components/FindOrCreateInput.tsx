@@ -3,6 +3,7 @@ import { forwardRef, useCallback, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 import type { TablerIcon } from '@tabler/icons';
 import { IconFilePlus, IconSearch } from '@tabler/icons';
+import { toast } from 'react-toastify';
 import upsertNote from 'lib/api/upsertNote';
 import { useAuth } from 'utils/useAuth';
 import useNoteSearch from 'utils/useNoteSearch';
@@ -88,7 +89,8 @@ function FindOrCreateInput(props: Props, ref: ForwardedRef<HTMLInputElement>) {
 
         const note = await upsertNote({ user_id: user.id, title: inputText });
         if (!note) {
-          throw new Error(`There was an error creating the note ${inputText}.`);
+          toast.error(`There was an error creating the note ${inputText}.`);
+          return;
         }
 
         router.push(`/app/note/${note.id}`);

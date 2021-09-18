@@ -9,7 +9,7 @@ export type NoteUpsert = PickPartial<
 >;
 
 export default async function upsertNote(note: NoteUpsert) {
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from<Note>('notes')
     .upsert(
       { ...note, updated_at: new Date().toISOString() },
@@ -23,6 +23,8 @@ export default async function upsertNote(note: NoteUpsert) {
     await supabase
       .from<User>('users')
       .update({ note_tree: store.getState().noteTree });
+  } else if (error) {
+    console.error(error);
   }
 
   return data;
