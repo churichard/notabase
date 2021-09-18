@@ -1,47 +1,16 @@
-import { Editor, Element, Transforms, Range, Point, Text, Path } from 'slate';
+import { Editor, Transforms, Range, Point, Text, Path } from 'slate';
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from 'react-toastify';
-import type { ExternalLink, ListElement, NoteLink } from 'types/slate';
+import type { ExternalLink, NoteLink } from 'types/slate';
 import { ElementType, Mark } from 'types/slate';
-import { insertBlockReference, isListType, isMark } from 'editor/formatting';
+import { insertBlockReference, isMark } from 'editor/formatting';
 import { isUrl } from 'utils/url';
 import { store } from 'lib/store';
 import upsertNote from 'lib/api/upsertNote';
 import supabase from 'lib/supabase';
 import { caseInsensitiveStringEqual } from 'utils/string';
 import { MAX_NUM_OF_BASIC_NOTES, PlanId } from 'constants/pricing';
-import { createNodeId } from './withNodeId';
-
-const BLOCK_SHORTCUTS: Array<
-  | {
-      match: RegExp;
-      type: Exclude<ElementType, ElementType.ListItem>;
-    }
-  | {
-      match: RegExp;
-      type: ElementType.ListItem;
-      listType: ElementType.BulletedList | ElementType.NumberedList;
-    }
-> = [
-  {
-    match: /^(\*|-|\+) $/,
-    type: ElementType.ListItem,
-    listType: ElementType.BulletedList,
-  }, // match *, -, or +
-  {
-    match: /^([0-9]+\.) $/,
-    type: ElementType.ListItem,
-    listType: ElementType.NumberedList,
-  }, // match numbered lists
-  { match: /^> $/, type: ElementType.Blockquote },
-  { match: /^# $/, type: ElementType.HeadingOne },
-  { match: /^## $/, type: ElementType.HeadingTwo },
-  { match: /^### $/, type: ElementType.HeadingThree },
-  { match: /^```$/, type: ElementType.CodeBlock },
-  { match: /^---$/, type: ElementType.ThematicBreak },
-  { match: /^\*\*\*$/, type: ElementType.ThematicBreak },
-  { match: /^\[\]$/, type: ElementType.CheckListItem },
-];
+import { createNodeId } from '../withNodeId';
 
 enum CustomInlineShortcuts {
   CustomNoteLink = 'custom-note-link',
@@ -70,107 +39,6 @@ const INLINE_SHORTCUTS: Array<{
   { match: /(?:^|\s)(\[\[)(.+)(\]\])/, type: ElementType.NoteLink },
   { match: /(?:^|\s)(\(\()(.+)(\)\))/, type: ElementType.BlockReference },
 ];
-
-// Add auto-markdown formatting shortcuts
-const withAutoMarkdown = (editor: Editor) => {
-  const { insertText, insertData } = editor;
-
-  editor.insertText = (text) => {
-    insertText(text);
-    handleAutoMarkdown(editor);
-  };
-
-  editor.insertData = (data) => {
-    insertData(data);
-    // TODO: make sure multiple markdown elements inserted in the same data are all handled
-    handleAutoMarkdown(editor);
-  };
-
-  return editor;
-};
-
-const handleAutoMarkdown = (editor: Editor) => {
-  // Don't handle auto markdown shortcuts in code blocks
-  const inCodeBlock = Editor.above(editor, {
-    match: (n) =>
-      !Editor.isEditor(n) &&
-      Element.isElement(n) &&
-      n.type === ElementType.CodeBlock,
-  });
-
-  if (inCodeBlock) {
-    return;
-  }
-
-  // Handle shortcuts at the beginning of a line
-  handleBlockShortcuts(editor);
-
-  // Handle inline shortcuts
-  handleInlineShortcuts(editor);
-};
-
-// Handle block shortcuts
-const handleBlockShortcuts = (editor: Editor) => {
-  if (!editor.selection || !Range.isCollapsed(editor.selection)) {
-    return;
-  }
-
-  const block = Editor.above(editor, {
-    match: (n) => Editor.isBlock(editor, n),
-  });
-  const path = block ? block[1] : [];
-  const lineStart = Editor.start(editor, path);
-  const selectionAnchor = editor.selection.anchor;
-  const beforeRange = { anchor: selectionAnchor, focus: lineStart };
-  const beforeText = Editor.string(editor, beforeRange);
-
-  // Handle block shortcuts
-  for (const shortcut of BLOCK_SHORTCUTS) {
-    if (beforeText.match(shortcut.match)) {
-      // Delete markdown text
-      Transforms.select(editor, beforeRange);
-      Transforms.delete(editor);
-
-      // Unwrap lists if there are any
-      Transforms.unwrapNodes(editor, {
-        match: (n) =>
-          !Editor.isEditor(n) && Element.isElement(n) && isListType(n.type),
-        split: true,
-      });
-
-      // Update node type
-      Transforms.setNodes(
-        editor,
-        { type: shortcut.type },
-        { match: (n) => Editor.isBlock(editor, n) }
-      );
-
-      if (shortcut.type === ElementType.ListItem) {
-        const list: ListElement = {
-          id: createNodeId(),
-          type: shortcut.listType,
-          children: [],
-        };
-        Transforms.wrapNodes(editor, list, {
-          match: (n) =>
-            !Editor.isEditor(n) &&
-            Element.isElement(n) &&
-            n.type === ElementType.ListItem,
-        });
-      } else if (shortcut.type === ElementType.ThematicBreak) {
-        // Insert a new paragraph below thematic break
-        Transforms.insertNodes(editor, {
-          id: createNodeId(),
-          type: ElementType.Paragraph,
-          children: [{ text: '' }],
-        });
-      } else if (shortcut.type === ElementType.CheckListItem) {
-        Transforms.setNodes(editor, { checked: false });
-      }
-      return;
-    }
-  }
-};
 
 // Handle inline shortcuts
 const handleInlineShortcuts = (editor: Editor) => {
@@ -396,4 +264,4 @@ const deleteText = (
   Transforms.delete(editor, { at: range });
 };
 
-export default withAutoMarkdown;
+export default handleInlineShortcuts;

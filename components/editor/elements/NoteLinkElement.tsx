@@ -15,9 +15,11 @@ type NoteLinkElementProps = {
 
 export default function NoteLinkElement(props: NoteLinkElementProps) {
   const { className = '', element, children, attributes } = props;
+
   const currentNote = useCurrentNote();
   const { onClick: onNoteLinkClick, defaultStackingBehavior } =
     useOnNoteLinkClick(currentNote.id);
+
   const selected = useSelected();
   const focused = useFocused();
   const noteLinkClassName = classNames(
