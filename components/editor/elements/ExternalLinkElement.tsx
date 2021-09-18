@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 import { RenderElementProps } from 'slate-react';
+import classNames from 'classnames';
 import { ExternalLink } from 'types/slate';
 import Tooltip from 'components/Tooltip';
 
@@ -11,14 +12,15 @@ type ExternalLinkElementProps = {
 };
 
 export default function ExternalLinkElement(props: ExternalLinkElementProps) {
-  const { element, children, attributes, className = '' } = props;
+  const { element, children, attributes, className } = props;
+  const linkClassName = classNames('link hover:underline', className);
   return (
     <Tooltip
       content={<span className="break-words">{element.url}</span>}
       placement="bottom-start"
     >
       <a
-        className={`link ${className}`}
+        className={linkClassName}
         href={element.url}
         onClick={(e) => {
           e.preventDefault();
