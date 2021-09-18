@@ -27,6 +27,12 @@ export default function Changelog() {
           .
         </p>
         <ChangelogBlock
+          title="September 18, 2021"
+          bugFixes={[
+            'Fix bug where note tree can have nonexistent note ids inside',
+          ]}
+        />
+        <ChangelogBlock
           title="September 17, 2021"
           features={[
             'Page stacking can now be turned on and off, and the opposite behavior can be achieved by shift-clicking',

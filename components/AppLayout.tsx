@@ -3,7 +3,13 @@ import type { ReactNode } from 'react';
 import { useRouter } from 'next/router';
 import { toast } from 'react-toastify';
 import type { User } from '@supabase/supabase-js';
-import { useStore, store, NoteTreeItem, getNoteTreeItem } from 'lib/store';
+import {
+  useStore,
+  store,
+  NoteTreeItem,
+  getNoteTreeItem,
+  Notes,
+} from 'lib/store';
 import supabase from 'lib/supabase';
 import {
   Note,
@@ -81,8 +87,10 @@ export default function AppLayout(props: Props) {
       .single();
     if (userData?.note_tree) {
       const noteTree: NoteTreeItem[] = [...userData.note_tree];
+      // This is a sanity check for removing notes in the noteTree that do not exist
+      removeNonexistentNotes(noteTree, notesAsObj);
       // If there are notes that are not in the note tree, add them
-      // This is just a sanity check to make sure there are no orphaned notes
+      // This is a sanity check to make sure there are no orphaned notes
       for (const note of notes) {
         if (getNoteTreeItem(noteTree, note.id) === null) {
           noteTree.push({ id: note.id, children: [], collapsed: true });
@@ -258,3 +266,14 @@ export default function AppLayout(props: Props) {
     </div>
   );
 }
+
+const removeNonexistentNotes = (tree: NoteTreeItem[], notes: Notes) => {
+  for (let i = 0; i < tree.length; i++) {
+    const item = tree[i];
+    if (!notes[item.id]) {
+      tree.splice(i, 1);
+    } else if (item.children.length > 0) {
+      removeNonexistentNotes(item.children, notes);
+    }
+  }
+};
