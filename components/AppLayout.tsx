@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
 import { useRouter } from 'next/router';
+import Head from 'next/head';
 import { toast } from 'react-toastify';
 import type { User } from '@supabase/supabase-js';
 import classNames from 'classnames';
+import colors from 'tailwindcss/colors';
 import {
   useStore,
   store,
@@ -20,13 +22,16 @@ import {
 } from 'types/supabase';
 import { useAuth } from 'utils/useAuth';
 import useHotkeys from 'utils/useHotkeys';
-import { MAX_NUM_OF_BASIC_NOTES, PlanId } from 'constants/pricing';
+import { PlanId } from 'constants/pricing';
 import { isMobile } from 'utils/device';
 import Sidebar from './sidebar/Sidebar';
 import FindOrCreateModal from './FindOrCreateModal';
 import PageLoading from './PageLoading';
 import SettingsModal from './settings/SettingsModal';
 import UpgradeModal from './UpgradeModal';
+import OfflineBanner from './OfflineBanner';
+import UpdateBanner from './UpdateBanner';
+import UpgradeBanner from './UpgradeBanner';
 
 type Props = {
   children: ReactNode;
@@ -159,12 +164,7 @@ export default function AppLayout(props: Props) {
   const setIsSidebarOpen = useStore((state) => state.setIsSidebarOpen);
   const setIsPageStackingOn = useStore((state) => state.setIsPageStackingOn);
 
-  const billingDetails = useStore((state) => state.billingDetails);
-  const numOfNotes = useStore((state) => Object.keys(state.notes).length);
   const isUpgradeModalOpen = useStore((state) => state.isUpgradeModalOpen);
-  const setIsUpgradeModalOpen = useStore(
-    (state) => state.setIsUpgradeModalOpen
-  );
 
   const upsertNote = useStore((state) => state.upsertNote);
   const updateNote = useStore((state) => state.updateNote);
@@ -252,31 +252,33 @@ export default function AppLayout(props: Props) {
   }
 
   return (
-    <div id="app-container" className={appContainerClassName}>
-      <Sidebar
-        setIsFindOrCreateModalOpen={setIsFindOrCreateModalOpen}
-        setIsSettingsOpen={setIsSettingsOpen}
-      />
-      <div className="relative flex flex-col flex-1 overflow-y-hidden">
-        {billingDetails.planId === PlanId.Basic &&
-        numOfNotes >= MAX_NUM_OF_BASIC_NOTES - 10 ? (
-          <button
-            className="block w-full py-1 font-semibold text-center bg-yellow-300"
-            onClick={() => setIsUpgradeModalOpen(true)}
-          >
-            You have {numOfNotes < MAX_NUM_OF_BASIC_NOTES ? 'almost' : ''}{' '}
-            reached your {MAX_NUM_OF_BASIC_NOTES} note limit. Upgrade now for
-            unlimited notes and uninterrupted access.
-          </button>
+    <>
+      <Head>
+        <meta
+          name="theme-color"
+          content={darkMode ? colors.trueGray[900] : colors.white}
+        />
+      </Head>
+      <div id="app-container" className={appContainerClassName}>
+        <Sidebar
+          setIsFindOrCreateModalOpen={setIsFindOrCreateModalOpen}
+          setIsSettingsOpen={setIsSettingsOpen}
+        />
+        <div className="relative flex flex-col flex-1 overflow-y-hidden">
+          <OfflineBanner />
+          <UpdateBanner />
+          <UpgradeBanner />
+          {children}
+        </div>
+        {isSettingsOpen ? (
+          <SettingsModal setIsOpen={setIsSettingsOpen} />
         ) : null}
-        {children}
+        {isFindOrCreateModalOpen ? (
+          <FindOrCreateModal setIsOpen={setIsFindOrCreateModalOpen} />
+        ) : null}
+        {isUpgradeModalOpen ? <UpgradeModal /> : null}
       </div>
-      {isSettingsOpen ? <SettingsModal setIsOpen={setIsSettingsOpen} /> : null}
-      {isFindOrCreateModalOpen ? (
-        <FindOrCreateModal setIsOpen={setIsFindOrCreateModalOpen} />
-      ) : null}
-      {isUpgradeModalOpen ? <UpgradeModal /> : null}
-    </div>
+    </>
   );
 }
 
