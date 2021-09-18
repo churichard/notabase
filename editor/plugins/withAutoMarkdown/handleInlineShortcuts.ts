@@ -19,15 +19,22 @@ enum CustomInlineShortcuts {
   CustomNoteLink = 'custom-note-link',
 }
 
-const INLINE_SHORTCUTS: Array<{
-  match: RegExp;
-  type:
-    | Mark
-    | CustomInlineShortcuts
-    | ElementType.ExternalLink
-    | ElementType.NoteLink
-    | ElementType.BlockReference;
-}> = [
+export enum LinkType {
+  Note = 'note',
+  Tag = 'tag',
+}
+
+const INLINE_SHORTCUTS: Array<
+  | {
+      match: RegExp;
+      type:
+        | Mark
+        | CustomInlineShortcuts
+        | ElementType.ExternalLink
+        | ElementType.BlockReference;
+    }
+  | { match: RegExp; type: ElementType.NoteLink; linkType: LinkType }
+> = [
   { match: /(?:^|\s)(\*\*)([^*]+)(\*\*)/, type: Mark.Bold },
   { match: /(?:^|\s)(__)([^_]+)(__)/, type: Mark.Bold },
   { match: /(?:^|\s)(\*)([^*]+)(\*)/, type: Mark.Italic },
@@ -39,7 +46,16 @@ const INLINE_SHORTCUTS: Array<{
     type: CustomInlineShortcuts.CustomNoteLink,
   },
   { match: /(?:^|\s)(\[)(.+)(\]\()(.+)(\))/, type: ElementType.ExternalLink },
-  { match: /(?:^|\s)(\[\[)(.+)(\]\])/, type: ElementType.NoteLink },
+  {
+    match: /(?:^|\s)(\[\[)(.+)(\]\])/,
+    type: ElementType.NoteLink,
+    linkType: LinkType.Note,
+  },
+  {
+    match: /(?:^|\s)(#.+)( )/,
+    type: ElementType.NoteLink,
+    linkType: LinkType.Tag,
+  },
   { match: /(?:^|\s)(\(\()(.+)(\)\))/, type: ElementType.BlockReference },
 ];
 
@@ -49,7 +65,9 @@ const handleInlineShortcuts = (editor: Editor) => {
     return;
   }
 
-  for (const { match, type } of INLINE_SHORTCUTS) {
+  for (const shortcut of INLINE_SHORTCUTS) {
+    const { match, type } = shortcut;
+
     const selectionAnchor = editor.selection.anchor;
     const elementStart = Editor.start(editor, selectionAnchor.path);
     const elementRange = { anchor: selectionAnchor, focus: elementStart };
@@ -71,7 +89,12 @@ const handleInlineShortcuts = (editor: Editor) => {
     } else if (type === ElementType.ExternalLink) {
       handled = handleExternalLink(editor, result, endOfMatchPoint);
     } else if (type === ElementType.NoteLink) {
-      handled = handleNoteLink(editor, result, endOfMatchPoint);
+      handled = handleNoteLink(
+        editor,
+        result,
+        endOfMatchPoint,
+        shortcut.linkType
+      );
     } else if (type === CustomInlineShortcuts.CustomNoteLink) {
       handled = handleCustomNoteLink(editor, result, endOfMatchPoint);
     } else if (type === ElementType.BlockReference) {

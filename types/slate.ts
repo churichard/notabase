@@ -98,6 +98,7 @@ export type NoteLink = {
   noteId: string;
   noteTitle: string;
   customText?: string;
+  isTag?: boolean;
   children: Descendant[];
 };
 
