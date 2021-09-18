@@ -30,6 +30,7 @@ export default function Changelog() {
           title="September 18, 2021"
           bugFixes={[
             'Fix bug where note tree can have nonexistent note ids inside',
+            'Fix bug where sidebar note links cannot be clicked from graph view',
           ]}
         />
         <ChangelogBlock
