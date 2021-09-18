@@ -1,16 +1,19 @@
-import { Editor, Transforms, Range, Point, Text, Path } from 'slate';
+import { Editor, Range, Point } from 'slate';
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from 'react-toastify';
-import type { ExternalLink, NoteLink } from 'types/slate';
 import { ElementType, Mark } from 'types/slate';
-import { insertBlockReference, isMark } from 'editor/formatting';
-import { isUrl } from 'utils/url';
+import { isMark } from 'editor/formatting';
 import { store } from 'lib/store';
 import upsertNote from 'lib/api/upsertNote';
 import supabase from 'lib/supabase';
 import { caseInsensitiveStringEqual } from 'utils/string';
 import { MAX_NUM_OF_BASIC_NOTES, PlanId } from 'constants/pricing';
-import { createNodeId } from '../withNodeId';
+import { deleteText } from 'editor/transforms';
+import handleMark from './handleMark';
+import handleExternalLink from './handleExternalLink';
+import handleNoteLink from './handleNoteLink';
+import handleCustomNoteLink from './handleCustomNoteLink';
+import handleBlockReference from './handleBlockReference';
 
 enum CustomInlineShortcuts {
   CustomNoteLink = 'custom-note-link',
@@ -62,118 +65,26 @@ const handleInlineShortcuts = (editor: Editor) => {
       path: selectionAnchor.path,
     };
 
+    let handled = false;
     if (isMark(type)) {
-      const [, startMark, textToFormat, endMark] = result;
-
-      const textRange = deleteMarkup(editor, endOfMatchPoint, {
-        startMark: startMark.length,
-        text: textToFormat.length,
-        endMark: endMark.length,
-      });
-
-      // Add formatting mark to the text to format
-      Transforms.setNodes(
-        editor,
-        { [type]: true },
-        { at: textRange, match: (n) => Text.isText(n), split: true }
-      );
-      Editor.removeMark(editor, type);
-
-      return;
+      handled = handleMark(editor, type, result, endOfMatchPoint);
     } else if (type === ElementType.ExternalLink) {
-      const [, startMark, linkText, middleMark, linkUrl, endMark] = result;
-
-      if (!isUrl(linkUrl)) {
-        continue;
-      }
-
-      const linkTextRange = deleteMarkup(editor, endOfMatchPoint, {
-        startMark: startMark.length,
-        text: linkText.length,
-        endMark: middleMark.length + linkUrl.length + endMark.length,
-      });
-      const link: ExternalLink = {
-        id: createNodeId(),
-        type: ElementType.ExternalLink,
-        url: linkUrl,
-        children: [],
-      };
-      Transforms.wrapNodes(editor, link, {
-        at: linkTextRange,
-        split: true,
-      });
-
-      return;
+      handled = handleExternalLink(editor, result, endOfMatchPoint);
     } else if (type === ElementType.NoteLink) {
-      const [, startMark, noteTitle, endMark] = result;
-
-      // Get or generate note id
-      const noteId = getOrCreateNoteId(noteTitle);
-
-      if (!noteId) {
-        continue;
-      }
-
-      // Wrap text in a link
-      const noteTitleRange = deleteMarkup(editor, endOfMatchPoint, {
-        startMark: startMark.length,
-        text: noteTitle.length,
-        endMark: endMark.length,
-      });
-      const link: NoteLink = {
-        id: createNodeId(),
-        type: ElementType.NoteLink,
-        noteId,
-        noteTitle,
-        children: [],
-      };
-      Transforms.wrapNodes(editor, link, {
-        at: noteTitleRange,
-        split: true,
-      });
-      Transforms.move(editor, { unit: 'offset' });
-
-      return;
+      handled = handleNoteLink(editor, result, endOfMatchPoint);
     } else if (type === CustomInlineShortcuts.CustomNoteLink) {
-      const [, startMark, linkText, middleMark, noteTitle, endMark] = result;
-
-      // Get or generate note id
-      const noteId = getOrCreateNoteId(noteTitle);
-
-      if (!noteId) {
-        continue;
-      }
-
-      // Wrap text in a link
-      const linkTextRange = deleteMarkup(editor, endOfMatchPoint, {
-        startMark: startMark.length,
-        text: linkText.length,
-        endMark: middleMark.length + noteTitle.length + endMark.length,
-      });
-      const link: NoteLink = {
-        id: createNodeId(),
-        type: ElementType.NoteLink,
-        noteId,
-        noteTitle,
-        customText: linkText,
-        children: [],
-      };
-      Transforms.wrapNodes(editor, link, {
-        at: linkTextRange,
-        split: true,
-      });
-      Transforms.move(editor, { unit: 'offset' });
-
-      return;
+      handled = handleCustomNoteLink(editor, result, endOfMatchPoint);
     } else if (type === ElementType.BlockReference) {
-      const [wholeMatch, startMark, blockId, endMark] = result;
+      const wholeMatch = result[0];
+      handled = handleBlockReference(
+        editor,
+        result,
+        endOfMatchPoint,
+        elementText === wholeMatch
+      );
+    }
 
-      // Delete markdown and insert block reference
-      const length = startMark.length + blockId.length + endMark.length;
-      deleteText(editor, endOfMatchPoint.path, endOfMatchPoint.offset, length);
-
-      insertBlockReference(editor, blockId, elementText === wholeMatch);
-
+    if (handled) {
       return;
     }
   }
@@ -181,7 +92,7 @@ const handleInlineShortcuts = (editor: Editor) => {
 
 // If the normalized note title exists, then returns the existing note id.
 // Otherwise, creates a new note id.
-const getOrCreateNoteId = (noteTitle: string): string | null => {
+export const getOrCreateNoteId = (noteTitle: string): string | null => {
   let noteId;
 
   const notes = store.getState().notes;
@@ -214,7 +125,7 @@ const getOrCreateNoteId = (noteTitle: string): string | null => {
 };
 
 // Deletes beginning and ending markup and returns the range of the text in the middle
-const deleteMarkup = (
+export const deleteMarkup = (
   editor: Editor,
   point: Point,
   lengths: { startMark: number; text: number; endMark: number }
@@ -244,24 +155,6 @@ const deleteMarkup = (
       offset: pointOffset - textLength,
     },
   };
-};
-
-// Deletes `length` characters at the specified path and offset
-const deleteText = (
-  editor: Editor,
-  path: Path,
-  offset: number,
-  length: number
-) => {
-  const anchorOffset = offset - length;
-  if (anchorOffset === offset) {
-    return; // Don't delete anything if the two offsets are the same
-  }
-  const range = {
-    anchor: { path, offset: anchorOffset },
-    focus: { path, offset },
-  };
-  Transforms.delete(editor, { at: range });
 };
 
 export default handleInlineShortcuts;
