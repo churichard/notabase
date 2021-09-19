@@ -21,6 +21,12 @@ const immer =
   (set, get, api) =>
     config((fn) => set(produce<T>(fn)), get, api);
 
+localforage.config({
+  name: 'notabase',
+  version: 1.0,
+  storeName: 'user_data',
+});
+
 const storage: StateStorage = {
   getItem: async (name: string): Promise<string | null> => {
     return await localforage.getItem(name);
