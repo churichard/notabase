@@ -54,6 +54,7 @@ export type BillingDetails =
     };
 
 export type Store = {
+  _hasHydrated: boolean; // TODO: temporary until https://github.com/pmndrs/zustand/issues/562 gets fixed
   billingDetails: BillingDetails;
   setBillingDetails: Setter<BillingDetails>;
   notes: Notes;
@@ -101,6 +102,7 @@ export const setter =
 export const store = createVanilla<Store>(
   persist(
     immer((set) => ({
+      _hasHydrated: false,
       /**
        * The billing details of the current user
        */
@@ -241,6 +243,9 @@ export const store = createVanilla<Store>(
         'darkMode',
         'isPageStackingOn',
       ],
+      onRehydrateStorage: () => () => {
+        useStore.setState({ _hasHydrated: true });
+      },
     }
   )
 );
