@@ -61,7 +61,7 @@
     "@types/file-saver": "^2.0.3",
     "@types/micro": "^7.3.6",
     "@types/micro-cors": "^0.1.2",
-    "@types/node": "^16.9.2",
+    "@types/node": "^16.9.4",
     "@types/nprogress": "^0.2.0",
     "@types/react": "^17.0.21",
     "@types/react-dom": "^17.0.9",
