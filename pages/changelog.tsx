@@ -27,6 +27,12 @@ export default function Changelog() {
           .
         </p>
         <ChangelogBlock
+          title="September 20, 2021"
+          bugFixes={[
+            'Fix bug on mobile devices where settings are not being persisted',
+          ]}
+        />
+        <ChangelogBlock
           title="September 18, 2021"
           bugFixes={[
             'Fix bug where note tree can have nonexistent note ids inside',

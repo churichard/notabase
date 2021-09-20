@@ -21,6 +21,12 @@ const immer =
   (set, get, api) =>
     config((fn) => set(produce<T>(fn)), get, api);
 
+localforage.config({
+  name: 'notabase',
+  version: 1.0,
+  storeName: 'user_data',
+});
+
 const storage: StateStorage = {
   getItem: async (name: string): Promise<string | null> => {
     return await localforage.getItem(name);
@@ -48,6 +54,7 @@ export type BillingDetails =
     };
 
 export type Store = {
+  _hasHydrated: boolean; // TODO: temporary until https://github.com/pmndrs/zustand/issues/562 gets fixed
   billingDetails: BillingDetails;
   setBillingDetails: Setter<BillingDetails>;
   notes: Notes;
@@ -95,6 +102,7 @@ export const setter =
 export const store = createVanilla<Store>(
   persist(
     immer((set) => ({
+      _hasHydrated: false,
       /**
        * The billing details of the current user
        */
@@ -235,6 +243,9 @@ export const store = createVanilla<Store>(
         'darkMode',
         'isPageStackingOn',
       ],
+      onRehydrateStorage: () => () => {
+        useStore.setState({ _hasHydrated: true });
+      },
     }
   )
 );

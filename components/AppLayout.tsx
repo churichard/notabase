@@ -169,12 +169,21 @@ export default function AppLayout(props: Props) {
   const updateNote = useStore((state) => state.updateNote);
   const deleteNote = useStore((state) => state.deleteNote);
 
+  const hasHydrated = useStore((state) => state._hasHydrated);
   useEffect(() => {
-    if (isMobile()) {
+    // If the user is mobile, the persisted data has been hydrated, and there are no open note ids (a proxy for the first load),
+    // change the initial values of isSidebarOpen and isPageStackingOn to better suit mobile devices
+    // We need to wait until after hydration because otherwise the persisted state gets overridden and thrown away
+    // After https://github.com/pmndrs/zustand/issues/562 is fixed, we can change this
+    if (
+      isMobile() &&
+      hasHydrated &&
+      store.getState().openNoteIds.length === 0
+    ) {
       setIsSidebarOpen(false);
       setIsPageStackingOn(false);
     }
-  }, [setIsSidebarOpen, setIsPageStackingOn]);
+  }, [setIsSidebarOpen, setIsPageStackingOn, hasHydrated]);
 
   useEffect(() => {
     if (!user) {
