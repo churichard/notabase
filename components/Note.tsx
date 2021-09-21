@@ -120,12 +120,7 @@ function Note(props: Props) {
       );
       return () => clearTimeout(handler);
     }
-  }, [
-    noteId,
-    syncState.isTitleSynced,
-    syncState.isContentSynced,
-    handleNoteUpdate,
-  ]);
+  }, [noteId, syncState, handleNoteUpdate]);
 
   // Prompt the user with a dialog box about unsaved changes if they navigate away
   useEffect(() => {
