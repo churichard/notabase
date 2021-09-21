@@ -31,11 +31,13 @@ function Note(props: Props) {
 
   const updateNote = useStore((state) => state.updateNote);
 
-  const [isTitleSynced, setIsTitleSynced] = useState(true);
-  const [isContentSynced, setIsContentSynced] = useState(true);
+  const [syncState, setSyncState] = useState({
+    isTitleSynced: true,
+    isContentSynced: true,
+  });
   const isSynced = useMemo(
-    () => isTitleSynced && isContentSynced,
-    [isTitleSynced, isContentSynced]
+    () => syncState.isTitleSynced && syncState.isContentSynced,
+    [syncState]
   );
 
   const onTitleChange = useCallback(
@@ -50,7 +52,7 @@ function Note(props: Props) {
         ) === -1;
       if (isTitleUnique) {
         updateNote({ id: noteId, title: newTitle });
-        setIsTitleSynced(false);
+        setSyncState((syncState) => ({ ...syncState, isTitleSynced: false }));
       } else {
         toast.error(
           `There's already a note called ${newTitle}. Please use a different title.`
@@ -63,7 +65,7 @@ function Note(props: Props) {
   const onEditorValueChange = useCallback(
     (content: Descendant[]) => {
       updateNote({ id: noteId, content });
-      setIsContentSynced(false);
+      setSyncState((syncState) => ({ ...syncState, isContentSynced: false }));
     },
     [noteId, updateNote]
   );
@@ -93,8 +95,7 @@ function Note(props: Props) {
     if (note.title) {
       await updateBacklinks(note.title, note.id);
     }
-    setIsTitleSynced(true);
-    setIsContentSynced(true);
+    setSyncState({ isTitleSynced: true, isContentSynced: true });
   }, []);
 
   // Save the note in the database if it changes and it hasn't been saved yet
@@ -105,21 +106,26 @@ function Note(props: Props) {
     }
 
     const noteUpdate: NoteUpdate = { id: noteId };
-    if (!isContentSynced) {
+    if (!syncState.isContentSynced) {
       noteUpdate.content = note.content;
     }
-    if (!isTitleSynced) {
+    if (!syncState.isTitleSynced) {
       noteUpdate.title = note.title;
     }
 
-    if (!isTitleSynced || !isContentSynced) {
+    if (noteUpdate.title || noteUpdate.content) {
       const handler = setTimeout(
         () => handleNoteUpdate(noteUpdate),
         SYNC_DEBOUNCE_MS
       );
       return () => clearTimeout(handler);
     }
-  }, [noteId, isTitleSynced, isContentSynced, handleNoteUpdate]);
+  }, [
+    noteId,
+    syncState.isTitleSynced,
+    syncState.isContentSynced,
+    handleNoteUpdate,
+  ]);
 
   // Prompt the user with a dialog box about unsaved changes if they navigate away
   useEffect(() => {
