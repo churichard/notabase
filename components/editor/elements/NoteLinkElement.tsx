@@ -23,8 +23,10 @@ export default function NoteLinkElement(props: NoteLinkElementProps) {
   const selected = useSelected();
   const focused = useFocused();
   const noteLinkClassName = classNames(
-    'p-0.25 rounded text-primary-600 cursor-pointer select-none border-b border-gray-200 hover:bg-gray-100 active:bg-gray-200 dark:text-primary-400 dark:border-gray-700 dark:hover:bg-gray-800 dark:active:bg-gray-700',
+    'p-0.25 rounded cursor-pointer select-none border-b border-gray-200 hover:bg-gray-100 active:bg-gray-200 dark:border-gray-700 dark:hover:bg-gray-800 dark:active:bg-gray-700',
     { 'bg-primary-100 dark:bg-primary-900': selected && focused },
+    { 'text-primary-600 dark:text-primary-400': !element.isTag },
+    { 'text-gray-600 dark:text-gray-400': element.isTag },
     className
   );
 
