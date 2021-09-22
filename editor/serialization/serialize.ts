@@ -142,6 +142,8 @@ export default function serialize(
       const noteLink = chunk as NoteLink;
       if (!noteLink.noteTitle) {
         return '';
+      } else if (noteLink.isTag) {
+        return noteLink.noteTitle;
       } else {
         return noteLink.customText
           ? `[[${noteLink.noteTitle}|${noteLink.customText}]]`
