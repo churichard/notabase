@@ -27,6 +27,11 @@ export default function Changelog() {
           .
         </p>
         <ChangelogBlock
+          title="September 22, 2021"
+          features={['Add tags']}
+          bugFixes={['Fix auto markdown sometimes not working correctly']}
+        />
+        <ChangelogBlock
           title="September 20, 2021"
           bugFixes={[
             'Fix bug on mobile devices where settings are not being persisted',
