@@ -16,7 +16,6 @@ const withAutoMarkdown = (editor: Editor) => {
 
   editor.insertData = (data) => {
     const text = data.getData('text/plain');
-    // TODO: make sure multiple markdown elements inserted in the same data are all handled
     const handled = handleAutoMarkdown(editor, text);
     if (!handled) {
       insertData(data);
@@ -41,11 +40,13 @@ const handleAutoMarkdown = (editor: Editor, text: string) => {
 
   // Handle shortcuts at the beginning of a line
   const blockHandled = handleBlockShortcuts(editor, text);
+  if (blockHandled) {
+    return blockHandled;
+  }
 
   // Handle inline shortcuts
   const inlineHandled = handleInlineShortcuts(editor, text);
-
-  return blockHandled || inlineHandled;
+  return inlineHandled;
 };
 
 export default withAutoMarkdown;

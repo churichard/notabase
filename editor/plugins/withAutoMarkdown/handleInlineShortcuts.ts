@@ -24,6 +24,7 @@ export enum LinkType {
   Tag = 'tag',
 }
 
+export const BLOCK_REFERENCE_REGEX = /(?:^|\s)(\(\()(.+)(\)\))/;
 const INLINE_SHORTCUTS: Array<
   | {
       match: RegExp;
@@ -56,7 +57,7 @@ const INLINE_SHORTCUTS: Array<
     type: ElementType.NoteLink,
     linkType: LinkType.Tag,
   },
-  { match: /(?:^|\s)(\(\()(.+)(\)\))/, type: ElementType.BlockReference },
+  { match: BLOCK_REFERENCE_REGEX, type: ElementType.BlockReference },
 ];
 
 // Handle inline shortcuts
@@ -79,10 +80,17 @@ const handleInlineShortcuts = (editor: Editor, text: string): boolean => {
     }
 
     const wholeMatch = result[0];
+    const endOfMatchOffset = result.index + wholeMatch.length - text.length; // Make sure to subtract text length since it's not in the editor
     const endOfMatchPoint: Point = {
-      offset: result.index + wholeMatch.length - text.length, // Make sure to subtract text length
+      offset: endOfMatchOffset,
       path: selectionAnchor.path,
     };
+
+    // Continue if the match does not end at the current selection
+    // Ensures that we only just triggered the auto markdown with the text we inserted
+    if (endOfMatchOffset !== editor.selection.anchor.offset) {
+      continue;
+    }
 
     let handled = false;
     if (isMark(type)) {

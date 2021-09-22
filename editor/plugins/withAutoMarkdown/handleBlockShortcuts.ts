@@ -54,7 +54,16 @@ const handleBlockShortcuts = (editor: Editor, text: string): boolean => {
   for (const shortcut of BLOCK_SHORTCUTS) {
     const { match, type } = shortcut;
 
-    if (!beforeText.match(match)) {
+    const result = beforeText.match(match);
+    if (!result || result.index === undefined) {
+      continue;
+    }
+
+    const endOfMatchOffset = result.index + result[0].length - text.length; // Make sure to subtract text length since it's not in the editor
+
+    // Continue if the match does not end at the current selection
+    // Ensures that we only just triggered the auto markdown with the text we inserted
+    if (endOfMatchOffset !== editor.selection.anchor.offset) {
       continue;
     }
 
