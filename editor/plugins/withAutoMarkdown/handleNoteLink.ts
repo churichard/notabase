@@ -11,7 +11,8 @@ export default function handleNoteLink(
   editor: Editor,
   result: RegExpMatchArray,
   endOfMatchPoint: Point,
-  linkType: LinkType
+  linkType: LinkType,
+  textToInsertLength: number
 ): boolean {
   if (linkType === LinkType.Note) {
     const [, startMark, noteTitle, endMark] = result;
@@ -28,6 +29,7 @@ export default function handleNoteLink(
       startMark: startMark.length,
       text: noteTitle.length,
       endMark: endMark.length,
+      textToInsert: textToInsertLength,
     });
     const link: NoteLink = {
       id: createNodeId(),

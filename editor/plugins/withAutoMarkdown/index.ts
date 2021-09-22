@@ -8,20 +8,25 @@ const withAutoMarkdown = (editor: Editor) => {
   const { insertText, insertData } = editor;
 
   editor.insertText = (text) => {
-    insertText(text);
-    handleAutoMarkdown(editor);
+    const handled = handleAutoMarkdown(editor, text);
+    if (!handled) {
+      insertText(text);
+    }
   };
 
   editor.insertData = (data) => {
-    insertData(data);
+    const text = data.getData('text/plain');
     // TODO: make sure multiple markdown elements inserted in the same data are all handled
-    handleAutoMarkdown(editor);
+    const handled = handleAutoMarkdown(editor, text);
+    if (!handled) {
+      insertData(data);
+    }
   };
 
   return editor;
 };
 
-const handleAutoMarkdown = (editor: Editor) => {
+const handleAutoMarkdown = (editor: Editor, text: string) => {
   // Don't handle auto markdown shortcuts in code blocks
   const inCodeBlock = Editor.above(editor, {
     match: (n) =>
@@ -35,10 +40,12 @@ const handleAutoMarkdown = (editor: Editor) => {
   }
 
   // Handle shortcuts at the beginning of a line
-  handleBlockShortcuts(editor);
+  const blockHandled = handleBlockShortcuts(editor, text);
 
   // Handle inline shortcuts
-  handleInlineShortcuts(editor);
+  const inlineHandled = handleInlineShortcuts(editor, text);
+
+  return blockHandled || inlineHandled;
 };
 
 export default withAutoMarkdown;

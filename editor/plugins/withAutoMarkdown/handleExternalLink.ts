@@ -7,7 +7,8 @@ import { deleteMarkup } from './handleInlineShortcuts';
 export default function handleExternalLink(
   editor: Editor,
   result: RegExpMatchArray,
-  endOfMatchPoint: Point
+  endOfMatchPoint: Point,
+  textToInsertLength: number
 ): boolean {
   const [, startMark, linkText, middleMark, linkUrl, endMark] = result;
 
@@ -19,6 +20,7 @@ export default function handleExternalLink(
     startMark: startMark.length,
     text: linkText.length,
     endMark: middleMark.length + linkUrl.length + endMark.length,
+    textToInsert: textToInsertLength,
   });
   const link: ExternalLink = {
     id: createNodeId(),

@@ -60,9 +60,9 @@ const INLINE_SHORTCUTS: Array<
 ];
 
 // Handle inline shortcuts
-const handleInlineShortcuts = (editor: Editor) => {
+const handleInlineShortcuts = (editor: Editor, text: string): boolean => {
   if (!editor.selection || !Range.isCollapsed(editor.selection)) {
-    return;
+    return false;
   }
 
   for (const shortcut of INLINE_SHORTCUTS) {
@@ -71,7 +71,7 @@ const handleInlineShortcuts = (editor: Editor) => {
     const selectionAnchor = editor.selection.anchor;
     const elementStart = Editor.start(editor, selectionAnchor.path);
     const elementRange = { anchor: selectionAnchor, focus: elementStart };
-    const elementText = Editor.string(editor, elementRange);
+    const elementText = Editor.string(editor, elementRange) + text;
     const result = elementText.match(match);
 
     if (!result || result.index === undefined) {
@@ -79,38 +79,52 @@ const handleInlineShortcuts = (editor: Editor) => {
     }
 
     const endOfMatchPoint: Point = {
-      offset: result.index + result[0].length,
+      offset: result.index + result[0].length - text.length, // Make sure to subtract text length
       path: selectionAnchor.path,
     };
 
     let handled = false;
     if (isMark(type)) {
-      handled = handleMark(editor, type, result, endOfMatchPoint);
+      handled = handleMark(editor, type, result, endOfMatchPoint, text.length);
     } else if (type === ElementType.ExternalLink) {
-      handled = handleExternalLink(editor, result, endOfMatchPoint);
+      handled = handleExternalLink(
+        editor,
+        result,
+        endOfMatchPoint,
+        text.length
+      );
     } else if (type === ElementType.NoteLink) {
       handled = handleNoteLink(
         editor,
         result,
         endOfMatchPoint,
-        shortcut.linkType
+        shortcut.linkType,
+        text.length
       );
     } else if (type === CustomInlineShortcuts.CustomNoteLink) {
-      handled = handleCustomNoteLink(editor, result, endOfMatchPoint);
+      handled = handleCustomNoteLink(
+        editor,
+        result,
+        endOfMatchPoint,
+        text.length
+      );
     } else if (type === ElementType.BlockReference) {
       const wholeMatch = result[0];
       handled = handleBlockReference(
         editor,
         result,
         endOfMatchPoint,
-        elementText === wholeMatch
+        elementText === wholeMatch,
+        text.length
       );
     }
 
     if (handled) {
-      return;
+      return handled;
     }
   }
+
+  return false;
 };
 
 // If the normalized note title exists, then returns the existing note id.
@@ -147,17 +161,58 @@ export const getOrCreateNoteId = (noteTitle: string): string | null => {
   return noteId;
 };
 
+type MarkupLengths = { startMark: number; text: number; endMark: number };
+type MarkupLengthsWithTextToInsert = MarkupLengths & { textToInsert: number };
+
+// Gets the markup lengths to remove, given that the textToInsertLength is the length
+// of the text that has not been inserted into the editor
+const getMarkupLengths = (
+  markupLengths: MarkupLengthsWithTextToInsert
+): MarkupLengths => {
+  let currTextToInsertLength = markupLengths.textToInsert;
+  let currStartMarkLength = markupLengths.startMark;
+  let currTextLength = markupLengths.text;
+  let currEndMarkLength = markupLengths.endMark;
+
+  // Subtract textToInsertLength from the end mark
+  if (currTextToInsertLength > 0 && currEndMarkLength > 0) {
+    currEndMarkLength = Math.max(currEndMarkLength - currTextToInsertLength, 0);
+    currTextToInsertLength -= markupLengths.endMark - currEndMarkLength;
+  }
+
+  // Subtract textToInsertLength from the text
+  if (currTextToInsertLength > 0 && currTextLength > 0) {
+    currTextLength = Math.max(currTextLength - currTextToInsertLength, 0);
+    currTextToInsertLength -= markupLengths.text - currTextLength;
+  }
+
+  // Subtract textToInsertLength from the start mark
+  if (currTextToInsertLength > 0 && currStartMarkLength > 0) {
+    currStartMarkLength = Math.max(
+      currStartMarkLength - currTextToInsertLength,
+      0
+    );
+    currTextToInsertLength -= markupLengths.startMark - currStartMarkLength;
+  }
+
+  return {
+    startMark: currStartMarkLength,
+    text: currTextLength,
+    endMark: currEndMarkLength,
+  };
+};
+
 // Deletes beginning and ending markup and returns the range of the text in the middle
 export const deleteMarkup = (
   editor: Editor,
   point: Point,
-  lengths: { startMark: number; text: number; endMark: number }
+  lengths: MarkupLengthsWithTextToInsert
 ): Range => {
   const {
     startMark: startMarkLength,
     text: textLength,
     endMark: endMarkLength,
-  } = lengths;
+  } = getMarkupLengths(lengths);
 
   const pointPath = point.path;
   let pointOffset = point.offset;

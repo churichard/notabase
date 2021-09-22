@@ -36,9 +36,9 @@ const BLOCK_SHORTCUTS: Array<
 ];
 
 // Handle block shortcuts
-const handleBlockShortcuts = (editor: Editor) => {
+const handleBlockShortcuts = (editor: Editor, text: string): boolean => {
   if (!editor.selection || !Range.isCollapsed(editor.selection)) {
-    return;
+    return false;
   }
 
   const block = Editor.above(editor, {
@@ -48,7 +48,7 @@ const handleBlockShortcuts = (editor: Editor) => {
   const lineStart = Editor.start(editor, path);
   const selectionAnchor = editor.selection.anchor;
   const beforeRange = { anchor: selectionAnchor, focus: lineStart };
-  const beforeText = Editor.string(editor, beforeRange);
+  const beforeText = Editor.string(editor, beforeRange) + text;
 
   // Handle block shortcuts
   for (const shortcut of BLOCK_SHORTCUTS) {
@@ -99,8 +99,10 @@ const handleBlockShortcuts = (editor: Editor) => {
       Transforms.setNodes(editor, { checked: false });
     }
 
-    return;
+    return true;
   }
+
+  return false;
 };
 
 export default handleBlockShortcuts;

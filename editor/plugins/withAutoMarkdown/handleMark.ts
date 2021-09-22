@@ -6,7 +6,8 @@ export default function handleMark(
   editor: Editor,
   type: Mark,
   result: RegExpMatchArray,
-  endOfMatchPoint: Point
+  endOfMatchPoint: Point,
+  textToInsertLength: number
 ): boolean {
   const [, startMark, textToFormat, endMark] = result;
 
@@ -14,6 +15,7 @@ export default function handleMark(
     startMark: startMark.length,
     text: textToFormat.length,
     endMark: endMark.length,
+    textToInsert: textToInsertLength,
   });
 
   // Add formatting mark to the text to format
