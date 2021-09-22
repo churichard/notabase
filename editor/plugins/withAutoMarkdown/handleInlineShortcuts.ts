@@ -78,8 +78,9 @@ const handleInlineShortcuts = (editor: Editor, text: string): boolean => {
       continue;
     }
 
+    const wholeMatch = result[0];
     const endOfMatchPoint: Point = {
-      offset: result.index + result[0].length - text.length, // Make sure to subtract text length
+      offset: result.index + wholeMatch.length - text.length, // Make sure to subtract text length
       path: selectionAnchor.path,
     };
 
@@ -109,7 +110,6 @@ const handleInlineShortcuts = (editor: Editor, text: string): boolean => {
         text.length
       );
     } else if (type === ElementType.BlockReference) {
-      const wholeMatch = result[0];
       handled = handleBlockReference(
         editor,
         result,
