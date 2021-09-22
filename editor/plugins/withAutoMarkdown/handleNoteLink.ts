@@ -56,17 +56,14 @@ export default function handleNoteLink(
       return false;
     }
 
-    // We keep the end mark (which is a space), and convert the tag name to a link
-    const tagRange = {
-      anchor: {
-        path: endOfMatchPoint.path,
-        offset: endOfMatchPoint.offset - endMark.length,
-      },
-      focus: {
-        path: endOfMatchPoint.path,
-        offset: endOfMatchPoint.offset - tagName.length - endMark.length,
-      },
-    };
+    // Convert the tag name to a link
+    const tagRange = deleteMarkup(editor, endOfMatchPoint, {
+      startMark: 0,
+      text: tagName.length,
+      endMark: endMark.length,
+      textToInsert: textToInsertLength,
+    });
+
     const link: NoteLink = {
       id: createNodeId(),
       type: ElementType.NoteLink,
@@ -78,6 +75,7 @@ export default function handleNoteLink(
 
     Transforms.wrapNodes(editor, link, { at: tagRange, split: true });
     Transforms.move(editor, { unit: 'offset' });
+    Transforms.insertText(editor, ' '); // We insert the trigger character (a space)
 
     return true;
   }
