@@ -53,7 +53,7 @@ const INLINE_SHORTCUTS: Array<
     linkType: LinkType.Note,
   },
   {
-    match: /(?:^|\s)(#.+)( )/,
+    match: /(?:^|\s)(#[^\s]+)(\s)/,
     type: ElementType.NoteLink,
     linkType: LinkType.Tag,
   },

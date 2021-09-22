@@ -4,11 +4,12 @@ import { useSlate } from 'slate-react';
 import type { TablerIcon } from '@tabler/icons';
 import { insertNoteLink } from 'editor/formatting';
 import { deleteText } from 'editor/transforms';
-import { useAuth } from 'utils/useAuth';
 import useNoteSearch from 'utils/useNoteSearch';
 import useDebounce from 'utils/useDebounce';
 import EditorPopover from './EditorPopover';
 
+const NOTE_LINK_REGEX = /(?:^|\s)(\[\[)(.+)/;
+const TAG_REGEX = /(?:^|\s)(#[^\s]+)/;
 const DEBOUNCE_MS = 100;
 
 enum OptionType {
@@ -23,13 +24,25 @@ type Option = {
 };
 
 export default function LinkAutocompletePopover() {
-  const { user } = useAuth();
   const editor = useSlate();
 
   const [isVisible, setIsVisible] = useState(false);
   const [selectedOptionIndex, setSelectedOptionIndex] = useState<number>(0);
 
-  const [inputText, setInputText] = useState('');
+  const [regexResult, setRegexResult] = useState<{
+    matchArray: RegExpMatchArray;
+    isTag: boolean;
+  } | null>(null);
+
+  const inputText = useMemo(() => {
+    if (!regexResult) {
+      return '';
+    } else if (regexResult.isTag) {
+      return regexResult.matchArray[1];
+    } else {
+      return regexResult.matchArray[2];
+    }
+  }, [regexResult]);
   const [linkText] = useDebounce(inputText, DEBOUNCE_MS);
 
   const search = useNoteSearch({ numOfResults: 10 });
@@ -47,11 +60,11 @@ export default function LinkAutocompletePopover() {
 
   const hidePopover = useCallback(() => {
     setIsVisible(false);
+    setRegexResult(null);
     setSelectedOptionIndex(0);
   }, []);
 
   const getRegexResult = useCallback(() => {
-    const REGEX = /(?:^|\s)(\[\[)(.+)/;
     const { selection } = editor;
 
     if (!selection || !Range.isCollapsed(selection)) {
@@ -65,8 +78,17 @@ export default function LinkAutocompletePopover() {
       const elementRange = { anchor, focus: elementStart };
       const elementText = Editor.string(editor, elementRange);
 
-      const result = elementText.match(REGEX);
-      return result ?? null;
+      const noteLinkResult = elementText.match(NOTE_LINK_REGEX);
+      if (noteLinkResult) {
+        return { matchArray: noteLinkResult, isTag: false };
+      }
+
+      const tagResult = elementText.match(TAG_REGEX);
+      if (tagResult) {
+        return { matchArray: tagResult, isTag: true };
+      }
+
+      return null;
     } catch (e) {
       return null;
     }
@@ -80,38 +102,35 @@ export default function LinkAutocompletePopover() {
       return;
     }
 
-    const [, , noteTitle] = result;
-    setInputText(noteTitle);
+    setRegexResult(result);
     setIsVisible(true);
   }, [editor.children, getRegexResult, hidePopover]);
 
   const onOptionClick = useCallback(
     async (option?: Option) => {
-      if (!option || !user) {
+      if (!option || !regexResult || !editor.selection) {
         return;
       }
 
       // Delete markdown text
-      const regexResult = getRegexResult();
-
-      if (!regexResult || !editor.selection) {
-        return;
-      }
       const { path: selectionPath, offset: endOfSelection } =
         editor.selection.anchor;
-      const [, startMark, noteTitle] = regexResult;
 
-      deleteText(
-        editor,
-        selectionPath,
-        endOfSelection,
-        startMark.length + noteTitle.length
-      );
+      let lengthToDelete;
+      if (regexResult.isTag) {
+        const [, tagName] = regexResult.matchArray;
+        lengthToDelete = tagName.length;
+      } else {
+        const [, startMark, noteTitle] = regexResult.matchArray;
+        lengthToDelete = startMark.length + noteTitle.length;
+      }
+
+      deleteText(editor, selectionPath, endOfSelection, lengthToDelete);
 
       // Handle inserting note link
       if (option.type === OptionType.NOTE) {
         // Insert a link to an existing note with the note title as the link text
-        insertNoteLink(editor, option.id, option.text);
+        insertNoteLink(editor, option.id, option.text, regexResult.isTag);
         Transforms.move(editor, { distance: 1, unit: 'offset' }); // Focus after the note link
       } else {
         throw new Error(`Option type ${option.type} is not supported`);
@@ -119,7 +138,7 @@ export default function LinkAutocompletePopover() {
 
       hidePopover();
     },
-    [editor, user, hidePopover, getRegexResult]
+    [editor, hidePopover, regexResult]
   );
 
   const onKeyDown = useCallback(
