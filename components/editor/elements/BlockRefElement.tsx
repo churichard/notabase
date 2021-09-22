@@ -1,6 +1,7 @@
 import { ReactNode, useCallback, useMemo } from 'react';
 import { Node } from 'slate';
 import { RenderElementProps, useFocused, useSelected } from 'slate-react';
+import classNames from 'classnames';
 import { BlockReference, ElementType } from 'types/slate';
 import useOnNoteLinkClick from 'editor/useOnNoteLinkClick';
 import { useStore } from 'lib/store';
@@ -29,12 +30,10 @@ export default function BlockRefElement(props: BlockRefElementProps) {
   const { onClick: onBlockRefClick, defaultStackingBehavior } =
     useOnNoteLinkClick(currentNote.id);
 
-  const blockRefClassName = useMemo(
-    () =>
-      `p-0.25 border-b border-gray-200 select-none cursor-alias hover:bg-primary-50 active:bg-primary-100 dark:border-gray-700 dark:hover:bg-primary-900 dark:active:bg-primary-800 ${className} ${
-        selected && focused ? 'bg-primary-100 dark:bg-primary-900' : ''
-      }`,
-    [className, selected, focused]
+  const blockRefClassName = classNames(
+    'p-0.25 border-b border-gray-200 select-none cursor-alias hover:bg-primary-50 active:bg-primary-100 dark:border-gray-700 dark:hover:bg-primary-900 dark:active:bg-primary-800',
+    { 'bg-primary-100 dark:bg-primary-900': selected && focused },
+    className
   );
 
   const noteTitle = useStore((state) =>

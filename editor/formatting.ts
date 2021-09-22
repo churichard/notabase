@@ -224,7 +224,8 @@ export const insertExternalLink = (
 export const insertNoteLink = (
   editor: Editor,
   noteId: string,
-  noteTitle: string
+  noteTitle: string,
+  isTag?: boolean
 ) => {
   const { selection } = editor;
   if (!selection) {
@@ -238,6 +239,7 @@ export const insertNoteLink = (
     noteId,
     noteTitle,
     customText: !isCollapsed ? Editor.string(editor, selection) : undefined,
+    ...(isTag ? { isTag } : {}),
     children: isCollapsed ? [{ text: noteTitle }] : [],
   };
   wrapLink(editor, link);
