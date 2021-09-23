@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import { useRouter } from 'next/router';
 import { toast } from 'react-toastify';
 import type { User } from '@supabase/supabase-js';
+import classNames from 'classnames';
 import {
   useStore,
   store,
@@ -240,15 +241,18 @@ export default function AppLayout(props: Props) {
     }
   }, [router]);
 
+  const appContainerClassName = classNames(
+    'flex h-screen',
+    { dark: darkMode },
+    className
+  );
+
   if (!isPageLoaded) {
     return <PageLoading />;
   }
 
   return (
-    <div
-      id="app-container"
-      className={`flex h-screen ${darkMode ? 'dark' : ''} ${className}`}
-    >
+    <div id="app-container" className={appContainerClassName}>
       <Sidebar
         setIsFindOrCreateModalOpen={setIsFindOrCreateModalOpen}
         setIsSettingsOpen={setIsSettingsOpen}
