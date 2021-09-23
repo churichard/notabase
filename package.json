@@ -47,7 +47,7 @@
     "remark-gfm": "^2.0.0",
     "remark-parse": "^10.0.0",
     "remark-wiki-link": "^1.0.4",
-    "slate": "^0.66.1",
+    "slate": "^0.66.2",
     "slate-history": "^0.66.0",
     "slate-react": "^0.66.2-202181920512",
     "stripe": "^8.176.0",
