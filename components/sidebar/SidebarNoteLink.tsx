@@ -39,7 +39,7 @@ const SidebarNoteLink = (
   return (
     <SidebarItem
       ref={forwardedRef}
-      className={`relative flex items-center justify-between overflow-x-hidden group ${className}`}
+      className={`relative flex items-center justify-between overflow-x-hidden group focus:outline-none ${className}`}
       isHighlighted={isHighlighted}
       style={style}
       {...otherProps}

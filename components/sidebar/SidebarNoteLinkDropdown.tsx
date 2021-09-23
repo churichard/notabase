@@ -46,7 +46,7 @@ const SidebarNoteLinkDropdown = (props: Props) => {
               <Portal>
                 <Menu.Items
                   ref={setPopperElement}
-                  className="z-20 w-56 overflow-hidden bg-white rounded shadow-popover dark:bg-gray-800"
+                  className="z-20 w-56 overflow-hidden bg-white rounded shadow-popover dark:bg-gray-800 focus:outline-none"
                   static
                   style={styles.popper}
                   {...attributes.popper}
