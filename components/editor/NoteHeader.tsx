@@ -111,7 +111,9 @@ export default function NoteHeader() {
         {isCloseButtonVisible ? (
           <Tooltip content="Close pane">
             <button className={buttonClassName} onClick={onClosePane}>
-              <IconX className={iconClassName} />
+              <span className="flex items-center justify-center w-8 h-8">
+                <IconX className={iconClassName} />
+              </span>
             </button>
           </Tooltip>
         ) : null}
