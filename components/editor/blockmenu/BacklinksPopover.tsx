@@ -25,13 +25,12 @@ type BacklinksPopoverProps = {
 export default function BacklinksPopover(props: BacklinksPopoverProps) {
   const { element } = props;
 
-  const [referenceElement, setReferenceElement] =
-    useState<HTMLButtonElement | null>(null);
+  const referenceElementRef = useRef<HTMLButtonElement | null>(null);
   const [popperElement, setPopperElement] = useState<HTMLDivElement | null>(
     null
   );
   const { styles, attributes, state } = usePopper(
-    referenceElement,
+    referenceElementRef.current,
     popperElement,
     {
       placement: 'bottom-end',
@@ -74,8 +73,8 @@ export default function BacklinksPopover(props: BacklinksPopoverProps) {
       {({ open }) => (
         <>
           <Popover.Button
-            ref={setReferenceElement}
-            className="absolute flex items-center select-none justify-center w-6 h-6 text-sm font-medium rounded text-primary-700 top-0.5 -right-8 hover:bg-gray-100 active:bg-gray-200 dark:text-primary-400 dark:hover:bg-gray-800 dark:active:bg-gray-700"
+            ref={referenceElementRef}
+            className="absolute flex items-center select-none justify-center w-6 h-6 text-sm font-medium rounded text-primary-700 top-0.5 -right-8 hover:bg-gray-100 active:bg-gray-200 dark:text-primary-400 dark:hover:bg-gray-800 dark:active:bg-gray-700 focus:outline-none"
             contentEditable={false}
           >
             {numOfMatches}
