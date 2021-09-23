@@ -27,6 +27,10 @@ export default function Changelog() {
           .
         </p>
         <ChangelogBlock
+          title="September 23, 2021"
+          bugFixes={['Safari UI improvements']}
+        />
+        <ChangelogBlock
           title="September 22, 2021"
           features={['Add tags']}
           bugFixes={['Fix auto markdown sometimes not working correctly']}
