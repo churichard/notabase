@@ -79,7 +79,7 @@ const SidebarNoteLink = (
       </div>
       <SidebarNoteLinkDropdown
         note={note}
-        className="hidden group-hover:block"
+        className="opacity-0.1 group-hover:opacity-100"
       />
     </SidebarItem>
   );
