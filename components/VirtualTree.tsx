@@ -65,11 +65,11 @@ function VirtualTree(props: Props) {
   }, [data, flattenNode]);
 
   const Row = useCallback(
-    ({ index, key, style, parent }: ListRowProps) => {
+    ({ index, style, parent }: ListRowProps) => {
       const node = flattenedData[index];
       return (
         <CellMeasurer
-          key={key}
+          key={node.id}
           cache={cellMeasurerCache}
           columnIndex={0}
           parent={parent}
@@ -77,7 +77,6 @@ function VirtualTree(props: Props) {
         >
           {({ registerChild }) => (
             <TreeNode
-              key={key}
               ref={
                 registerChild as (element: HTMLDivElement) => void | undefined
               }
