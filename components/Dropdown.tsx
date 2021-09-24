@@ -1,4 +1,10 @@
-import { useState, ReactNode, MouseEventHandler, useRef } from 'react';
+import {
+  useState,
+  ReactNode,
+  MouseEventHandler,
+  useRef,
+  useCallback,
+} from 'react';
 import { usePopper } from 'react-popper';
 import { Menu } from '@headlessui/react';
 import { Placement } from '@popperjs/core';
@@ -78,26 +84,49 @@ export default function Dropdown(props: Props) {
   );
 }
 
-type DropdownItemProps = {
-  onClick: MouseEventHandler<HTMLButtonElement>;
-  children: ReactNode;
-  className?: string;
-};
+type DropdownItemProps =
+  | {
+      children: ReactNode;
+      onClick: MouseEventHandler<HTMLButtonElement>;
+      as?: 'button';
+      className?: string;
+    }
+  | {
+      children: ReactNode;
+      href: string;
+      as: 'a';
+      className?: string;
+    };
 
 export function DropdownItem(props: DropdownItemProps) {
-  const { onClick, children, className = '' } = props;
+  const { children, className = '' } = props;
+
+  const itemClassName = useCallback(
+    (active) =>
+      `flex w-full items-center px-4 py-2 text-left text-sm text-gray-800 dark:text-gray-200 select-none ${
+        active ? 'bg-gray-100 dark:bg-gray-700' : ''
+      } ${className}`,
+    [className]
+  );
+
   return (
     <Menu.Item>
-      {({ active }) => (
-        <button
-          className={`flex w-full items-center px-4 py-2 text-left text-sm text-gray-800 dark:text-gray-200 select-none ${
-            active ? 'bg-gray-100 dark:bg-gray-700' : ''
-          } ${className}`}
-          onClick={onClick}
-        >
-          {children}
-        </button>
-      )}
+      {({ active }) =>
+        props.as === 'a' ? (
+          <a
+            className={itemClassName(active)}
+            href={props.href}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {children}
+          </a>
+        ) : (
+          <button className={itemClassName(active)} onClick={props.onClick}>
+            {children}
+          </button>
+        )
+      }
     </Menu.Item>
   );
 }

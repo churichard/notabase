@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { PHASE_DEVELOPMENT_SERVER } = require('next/constants');
 
+const withPWA = require('next-pwa');
+
 const { withSentryConfig } = require('@sentry/nextjs');
 
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
@@ -22,17 +24,29 @@ const SentryWebpackPluginOptions = {
 module.exports = (phase) => {
   const isDev = phase === PHASE_DEVELOPMENT_SERVER;
 
-  return withSentryConfig(
-    withBundleAnalyzer({
-      experimental: { esmExternals: true },
-      i18n: {
-        locales: ['en-US'],
-        defaultLocale: 'en-US',
-      },
-      env: {
-        BASE_URL: isDev ? 'http://localhost:3000' : 'https://notabase.io',
-      },
-    }),
-    SentryWebpackPluginOptions
+  return withPWA(
+    withSentryConfig(
+      withBundleAnalyzer({
+        experimental: { esmExternals: true },
+        trailingSlash: true,
+        pwa: {
+          dest: 'public',
+          scope: '/app/',
+          disable: process.env.NODE_ENV === 'development',
+          dynamicStartUrlRedirect: '/login',
+          reloadOnOnline: false,
+          register: false,
+          skipWaiting: false,
+        },
+        i18n: {
+          locales: ['en-US'],
+          defaultLocale: 'en-US',
+        },
+        env: {
+          BASE_URL: isDev ? 'http://localhost:3000' : 'https://notabase.io',
+        },
+      }),
+      SentryWebpackPluginOptions
+    )
   );
 };
