@@ -31,6 +31,7 @@ export default function Changelog() {
           features={[
             'Notabase is now a Progressive Web App (PWA)! This means that you can now install it on your device and have faster load times and offline viewing 🎉',
           ]}
+          bugFixes={['Sidebar performance improvements']}
         />
         <ChangelogBlock
           title="September 23, 2021"
