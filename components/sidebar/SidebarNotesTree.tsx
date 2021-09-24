@@ -1,9 +1,6 @@
 import { useState, useMemo, useCallback, memo } from 'react';
 import List from 'react-virtualized/dist/commonjs/List';
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
-import CellMeasurer, {
-  CellMeasurerCache,
-} from 'react-virtualized/dist/commonjs/CellMeasurer';
 import { useRouter } from 'next/router';
 import {
   DndContext,
@@ -28,11 +25,6 @@ import { User } from 'types/supabase';
 import { useAuth } from 'utils/useAuth';
 import SidebarNoteLink from './SidebarNoteLink';
 import DraggableSidebarNoteLink from './DraggableSidebarNoteLink';
-
-const cellMeasurerCache = new CellMeasurerCache({
-  defaultHeight: 34,
-  fixedWidth: true,
-});
 
 export type FlattenedNoteTreeItem = {
   id: string;
@@ -131,27 +123,15 @@ function SidebarNotesTree(props: Props) {
   );
 
   const Row = useCallback(
-    ({ index, style, parent }) => {
+    ({ index, style }) => {
       const node = flattenedData[index];
       return (
-        <CellMeasurer
+        <DraggableSidebarNoteLink
           key={node.id}
-          cache={cellMeasurerCache}
-          columnIndex={0}
-          parent={parent}
-          rowIndex={index}
-        >
-          {({ registerChild }) => (
-            <DraggableSidebarNoteLink
-              ref={
-                registerChild as (element: HTMLDivElement) => void | undefined
-              }
-              node={node}
-              isHighlighted={node.id === currentNoteId}
-              style={style}
-            />
-          )}
-        </CellMeasurer>
+          node={node}
+          isHighlighted={node.id === currentNoteId}
+          style={style}
+        />
       );
     },
     [currentNoteId, flattenedData]
@@ -175,7 +155,7 @@ function SidebarNotesTree(props: Props) {
                 width={width}
                 height={height}
                 rowCount={flattenedData.length}
-                rowHeight={34}
+                rowHeight={32}
                 rowRenderer={Row}
               />
             )}
