@@ -27,6 +27,12 @@ export default function Changelog() {
           .
         </p>
         <ChangelogBlock
+          title="September 24, 2021"
+          features={[
+            'Notabase is now a Progressive Web App (PWA)! This means that you can now install it on your device and have faster load times and offline viewing 🎉',
+          ]}
+        />
+        <ChangelogBlock
           title="September 23, 2021"
           bugFixes={['Safari UI improvements']}
         />
