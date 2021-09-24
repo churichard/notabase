@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback, memo } from 'react';
-import { FixedSizeList as List } from 'react-window';
-import AutoSizer from 'react-virtualized-auto-sizer';
+import List from 'react-virtualized/dist/commonjs/List';
+import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
 import { useRouter } from 'next/router';
 import {
   DndContext,
@@ -66,8 +66,7 @@ function SidebarNotesTree(props: Props) {
 
   const flattenNode = useCallback(
     (node: NoteTreeItem, depth: number, result: FlattenedNoteTreeItem[]) => {
-      const { id, children } = node;
-      const collapsed = node.collapsed;
+      const { id, children, collapsed } = node;
       result.push({ id, depth, collapsed });
 
       /**
@@ -124,18 +123,18 @@ function SidebarNotesTree(props: Props) {
   );
 
   const Row = useCallback(
-    ({ data, index, style }) => {
-      const node = data[index];
+    ({ index, key, style }) => {
+      const node = flattenedData[index];
       return (
         <DraggableSidebarNoteLink
-          key={node.id}
+          key={key}
           node={node}
           isHighlighted={node.id === currentNoteId}
           style={style}
         />
       );
     },
-    [currentNoteId]
+    [currentNoteId, flattenedData]
   );
 
   return (
@@ -155,12 +154,10 @@ function SidebarNotesTree(props: Props) {
               <List
                 width={width}
                 height={height}
-                itemCount={flattenedData.length}
-                itemData={flattenedData}
-                itemSize={34}
-              >
-                {Row}
-              </List>
+                rowCount={flattenedData.length}
+                rowHeight={34}
+                rowRenderer={Row}
+              />
             )}
           </AutoSizer>
         </SortableContext>
