@@ -1,4 +1,11 @@
-import { ForwardedRef, forwardRef, HTMLAttributes, memo, useMemo } from 'react';
+import {
+  ForwardedRef,
+  forwardRef,
+  HTMLAttributes,
+  memo,
+  useCallback,
+  useMemo,
+} from 'react';
 import { IconCaretRight } from '@tabler/icons';
 import { useStore } from 'lib/store';
 import { isMobile } from 'utils/device';
@@ -9,7 +16,6 @@ import { FlattenedNoteTreeItem } from './SidebarNotesTree';
 
 interface Props extends HTMLAttributes<HTMLDivElement> {
   node: FlattenedNoteTreeItem;
-  onArrowClick?: () => void;
   isHighlighted?: boolean;
 }
 
@@ -17,14 +23,7 @@ const SidebarNoteLink = (
   props: Props,
   forwardedRef: ForwardedRef<HTMLDivElement>
 ) => {
-  const {
-    node,
-    onArrowClick,
-    isHighlighted,
-    className = '',
-    style,
-    ...otherProps
-  } = props;
+  const { node, isHighlighted, className = '', style, ...otherProps } = props;
 
   const note = useStore((state) => state.notes[node.id]);
   const setIsSidebarOpen = useStore((state) => state.setIsSidebarOpen);
@@ -32,6 +31,15 @@ const SidebarNoteLink = (
     (state) => state.openNoteIds[state.openNoteIds.length - 1]
   );
   const { onClick: onNoteLinkClick } = useOnNoteLinkClick(lastOpenNoteId);
+
+  const toggleNoteTreeItemCollapsed = useStore(
+    (state) => state.toggleNoteTreeItemCollapsed
+  );
+
+  const onArrowClick = useCallback(
+    () => toggleNoteTreeItemCollapsed(node.id),
+    [node, toggleNoteTreeItemCollapsed]
+  );
 
   // We add 16px for every level of nesting, plus 8px base padding
   const leftPadding = useMemo(() => node.depth * 16 + 8, [node.depth]);

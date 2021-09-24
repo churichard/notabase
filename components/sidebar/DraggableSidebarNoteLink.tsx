@@ -1,12 +1,17 @@
-import { CSSProperties, ForwardedRef, forwardRef, memo } from 'react';
+import {
+  CSSProperties,
+  ForwardedRef,
+  forwardRef,
+  memo,
+  useCallback,
+} from 'react';
 import { useSortable } from '@dnd-kit/sortable';
-// import { CSS } from '@dnd-kit/utilities';
+import classNames from 'classnames';
 import SidebarNoteLink from './SidebarNoteLink';
 import { FlattenedNoteTreeItem } from './SidebarNotesTree';
 
 type Props = {
   node: FlattenedNoteTreeItem;
-  onArrowClick: () => void;
   isHighlighted?: boolean;
   style?: CSSProperties;
 };
@@ -15,14 +20,13 @@ const DraggableSidebarNoteLink = (
   props: Props,
   forwardedRef: ForwardedRef<HTMLDivElement>
 ) => {
-  const { node, onArrowClick, isHighlighted, style } = props;
+  const { node, isHighlighted, style } = props;
 
   const {
     attributes,
     listeners,
     setNodeRef,
     transition,
-    // transform, // TODO: fix this
     over,
     isSorting,
     isDragging,
@@ -30,27 +34,30 @@ const DraggableSidebarNoteLink = (
     id: node.id,
   });
 
+  const ref = useCallback(
+    (node) => {
+      if (typeof forwardedRef === 'function') {
+        forwardedRef(node);
+      } else if (forwardedRef) {
+        forwardedRef.current = node;
+      }
+      setNodeRef(node);
+    },
+    [forwardedRef, setNodeRef]
+  );
+
+  const className = classNames(
+    { invisible: isDragging },
+    { '!bg-primary-100': isSorting && over?.id === node.id }
+  );
+
   return (
     <SidebarNoteLink
-      ref={(node) => {
-        if (typeof forwardedRef === 'function') {
-          forwardedRef(node);
-        } else if (forwardedRef) {
-          forwardedRef.current = node;
-        }
-        setNodeRef(node);
-      }}
-      className={`${isDragging ? 'invisible' : ''} ${
-        isSorting && over?.id === node.id ? '!bg-primary-100' : ''
-      }`}
+      ref={ref}
+      className={className}
       node={node}
       isHighlighted={isHighlighted}
-      onArrowClick={onArrowClick}
-      style={{
-        ...style,
-        transition,
-        // transform: CSS.Transform.toString(transform),
-      }}
+      style={{ ...style, transition }}
       {...attributes}
       {...listeners}
     />

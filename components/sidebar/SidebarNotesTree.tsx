@@ -47,9 +47,6 @@ function SidebarNotesTree(props: Props) {
   }, [router]);
 
   const moveNoteTreeItem = useStore((state) => state.moveNoteTreeItem);
-  const toggleNoteTreeItemCollapsed = useStore(
-    (state) => state.toggleNoteTreeItemCollapsed
-  );
 
   const [activeId, setActiveId] = useState<string | null>(null);
   const sensors = useSensors(
@@ -64,11 +61,6 @@ function SidebarNotesTree(props: Props) {
         tolerance: 5,
       },
     })
-  );
-
-  const onArrowClick = useCallback(
-    (node: FlattenedNoteTreeItem) => toggleNoteTreeItemCollapsed(node.id),
-    [toggleNoteTreeItemCollapsed]
   );
 
   const flattenNode = useCallback(
@@ -163,7 +155,6 @@ function SidebarNotesTree(props: Props) {
                   key={node.id}
                   ref={virtualRow.measureRef}
                   node={node}
-                  onArrowClick={() => onArrowClick(node)}
                   isHighlighted={node.id === currentNoteId}
                   style={{
                     position: 'absolute',
