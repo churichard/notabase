@@ -32,33 +32,32 @@ function Sidebar(props: Props) {
   const transition = useTransition<
     boolean,
     {
-      width: string;
+      transform: string;
       dspl: number;
-      opacity: number;
       backgroundOpacity: number;
       backgroundColor: string;
     }
   >(isSidebarOpen, {
     initial: {
-      width: '16rem',
+      transform: 'translateX(0%)',
       dspl: 1,
       backgroundOpacity: 0.3,
       backgroundColor: 'black',
     },
     from: {
-      width: '0rem',
+      transform: 'translateX(-100%)',
       dspl: 0,
       backgroundOpacity: 0,
       backgroundColor: 'transparent',
     },
     enter: {
-      width: '16rem',
+      transform: 'translateX(0%)',
       dspl: 1,
       backgroundOpacity: 0.3,
       backgroundColor: 'black',
     },
     leave: {
-      width: '0rem',
+      transform: 'translateX(-100%)',
       dspl: 0,
       backgroundOpacity: 0,
       backgroundColor: 'transparent',
@@ -85,9 +84,9 @@ function Sidebar(props: Props) {
             />
           ) : null}
           <animated.div
-            className="fixed top-0 bottom-0 left-0 z-20 shadow-popover md:shadow-none md:static md:z-0"
+            className="fixed top-0 bottom-0 left-0 z-20 w-64 shadow-popover md:shadow-none md:static md:z-0"
             style={{
-              width: styles.width,
+              transform: styles.transform,
               display: styles.dspl.to((displ) =>
                 displ === 0 ? 'none' : 'initial'
               ),

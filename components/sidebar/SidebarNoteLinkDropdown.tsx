@@ -17,7 +17,7 @@ type Props = {
 const SidebarNoteLinkDropdown = (props: Props) => {
   const { note, className } = props;
 
-  const containerRef = useRef<HTMLDivElement | null>(null);
+  const containerRef = useRef<HTMLButtonElement | null>(null);
   const [popperElement, setPopperElement] = useState<HTMLDivElement | null>(
     null
   );
@@ -33,14 +33,17 @@ const SidebarNoteLinkDropdown = (props: Props) => {
   const onDeleteClick = useDeleteNote(note.id);
 
   return (
-    <div ref={containerRef}>
+    <>
       <Menu>
         {({ open }) => (
           <>
             <Menu.Button
-              className={`p-1 rounded hover:bg-gray-300 active:bg-gray-400 dark:hover:bg-gray-600 dark:active:bg-gray-500 ${className}`}
+              ref={containerRef}
+              className={`rounded hover:bg-gray-300 active:bg-gray-400 dark:hover:bg-gray-600 dark:active:bg-gray-500 ${className}`}
             >
-              <IconDots className="text-gray-600 dark:text-gray-200" />
+              <span className="flex items-center justify-center w-8 h-8">
+                <IconDots className="text-gray-600 dark:text-gray-200" />
+              </span>
             </Menu.Button>
             {open && (
               <Portal>
@@ -71,7 +74,7 @@ const SidebarNoteLinkDropdown = (props: Props) => {
           <MoveToModal noteId={note.id} setIsOpen={setIsMoveToModalOpen} />
         </Portal>
       ) : null}
-    </div>
+    </>
   );
 };
 

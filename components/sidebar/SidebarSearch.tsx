@@ -48,7 +48,7 @@ export default function SidebarSearch(props: Props) {
 
   return (
     <ErrorBoundary>
-      <div className={`flex flex-col overflow-y-auto ${className}`}>
+      <div className={`flex flex-col flex-1 overflow-y-auto ${className}`}>
         <input
           type="text"
           className="block py-1 mx-4 my-2 bg-white border-gray-200 rounded dark:bg-gray-700 dark:border-gray-700"
@@ -105,14 +105,14 @@ const SidebarSearchLeaf = memo(function SidebarSearchLeaf(
   const router = useRouter();
   return (
     <button
-      className="w-full px-1 py-2 text-left rounded hover:bg-gray-200 active:bg-gray-300 dark:hover:bg-gray-700 dark:active:bg-gray-600"
+      className="w-full text-left rounded hover:bg-gray-200 active:bg-gray-300 dark:hover:bg-gray-700 dark:active:bg-gray-600"
       onClick={() => {
         const hash = block ? `#0-${block.path}` : '';
         router.push(`/app/note/${noteId}${hash}`);
       }}
     >
       <Highlighter
-        className="block text-xs text-gray-600 break-words dark:text-gray-300"
+        className="block px-1 py-2 text-xs text-gray-600 break-words dark:text-gray-300"
         highlightClassName="bg-yellow-200 text-gray-600 dark:bg-yellow-800 dark:text-gray-300"
         searchWords={[searchQuery]}
         autoEscape={true}

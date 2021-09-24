@@ -1,5 +1,6 @@
-import { useState, useMemo, useCallback, memo, useRef } from 'react';
-import { useVirtual } from 'react-virtual';
+import { useState, useMemo, useCallback, memo } from 'react';
+import List from 'react-virtualized/dist/commonjs/List';
+import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
 import { useRouter } from 'next/router';
 import {
   DndContext,
@@ -47,9 +48,6 @@ function SidebarNotesTree(props: Props) {
   }, [router]);
 
   const moveNoteTreeItem = useStore((state) => state.moveNoteTreeItem);
-  const toggleNoteTreeItemCollapsed = useStore(
-    (state) => state.toggleNoteTreeItemCollapsed
-  );
 
   const [activeId, setActiveId] = useState<string | null>(null);
   const sensors = useSensors(
@@ -66,15 +64,9 @@ function SidebarNotesTree(props: Props) {
     })
   );
 
-  const onArrowClick = useCallback(
-    (node: FlattenedNoteTreeItem) => toggleNoteTreeItemCollapsed(node.id),
-    [toggleNoteTreeItemCollapsed]
-  );
-
   const flattenNode = useCallback(
     (node: NoteTreeItem, depth: number, result: FlattenedNoteTreeItem[]) => {
-      const { id, children } = node;
-      const collapsed = node.collapsed;
+      const { id, children, collapsed } = node;
       result.push({ id, depth, collapsed });
 
       /**
@@ -130,69 +122,62 @@ function SidebarNotesTree(props: Props) {
     [resetState, moveNoteTreeItem, user]
   );
 
-  const parentRef = useRef<HTMLDivElement | null>(null);
-  const rowVirtualizer = useVirtual({
-    size: flattenedData.length,
-    parentRef,
-    estimateSize: useCallback(() => 32, []),
-  });
+  const Row = useCallback(
+    ({ index, style }) => {
+      const node = flattenedData[index];
+      return (
+        <DraggableSidebarNoteLink
+          key={node.id}
+          node={node}
+          isHighlighted={node.id === currentNoteId}
+          style={style}
+        />
+      );
+    },
+    [currentNoteId, flattenedData]
+  );
 
   return (
-    <div ref={parentRef} className={className}>
-      <div
-        style={{
-          height: `${rowVirtualizer.totalSize}px`,
-          width: '100%',
-          position: 'relative',
-        }}
+    <div className={className}>
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
       >
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragStart={handleDragStart}
-          onDragEnd={handleDragEnd}
+        <SortableContext
+          items={flattenedData}
+          strategy={verticalListSortingStrategy}
         >
-          <SortableContext
-            items={flattenedData}
-            strategy={verticalListSortingStrategy}
-          >
-            {rowVirtualizer.virtualItems.map((virtualRow) => {
-              const node = flattenedData[virtualRow.index];
-              return (
-                <DraggableSidebarNoteLink
-                  key={node.id}
-                  ref={virtualRow.measureRef}
-                  node={node}
-                  onArrowClick={() => onArrowClick(node)}
-                  isHighlighted={node.id === currentNoteId}
-                  style={{
-                    position: 'absolute',
-                    top: virtualRow.start,
-                    left: 0,
-                    width: '100%',
-                  }}
-                />
-              );
-            })}
-          </SortableContext>
-          <Portal>
-            <DragOverlay>
-              {activeId ? (
-                <SidebarNoteLink
-                  node={
-                    flattenedData.find((node) => node.id === activeId) ?? {
-                      id: activeId,
-                      depth: 0,
-                      collapsed: false,
-                    }
+          <AutoSizer>
+            {({ width, height }) => (
+              <List
+                width={width}
+                height={height}
+                rowCount={flattenedData.length}
+                rowHeight={32}
+                rowRenderer={Row}
+              />
+            )}
+          </AutoSizer>
+        </SortableContext>
+        <Portal>
+          <DragOverlay>
+            {activeId ? (
+              <SidebarNoteLink
+                node={
+                  flattenedData.find((node) => node.id === activeId) ?? {
+                    id: activeId,
+                    depth: 0,
+                    collapsed: false,
                   }
-                  className="shadow-popover !bg-gray-50 dark:!bg-gray-800"
-                />
-              ) : null}
-            </DragOverlay>
-          </Portal>
-        </DndContext>
-      </div>
+                }
+                className="shadow-popover !bg-gray-50 dark:!bg-gray-800"
+              />
+            ) : null}
+          </DragOverlay>
+        </Portal>
+      </DndContext>
     </div>
   );
 }
