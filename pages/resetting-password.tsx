@@ -10,9 +10,8 @@ import PageLoading from 'components/PageLoading';
 
 export default function ResettingPassword() {
   const router = useRouter();
-  const type = router.query.type as string;
-  const accessToken = router.query.access_token as string;
 
+  const [accessToken, setAccessToken] = useState<string | null>(null);
   const [isPageLoading, setIsPageLoading] = useState(true);
   const [newPassword, setNewPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -21,6 +20,12 @@ export default function ResettingPassword() {
   const onSubmit = useCallback(
     async (event: FormEvent<HTMLFormElement>) => {
       event.preventDefault();
+
+      if (!accessToken) {
+        toast.error('Invalid access token');
+        return;
+      }
+
       setIsLoading(true);
 
       const { error, data } = await supabase.auth.api.updateUser(accessToken, {
@@ -39,12 +44,20 @@ export default function ResettingPassword() {
   );
 
   useEffect(() => {
-    if (type !== 'recovery' || !accessToken) {
+    const {
+      query: { type, access_token },
+    } = router;
+    if (
+      type !== 'recovery' ||
+      !access_token ||
+      typeof access_token === 'object'
+    ) {
       router.push('/reset');
     } else {
+      setAccessToken(access_token);
       setIsPageLoading(false);
     }
-  }, [router, type, accessToken]);
+  }, [router, accessToken]);
 
   if (isPageLoading) {
     return <PageLoading />;
