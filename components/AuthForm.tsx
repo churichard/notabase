@@ -1,5 +1,6 @@
 import type { FormEvent } from 'react';
 import { useCallback, useState } from 'react';
+import Link from 'next/link';
 import { toast } from 'react-toastify';
 import { useAuth } from 'utils/useAuth';
 
@@ -79,6 +80,13 @@ export default function AuthForm(props: Props) {
           onChange={(event) => setPassword(event.target.value)}
           required
         />
+        {!signup ? (
+          <div className="mt-2">
+            <Link href="/reset">
+              <a className="text-sm link">Forgot your password?</a>
+            </Link>
+          </div>
+        ) : null}
       </div>
       <button
         className={`w-full mt-6 btn ${isLoading && 'opacity-50 cursor-wait'}`}
