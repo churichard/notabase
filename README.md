@@ -11,21 +11,23 @@ It is inspired by note-taking apps such as Notion, Obsidian, Typora, and Roam Re
 
 ![demo](https://user-images.githubusercontent.com/4218237/127217938-f7ebe22e-68de-4955-9660-a79ab477cb82.gif)
 
-## Status
-
-Notabase is in beta. It is under active development.
-
 ## Features
 
-- Browse your notes with **page stacking** (similar to [Andy's working notes](https://notes.andymatuschak.org/About_these_notes))
-- **WYSIWYG editor** with markdown support makes it easy to read and edit notes
-- **Linked/unlinked references** let you see other notes that reference a specific note
-- Your notes are **synced to the cloud** and can be **accessed on any device**
-- Use the **graph view** to analyze your knowledge graph
-- **Full-text search** lets you easily find relevant notes
-- **Block references**: embed a block of text from another note, which auto-updates when the original block changes
-- **Import** or **export** your notes at any time
-- **Open source**, allowing community involvement and transparent development
+- 📖 Browse your notes with **page stacking** (similar to [Andy's working notes](https://notes.andymatuschak.org/About_these_notes))
+- 📝 **WYSIWYG editor** with markdown support makes it easy to read and edit notes
+- 🔗 **Linked/unlinked references** let you see other notes that reference a specific note
+- 📱 Can be installed as a **Progressive Web App (PWA)** for faster loading and offline viewing
+- ☁ Your notes are **synced to the cloud** and can be **accessed on any device**
+- 🔀 Use the **graph view** to analyze your knowledge graph
+- 🔍 **Full-text search** lets you easily find relevant notes
+- 🧱 Use **block references** to embed a block of text from another note, which auto-updates when the original block changes
+- 🤝 **Import** or **export** your notes at any time
+- 🙌 **Open source** with community involvement and transparent development
+- 🚀 And much more!
+
+## Status
+
+Notabase is in beta and is under active development.
 
 ## Documentation & Support
 
@@ -55,10 +57,12 @@ Notabase is currently focused on the hosted experience, but it is possible for y
 
 ## Sponsors
 
+Sponsors make it possible for me to continue developing Notabase. Your support is greatly appreciated!
+
 [Become a sponsor](https://github.com/sponsors/churichard)
 
 ## License
 
 Notabase is licensed under the AGPL license, and is free for personal use.
 
-If you'd like to use Notabase for commercial use, please contact me.
+If you'd like to use Notabase for commercial use, please contact me for a commercial license.
