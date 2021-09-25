@@ -13,10 +13,23 @@ export default function useDeleteNote(noteId: string) {
     const deletedNoteIndex = openNoteIds.findIndex(
       (openNoteId) => openNoteId === noteId
     );
+
     if (deletedNoteIndex !== -1) {
       // Redirect if one of the notes that was deleted was open
-      const newNoteId = Object.keys(store.getState().notes)[0];
-      router.push(`/app/note/${newNoteId}`, undefined, { shallow: true });
+      const noteIds = Object.keys(store.getState().notes);
+      // If there are other notes to redirect to, redirect to the first one
+      if (noteIds.length > 1) {
+        for (const id of noteIds) {
+          // We haven't deleted the note yet, so we need to check the id
+          if (noteId !== id) {
+            router.push(`/app/note/${id}`, undefined, { shallow: true });
+            break;
+          }
+        }
+      } else {
+        // No note ids to redirect to, redirect to app
+        router.push('/app');
+      }
     }
 
     await deleteNote(noteId);

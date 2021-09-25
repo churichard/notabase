@@ -3,12 +3,9 @@ import { Notes, NoteTreeItem, useStore } from 'lib/store';
 import { Sort } from 'lib/createUserSettingsSlice';
 import { caseInsensitiveStringCompare } from 'utils/string';
 import { dateCompare } from 'utils/date';
-import useDebounce from 'utils/useDebounce';
 import ErrorBoundary from '../ErrorBoundary';
 import SidebarNotesFooter from './SidebarNotesFooter';
 import SidebarNotesTree from './SidebarNotesTree';
-
-const DEBOUNCE_MS = 1000;
 
 type SidebarNotesProps = {
   className?: string;
@@ -18,10 +15,7 @@ type SidebarNotesProps = {
 function SidebarNotes(props: SidebarNotesProps) {
   const { className, setIsFindOrCreateModalOpen } = props;
 
-  const [notes] = useDebounce(
-    useStore((state) => state.notes),
-    DEBOUNCE_MS
-  );
+  const notes = useStore((state) => state.notes);
   const noteTree = useStore((state) => state.noteTree);
   const noteSort = useStore((state) => state.noteSort);
   const sortedNoteTree = useMemo(
