@@ -6,13 +6,15 @@ import { toast } from 'react-toastify';
 import LogoWithText from 'components/LogoWithText';
 import LandingLayout from 'components/landing/LandingLayout';
 import supabase from 'lib/supabase';
-import PageLoading from 'components/PageLoading';
 
 export default function ResettingPassword() {
   const router = useRouter();
 
-  const [accessToken, setAccessToken] = useState<string | null>(null);
-  const [isPageLoading, setIsPageLoading] = useState(true);
+  const [type, setType] = useState<string | string[] | undefined>(undefined);
+  const [accessToken, setAccessToken] = useState<string | string[] | undefined>(
+    undefined
+  );
+
   const [newPassword, setNewPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [showConfirmationMessage, setShowConfirmationMessage] = useState(false);
@@ -21,8 +23,12 @@ export default function ResettingPassword() {
     async (event: FormEvent<HTMLFormElement>) => {
       event.preventDefault();
 
-      if (!accessToken) {
-        toast.error('Invalid access token');
+      if (
+        type !== 'recovery' ||
+        !accessToken ||
+        typeof accessToken === 'object'
+      ) {
+        toast.error('Invalid access token or type');
         return;
       }
 
@@ -40,28 +46,16 @@ export default function ResettingPassword() {
 
       setIsLoading(false);
     },
-    [newPassword, accessToken]
+    [newPassword, type, accessToken]
   );
 
   useEffect(() => {
     const {
       query: { type, access_token },
     } = router;
-    if (
-      type !== 'recovery' ||
-      !access_token ||
-      typeof access_token === 'object'
-    ) {
-      router.push('/reset');
-    } else {
-      setAccessToken(access_token);
-      setIsPageLoading(false);
-    }
-  }, [router, accessToken]);
-
-  if (isPageLoading) {
-    return <PageLoading />;
-  }
+    setType(type);
+    setAccessToken(access_token);
+  }, [router]);
 
   return (
     <LandingLayout showNavbar={false} showFooter={false}>
