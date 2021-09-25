@@ -1,20 +1,12 @@
-import { FormEvent, useCallback, useEffect, useState } from 'react';
+import { FormEvent, useCallback, useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 import { toast } from 'react-toastify';
 import LogoWithText from 'components/LogoWithText';
 import LandingLayout from 'components/landing/LandingLayout';
 import supabase from 'lib/supabase';
 
 export default function ResettingPassword() {
-  const router = useRouter();
-
-  const [type, setType] = useState<string | string[] | undefined>(undefined);
-  const [accessToken, setAccessToken] = useState<string | string[] | undefined>(
-    undefined
-  );
-
   const [newPassword, setNewPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [showConfirmationMessage, setShowConfirmationMessage] = useState(false);
@@ -22,6 +14,23 @@ export default function ResettingPassword() {
   const onSubmit = useCallback(
     async (event: FormEvent<HTMLFormElement>) => {
       event.preventDefault();
+
+      // Format is #access_token=x&refresh_token=y&expires_in=z&token_type=bearer&type=recovery
+      const hash = window.location.hash;
+      const hashArr = hash
+        .substring(1)
+        .split('&')
+        .map((param) => param.split('='));
+
+      let type;
+      let accessToken;
+      for (const [key, value] of hashArr) {
+        if (key === 'type') {
+          type = value;
+        } else if (key === 'access_token') {
+          accessToken = value;
+        }
+      }
 
       if (
         type !== 'recovery' ||
@@ -34,28 +43,20 @@ export default function ResettingPassword() {
 
       setIsLoading(true);
 
-      const { error, data } = await supabase.auth.api.updateUser(accessToken, {
+      const { error } = await supabase.auth.api.updateUser(accessToken, {
         password: newPassword,
       });
 
       if (error) {
         toast.error(error.message);
-      } else if (data) {
+      } else {
         setShowConfirmationMessage(true);
       }
 
       setIsLoading(false);
     },
-    [newPassword, type, accessToken]
+    [newPassword]
   );
-
-  useEffect(() => {
-    const {
-      query: { type, access_token },
-    } = router;
-    setType(type);
-    setAccessToken(access_token);
-  }, [router]);
 
   return (
     <LandingLayout showNavbar={false} showFooter={false}>
