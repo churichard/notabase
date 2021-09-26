@@ -93,7 +93,7 @@ export default function ForceGraph(props: Props) {
       } else if (darkMode) {
         context.strokeStyle = colors.trueGray[700];
       } else {
-        context.strokeStyle = colors.trueGray[300];
+        context.strokeStyle = colors.trueGray[200];
       }
       context.stroke();
 
@@ -213,7 +213,11 @@ export default function ForceGraph(props: Props) {
         'link',
         d3.forceLink<NodeDatum, LinkDatum>(data.links).id((d) => d.id)
       )
-      .force('charge', d3.forceManyBody())
+      .force(
+        'collide',
+        d3.forceCollide<NodeDatum>().radius((node) => node.radius)
+      )
+      .force('charge', d3.forceManyBody().strength(-80))
       .force('center', d3.forceCenter(width / 2, height / 2))
       .force('x', d3.forceX(width / 2))
       .force('y', d3.forceY(height / 2));
