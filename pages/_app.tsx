@@ -20,7 +20,8 @@ export default function MyApp({ Component, pageProps, router }: AppProps) {
     <>
       <Head>
         <title>
-          Notabase | Clean and powerful note-taking app for networked thinking
+          Notabase | Powerful and easy-to-use note-taking app for networked
+          thinking
         </title>
         <script
           async

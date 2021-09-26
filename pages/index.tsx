@@ -17,8 +17,8 @@ export default function Home() {
                   Think more clearly. Be more productive.
                 </h1>
                 <p className="max-w-3xl pt-6 mx-auto text-xl text-gray-700 md:pt-8 md:text-2xl">
-                  Notabase is a clean, powerful, and easy-to-use note-taking
-                  app. Connect your ideas together and write more effortlessly.
+                  Notabase is a powerful and easy-to-use note-taking app.
+                  Connect your ideas together and write more effortlessly.
                 </p>
                 <Link href="/signup">
                   <a className="inline-flex items-center mt-6 md:mt-8 btn hover:shadow-lg group">
@@ -108,8 +108,9 @@ export default function Home() {
                 </h2>
                 <div className="max-w-3xl pt-6 mx-auto md:pt-8">
                   <p className="text-lg leading-relaxed text-gray-700 md:text-xl md:leading-relaxed">
-                    With our clean and powerful editor, reading and writing
-                    happens in one fluid experience. Never context switch again.
+                    With our powerful and easy-to-use editor, reading and
+                    writing happens in one fluid experience. Never context
+                    switch again.
                   </p>
                   <p className="mt-4 text-lg leading-relaxed text-gray-700 md:text-xl md:leading-relaxed">
                     Your notes are automatically synced across all of your
