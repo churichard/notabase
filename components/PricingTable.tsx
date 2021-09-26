@@ -19,13 +19,15 @@ const pricingTableData = [
   {
     name: 'Features',
     data: [
-      ['Rich-text editor', true, true],
+      ['Powerful rich-text editor', true, true],
       ['Backlinks', true, true],
       ['Sync between devices', true, true],
       ['Full-text search', true, true],
       ['Graph view', true, true],
       ['Import / export', true, true],
       ['Block references', true, true],
+      ['Offline viewing', true, true],
+      ['Publishing to the web (coming soon)', false, true],
     ],
   },
   {
