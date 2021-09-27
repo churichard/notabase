@@ -1,15 +1,19 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { IconArrowRight } from '@tabler/icons';
 import Footer from 'components/landing/Footer';
 import Navbar from 'components/landing/Navbar';
 import LandingLayout from 'components/landing/LandingLayout';
+import GraphViewImage from 'public/graph-view.png';
+import SidebarImage from 'public/sidebar.png';
+import PageStackingImage from 'public/page-stacking.png';
 
 export default function Home() {
   return (
     <LandingLayout showNavbar={false} showFooter={false}>
       <div className="flex flex-col min-h-screen">
         <div className="flex-1">
-          <div className="bg-gradient-to-r from-yellow-50 via-green-50 to-blue-50">
+          <div className="shadow-sm bg-gradient-to-r from-yellow-50 via-green-50 to-blue-50">
             <Navbar />
             <div className="pt-10 pb-16 md:pb-32 md:pt-24">
               <div className="container px-6 text-center">
@@ -30,24 +34,15 @@ export default function Home() {
                   </a>
                 </Link>
                 <video
-                  className="hidden mx-auto mt-8 rounded-md md:mt-16 shadow-popover md:block"
+                  className="mx-auto mt-8 rounded-md md:mt-16 shadow-popover bg-gray-50"
                   width={1200}
                   autoPlay
                   loop
                   muted
                   playsInline
+                  preload="auto"
                 >
                   <source src="/demo.mp4" type="video/mp4" />
-                </video>
-                <video
-                  className="block mx-auto mt-8 rounded-md md:mt-16 shadow-popover md:hidden"
-                  width={500}
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                >
-                  <source src="/demo_mobile.mp4" type="video/mp4" />
                 </video>
               </div>
             </div>
@@ -56,116 +51,144 @@ export default function Home() {
             <div className="container flex flex-col items-center px-6 md:flex-row">
               <div className="flex-1 md:mx-8">
                 <h2 className="text-3xl font-semibold md:text-4xl">
-                  Write better
+                  Never lose context
                 </h2>
                 <div className="max-w-3xl pt-6 mx-auto md:pt-8">
                   <p className="text-lg leading-relaxed text-gray-700 md:text-xl md:leading-relaxed">
-                    With Notabase, your notes link to each other.
+                    Link your notes together to form your own, personal
+                    knowledge graph.
                   </p>
                   <p className="mt-4 text-lg leading-relaxed text-gray-700 md:text-xl md:leading-relaxed">
-                    These links form a network: your own, personal knowledge
-                    graph. The more you write, the more powerful it gets.
+                    The more you write and link, the more powerful it gets.
                   </p>
                   <p className="mt-4 text-lg leading-relaxed text-gray-700 md:text-xl md:leading-relaxed">
-                    When you reference a note, relevant notes will surface
-                    naturally. Never lose sight of the bigger picture.
+                    Keep sight of the bigger picture. Never again have isolated,
+                    hard-to-find notes.
                   </p>
                 </div>
               </div>
-              <div className="relative flex-1 px-6 mt-12 md:mt-0 md:mx-8 lg:px-8 xl:px-0">
-                <video
-                  className="mx-auto rounded-md shadow-popover"
-                  width={400}
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                >
-                  <source src="/graph.mp4" type="video/mp4" />
-                </video>
-                <div className="absolute left-0 right-0 w-full transform rounded-md top-14 bottom-14 bg-primary-50 -rotate-3 -z-10" />
+              <div className="relative flex items-center justify-center flex-1 w-full mt-12 md:mt-0 md:mx-8">
+                <div className="flex w-3/4 overflow-hidden rounded-md shadow-md">
+                  <Image
+                    src={GraphViewImage}
+                    alt="Graph view showing how notes are connected to each other"
+                    placeholder="blur"
+                    quality={100}
+                  />
+                </div>
+                <div className="absolute left-0 right-0 w-full transform rounded-md shadow-sm top-10 bottom-10 bg-primary-50 -rotate-3 -z-10" />
               </div>
             </div>
           </div>
           <div className="py-8 md:py-16">
             <div className="container flex flex-col items-center px-6 md:flex-row">
-              <div className="relative flex-1 order-1 px-6 mt-12 md:order-none md:mt-0 md:mx-8 lg:px-8 xl:px-0">
-                <video
-                  className="mx-auto rounded-md shadow-popover"
-                  width={400}
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                >
-                  <source src="/rich_text.mp4" type="video/mp4" />
-                </video>
-                <div className="absolute left-0 right-0 w-full transform rounded-md top-14 bottom-14 bg-blue-50 rotate-3 -z-10" />
-              </div>
               <div className="flex-1 md:mx-8">
                 <h2 className="text-3xl font-semibold md:text-4xl">
-                  Easy to use &mdash; it just works
+                  Organize the way you want
                 </h2>
                 <div className="max-w-3xl pt-6 mx-auto md:pt-8">
                   <p className="text-lg leading-relaxed text-gray-700 md:text-xl md:leading-relaxed">
-                    With our powerful and easy-to-use editor, reading and
-                    writing happens in one fluid experience. Never context
-                    switch again.
+                    Organize your notes to suit the way you think.
                   </p>
                   <p className="mt-4 text-lg leading-relaxed text-gray-700 md:text-xl md:leading-relaxed">
-                    Your notes are automatically synced across all of your
-                    devices, so they&apos;re accessible from anywhere.
+                    Link your notes together and traverse them like webpages.
+                    Tag important topics and concepts. Drag and drop your notes
+                    to create your own hierarchy.
                   </p>
                   <p className="mt-4 text-lg leading-relaxed text-gray-700 md:text-xl md:leading-relaxed">
-                    No setup, no hassle&mdash;everything works out of the box,
-                    exactly as you would expect.
+                    And for the little things that slip through the cracks, find
+                    them with our full-text search.
                   </p>
                 </div>
               </div>
-            </div>
-          </div>
-          <div className="pt-8 pb-16 md:pb-32 md:pt-16">
-            <div className="container px-6">
-              <h2 className="text-3xl font-semibold text-center md:text-4xl">
-                Privacy-friendly and open source
-              </h2>
-              <div className="max-w-3xl pt-6 mx-auto md:pt-8">
-                <p className="text-lg leading-relaxed text-gray-700 md:text-xl md:leading-relaxed">
-                  Notabase is open, transparent, and privacy-friendly.
-                </p>
-                <p className="mt-4 text-lg leading-relaxed text-gray-700 md:text-xl md:leading-relaxed">
-                  It&apos;s{' '}
-                  <a
-                    href="https://github.com/churichard/notabase"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="link"
-                  >
-                    open source
-                  </a>{' '}
-                  with a public{' '}
-                  <Link href="/changelog">
-                    <a className="link">changelog</a>
-                  </Link>{' '}
-                  and{' '}
-                  <a
-                    href="https://trello.com/b/dpZLRkRR"
-                    className="link"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    roadmap
-                  </a>
-                  . Development happens transparently with community feedback.
-                </p>
-                <p className="mt-4 text-lg leading-relaxed text-gray-700 md:text-xl md:leading-relaxed">
-                  You have full ownership over your notes. Notabase will never
-                  sell your data or advertise to you.
-                </p>
+              <div className="relative flex items-center justify-center flex-1 w-full mt-12 md:mt-0 md:mx-8">
+                <div className="flex overflow-hidden rounded-md shadow-md">
+                  <Image
+                    src={SidebarImage}
+                    alt="Sidebar showing how notes can be nested underneath each other to form a hierarchy"
+                    placeholder="blur"
+                    quality={100}
+                  />
+                </div>
+                <div className="absolute left-0 right-0 mx-auto transform rounded-md shadow-sm lg:w-3/4 top-14 bottom-14 bg-yellow-50 rotate-3 -z-10" />
               </div>
             </div>
           </div>
-          <div className="container my-8 bg-gradient-to-r from-yellow-50 via-green-50 to-blue-50 sm:rounded-md">
+          <div className="py-8 md:py-16">
+            <div className="container flex flex-col items-center px-6 md:flex-row">
+              <div className="flex-1 md:mx-8">
+                <h2 className="text-3xl font-semibold md:text-4xl">
+                  Focus and explore
+                </h2>
+                <div className="max-w-3xl pt-6 mx-auto md:pt-8">
+                  <p className="text-lg leading-relaxed text-gray-700 md:text-xl md:leading-relaxed">
+                    When you want to write, the clean and intuitive interface
+                    lets you focus and get into flow.
+                  </p>
+                  <p className="mt-4 text-lg leading-relaxed text-gray-700 md:text-xl md:leading-relaxed">
+                    When you want to reflect, stacked pages let you reference
+                    multiple notes at once and dive into rabbit holes.
+                  </p>
+                  <p className="mt-4 text-lg leading-relaxed text-gray-700 md:text-xl md:leading-relaxed">
+                    Notabase makes both focus and exploration easy and
+                    delightful.
+                  </p>
+                </div>
+              </div>
+              <div className="relative flex items-center justify-center flex-1 w-full mt-12 md:mt-0 md:mx-8">
+                <div className="flex w-5/6 overflow-hidden rounded-md shadow-md">
+                  <Image
+                    src={PageStackingImage}
+                    alt="Page stacking feature that lets you reference multiple notes at once and multitask more easily"
+                    placeholder="blur"
+                    quality={100}
+                  />
+                </div>
+                <div className="absolute left-0 right-0 w-full transform rounded-md shadow-sm top-10 bottom-10 bg-blue-50 -rotate-3 -z-10" />
+              </div>
+            </div>
+          </div>
+          <div className="py-16 md:py-32">
+            <div className="container relative max-w-3xl px-6 mx-auto">
+              <h2 className="text-3xl font-semibold text-center md:text-4xl">
+                Privacy-friendly and open source
+              </h2>
+              <div className="pt-6 md:pt-8">
+                <p className="text-lg leading-relaxed text-gray-700 md:text-xl md:leading-relaxed">
+                  Notabase is open source with a public changelog and roadmap.
+                </p>
+                <p className="mt-4 text-lg leading-relaxed text-gray-700 md:text-xl md:leading-relaxed">
+                  We also have a{' '}
+                  <a
+                    href="https://discord.gg/BQKNRu7nv5"
+                    className="link"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Discord community
+                  </a>{' '}
+                  where you can give feedback and ask questions.
+                </p>
+                <p className="mt-4 text-lg leading-relaxed text-gray-700 md:text-xl md:leading-relaxed">
+                  You have full ownership over your notes and can export them at
+                  any time. We will never sell your data or use it for
+                  advertising.
+                </p>
+                <svg
+                  viewBox="0 0 200 200"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="absolute bottom-0 right-0 w-64 md:w-96 -z-10"
+                >
+                  <path
+                    fill="#F5F3FF"
+                    d="M69,-23.8C77.8,4.6,65.3,38.6,44.2,51.8C23.1,65,-6.5,57.3,-29.8,40.5C-53.1,23.7,-70.1,-2.3,-64.1,-26.9C-58.1,-51.5,-29,-74.7,0.5,-74.9C30.1,-75,60.2,-52.2,69,-23.8Z"
+                    transform="translate(100 100)"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div className="container my-8 shadow-md bg-gradient-to-r from-yellow-50 via-green-50 to-blue-50 sm:rounded-md">
             <div className="px-8 py-12 md:space-x-6 lg:py-16 lg:px-16 md:flex md:items-center md:justify-between">
               <div>
                 <h2 className="text-2xl font-medium text-primary-900 lg:text-3xl">
