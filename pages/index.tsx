@@ -148,7 +148,7 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <div className="py-16 md:py-32">
+          <div className="py-8 md:py-16">
             <div className="container relative max-w-3xl px-6 mx-auto">
               <h2 className="text-3xl font-semibold text-center md:text-4xl">
                 Privacy-friendly and open source
@@ -177,7 +177,7 @@ export default function Home() {
                 <svg
                   viewBox="0 0 200 200"
                   xmlns="http://www.w3.org/2000/svg"
-                  className="absolute bottom-0 right-0 w-64 md:w-96 -z-10"
+                  className="absolute bottom-0 right-0 w-64 md:w-80 -z-10"
                 >
                   <path
                     fill="#F5F3FF"
@@ -188,15 +188,95 @@ export default function Home() {
               </div>
             </div>
           </div>
+          <div className="pt-8 pb-16 md:pt-16 md:pb-32">
+            <div className="container px-6">
+              <h2 className="text-3xl font-semibold text-center md:text-4xl">
+                What can you do with Notabase?
+              </h2>
+              <div className="grid gap-6 pt-8 md:grid-cols-3 md:pt-10">
+                <div className="p-8 rounded-md shadow bg-green-50">
+                  <h3 className="text-xl font-medium">
+                    Create a digital garden
+                  </h3>
+                  <p className="pt-1">
+                    Cultivate a personal space for your ideas, thoughts, and
+                    evergreen notes, like{' '}
+                    <a
+                      className="link"
+                      href="https://notes.andymatuschak.org/About_these_notes"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Andy Matuschak
+                    </a>{' '}
+                    and{' '}
+                    <a
+                      className="link"
+                      href="https://www.mentalnodes.com/about"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Anne-Laure Le Cunff
+                    </a>
+                    .
+                  </p>
+                </div>
+                <div className="p-8 rounded-md shadow bg-purple-50">
+                  <h3 className="text-xl font-medium">
+                    Build a personal knowledge base
+                  </h3>
+                  <p className="pt-1">
+                    Create a knowledge center that you can reference at any
+                    time, all of it interconnected just like in your brain.
+                  </p>
+                </div>
+                <div className="p-8 rounded-md shadow bg-green-50">
+                  <h3 className="text-xl font-medium">
+                    Remember what you read
+                  </h3>
+                  <p className="pt-1">
+                    Take notes while you read, connect ideas with your existing
+                    knowledge, and synthesize everything.
+                  </p>
+                </div>
+                <div className="p-8 rounded-md shadow bg-purple-50">
+                  <h3 className="text-xl font-medium">
+                    Create a daily journal
+                  </h3>
+                  <p className="pt-1">
+                    Record your thoughts and feelings, keep track of your
+                    accomplishments, and reflect on each day.
+                  </p>
+                </div>
+                <div className="p-8 rounded-md shadow bg-green-50">
+                  <h3 className="text-xl font-medium">Manage your projects</h3>
+                  <p className="pt-1">
+                    Create to-do lists, record institutional knowledge, write
+                    marketing copy, and plan for the future.
+                  </p>
+                </div>
+                <div className="p-8 rounded-md shadow bg-purple-50">
+                  <h3 className="text-xl font-medium">Make a help center*</h3>
+                  <p className="pt-1">
+                    Set up a help center for your product or company in minutes.
+                    No coding or design required.
+                  </p>
+                  <p className="pt-1 text-xs text-gray-500">
+                    *Coming soon with Notabase Publish
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
           <div className="container my-8 shadow-md bg-gradient-to-r from-yellow-50 via-green-50 to-blue-50 sm:rounded-md">
             <div className="px-8 py-12 md:space-x-6 lg:py-16 lg:px-16 md:flex md:items-center md:justify-between">
               <div>
-                <h2 className="text-2xl font-medium text-primary-900 lg:text-3xl">
+                <p className="text-2xl font-medium text-primary-900 lg:text-3xl">
                   Think more clearly. Be more productive.
-                </h2>
-                <h2 className="mt-1 text-2xl font-medium text-primary-600 lg:text-3xl">
+                </p>
+                <p className="mt-1 text-2xl font-medium text-primary-600 lg:text-3xl">
                   Start taking better notes today.
-                </h2>
+                </p>
               </div>
               <div className="mt-8 md:flex-shrink-0 md:mt-0">
                 <Link href="/signup">
