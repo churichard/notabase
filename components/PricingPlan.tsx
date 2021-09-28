@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { ReactNode, useMemo } from 'react';
 import Link from 'next/link';
 import classNames from 'classnames';
 import { IconCheck } from '@tabler/icons';
@@ -8,11 +8,12 @@ type Props = {
   plan: Plan;
   bulletPoints: string[];
   showAnnual: boolean;
+  button?: ReactNode;
   className?: string;
 };
 
 const PricingPlan = (props: Props) => {
-  const { plan, showAnnual, bulletPoints, className } = props;
+  const { plan, showAnnual, bulletPoints, button, className } = props;
 
   const pricingPlanClassName = classNames(
     'flex flex-col rounded-lg border overflow-hidden shadow-md',
@@ -59,11 +60,13 @@ const PricingPlan = (props: Props) => {
           ))}
         </ul>
         <div className="mt-6">
-          <Link href="/signup">
-            <a className="block w-full px-4 py-2 text-center btn">
-              Get started for free
-            </a>
-          </Link>
+          {button ?? (
+            <Link href="/signup">
+              <a className="block w-full px-4 py-2 text-center btn">
+                Get started for free
+              </a>
+            </Link>
+          )}
         </div>
       </div>
     </div>

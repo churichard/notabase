@@ -10,6 +10,9 @@ export default function Pricing() {
       </Head>
       <div className="container px-6 pt-12 pb-16">
         <h1 className="text-5xl font-semibold text-center">Pricing</h1>
+        <h2 className="mt-4 text-2xl text-center text-gray-500">
+          Simple & straightforward pricing
+        </h2>
         <PricingPlans />
       </div>
     </LandingLayout>

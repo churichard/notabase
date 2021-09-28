@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { ReactNode, useState } from 'react';
 import {
   MAX_NUM_OF_BASIC_NOTES,
   PlanId,
@@ -9,20 +9,26 @@ import Toggle from './Toggle';
 import PricingFaq from './PricingFaq';
 
 const BASIC_BULLET_POINTS = [
+  'Try it out for free',
   `${MAX_NUM_OF_BASIC_NOTES} notes`,
-  '5 MB image upload',
+  '5 MB image uploads',
   'Community support',
 ];
 
 const PRO_BULLET_POINTS = [
   'Everything in Basic, plus:',
   'Unlimited notes',
-  '20 MB image upload',
+  '20 MB image uploads',
   'Publishing to the web (coming soon)',
   'Community and email support',
 ];
 
-export default function PricingPlans() {
+type Props = {
+  buttons?: (showAnnual: boolean) => ReactNode[];
+};
+
+export default function PricingPlans(props: Props) {
+  const { buttons } = props;
   const [showAnnual, setShowAnnual] = useState(true);
 
   return (
@@ -48,11 +54,13 @@ export default function PricingPlans() {
           plan={PRICING_PLANS[PlanId.Basic]}
           showAnnual={showAnnual}
           bulletPoints={BASIC_BULLET_POINTS}
+          button={buttons?.(showAnnual)[0]}
         />
         <PricingPlan
           plan={PRICING_PLANS[PlanId.Pro]}
           showAnnual={showAnnual}
           bulletPoints={PRO_BULLET_POINTS}
+          button={buttons?.(showAnnual)[1]}
         />
       </div>
       <PricingFaq />
