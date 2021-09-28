@@ -10,7 +10,7 @@ import {
 } from 'constants/pricing';
 import { useAuth } from 'utils/useAuth';
 import { BillingDetails, useStore } from 'lib/store';
-import PricingTable from '../PricingTable';
+import PricingPlans from 'components/PricingPlans';
 
 export default function Billing() {
   const { user } = useAuth();
@@ -18,7 +18,7 @@ export default function Billing() {
   const router = useRouter();
 
   const onSubscribe = useCallback(
-    async (plan: Plan, showMonthly: boolean) => {
+    async (plan: Plan, showAnnual: boolean) => {
       // Create stripe checkout session
       const res = await fetch('/api/create-checkout-session', {
         method: 'POST',
@@ -29,9 +29,9 @@ export default function Billing() {
           userId: user?.id,
           userEmail: user?.email,
           redirectPath: router.asPath,
-          priceId: showMonthly
-            ? plan.prices.monthly.priceId
-            : plan.prices.annual.priceId,
+          priceId: showAnnual
+            ? plan.prices.annual.priceId
+            : plan.prices.monthly.priceId,
         }),
       });
 
@@ -73,7 +73,7 @@ export default function Billing() {
   }, [router, user]);
 
   const pricingButtons = useCallback(
-    (showMonthly: boolean) => {
+    (showAnnual: boolean) => {
       const currentPlanId = billingDetails.planId;
 
       const switchPlanButton = (
@@ -84,7 +84,7 @@ export default function Billing() {
       const subscribeButton = (
         <button
           className="block w-full px-4 py-2 btn"
-          onClick={() => onSubscribe(PRICING_PLANS.pro, showMonthly)}
+          onClick={() => onSubscribe(PRICING_PLANS.pro, showAnnual)}
         >
           Upgrade
         </button>
@@ -113,7 +113,7 @@ export default function Billing() {
         billingDetails={billingDetails}
         onChangePlan={onChangePlan}
       />
-      <PricingTable buttons={pricingButtons} />
+      <PricingPlans buttons={pricingButtons} />
     </div>
   );
 }
