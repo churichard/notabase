@@ -188,14 +188,14 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <div className="pt-8 pb-16 md:pt-16 md:pb-32">
+          <div className="py-8 md:py-16">
             <div className="container px-6">
               <h2 className="text-3xl font-semibold text-center md:text-4xl">
                 What can you do with Notabase?
               </h2>
               <div className="grid gap-6 pt-8 md:grid-cols-3 md:pt-10">
                 <div className="p-8 rounded-md shadow bg-green-50">
-                  <h3 className="text-xl font-medium">
+                  <h3 className="text-xl font-semibold">
                     Create a digital garden
                   </h3>
                   <p className="pt-1">
@@ -222,7 +222,7 @@ export default function Home() {
                   </p>
                 </div>
                 <div className="p-8 rounded-md shadow bg-purple-50">
-                  <h3 className="text-xl font-medium">
+                  <h3 className="text-xl font-semibold">
                     Build a personal knowledge base
                   </h3>
                   <p className="pt-1">
@@ -231,7 +231,7 @@ export default function Home() {
                   </p>
                 </div>
                 <div className="p-8 rounded-md shadow bg-green-50">
-                  <h3 className="text-xl font-medium">
+                  <h3 className="text-xl font-semibold">
                     Remember what you read
                   </h3>
                   <p className="pt-1">
@@ -240,7 +240,7 @@ export default function Home() {
                   </p>
                 </div>
                 <div className="p-8 rounded-md shadow bg-purple-50">
-                  <h3 className="text-xl font-medium">
+                  <h3 className="text-xl font-semibold">
                     Create a daily journal
                   </h3>
                   <p className="pt-1">
@@ -249,14 +249,16 @@ export default function Home() {
                   </p>
                 </div>
                 <div className="p-8 rounded-md shadow bg-green-50">
-                  <h3 className="text-xl font-medium">Manage your projects</h3>
+                  <h3 className="text-xl font-semibold">
+                    Manage your projects
+                  </h3>
                   <p className="pt-1">
                     Create to-do lists, record institutional knowledge, write
                     marketing copy, and plan for the future.
                   </p>
                 </div>
                 <div className="p-8 rounded-md shadow bg-purple-50">
-                  <h3 className="text-xl font-medium">Make a help center*</h3>
+                  <h3 className="text-xl font-semibold">Make a help center*</h3>
                   <p className="pt-1">
                     Set up a help center for your product or company in minutes.
                     No coding or design required.
@@ -265,6 +267,56 @@ export default function Home() {
                     *Coming soon with Notabase Publish
                   </p>
                 </div>
+              </div>
+            </div>
+          </div>
+          <div className="pt-8 pb-16 md:pt-16 md:pb-32">
+            <div className="container px-6">
+              <h2 className="text-3xl font-semibold text-center md:text-4xl">
+                People 💚 Notabase
+              </h2>
+              <div className="pt-10 space-y-12 text-center md:pt-12">
+                <p className="text-2xl italic leading-normal">
+                  &ldquo;This is{' '}
+                  <span className="font-semibold bg-yellow-100">
+                    great for beginners and those who are not so techie
+                  </span>{' '}
+                  because of it&apos;s simple, minimalist and no-frills
+                  design.&rdquo;
+                </p>
+                <p className="text-2xl italic leading-normal">
+                  &ldquo;I can&apos;t believe you single-handedly built this
+                  beautiful app. Great job brother!{' '}
+                  <span className="font-semibold bg-yellow-100">
+                    It&apos;s really snappy!
+                  </span>
+                  &rdquo;
+                </p>
+                <p className="text-2xl italic leading-normal">
+                  &ldquo;Migrant here—have gone through almost all the apps out
+                  there, most recently Roam/Craft/Mem/Obsidian. Strangely, even
+                  just an hour or so in, I&apos;m getting a sense Notabase is
+                  already fulfilling a lot of what I&apos;m looking for : OS
+                  interoperability; Markdown exports; clean UI.{' '}
+                  <span className="font-semibold bg-yellow-100">
+                    All of those other apps have faltered in one way or another.
+                  </span>
+                  &rdquo;
+                </p>
+                <p className="text-2xl italic leading-normal">
+                  &ldquo;Just tested this application today,{' '}
+                  <span className="font-semibold bg-yellow-100">
+                    love how clean it looks!
+                  </span>
+                  &rdquo;
+                </p>
+                <p className="text-2xl italic leading-normal">
+                  &ldquo;Looks{' '}
+                  <span className="font-semibold bg-yellow-100">
+                    neat, fresh, and clean.
+                  </span>{' '}
+                  Love minimalist style.&rdquo;
+                </p>
               </div>
             </div>
           </div>
