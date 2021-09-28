@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@dnd-kit/core": "^4.0.0",
-    "@dnd-kit/sortable": "^5.0.0-next-202181324619",
+    "@dnd-kit/sortable": "^5.0.0",
     "@headlessui/react": "^1.4.1",
     "@popperjs/core": "^2.10.1",
     "@react-spring/web": "^9.2.4",
