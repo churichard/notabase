@@ -10,7 +10,7 @@ export default function About() {
       <Head>
         <title>About | Notabase</title>
       </Head>
-      <div className="container px-6 pt-12 pb-16 prose lg:prose-xl prose-primary">
+      <div className="container px-6 py-16 prose lg:prose-xl prose-primary">
         <h1>About Notabase</h1>
         <div>
           <p>

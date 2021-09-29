@@ -8,7 +8,7 @@ export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <div className="container px-6 py-6">
+    <div className="container px-6 pt-6">
       <div className="flex items-center justify-between space-x-6 text-gray-900">
         <LogoWithText />
         <button

@@ -7,7 +7,7 @@ export default function Privacy() {
       <Head>
         <title>Privacy Policy | Notabase</title>
       </Head>
-      <article className="container px-6 pt-12 pb-16 prose lg:prose-xl prose-primary">
+      <article className="container px-6 py-16 prose lg:prose-xl prose-primary">
         <h1>Privacy Policy</h1>
 
         <p>Last updated: July 19, 2021</p>

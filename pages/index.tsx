@@ -15,7 +15,7 @@ export default function Home() {
         <div className="flex-1">
           <div className="shadow-sm bg-gradient-to-r from-yellow-50 via-green-50 to-blue-50">
             <Navbar />
-            <div className="pt-10 pb-16 md:pb-32 md:pt-24">
+            <div className="py-16 md:py-24">
               <div className="container px-6 text-center">
                 <h1 className="text-4xl font-semibold leading-tight text-gray-900 md:leading-tight md:text-5xl">
                   Think more clearly. Be more productive.

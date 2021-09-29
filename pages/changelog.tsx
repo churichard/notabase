@@ -7,7 +7,7 @@ export default function Changelog() {
       <Head>
         <title>Changelog | Notabase</title>
       </Head>
-      <div className="container px-6 pt-12 pb-16 prose lg:prose-xl prose-primary">
+      <div className="container px-6 py-16 prose lg:prose-xl prose-primary">
         <h1>Changelog</h1>
         <p>
           This page lists when major features and bug fixes are added to
