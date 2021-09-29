@@ -27,6 +27,10 @@ export default function Changelog() {
           .
         </p>
         <ChangelogBlock
+          title="September 29, 2021"
+          bugFixes={['Make Settings & Billing modal mobile responsive']}
+        />
+        <ChangelogBlock
           title="September 26, 2021"
           bugFixes={['Prevent overlapping nodes in graph view']}
         />
