@@ -287,7 +287,7 @@ export default function Home() {
           <div className="py-8 md:py-16">
             <div className="container px-6">
               <h2 className="text-3xl font-semibold text-center md:text-4xl">
-                People ❤️ Notabase
+                People 💚 Notabase
               </h2>
               <div className="max-w-3xl pt-6 mx-auto space-y-10 text-center md:pt-8">
                 <p className="text-xl italic leading-normal">
