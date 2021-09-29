@@ -34,7 +34,7 @@ const PricingPlan = (props: Props) => {
               {plan.name}
             </span>
           </div>
-          <div className="flex items-baseline mt-4 leading-none">
+          <div className="flex flex-wrap items-baseline mt-4 leading-none">
             <span className="text-6xl font-extrabold">
               ${getBillingPeriodPrice}
             </span>

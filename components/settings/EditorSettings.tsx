@@ -6,7 +6,7 @@ export default function EditorSettings() {
   const setIsPageStackingOn = useStore((state) => state.setIsPageStackingOn);
 
   return (
-    <div className="flex-1 p-6 overflow-y-auto dark:bg-gray-800 dark:text-gray-100">
+    <div className="flex-1 w-full h-full p-6 overflow-y-auto dark:bg-gray-800 dark:text-gray-100">
       <div className="mb-4">
         <h1 className="text-lg font-medium">Page Stacking</h1>
         <p className="mt-2 text-sm text-gray-700">

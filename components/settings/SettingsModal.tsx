@@ -40,7 +40,7 @@ export default function SettingsModal(props: Props) {
         onClick={() => setIsOpen(false)}
       />
       <div className="flex items-center justify-center h-screen p-6">
-        <div className="z-30 flex w-full h-full max-w-full overflow-hidden bg-white rounded max-h-128 sm:w-192 xl:w-240 xl:max-h-176 shadow-popover">
+        <div className="z-30 flex flex-col w-full h-full max-w-full overflow-hidden bg-white rounded sm:flex-row sm:max-h-176 sm:w-240 shadow-popover">
           <SettingsModalSidebar
             currentTab={currentTab}
             setCurrentTab={setCurrentTab}
@@ -62,8 +62,8 @@ type SettingsModalSidebarProps = {
 const SettingsModalSidebar = (props: SettingsModalSidebarProps) => {
   const { currentTab, setCurrentTab } = props;
   return (
-    <div className="flex flex-col flex-none w-48 h-full border-r bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
-      <div className="px-4 pt-4 pb-2 text-sm text-gray-600 dark:text-gray-400">
+    <div className="flex flex-col flex-none w-full py-4 border-b sm:border-b-0 sm:border-r sm:w-48 sm:h-full bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
+      <div className="px-4 pb-2 text-sm text-gray-600 dark:text-gray-400">
         Settings & Billing
       </div>
       <SidebarItem
