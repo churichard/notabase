@@ -193,7 +193,7 @@ export default function Home() {
               <h2 className="text-3xl font-semibold text-center md:text-4xl">
                 What can you do with Notabase?
               </h2>
-              <div className="grid gap-6 pt-8 md:grid-cols-3 md:pt-10">
+              <div className="grid gap-6 pt-6 md:pt-8 md:grid-cols-3">
                 <div className="p-8 rounded-md shadow bg-green-50">
                   <h3 className="text-xl font-semibold">
                     Create a digital garden
@@ -275,8 +275,8 @@ export default function Home() {
               <h2 className="text-3xl font-semibold text-center md:text-4xl">
                 People ❤️ Notabase
               </h2>
-              <div className="pt-10 space-y-12 text-center md:pt-12">
-                <p className="text-2xl italic leading-normal">
+              <div className="max-w-3xl pt-6 mx-auto space-y-10 text-center md:pt-8">
+                <p className="text-xl italic leading-normal">
                   &ldquo;This is{' '}
                   <span className="font-semibold bg-yellow-100">
                     great for beginners and those who are not so techie
@@ -284,7 +284,7 @@ export default function Home() {
                   because of it&apos;s simple, minimalist and no-frills
                   design.&rdquo;
                 </p>
-                <p className="text-2xl italic leading-normal">
+                <p className="text-xl italic leading-normal">
                   &ldquo;I can&apos;t believe you single-handedly built this
                   beautiful app. Great job brother!{' '}
                   <span className="font-semibold bg-yellow-100">
@@ -292,7 +292,7 @@ export default function Home() {
                   </span>
                   &rdquo;
                 </p>
-                <p className="text-2xl italic leading-normal">
+                <p className="text-xl italic leading-normal">
                   &ldquo;Migrant here—have gone through almost all the apps out
                   there, most recently Roam / Craft / Mem / Obsidian. Strangely,
                   even just an hour or so in, I&apos;m getting a sense Notabase
@@ -303,14 +303,14 @@ export default function Home() {
                   </span>
                   &rdquo;
                 </p>
-                <p className="text-2xl italic leading-normal">
+                <p className="text-xl italic leading-normal">
                   &ldquo;Just tested this application today,{' '}
                   <span className="font-semibold bg-yellow-100">
                     love how clean it looks!
                   </span>
                   &rdquo;
                 </p>
-                <p className="text-2xl italic leading-normal">
+                <p className="text-xl italic leading-normal">
                   &ldquo;Looks{' '}
                   <span className="font-semibold bg-yellow-100">
                     neat, fresh, and clean.
