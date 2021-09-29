@@ -6,7 +6,6 @@ import {
 } from 'constants/pricing';
 import PricingPlan from './PricingPlan';
 import Toggle from './Toggle';
-import PricingFaq from './PricingFaq';
 
 const BASIC_BULLET_POINTS = [
   'Try it out for free',
@@ -32,7 +31,7 @@ export default function PricingPlans(props: Props) {
   const [showAnnual, setShowAnnual] = useState(true);
 
   return (
-    <div>
+    <>
       <div className="flex items-center justify-center py-8 md:py-10">
         <span className="text-sm text-gray-600 dark:text-gray-300">
           Monthly
@@ -63,7 +62,6 @@ export default function PricingPlans(props: Props) {
           button={buttons?.(showAnnual)[1]}
         />
       </div>
-      <PricingFaq />
-    </div>
+    </>
   );
 }

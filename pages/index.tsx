@@ -7,6 +7,8 @@ import LandingLayout from 'components/landing/LandingLayout';
 import GraphViewImage from 'public/graph-view.png';
 import SidebarImage from 'public/sidebar.png';
 import PageStackingImage from 'public/page-stacking.png';
+import PricingPlans from 'components/PricingPlans';
+import PricingFaq from 'components/PricingFaq';
 
 export default function Home() {
   return (
@@ -268,6 +270,18 @@ export default function Home() {
                   </p>
                 </div>
               </div>
+            </div>
+          </div>
+          <div className="py-8 md:py-16">
+            <div className="container px-6">
+              <h2 className="text-3xl font-semibold text-center md:text-4xl">
+                Pricing
+              </h2>
+              <p className="mt-4 text-2xl text-center text-gray-500">
+                Simple & straightforward pricing
+              </p>
+              <PricingPlans />
+              <PricingFaq className="pt-12 sm:pt-16 lg:pt-24" />
             </div>
           </div>
           <div className="py-8 md:py-16">

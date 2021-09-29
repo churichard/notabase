@@ -1,6 +1,7 @@
 import Head from 'next/head';
 import LandingLayout from 'components/landing/LandingLayout';
 import PricingPlans from 'components/PricingPlans';
+import PricingFaq from 'components/PricingFaq';
 
 export default function Pricing() {
   return (
@@ -14,6 +15,7 @@ export default function Pricing() {
           Simple & straightforward pricing
         </h2>
         <PricingPlans />
+        <PricingFaq className="pt-12 sm:pt-16 lg:pt-24" />
       </div>
     </LandingLayout>
   );

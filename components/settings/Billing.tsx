@@ -11,6 +11,7 @@ import {
 import { useAuth } from 'utils/useAuth';
 import { BillingDetails, useStore } from 'lib/store';
 import PricingPlans from 'components/PricingPlans';
+import PricingFaq from 'components/PricingFaq';
 
 export default function Billing() {
   const { user } = useAuth();
@@ -114,6 +115,7 @@ export default function Billing() {
         onChangePlan={onChangePlan}
       />
       <PricingPlans buttons={pricingButtons} />
+      <PricingFaq className="py-12 sm:py-16" />
     </div>
   );
 }

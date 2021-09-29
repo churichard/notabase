@@ -1,6 +1,11 @@
-export default function PricingFaq() {
+type Props = {
+  className?: string;
+};
+
+export default function PricingFaq(props: Props) {
+  const { className } = props;
   return (
-    <div className="py-12 sm:py-16 lg:py-24">
+    <div className={className}>
       <h2 className="text-3xl font-semibold text-gray-900 dark:text-gray-100">
         FAQ
       </h2>
