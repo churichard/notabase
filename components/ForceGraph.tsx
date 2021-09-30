@@ -5,23 +5,37 @@ import {
   useMemo,
   useRef,
 } from 'react';
-import * as d3 from 'd3';
 import defaultTheme from 'tailwindcss/defaultTheme';
 import colors from 'tailwindcss/colors';
 import { useRouter } from 'next/router';
+import {
+  forceCenter,
+  forceCollide,
+  forceLink,
+  forceManyBody,
+  forceSimulation,
+  forceX,
+  forceY,
+  Simulation,
+  SimulationLinkDatum,
+  SimulationNodeDatum,
+} from 'd3-force';
+import { D3DragEvent, drag } from 'd3-drag';
+import { zoom, zoomIdentity, zoomTransform, ZoomTransform } from 'd3-zoom';
+import { select } from 'd3-selection';
 import { useStore } from 'lib/store';
 
 export type NodeDatum = {
   id: string;
   name: string;
   radius: number;
-} & d3.SimulationNodeDatum;
+} & SimulationNodeDatum;
 
-export type LinkDatum = d3.SimulationLinkDatum<NodeDatum>;
+export type LinkDatum = SimulationLinkDatum<NodeDatum>;
 
 export type GraphData = { nodes: NodeDatum[]; links: LinkDatum[] };
 
-type DragEvent = d3.D3DragEvent<HTMLCanvasElement, NodeDatum, NodeDatum>;
+type DragEvent = D3DragEvent<HTMLCanvasElement, NodeDatum, NodeDatum>;
 
 type Props = {
   data: GraphData;
@@ -32,7 +46,7 @@ export default function ForceGraph(props: Props) {
   const { data, className } = props;
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const transform = useRef(d3.zoomIdentity);
+  const transform = useRef(zoomIdentity);
   const hoveredNode = useRef<NodeDatum | null>(null);
 
   const darkMode = useStore((state) => state.darkMode);
@@ -207,34 +221,33 @@ export default function ForceGraph(props: Props) {
     const width = canvasRef.current.width / pixelRatio;
     const height = canvasRef.current.height / pixelRatio;
 
-    const simulation: d3.Simulation<NodeDatum, LinkDatum> = d3
-      .forceSimulation<NodeDatum>(data.nodes)
-      .force(
-        'link',
-        d3.forceLink<NodeDatum, LinkDatum>(data.links).id((d) => d.id)
-      )
-      .force(
-        'collide',
-        d3.forceCollide<NodeDatum>().radius((node) => node.radius)
-      )
-      .force('charge', d3.forceManyBody().strength(-80))
-      .force('center', d3.forceCenter(width / 2, height / 2))
-      .force('x', d3.forceX(width / 2))
-      .force('y', d3.forceY(height / 2));
+    const simulation: Simulation<NodeDatum, LinkDatum> =
+      forceSimulation<NodeDatum>(data.nodes)
+        .force(
+          'link',
+          forceLink<NodeDatum, LinkDatum>(data.links).id((d) => d.id)
+        )
+        .force(
+          'collide',
+          forceCollide<NodeDatum>().radius((node) => node.radius)
+        )
+        .force('charge', forceManyBody().strength(-80))
+        .force('center', forceCenter(width / 2, height / 2))
+        .force('x', forceX(width / 2))
+        .force('y', forceY(height / 2));
 
     simulation.on('tick', () => renderCanvas());
 
-    d3.select<HTMLCanvasElement, NodeDatum>(context.canvas)
-      .call(drag(simulation, context.canvas, hoveredNode))
+    select<HTMLCanvasElement, NodeDatum>(context.canvas)
+      .call(getDrag(simulation, context.canvas, hoveredNode))
       .call(
-        d3
-          .zoom<HTMLCanvasElement, NodeDatum>()
+        zoom<HTMLCanvasElement, NodeDatum>()
           .scaleExtent([0.1, 10])
           .extent([
             [0, 0],
             [width, height],
           ])
-          .on('zoom', ({ transform: t }: { transform: d3.ZoomTransform }) => {
+          .on('zoom', ({ transform: t }: { transform: ZoomTransform }) => {
             transform.current = t;
             renderCanvas();
           })
@@ -344,12 +357,12 @@ const getMousePos = (canvas: HTMLCanvasElement, event: MouseEvent) => {
 };
 
 const getNode = (
-  simulation: d3.Simulation<NodeDatum, LinkDatum>,
+  simulation: Simulation<NodeDatum, LinkDatum>,
   canvas: HTMLCanvasElement,
   canvasX: number,
   canvasY: number
 ) => {
-  const transform = d3.zoomTransform(canvas);
+  const transform = zoomTransform(canvas);
   const x = transform.invertX(canvasX);
   const y = transform.invertY(canvasY);
   const subject = simulation.find(x, y);
@@ -365,8 +378,8 @@ const getNode = (
   }
 };
 
-const drag = (
-  simulation: d3.Simulation<NodeDatum, LinkDatum>,
+const getDrag = (
+  simulation: Simulation<NodeDatum, LinkDatum>,
   canvas: HTMLCanvasElement,
   hoveredNode: MutableRefObject<NodeDatum | null>
 ) => {
@@ -390,7 +403,7 @@ const drag = (
   }
 
   function dragged(event: DragEvent) {
-    const transform = d3.zoomTransform(canvas);
+    const transform = zoomTransform(canvas);
     event.subject.fx =
       initialDragPos.x + (event.x - initialDragPos.x) / transform.k;
     event.subject.fy =
@@ -405,8 +418,7 @@ const drag = (
     hoveredNode.current = null; // Show hover state
   }
 
-  return d3
-    .drag<HTMLCanvasElement, NodeDatum, NodeDatum | undefined>()
+  return drag<HTMLCanvasElement, NodeDatum, NodeDatum | undefined>()
     .subject(dragsubject)
     .on('start', dragstarted)
     .on('drag', dragged)
