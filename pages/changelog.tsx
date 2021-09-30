@@ -27,6 +27,10 @@ export default function Changelog() {
           .
         </p>
         <ChangelogBlock
+          title="September 30, 2021"
+          bugFixes={['Fix sidebar search results overlapping each other']}
+        />
+        <ChangelogBlock
           title="September 29, 2021"
           bugFixes={['Make Settings & Billing modal mobile responsive']}
         />

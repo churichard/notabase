@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, memo } from 'react';
+import { useState, useMemo, useCallback, memo, useRef } from 'react';
 import List, { ListRowProps } from 'react-virtualized/dist/commonjs/List';
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
 import CellMeasurer, {
@@ -6,11 +6,6 @@ import CellMeasurer, {
 } from 'react-virtualized/dist/commonjs/CellMeasurer';
 import { FlattenedTreeNode, TreeNode as TreeNodeType } from './Tree';
 import TreeNode from './TreeNode';
-
-const cellMeasurerCache = new CellMeasurerCache({
-  defaultHeight: 32,
-  fixedWidth: true,
-});
 
 type Props = {
   data: TreeNodeType[];
@@ -20,6 +15,14 @@ type Props = {
 
 function VirtualTree(props: Props) {
   const { data, className, collapseAll = false } = props;
+
+  const cellMeasurerCache = useRef(
+    new CellMeasurerCache({
+      defaultHeight: 32,
+      fixedWidth: true,
+    })
+  );
+
   const [closedNodeIds, setClosedNodeIds] = useState<string[]>(
     collapseAll ? data.map((node) => node.id) : []
   );
@@ -65,17 +68,17 @@ function VirtualTree(props: Props) {
   }, [data, flattenNode]);
 
   const Row = useCallback(
-    ({ index, style, parent }: ListRowProps) => {
+    ({ index, style, parent, key }: ListRowProps) => {
       const node = flattenedData[index];
       return (
         <CellMeasurer
-          key={node.id}
-          cache={cellMeasurerCache}
+          key={key}
+          cache={cellMeasurerCache.current}
           columnIndex={0}
           parent={parent}
           rowIndex={index}
         >
-          {({ registerChild }) => (
+          {({ registerChild, measure }) => (
             <TreeNode
               ref={
                 registerChild as (element: HTMLDivElement) => void | undefined
@@ -83,6 +86,7 @@ function VirtualTree(props: Props) {
               node={node}
               onClick={onNodeClick}
               style={style}
+              onResize={measure}
             />
           )}
         </CellMeasurer>
@@ -99,8 +103,8 @@ function VirtualTree(props: Props) {
             width={width}
             height={height}
             rowCount={flattenedData.length}
-            deferredMeasurementCache={cellMeasurerCache}
-            rowHeight={cellMeasurerCache.rowHeight}
+            deferredMeasurementCache={cellMeasurerCache.current}
+            rowHeight={cellMeasurerCache.current.rowHeight}
             rowRenderer={Row}
           />
         )}
