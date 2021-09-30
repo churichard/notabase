@@ -4,6 +4,7 @@ import { createEditor, Descendant, Editor, Element, Node, Path } from 'slate';
 import { Notes, store } from 'lib/store';
 import withLinks from 'editor/plugins/withLinks';
 import withVoidElements from 'editor/plugins/withVoidElements';
+import withTags from 'editor/plugins/withTags';
 
 export type NoteBlock = {
   id?: string;
@@ -60,7 +61,7 @@ const flattenContent = (
   noteId: string,
   noteTitle: string
 ): NoteBlock[] => {
-  const editor = withVoidElements(withLinks(createEditor()));
+  const editor = withVoidElements(withTags(withLinks(createEditor())));
   editor.children = content;
 
   const blocks = Editor.nodes<Element>(editor, {
