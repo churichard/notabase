@@ -16,27 +16,38 @@ type FuseDatum = {
 type NoteSearchOptions = {
   numOfResults?: number;
   searchContent?: boolean;
+  extendedSearch?: boolean;
 };
 
 export default function useNoteSearch({
   numOfResults = -1,
   searchContent = false,
+  extendedSearch = false,
 }: NoteSearchOptions = {}) {
   const search = useCallback(
     (searchText: string) => {
-      const fuse = initFuse(store.getState().notes, searchContent);
+      const fuse = initFuse(
+        store.getState().notes,
+        searchContent,
+        extendedSearch
+      );
       return fuse.search(searchText, { limit: numOfResults });
     },
-    [numOfResults, searchContent]
+    [numOfResults, searchContent, extendedSearch]
   );
   return search;
 }
 
 // Initializes Fuse
-const initFuse = (notes: Notes, searchContent: boolean) => {
+const initFuse = (
+  notes: Notes,
+  searchContent: boolean,
+  extendedSearch: boolean
+) => {
   const fuseData = getFuseData(notes, searchContent);
   const keys = searchContent ? ['blocks.text'] : ['title'];
   return new Fuse<FuseDatum>(fuseData, {
+    useExtendedSearch: extendedSearch,
     keys,
     ignoreLocation: true,
     ...(searchContent

@@ -1,9 +1,10 @@
-import { memo, useMemo, useState } from 'react';
+import { memo, useMemo } from 'react';
 import { useRouter } from 'next/router';
 import Highlighter from 'react-highlight-words';
 import Fuse from 'fuse.js';
 import useNoteSearch, { NoteBlock } from 'utils/useNoteSearch';
 import useDebounce from 'utils/useDebounce';
+import { useStore } from 'lib/store';
 import ErrorBoundary from '../ErrorBoundary';
 import VirtualTree from '../VirtualTree';
 
@@ -15,10 +16,11 @@ type Props = {
 
 export default function SidebarSearch(props: Props) {
   const { className } = props;
-  const [inputText, setInputText] = useState('');
+  const inputText = useStore((state) => state.sidebarSearchQuery);
+  const setInputText = useStore((state) => state.setSidebarSearchQuery);
 
   const [searchQuery, setSearchQuery] = useDebounce(inputText, DEBOUNCE_MS);
-  const search = useNoteSearch({ searchContent: true });
+  const search = useNoteSearch({ searchContent: true, extendedSearch: true });
 
   const searchResultsData = useMemo(() => {
     const searchResults = search(searchQuery);

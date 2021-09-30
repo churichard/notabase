@@ -1,7 +1,8 @@
-import { ReactNode } from 'react';
+import { MouseEvent, ReactNode, useCallback } from 'react';
 import { RenderElementProps, useFocused, useSelected } from 'slate-react';
 import classNames from 'classnames';
 import { Tag } from 'types/slate';
+import { SidebarTab, useStore } from 'lib/store';
 
 type Props = {
   element: Tag;
@@ -13,6 +14,11 @@ type Props = {
 export default function TagElement(props: Props) {
   const { className, element, children, attributes } = props;
 
+  const setSidebarTab = useStore((state) => state.setSidebarTab);
+  const setSidebarSearchQuery = useStore(
+    (state) => state.setSidebarSearchQuery
+  );
+
   const selected = useSelected();
   const focused = useFocused();
   const tagClassName = classNames(
@@ -21,14 +27,20 @@ export default function TagElement(props: Props) {
     className
   );
 
+  const onClick = useCallback(
+    (e: MouseEvent) => {
+      e.stopPropagation();
+      setSidebarTab(SidebarTab.Search);
+      setSidebarSearchQuery(`=#${element.name}`);
+    },
+    [setSidebarTab, setSidebarSearchQuery, element.name]
+  );
+
   return (
     <span
       role="button"
       className={tagClassName}
-      onClick={(e) => {
-        e.stopPropagation();
-        // TODO: handle click
-      }}
+      onClick={onClick}
       contentEditable={false}
       {...attributes}
     >

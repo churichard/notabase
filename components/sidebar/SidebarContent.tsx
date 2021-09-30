@@ -1,14 +1,10 @@
-import { Dispatch, SetStateAction, useState } from 'react';
+import { Dispatch, SetStateAction } from 'react';
 import { IconFile, IconSearch } from '@tabler/icons';
 import Tooltip from 'components/Tooltip';
+import { SidebarTab as SidebarTabType, useStore } from 'lib/store';
 import SidebarNotes from './SidebarNotes';
 import SidebarSearch from './SidebarSearch';
 import SidebarTab from './SidebarTab';
-
-enum SidebarTabType {
-  Notes,
-  Search,
-}
 
 type Props = {
   className?: string;
@@ -17,9 +13,8 @@ type Props = {
 
 export default function SidebarContent(props: Props) {
   const { className, setIsFindOrCreateModalOpen } = props;
-  const [activeTab, setActiveTab] = useState<SidebarTabType>(
-    SidebarTabType.Notes
-  );
+  const activeTab = useStore((state) => state.sidebarTab);
+  const setActiveTab = useStore((state) => state.setSidebarTab);
 
   return (
     <div className={`flex flex-col ${className}`}>
