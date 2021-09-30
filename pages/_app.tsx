@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import Head from 'next/head';
 import Router from 'next/router';
 import { ToastContainer } from 'react-toastify';
@@ -16,6 +17,15 @@ Router.events.on('routeChangeComplete', () => NProgress.done());
 Router.events.on('routeChangeError', () => NProgress.done());
 
 export default function MyApp({ Component, pageProps, router }: AppProps) {
+  useEffect(() => {
+    window.plausible =
+      window.plausible ||
+      function () {
+        // eslint-disable-next-line prefer-rest-params
+        (window.plausible.q = window.plausible.q || []).push(arguments);
+      };
+  }, []);
+
   return (
     <>
       <Head>

@@ -42,6 +42,7 @@ export default function AuthForm(props: Props) {
           },
           body: JSON.stringify({ email }),
         });
+        window.plausible('Signup');
         setShowEmailConfirmationMessage(true);
       }
 
