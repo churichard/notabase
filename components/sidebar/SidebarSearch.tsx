@@ -116,7 +116,7 @@ const SidebarSearchLeaf = memo(function SidebarSearchLeaf(
       <Highlighter
         className="block px-1 py-2 text-xs text-gray-600 break-words dark:text-gray-300"
         highlightClassName="bg-yellow-200 text-gray-600 dark:bg-yellow-800 dark:text-gray-300"
-        searchWords={[searchQuery]}
+        searchWords={searchQuery.split(' ')}
         autoEscape={true}
         textToHighlight={text}
       />

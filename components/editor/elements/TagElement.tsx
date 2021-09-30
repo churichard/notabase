@@ -31,7 +31,7 @@ export default function TagElement(props: Props) {
     (e: MouseEvent) => {
       e.stopPropagation();
       setSidebarTab(SidebarTab.Search);
-      setSidebarSearchQuery(`=#${element.name}`);
+      setSidebarSearchQuery(`#${element.name}`);
     },
     [setSidebarTab, setSidebarSearchQuery, element.name]
   );
