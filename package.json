@@ -57,6 +57,7 @@
     "stripe": "^8.178.0",
     "tailwindcss": "^2.2.16",
     "unified": "^10.1.0",
+    "use-resize-observer": "^8.0.0",
     "uuid": "^8.3.2",
     "zustand": "^3.5.11"
   },

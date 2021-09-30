@@ -24,11 +24,6 @@ function VirtualTree(props: Props) {
     })
   );
 
-  useEffect(() => {
-    cellMeasurerCache.current.clearAll();
-    listRef.current?.recomputeRowHeights();
-  }, [data]);
-
   const [closedNodeIds, setClosedNodeIds] = useState<string[]>(
     collapseAll ? data.map((node) => node.id) : []
   );
@@ -73,6 +68,12 @@ function VirtualTree(props: Props) {
     return result;
   }, [data, flattenNode]);
 
+  useEffect(() => {
+    // Clear cell cache and recompute row heights when flattened data changes
+    cellMeasurerCache.current.clearAll();
+    listRef.current?.recomputeRowHeights();
+  }, [flattenedData]);
+
   const Row = useCallback(
     ({ index, style, parent, key }: ListRowProps) => {
       const node = flattenedData[index];
@@ -84,7 +85,7 @@ function VirtualTree(props: Props) {
           parent={parent}
           rowIndex={index}
         >
-          {({ registerChild }) => (
+          {({ registerChild, measure }) => (
             <TreeNode
               ref={
                 registerChild as (element: HTMLDivElement) => void | undefined
@@ -92,6 +93,7 @@ function VirtualTree(props: Props) {
               node={node}
               onClick={onNodeClick}
               style={style}
+              onResize={measure}
             />
           )}
         </CellMeasurer>
