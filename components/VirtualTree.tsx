@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, memo, useRef } from 'react';
+import { useState, useMemo, useCallback, memo, useRef, useEffect } from 'react';
 import List, { ListRowProps } from 'react-virtualized/dist/commonjs/List';
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
 import CellMeasurer, {
@@ -16,12 +16,18 @@ type Props = {
 function VirtualTree(props: Props) {
   const { data, className, collapseAll = false } = props;
 
+  const listRef = useRef<List | null>(null);
   const cellMeasurerCache = useRef(
     new CellMeasurerCache({
       defaultHeight: 32,
       fixedWidth: true,
     })
   );
+
+  useEffect(() => {
+    cellMeasurerCache.current.clearAll();
+    listRef.current?.recomputeRowHeights();
+  }, [data]);
 
   const [closedNodeIds, setClosedNodeIds] = useState<string[]>(
     collapseAll ? data.map((node) => node.id) : []
@@ -78,7 +84,7 @@ function VirtualTree(props: Props) {
           parent={parent}
           rowIndex={index}
         >
-          {({ registerChild, measure }) => (
+          {({ registerChild }) => (
             <TreeNode
               ref={
                 registerChild as (element: HTMLDivElement) => void | undefined
@@ -86,7 +92,6 @@ function VirtualTree(props: Props) {
               node={node}
               onClick={onNodeClick}
               style={style}
-              onResize={measure}
             />
           )}
         </CellMeasurer>
@@ -100,6 +105,7 @@ function VirtualTree(props: Props) {
       <AutoSizer>
         {({ width, height }) => (
           <List
+            ref={listRef}
             width={width}
             height={height}
             rowCount={flattenedData.length}

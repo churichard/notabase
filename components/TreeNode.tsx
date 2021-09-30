@@ -1,27 +1,15 @@
-import {
-  memo,
-  useMemo,
-  CSSProperties,
-  forwardRef,
-  ForwardedRef,
-  useCallback,
-} from 'react';
+import { memo, useMemo, CSSProperties, forwardRef, ForwardedRef } from 'react';
 import { IconCaretRight } from '@tabler/icons';
-import useResizeObserver from 'use-resize-observer';
 import { FlattenedTreeNode } from './Tree';
 
 type Props = {
   node: FlattenedTreeNode;
   onClick: (node: FlattenedTreeNode) => void;
   style?: CSSProperties;
-  onResize?: () => void;
 };
 
-const TreeNode = (props: Props, forwardedRef: ForwardedRef<HTMLDivElement>) => {
-  const { node, onClick, style, onResize } = props;
-  const { ref: resizeObserverRef } = useResizeObserver<HTMLDivElement>({
-    onResize,
-  });
+const TreeNode = (props: Props, ref: ForwardedRef<HTMLDivElement>) => {
+  const { node, onClick, style } = props;
 
   const leftPadding = useMemo(() => {
     let padding = node.depth * 16;
@@ -30,18 +18,6 @@ const TreeNode = (props: Props, forwardedRef: ForwardedRef<HTMLDivElement>) => {
     }
     return padding;
   }, [node.depth, node.showArrow]);
-
-  const ref = useCallback(
-    (node) => {
-      if (typeof forwardedRef === 'function') {
-        forwardedRef(node);
-      } else if (forwardedRef) {
-        forwardedRef.current = node;
-      }
-      resizeObserverRef(node);
-    },
-    [forwardedRef, resizeObserverRef]
-  );
 
   return (
     <div
