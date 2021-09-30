@@ -9,7 +9,6 @@ import useDebounce from 'utils/useDebounce';
 import EditorPopover from './EditorPopover';
 
 const NOTE_LINK_REGEX = /(?:^|\s)(\[\[)(.+)/;
-const TAG_REGEX = /(?:^|\s)(#[^\s]+)/;
 const DEBOUNCE_MS = 100;
 
 enum OptionType {
@@ -29,18 +28,13 @@ export default function LinkAutocompletePopover() {
   const [isVisible, setIsVisible] = useState(false);
   const [selectedOptionIndex, setSelectedOptionIndex] = useState<number>(0);
 
-  const [regexResult, setRegexResult] = useState<{
-    matchArray: RegExpMatchArray;
-    isTag: boolean;
-  } | null>(null);
+  const [regexResult, setRegexResult] = useState<RegExpMatchArray | null>(null);
 
   const inputText = useMemo(() => {
     if (!regexResult) {
       return '';
-    } else if (regexResult.isTag) {
-      return regexResult.matchArray[1];
     } else {
-      return regexResult.matchArray[2];
+      return regexResult[2];
     }
   }, [regexResult]);
   const [linkText] = useDebounce(inputText, DEBOUNCE_MS);
@@ -78,17 +72,7 @@ export default function LinkAutocompletePopover() {
       const elementRange = { anchor, focus: elementStart };
       const elementText = Editor.string(editor, elementRange);
 
-      const noteLinkResult = elementText.match(NOTE_LINK_REGEX);
-      if (noteLinkResult) {
-        return { matchArray: noteLinkResult, isTag: false };
-      }
-
-      const tagResult = elementText.match(TAG_REGEX);
-      if (tagResult) {
-        return { matchArray: tagResult, isTag: true };
-      }
-
-      return null;
+      return elementText.match(NOTE_LINK_REGEX);
     } catch (e) {
       return null;
     }
@@ -116,21 +100,15 @@ export default function LinkAutocompletePopover() {
       const { path: selectionPath, offset: endOfSelection } =
         editor.selection.anchor;
 
-      let lengthToDelete;
-      if (regexResult.isTag) {
-        const [, tagName] = regexResult.matchArray;
-        lengthToDelete = tagName.length;
-      } else {
-        const [, startMark, noteTitle] = regexResult.matchArray;
-        lengthToDelete = startMark.length + noteTitle.length;
-      }
+      const [, startMark, noteTitle] = regexResult;
+      const lengthToDelete = startMark.length + noteTitle.length;
 
       deleteText(editor, selectionPath, endOfSelection, lengthToDelete);
 
       // Handle inserting note link
       if (option.type === OptionType.NOTE) {
         // Insert a link to an existing note with the note title as the link text
-        insertNoteLink(editor, option.id, option.text, regexResult.isTag);
+        insertNoteLink(editor, option.id, option.text);
         Transforms.move(editor, { distance: 1, unit: 'offset' }); // Focus after the note link
       } else {
         throw new Error(`Option type ${option.type} is not supported`);

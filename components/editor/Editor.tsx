@@ -36,6 +36,7 @@ import withImages from 'editor/plugins/withImages';
 import withVoidElements from 'editor/plugins/withVoidElements';
 import withNodeId from 'editor/plugins/withNodeId';
 import withBlockReferences from 'editor/plugins/withBlockReferences';
+import withTags from 'editor/plugins/withTags';
 import { store, useStore } from 'lib/store';
 import { ElementType, Mark } from 'types/slate';
 import { DEFAULT_EDITOR_VALUE } from 'editor/constants';
@@ -79,7 +80,11 @@ function Editor(props: Props) {
             withVoidElements(
               withBlockReferences(
                 withImages(
-                  withLinks(withNodeId(withHistory(withReact(createEditor()))))
+                  withTags(
+                    withLinks(
+                      withNodeId(withHistory(withReact(createEditor())))
+                    )
+                  )
                 )
               )
             )
