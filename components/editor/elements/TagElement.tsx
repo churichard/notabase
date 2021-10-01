@@ -3,6 +3,7 @@ import { RenderElementProps, useFocused, useSelected } from 'slate-react';
 import classNames from 'classnames';
 import { Tag } from 'types/slate';
 import { SidebarTab, useStore } from 'lib/store';
+import { isMobile } from 'utils/device';
 
 type Props = {
   element: Tag;
@@ -14,6 +15,7 @@ type Props = {
 export default function TagElement(props: Props) {
   const { className, element, children, attributes } = props;
 
+  const setIsSidebarOpen = useStore((state) => state.setIsSidebarOpen);
   const setSidebarTab = useStore((state) => state.setSidebarTab);
   const setSidebarSearchQuery = useStore(
     (state) => state.setSidebarSearchQuery
@@ -32,8 +34,11 @@ export default function TagElement(props: Props) {
       e.stopPropagation();
       setSidebarTab(SidebarTab.Search);
       setSidebarSearchQuery(`#${element.name}`);
+      if (isMobile()) {
+        setIsSidebarOpen(true);
+      }
     },
-    [setSidebarTab, setSidebarSearchQuery, element.name]
+    [setSidebarTab, setSidebarSearchQuery, setIsSidebarOpen, element.name]
   );
 
   return (
