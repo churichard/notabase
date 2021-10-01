@@ -12,6 +12,7 @@ import {
   NoteTreeItem,
   getNoteTreeItem,
   Notes,
+  SidebarTab,
 } from 'lib/store';
 import supabase from 'lib/supabase';
 import {
@@ -163,6 +164,7 @@ export default function AppLayout(props: Props) {
   const darkMode = useStore((state) => state.darkMode);
   const setIsSidebarOpen = useStore((state) => state.setIsSidebarOpen);
   const setIsPageStackingOn = useStore((state) => state.setIsPageStackingOn);
+  const setSidebarTab = useStore((state) => state.setSidebarTab);
 
   const isUpgradeModalOpen = useStore((state) => state.isUpgradeModalOpen);
 
@@ -220,8 +222,12 @@ export default function AppLayout(props: Props) {
         hotkey: 'mod+p',
         callback: () => setIsFindOrCreateModalOpen((isOpen) => !isOpen),
       },
+      {
+        hotkey: 'mod+shift+f',
+        callback: () => setSidebarTab(SidebarTab.Search),
+      },
     ],
-    [setIsFindOrCreateModalOpen]
+    [setIsFindOrCreateModalOpen, setSidebarTab]
   );
   useHotkeys(hotkeys);
 

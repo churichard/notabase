@@ -30,6 +30,7 @@ export default function Changelog() {
           title="October 1, 2021"
           features={[
             'Tags now start a search when clicked, showing you all the blocks with that tag. They no longer create notes when created.',
+            'Add keyboard shortcut for search (ctrl+shift+f or cmd+shift+f)',
           ]}
         />
         <ChangelogBlock
