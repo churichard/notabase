@@ -203,14 +203,14 @@ export default function BlockAutocompletePopover() {
   );
 
   useEffect(() => {
-    if (isVisible) {
+    if (isVisible && options.length > 0) {
       document.addEventListener('keydown', onKeyDown, true);
 
       return () => {
         document.removeEventListener('keydown', onKeyDown, true);
       };
     }
-  }, [isVisible, onKeyDown]);
+  }, [isVisible, onKeyDown, options.length]);
 
   return isVisible && options.length > 0 ? (
     <EditorPopover
