@@ -14,28 +14,23 @@ import handleExternalLink from './handleExternalLink';
 import handleNoteLink from './handleNoteLink';
 import handleCustomNoteLink from './handleCustomNoteLink';
 import handleBlockReference from './handleBlockReference';
+import handleTag from './handleTag';
 
 enum CustomInlineShortcuts {
   CustomNoteLink = 'custom-note-link',
 }
 
-export enum LinkType {
-  Note = 'note',
-  Tag = 'tag',
-}
-
 export const BLOCK_REFERENCE_REGEX = /(?:^|\s)(\(\()(.+)(\)\))/;
-const INLINE_SHORTCUTS: Array<
-  | {
-      match: RegExp;
-      type:
-        | Mark
-        | CustomInlineShortcuts
-        | ElementType.ExternalLink
-        | ElementType.BlockReference;
-    }
-  | { match: RegExp; type: ElementType.NoteLink; linkType: LinkType }
-> = [
+const INLINE_SHORTCUTS: Array<{
+  match: RegExp;
+  type:
+    | Mark
+    | CustomInlineShortcuts
+    | ElementType.ExternalLink
+    | ElementType.NoteLink
+    | ElementType.Tag
+    | ElementType.BlockReference;
+}> = [
   { match: /(?:^|\s)(\*\*)([^*]+)(\*\*)/, type: Mark.Bold },
   { match: /(?:^|\s)(__)([^_]+)(__)/, type: Mark.Bold },
   { match: /(?:^|\s)(\*)([^*]+)(\*)/, type: Mark.Italic },
@@ -50,12 +45,10 @@ const INLINE_SHORTCUTS: Array<
   {
     match: /(?:^|\s)(\[\[)(.+)(\]\])/,
     type: ElementType.NoteLink,
-    linkType: LinkType.Note,
   },
   {
     match: /(?:^|\s)(#[^\s]+)(\s)/,
-    type: ElementType.NoteLink,
-    linkType: LinkType.Tag,
+    type: ElementType.Tag,
   },
   { match: BLOCK_REFERENCE_REGEX, type: ElementType.BlockReference },
 ];
@@ -103,13 +96,7 @@ const handleInlineShortcuts = (editor: Editor, text: string): boolean => {
         text.length
       );
     } else if (type === ElementType.NoteLink) {
-      handled = handleNoteLink(
-        editor,
-        result,
-        endOfMatchPoint,
-        shortcut.linkType,
-        text.length
-      );
+      handled = handleNoteLink(editor, result, endOfMatchPoint, text.length);
     } else if (type === CustomInlineShortcuts.CustomNoteLink) {
       handled = handleCustomNoteLink(
         editor,
@@ -117,6 +104,8 @@ const handleInlineShortcuts = (editor: Editor, text: string): boolean => {
         endOfMatchPoint,
         text.length
       );
+    } else if (type === ElementType.Tag) {
+      handled = handleTag(editor, result, endOfMatchPoint, text.length);
     } else if (type === ElementType.BlockReference) {
       handled = handleBlockReference(
         editor,

@@ -3,6 +3,7 @@ import Fuse from 'fuse.js';
 import { createEditor, Descendant, Editor, Node, Path } from 'slate';
 import { Notes, store } from 'lib/store';
 import withLinks from 'editor/plugins/withLinks';
+import withTags from 'editor/plugins/withTags';
 import withVoidElements from 'editor/plugins/withVoidElements';
 
 export type NoteBlock = { text: string; path: Path };
@@ -16,27 +17,38 @@ type FuseDatum = {
 type NoteSearchOptions = {
   numOfResults?: number;
   searchContent?: boolean;
+  extendedSearch?: boolean;
 };
 
 export default function useNoteSearch({
   numOfResults = -1,
   searchContent = false,
+  extendedSearch = false,
 }: NoteSearchOptions = {}) {
   const search = useCallback(
     (searchText: string) => {
-      const fuse = initFuse(store.getState().notes, searchContent);
+      const fuse = initFuse(
+        store.getState().notes,
+        searchContent,
+        extendedSearch
+      );
       return fuse.search(searchText, { limit: numOfResults });
     },
-    [numOfResults, searchContent]
+    [numOfResults, searchContent, extendedSearch]
   );
   return search;
 }
 
 // Initializes Fuse
-const initFuse = (notes: Notes, searchContent: boolean) => {
+const initFuse = (
+  notes: Notes,
+  searchContent: boolean,
+  extendedSearch: boolean
+) => {
   const fuseData = getFuseData(notes, searchContent);
   const keys = searchContent ? ['blocks.text'] : ['title'];
   return new Fuse<FuseDatum>(fuseData, {
+    useExtendedSearch: extendedSearch,
     keys,
     ignoreLocation: true,
     ...(searchContent
@@ -62,7 +74,7 @@ const getFuseData = (notes: Notes, searchContent: boolean): FuseDatum[] => {
 
 // Flatten the content into individual lines
 const flattenContent = (content: Descendant[]): NoteBlock[] => {
-  const editor = withVoidElements(withLinks(createEditor()));
+  const editor = withVoidElements(withTags(withLinks(createEditor())));
   editor.children = content;
 
   const blocks = Editor.nodes(editor, {

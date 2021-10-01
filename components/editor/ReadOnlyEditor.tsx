@@ -3,6 +3,7 @@ import { createEditor, Descendant, Editor } from 'slate';
 import { Editable, Slate, withReact } from 'slate-react';
 import withVoidElements from 'editor/plugins/withVoidElements';
 import withLinks from 'editor/plugins/withLinks';
+import withTags from 'editor/plugins/withTags';
 import { EditorElementProps } from './elements/EditorElement';
 import { EditorLeafProps } from './elements/EditorLeaf';
 
@@ -17,7 +18,9 @@ function ReadOnlyEditor(props: Props) {
 
   const editorRef = useRef<Editor>();
   if (!editorRef.current) {
-    editorRef.current = withVoidElements(withLinks(withReact(createEditor())));
+    editorRef.current = withVoidElements(
+      withTags(withLinks(withReact(createEditor())))
+    );
   }
   const editor = editorRef.current;
 

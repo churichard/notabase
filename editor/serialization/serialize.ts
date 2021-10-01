@@ -30,6 +30,7 @@ import {
   FormattedText,
   Image,
   NoteLink,
+  Tag,
 } from 'types/slate';
 import { isVoid } from 'editor/plugins/withVoidElements';
 import { computeBlockReference } from 'editor/backlinks/useBlockReference';
@@ -142,8 +143,6 @@ export default function serialize(
       const noteLink = chunk as NoteLink;
       if (!noteLink.noteTitle) {
         return '';
-      } else if (noteLink.isTag) {
-        return noteLink.noteTitle;
       } else {
         return noteLink.customText
           ? `[[${noteLink.noteTitle}|${noteLink.customText}]]`
@@ -152,6 +151,8 @@ export default function serialize(
     }
     case ElementType.ExternalLink:
       return `[${children}](${(chunk as ExternalLink).url})`;
+    case ElementType.Tag:
+      return `#${(chunk as Tag).name}`;
 
     case ElementType.Image: {
       const image = chunk as Image;

@@ -53,6 +53,11 @@ export type BillingDetails =
       cancelAtPeriodEnd: boolean;
     };
 
+export enum SidebarTab {
+  Notes,
+  Search,
+}
+
 export type Store = {
   _hasHydrated: boolean; // TODO: temporary until https://github.com/pmndrs/zustand/issues/562 gets fixed
   billingDetails: BillingDetails;
@@ -72,6 +77,10 @@ export type Store = {
   setIsUpgradeModalOpen: Setter<boolean>;
   blockIdToBacklinksMap: Record<string, Backlink[] | undefined>;
   setBlockIdToBacklinksMap: Setter<Record<string, Backlink[] | undefined>>;
+  sidebarTab: SidebarTab;
+  setSidebarTab: Setter<SidebarTab>;
+  sidebarSearchQuery: string;
+  setSidebarSearchQuery: Setter<string>;
 } & UserSettings;
 
 type FunctionPropertyNames<T> = {
@@ -230,6 +239,10 @@ export const store = createVanilla<Store>(
        */
       blockIdToBacklinksMap: {},
       setBlockIdToBacklinksMap: setter(set, 'blockIdToBacklinksMap'),
+      sidebarTab: SidebarTab.Notes,
+      setSidebarTab: setter(set, 'sidebarTab'),
+      sidebarSearchQuery: '',
+      setSidebarSearchQuery: setter(set, 'sidebarSearchQuery'),
       ...createUserSettingsSlice(set),
     })),
     {

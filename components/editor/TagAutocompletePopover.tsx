@@ -2,27 +2,26 @@ import { useMemo, useState, useCallback, useEffect } from 'react';
 import { Editor, Range, Transforms } from 'slate';
 import { useSlate } from 'slate-react';
 import type { TablerIcon } from '@tabler/icons';
-import { insertNoteLink } from 'editor/formatting';
+import { insertTag } from 'editor/formatting';
 import { deleteText } from 'editor/transforms';
-import useNoteSearch from 'utils/useNoteSearch';
+import useTagSearch from 'utils/useTagSearch';
 import useDebounce from 'utils/useDebounce';
 import EditorPopover from './EditorPopover';
 
-const NOTE_LINK_REGEX = /(?:^|\s)(\[\[)(.+)/;
+const TAG_REGEX = /(?:^|\s)(#)([^\s]+)/;
 const DEBOUNCE_MS = 100;
 
 enum OptionType {
-  NOTE,
+  TAG,
 }
 
 type Option = {
-  id: string;
   type: OptionType;
-  text: string;
+  name: string;
   icon?: TablerIcon;
 };
 
-export default function LinkAutocompletePopover() {
+export default function TagAutocompletePopover() {
   const editor = useSlate();
 
   const [isVisible, setIsVisible] = useState(false);
@@ -37,17 +36,16 @@ export default function LinkAutocompletePopover() {
       return regexResult[2];
     }
   }, [regexResult]);
-  const [linkText] = useDebounce(inputText, DEBOUNCE_MS);
+  const [tagText] = useDebounce(inputText, DEBOUNCE_MS);
 
-  const search = useNoteSearch({ numOfResults: 10 });
-  const searchResults = useMemo(() => search(linkText), [search, linkText]);
+  const search = useTagSearch({ numOfResults: 10 });
+  const searchResults = useMemo(() => search(tagText), [search, tagText]);
 
   const options = useMemo(
     () =>
       searchResults.map((result) => ({
-        id: result.item.id,
-        type: OptionType.NOTE,
-        text: result.item.title,
+        type: OptionType.TAG,
+        name: result.item,
       })),
     [searchResults]
   );
@@ -72,7 +70,7 @@ export default function LinkAutocompletePopover() {
       const elementRange = { anchor, focus: elementStart };
       const elementText = Editor.string(editor, elementRange);
 
-      return elementText.match(NOTE_LINK_REGEX);
+      return elementText.match(TAG_REGEX);
     } catch (e) {
       return null;
     }
@@ -100,16 +98,15 @@ export default function LinkAutocompletePopover() {
       const { path: selectionPath, offset: endOfSelection } =
         editor.selection.anchor;
 
-      const [, startMark, noteTitle] = regexResult;
-      const lengthToDelete = startMark.length + noteTitle.length;
+      const [, tagName] = regexResult;
+      const lengthToDelete = tagName.length;
 
       deleteText(editor, selectionPath, endOfSelection, lengthToDelete);
 
-      // Handle inserting note link
-      if (option.type === OptionType.NOTE) {
-        // Insert a link to an existing note with the note title as the link text
-        insertNoteLink(editor, option.id, option.text);
-        Transforms.move(editor, { distance: 1, unit: 'offset' }); // Focus after the note link
+      // Handle inserting tag
+      if (option.type === OptionType.TAG) {
+        insertTag(editor, option.name);
+        Transforms.move(editor, { distance: 1, unit: 'offset' }); // Focus after the tag
       } else {
         throw new Error(`Option type ${option.type} is not supported`);
       }
@@ -160,7 +157,7 @@ export default function LinkAutocompletePopover() {
     >
       {options.map((option, index) => (
         <OptionItem
-          key={option.id}
+          key={option.name}
           option={option}
           isSelected={index === selectedOptionIndex}
           onClick={() => onOptionClick(option)}
@@ -195,7 +192,7 @@ const OptionItem = (props: OptionProps) => {
         <option.icon size={18} className="flex-shrink-0 mr-1" />
       ) : null}
       <span className="overflow-hidden overflow-ellipsis whitespace-nowrap">
-        {option.text}
+        #{option.name}
       </span>
     </div>
   );

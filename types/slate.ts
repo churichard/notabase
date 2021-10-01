@@ -16,6 +16,7 @@ export enum ElementType {
   Blockquote = 'block-quote',
   ExternalLink = 'link',
   NoteLink = 'note-link',
+  Tag = 'tag',
   CodeBlock = 'code-block',
   ThematicBreak = 'thematic-break',
   Image = 'image',
@@ -98,8 +99,14 @@ export type NoteLink = {
   noteId: string;
   noteTitle: string;
   customText?: string;
-  isTag?: boolean;
   children: Descendant[];
+};
+
+export type Tag = {
+  id: string;
+  type: ElementType.Tag;
+  name: string; // Name does not have #
+  children: Descendant[]; // Children has the #
 };
 
 export type CodeBlock = {
@@ -142,7 +149,7 @@ export type ReferenceableBlockElement =
   | Image
   | BlockReference;
 
-export type InlineElement = ExternalLink | NoteLink;
+export type InlineElement = ExternalLink | NoteLink | Tag;
 
 export type ListElement = BulletedList | NumberedList;
 

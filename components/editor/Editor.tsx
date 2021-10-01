@@ -36,6 +36,7 @@ import withImages from 'editor/plugins/withImages';
 import withVoidElements from 'editor/plugins/withVoidElements';
 import withNodeId from 'editor/plugins/withNodeId';
 import withBlockReferences from 'editor/plugins/withBlockReferences';
+import withTags from 'editor/plugins/withTags';
 import { store, useStore } from 'lib/store';
 import { ElementType, Mark } from 'types/slate';
 import { DEFAULT_EDITOR_VALUE } from 'editor/constants';
@@ -48,6 +49,7 @@ import withBlockSideMenu from './blockmenu/withBlockSideMenu';
 import EditorLeaf from './elements/EditorLeaf';
 import LinkAutocompletePopover from './LinkAutocompletePopover';
 import BlockAutocompletePopover from './BlockAutocompletePopover';
+import TagAutocompletePopover from './TagAutocompletePopover';
 
 export type AddLinkPopoverState = {
   isVisible: boolean;
@@ -79,7 +81,11 @@ function Editor(props: Props) {
             withVoidElements(
               withBlockReferences(
                 withImages(
-                  withLinks(withNodeId(withHistory(withReact(createEditor()))))
+                  withTags(
+                    withLinks(
+                      withNodeId(withHistory(withReact(createEditor())))
+                    )
+                  )
                 )
               )
             )
@@ -294,6 +300,7 @@ function Editor(props: Props) {
       ) : null}
       <LinkAutocompletePopover />
       <BlockAutocompletePopover />
+      <TagAutocompletePopover />
       <Editable
         className={`overflow-hidden placeholder-gray-300 ${className}`}
         renderElement={renderElement}

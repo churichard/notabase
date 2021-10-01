@@ -6,6 +6,7 @@ import type {
   ListElement,
   Image,
   BlockReference,
+  Tag,
 } from 'types/slate';
 import { ElementType, Mark } from 'types/slate';
 import { computeBlockReference } from './backlinks/useBlockReference';
@@ -224,8 +225,7 @@ export const insertExternalLink = (
 export const insertNoteLink = (
   editor: Editor,
   noteId: string,
-  noteTitle: string,
-  isTag?: boolean
+  noteTitle: string
 ) => {
   const { selection } = editor;
   if (!selection) {
@@ -239,10 +239,19 @@ export const insertNoteLink = (
     noteId,
     noteTitle,
     customText: !isCollapsed ? Editor.string(editor, selection) : undefined,
-    ...(isTag ? { isTag } : {}),
     children: isCollapsed ? [{ text: noteTitle }] : [],
   };
   wrapLink(editor, link);
+};
+
+export const insertTag = (editor: Editor, name: string) => {
+  const tag: Tag = {
+    id: createNodeId(),
+    type: ElementType.Tag,
+    name: name,
+    children: [{ text: `#${name}` }],
+  };
+  Transforms.insertNodes(editor, tag);
 };
 
 export const insertImage = (editor: Editor, url: string, path?: Path) => {

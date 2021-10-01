@@ -3,6 +3,7 @@ import { ElementType } from 'types/slate';
 
 const VOID_ELEMENTS: Array<ElementType> = [
   ElementType.NoteLink,
+  ElementType.Tag,
   ElementType.ThematicBreak,
   ElementType.Image,
   ElementType.BlockReference,
