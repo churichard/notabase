@@ -98,8 +98,8 @@ export default function TagAutocompletePopover() {
       const { path: selectionPath, offset: endOfSelection } =
         editor.selection.anchor;
 
-      const [, tagName] = regexResult;
-      const lengthToDelete = tagName.length;
+      const [, startMark, tagName] = regexResult;
+      const lengthToDelete = startMark.length + tagName.length;
 
       deleteText(editor, selectionPath, endOfSelection, lengthToDelete);
 
