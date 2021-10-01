@@ -31,6 +31,8 @@ export default function Changelog() {
           features={[
             'Tags now start a search when clicked, showing you all the blocks with that tag. They no longer create notes when created.',
             'Add keyboard shortcut for search (ctrl+shift+f or cmd+shift+f)',
+            'Add keyboard shortcut for notes pane (ctrl+shift+e or cmd+shift+e)',
+            'Add keyboard shortcut for graph view (ctrl+shift+g or cmd+shift+g)',
           ]}
         />
         <ChangelogBlock
