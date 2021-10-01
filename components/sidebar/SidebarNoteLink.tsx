@@ -54,7 +54,7 @@ const SidebarNoteLink = (
     >
       <div
         role="button"
-        className="flex items-center flex-1 px-2 py-1 overflow-hidden overflow-ellipsis whitespace-nowrap"
+        className="flex items-center flex-1 px-2 py-1 overflow-hidden select-none overflow-ellipsis whitespace-nowrap"
         onClick={(e) => {
           e.preventDefault();
           onNoteLinkClick(note.id, e.shiftKey);
