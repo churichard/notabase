@@ -12,7 +12,7 @@ function OpenSidebarButton(props: Props) {
   const setIsSidebarOpen = useStore((state) => state.setIsSidebarOpen);
 
   return (
-    <Tooltip content="Open sidebar" placement="right">
+    <Tooltip content="Open sidebar (Ctrl+\)" placement="right">
       <button
         className={`p-1 rounded hover:bg-gray-300 active:bg-gray-400 dark:hover:bg-gray-700 dark:active:bg-gray-600 ${className}`}
         onClick={() => setIsSidebarOpen(true)}

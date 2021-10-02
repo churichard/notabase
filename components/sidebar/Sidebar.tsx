@@ -158,7 +158,7 @@ const GraphButton = (props: GraphButtonProps) => {
       onClick={onClick}
     >
       <Tooltip
-        content="Visualization of all of your notes as a network"
+        content="Visualization of all of your notes as a network (Ctrl+Shift+G)"
         placement="right"
         touch={false}
       >

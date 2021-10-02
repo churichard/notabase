@@ -41,7 +41,7 @@ const Tabs = (props: TabsProps) => {
 
   return (
     <div className="flex">
-      <Tooltip content="Notes List">
+      <Tooltip content="Notes List (Ctrl+Shift+E)">
         <SidebarTab
           isActive={activeTab === SidebarTabType.Notes}
           setActive={() => setActiveTab(SidebarTabType.Notes)}
@@ -49,7 +49,7 @@ const Tabs = (props: TabsProps) => {
           className={activeTab === SidebarTabType.Notes ? 'border-r' : ''}
         />
       </Tooltip>
-      <Tooltip content="Search">
+      <Tooltip content="Search (Ctrl+Shift+F)">
         <SidebarTab
           isActive={activeTab === SidebarTabType.Search}
           setActive={() => setActiveTab(SidebarTabType.Search)}

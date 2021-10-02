@@ -28,7 +28,7 @@ function SidebarNotesFooter(props: Props) {
 
   return (
     <div className="flex items-center justify-between border-t dark:border-gray-700">
-      <Tooltip content="Create a new note">
+      <Tooltip content="Create a new note (Ctrl+P)">
         <button
           className="p-1 mx-2 my-1 rounded hover:bg-gray-200 active:bg-gray-300 dark:hover:bg-gray-700 dark:active:bg-gray-600"
           onClick={onCreateNoteClick}
