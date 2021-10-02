@@ -59,7 +59,7 @@
     "unified": "^10.1.0",
     "use-resize-observer": "^8.0.0",
     "uuid": "^8.3.2",
-    "zustand": "^3.5.11"
+    "zustand": "^3.5.12"
   },
   "devDependencies": {
     "@next/bundle-analyzer": "^11.1.2",
