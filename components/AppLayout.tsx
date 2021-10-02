@@ -223,6 +223,12 @@ export default function AppLayout(props: Props) {
         callback: () => setIsFindOrCreateModalOpen((isOpen) => !isOpen),
       },
       {
+        hotkey: 'mod+s',
+        callback: () => {
+          /* todo: placeholder for saving */
+        },
+      },
+      {
         hotkey: 'mod+shift+e',
         callback: () => setSidebarTab(SidebarTab.Notes),
       },
@@ -234,8 +240,12 @@ export default function AppLayout(props: Props) {
         hotkey: 'mod+shift+g',
         callback: () => router.push('/app/graph'),
       },
+      {
+        hotkey: 'mod+\\',
+        callback: () => setIsSidebarOpen((isOpen) => !isOpen),
+      },
     ],
-    [setIsFindOrCreateModalOpen, setSidebarTab, router]
+    [setIsFindOrCreateModalOpen, setSidebarTab, setIsSidebarOpen, router]
   );
   useHotkeys(hotkeys);
 

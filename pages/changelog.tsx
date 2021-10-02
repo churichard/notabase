@@ -27,6 +27,12 @@ export default function Changelog() {
           .
         </p>
         <ChangelogBlock
+          title="October 2, 2021"
+          features={[
+            'Add keyboard shortcut for toggling the sidebar (ctrl+\\ or cmd+\\)',
+          ]}
+        />
+        <ChangelogBlock
           title="October 1, 2021"
           features={[
             'Tags now start a search when clicked, showing you all the blocks with that tag. They no longer create notes when created.',
