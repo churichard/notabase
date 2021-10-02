@@ -200,9 +200,11 @@ export default function AppLayout(props: Props) {
         if (payload.eventType === 'INSERT') {
           upsertNote(payload.new);
         } else if (payload.eventType === 'UPDATE') {
-          // We update even if the note is already open
-          // This could cause errors with the history, but it's better than overwriting the note unknowingly
-          updateNote(payload.new);
+          // Don't update the note if it is currently open
+          const openNoteIds = store.getState().openNoteIds;
+          if (!openNoteIds.includes(payload.new.id)) {
+            updateNote(payload.new);
+          }
         } else if (payload.eventType === 'DELETE') {
           deleteNote(payload.old.id);
         }
