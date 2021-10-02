@@ -39,7 +39,6 @@ import withBlockReferences from 'editor/plugins/withBlockReferences';
 import withTags from 'editor/plugins/withTags';
 import { store, useStore } from 'lib/store';
 import { ElementType, Mark } from 'types/slate';
-import { DEFAULT_EDITOR_VALUE } from 'editor/constants';
 import useIsMounted from 'utils/useIsMounted';
 import HoveringToolbar from './HoveringToolbar';
 import AddLinkPopover from './AddLinkPopover';
@@ -68,8 +67,11 @@ function Editor(props: Props) {
   const { noteId, onChange, className = '', highlightedPath } = props;
   const isMounted = useIsMounted();
 
-  const [value, setValue] = useState<Descendant[]>(
-    store.getState().notes[noteId]?.content ?? DEFAULT_EDITOR_VALUE
+  const value = useStore((state) => state.notes[noteId].content);
+  const setValue = useCallback(
+    (value: Descendant[]) =>
+      store.getState().updateNote({ id: noteId, content: value }),
+    [noteId]
   );
 
   const editorRef = useRef<SlateEditor>();
@@ -248,7 +250,7 @@ function Editor(props: Props) {
         onChange(newValue);
       }
     },
-    [editor.selection, onChange, value]
+    [editor.selection, onChange, value, setValue]
   );
 
   // If highlightedPath is defined, highlight the path

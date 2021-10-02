@@ -1,5 +1,5 @@
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
-import type { Descendant, Path } from 'slate';
+import type { Path } from 'slate';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
 import Editor from 'components/editor/Editor';
@@ -62,13 +62,9 @@ function Note(props: Props) {
     [noteId, updateNote]
   );
 
-  const onEditorValueChange = useCallback(
-    (content: Descendant[]) => {
-      updateNote({ id: noteId, content });
-      setSyncState((syncState) => ({ ...syncState, isContentSynced: false }));
-    },
-    [noteId, updateNote]
-  );
+  const onEditorValueChange = useCallback(() => {
+    setSyncState((syncState) => ({ ...syncState, isContentSynced: false }));
+  }, []);
 
   const handleNoteUpdate = useCallback(async (note: NoteUpdate) => {
     const { error } = await updateDbNote(note);
