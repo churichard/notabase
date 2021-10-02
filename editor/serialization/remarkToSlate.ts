@@ -1,4 +1,4 @@
-import { DEFAULT_EDITOR_VALUE } from 'editor/constants';
+import { getDefaultEditorValue } from 'editor/constants';
 import normalize from './normalize';
 import deserialize, { OptionType } from './deserialize';
 import { MdastNode } from './types';
@@ -9,7 +9,7 @@ export default function remarkToSlate(opts?: OptionType) {
     const normalizedNode = normalize(node);
 
     if (!normalizedNode.children) {
-      return DEFAULT_EDITOR_VALUE;
+      return getDefaultEditorValue();
     }
 
     // Deserialize MdastNode into slate document

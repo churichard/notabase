@@ -9,7 +9,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { store, useStore } from 'lib/store';
 import { NoteUpsert } from 'lib/api/upsertNote';
 import supabase from 'lib/supabase';
-import { DEFAULT_EDITOR_VALUE } from 'editor/constants';
+import { getDefaultEditorValue } from 'editor/constants';
 import remarkToSlate from 'editor/serialization/remarkToSlate';
 import { caseInsensitiveStringEqual } from 'utils/string';
 import { ElementType, NoteLink } from 'types/slate';
@@ -93,7 +93,7 @@ export default function useImport() {
           user_id: user.id,
           title: fileName,
           content:
-            slateContent.length > 0 ? slateContent : DEFAULT_EDITOR_VALUE,
+            slateContent.length > 0 ? slateContent : getDefaultEditorValue(),
         });
       }
 

@@ -37,6 +37,7 @@ import withVoidElements from 'editor/plugins/withVoidElements';
 import withNodeId from 'editor/plugins/withNodeId';
 import withBlockReferences from 'editor/plugins/withBlockReferences';
 import withTags from 'editor/plugins/withTags';
+import { getDefaultEditorValue } from 'editor/constants';
 import { store, useStore } from 'lib/store';
 import { ElementType, Mark } from 'types/slate';
 import useIsMounted from 'utils/useIsMounted';
@@ -67,7 +68,9 @@ function Editor(props: Props) {
   const { noteId, onChange, className = '', highlightedPath } = props;
   const isMounted = useIsMounted();
 
-  const value = useStore((state) => state.notes[noteId].content);
+  const value = useStore(
+    (state) => state.notes[noteId]?.content ?? getDefaultEditorValue()
+  );
   const setValue = useCallback(
     (value: Descendant[]) =>
       store.getState().updateNote({ id: noteId, content: value }),
