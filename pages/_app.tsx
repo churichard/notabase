@@ -1,6 +1,6 @@
-import { useEffect } from 'react';
 import Head from 'next/head';
 import Router from 'next/router';
+import Script from 'next/script';
 import { ToastContainer } from 'react-toastify';
 import NProgress from 'nprogress';
 import type { AppProps } from 'next/app';
@@ -17,15 +17,6 @@ Router.events.on('routeChangeComplete', () => NProgress.done());
 Router.events.on('routeChangeError', () => NProgress.done());
 
 export default function MyApp({ Component, pageProps, router }: AppProps) {
-  useEffect(() => {
-    window.plausible =
-      window.plausible ||
-      function () {
-        // eslint-disable-next-line prefer-rest-params
-        (window.plausible.q = window.plausible.q || []).push(arguments);
-      };
-  }, []);
-
   return (
     <>
       <Head>
@@ -33,13 +24,19 @@ export default function MyApp({ Component, pageProps, router }: AppProps) {
           Notabase | Powerful and easy-to-use note-taking app for networked
           thinking
         </title>
-        <script
-          async
-          defer
-          data-domain="notabase.io"
-          src="https://plausible.io/js/plausible.js"
-        ></script>
       </Head>
+      <Script
+        src="https://plausible.io/js/plausible.js"
+        data-domain="notabase.io"
+        onLoad={() => {
+          window.plausible =
+            window.plausible ||
+            function () {
+              // eslint-disable-next-line prefer-rest-params
+              (window.plausible.q = window.plausible.q || []).push(arguments);
+            };
+        }}
+      />
       <ServiceWorker>
         <ProvideAuth>
           {router.pathname.startsWith('/app') ? (
