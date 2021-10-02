@@ -32,13 +32,14 @@ function ReadOnlyEditor(props: Props) {
         /* Do nothing, this is a read only editor */
       }}
     >
-      <Editable
-        className="pointer-events-none"
-        renderElement={renderElement}
-        renderLeaf={renderLeaf}
-        contentEditable={false}
-        readOnly
-      />
+      <div contentEditable={false}>
+        <Editable
+          className="pointer-events-none"
+          renderElement={renderElement}
+          renderLeaf={renderLeaf}
+          readOnly
+        />
+      </div>
     </Slate>
   );
 }
