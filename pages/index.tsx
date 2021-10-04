@@ -1,6 +1,11 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { IconArrowRight } from '@tabler/icons';
+import {
+  IconArrowRight,
+  IconBrandGithub,
+  IconDatabase,
+  IconMessage,
+} from '@tabler/icons';
 import Footer from 'components/landing/Footer';
 import Navbar from 'components/landing/Navbar';
 import LandingLayout from 'components/landing/LandingLayout';
@@ -50,8 +55,8 @@ export default function Home() {
             </div>
           </div>
           <div className="pt-16 pb-8 md:pt-32 md:pb-16">
-            <div className="container flex flex-col items-center px-6 md:flex-row">
-              <div className="flex-1 md:mx-8">
+            <div className="container flex flex-col items-center px-6 md:flex-row md:space-x-8">
+              <div className="flex-1">
                 <h2 className="text-3xl font-semibold md:text-4xl">
                   Never lose context
                 </h2>
@@ -69,7 +74,7 @@ export default function Home() {
                   </p>
                 </div>
               </div>
-              <div className="relative flex items-center justify-center flex-1 w-full mt-12 md:mt-0 md:mx-8">
+              <div className="relative flex items-center justify-center flex-1 w-full mt-12 md:mt-0">
                 <div className="flex w-3/4 overflow-hidden rounded-md shadow-md">
                   <Image
                     src={GraphViewImage}
@@ -83,8 +88,8 @@ export default function Home() {
             </div>
           </div>
           <div className="py-8 md:py-16">
-            <div className="container flex flex-col items-center px-6 md:flex-row">
-              <div className="flex-1 md:mx-8">
+            <div className="container flex flex-col items-center px-6 md:flex-row md:space-x-8">
+              <div className="flex-1">
                 <h2 className="text-3xl font-semibold md:text-4xl">
                   Organize the way you want
                 </h2>
@@ -103,7 +108,7 @@ export default function Home() {
                   </p>
                 </div>
               </div>
-              <div className="relative flex items-center justify-center flex-1 w-full mt-12 md:mt-0 md:mx-8">
+              <div className="relative flex items-center justify-center flex-1 w-full mt-12 md:mt-0">
                 <div className="flex overflow-hidden rounded-md shadow-md">
                   <Image
                     src={SidebarImage}
@@ -117,8 +122,8 @@ export default function Home() {
             </div>
           </div>
           <div className="py-8 md:py-16">
-            <div className="container flex flex-col items-center px-6 md:flex-row">
-              <div className="flex-1 md:mx-8">
+            <div className="container flex flex-col items-center px-6 md:flex-row md:space-x-8">
+              <div className="flex-1">
                 <h2 className="text-3xl font-semibold md:text-4xl">
                   Focus and explore
                 </h2>
@@ -137,7 +142,7 @@ export default function Home() {
                   </p>
                 </div>
               </div>
-              <div className="relative flex items-center justify-center flex-1 w-full mt-12 md:mt-0 md:mx-8">
+              <div className="relative flex items-center justify-center flex-1 w-full mt-12 md:mt-0">
                 <div className="flex w-5/6 overflow-hidden rounded-md shadow-md">
                   <Image
                     src={PageStackingImage}
@@ -151,42 +156,57 @@ export default function Home() {
             </div>
           </div>
           <div className="py-8 md:py-16">
-            <div className="container relative max-w-3xl px-6 mx-auto">
+            <div className="container relative px-6 mx-auto">
               <h2 className="text-3xl font-semibold text-center md:text-4xl">
-                Privacy-friendly and open source
+                Open and transparent
               </h2>
-              <div className="pt-6 md:pt-8">
-                <p className="text-lg leading-relaxed text-gray-700 md:text-xl md:leading-relaxed">
-                  Notabase is open source with a public changelog and roadmap.
-                </p>
-                <p className="mt-4 text-lg leading-relaxed text-gray-700 md:text-xl md:leading-relaxed">
-                  We also have a{' '}
-                  <a
-                    href="https://discord.gg/BQKNRu7nv5"
-                    className="link"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Discord community
-                  </a>{' '}
-                  where you can give feedback and ask questions.
-                </p>
-                <p className="mt-4 text-lg leading-relaxed text-gray-700 md:text-xl md:leading-relaxed">
-                  You have full ownership over your notes and can export them at
-                  any time. We will never sell your data or use it for
-                  advertising.
-                </p>
-                <svg
-                  viewBox="0 0 200 200"
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="absolute bottom-0 right-0 w-64 md:w-80 -z-10"
-                >
-                  <path
-                    fill="#F5F3FF"
-                    d="M69,-23.8C77.8,4.6,65.3,38.6,44.2,51.8C23.1,65,-6.5,57.3,-29.8,40.5C-53.1,23.7,-70.1,-2.3,-64.1,-26.9C-58.1,-51.5,-29,-74.7,0.5,-74.9C30.1,-75,60.2,-52.2,69,-23.8Z"
-                    transform="translate(100 100)"
-                  />
-                </svg>
+              <div className="flex flex-col pt-6 space-y-8 md:space-x-8 md:flex-row md:space-y-0 md:pt-8">
+                <div className="flex-1">
+                  <div className="flex items-center justify-center w-10 h-10 mr-2 rounded-md bg-primary-100">
+                    <IconMessage className="text-primary-700" />
+                  </div>
+                  <p className="flex items-center mt-4 text-xl font-semibold">
+                    Community
+                  </p>
+                  <p className="mt-2 text-lg leading-relaxed text-gray-700">
+                    Join our open{' '}
+                    <a
+                      href="https://discord.gg/BQKNRu7nv5"
+                      className="link"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Discord community
+                    </a>
+                    ! You can give feedback, ask questions, or discuss
+                    note-taking strategies.
+                  </p>
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center justify-center w-10 h-10 mr-2 rounded-md bg-primary-100">
+                    <IconDatabase className="text-primary-700" />
+                  </div>
+                  <p className="flex items-center mt-4 text-xl font-semibold">
+                    You own your data
+                  </p>
+                  <p className="mt-2 text-lg leading-relaxed text-gray-700">
+                    You have full ownership over your notes and can export them
+                    at any time. We will never sell your data or use it for
+                    advertising.
+                  </p>
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center justify-center w-10 h-10 mr-2 rounded-md bg-primary-100">
+                    <IconBrandGithub className="text-primary-700" />
+                  </div>
+                  <p className="flex items-center mt-4 text-xl font-semibold">
+                    Open source
+                  </p>
+                  <p className="mt-2 text-lg leading-relaxed text-gray-700">
+                    Contribute to our development! Notabase is open source with
+                    a public changelog and roadmap.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
@@ -200,7 +220,7 @@ export default function Home() {
                   <h3 className="text-xl font-semibold">
                     Create a digital garden
                   </h3>
-                  <p className="pt-1">
+                  <p className="pt-2">
                     Cultivate a personal space for your ideas, thoughts, and
                     evergreen notes, like{' '}
                     <a
@@ -227,7 +247,7 @@ export default function Home() {
                   <h3 className="text-xl font-semibold">
                     Build a personal knowledge base
                   </h3>
-                  <p className="pt-1">
+                  <p className="pt-2">
                     Create a knowledge center that you can reference at any
                     time, all of it interconnected just like in your brain.
                   </p>
@@ -236,7 +256,7 @@ export default function Home() {
                   <h3 className="text-xl font-semibold">
                     Remember what you read
                   </h3>
-                  <p className="pt-1">
+                  <p className="pt-2">
                     Take notes while you read, connect ideas with your existing
                     knowledge, and synthesize everything.
                   </p>
@@ -245,7 +265,7 @@ export default function Home() {
                   <h3 className="text-xl font-semibold">
                     Create a daily journal
                   </h3>
-                  <p className="pt-1">
+                  <p className="pt-2">
                     Record your thoughts and feelings, keep track of your
                     accomplishments, and reflect on each day.
                   </p>
@@ -254,18 +274,18 @@ export default function Home() {
                   <h3 className="text-xl font-semibold">
                     Manage your projects
                   </h3>
-                  <p className="pt-1">
+                  <p className="pt-2">
                     Create to-do lists, record institutional knowledge, write
                     marketing copy, and plan for the future.
                   </p>
                 </div>
                 <div className="p-8 rounded-md shadow bg-purple-50">
                   <h3 className="text-xl font-semibold">Make a help center*</h3>
-                  <p className="pt-1">
+                  <p className="pt-2">
                     Set up a help center for your product or company in minutes.
                     No coding or design required.
                   </p>
-                  <p className="pt-1 text-xs text-gray-500">
+                  <p className="pt-2 text-xs text-gray-500">
                     *Coming soon with Notabase Publish
                   </p>
                 </div>
