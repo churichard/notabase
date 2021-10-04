@@ -43,7 +43,7 @@ export default function PricingPlans(props: Props) {
         />
         <span className="text-sm text-gray-600 dark:text-gray-300">
           Annual{' '}
-          <span className="px-2 py-1 ml-1 font-semibold rounded-full text-primary-900 bg-primary-100">
+          <span className="px-3 py-1 ml-1 font-semibold rounded-full text-primary-900 bg-primary-100 whitespace-nowrap dark:bg-primary-900 dark:text-primary-100">
             2 months free!
           </span>
         </span>

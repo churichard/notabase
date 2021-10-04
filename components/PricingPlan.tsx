@@ -27,10 +27,10 @@ const PricingPlan = (props: Props) => {
 
   return (
     <div className={pricingPlanClassName}>
-      <div className="flex justify-between p-6 bg-white sm:p-10 sm:pb-6">
+      <div className="flex justify-between p-6 sm:p-10 sm:pb-6">
         <div>
           <div>
-            <span className="inline-flex px-4 py-1 text-sm font-semibold leading-5 tracking-wide uppercase rounded-full text-primary-600 bg-primary-100">
+            <span className="inline-flex px-4 py-1 text-sm font-semibold leading-5 tracking-wide uppercase rounded-full text-primary-900 bg-primary-100 dark:bg-primary-900 dark:text-primary-100">
               {plan.name}
             </span>
           </div>
@@ -50,12 +50,14 @@ const PricingPlan = (props: Props) => {
           </div>
         </div>
       </div>
-      <div className="flex flex-col flex-1 p-6 bg-white sm:p-10 sm:pt-6">
+      <div className="flex flex-col flex-1 p-6 sm:p-10 sm:pt-6">
         <ul className="flex-1 space-y-4">
           {bulletPoints.map((bulletPoint, index) => (
             <li key={index} className="flex items-start">
               <IconCheck className="flex-shrink-0 text-green-500" />
-              <p className="ml-3 leading-6 text-gray-700">{bulletPoint}</p>
+              <p className="ml-3 leading-6 text-gray-700 dark:text-gray-200">
+                {bulletPoint}
+              </p>
             </li>
           ))}
         </ul>
