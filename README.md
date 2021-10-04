@@ -16,6 +16,7 @@ It is inspired by note-taking apps such as Notion, Obsidian, Typora, and Roam Re
 - 📖 Browse your notes with **page stacking** (similar to [Andy's working notes](https://notes.andymatuschak.org/About_these_notes))
 - 📝 **WYSIWYG editor** with markdown support makes it easy to read and edit notes
 - 🔗 **Linked/unlinked references** let you see other notes that reference a specific note
+- #️⃣ **Organize your notes** with links, tags, and nested notes
 - 📱 Can be installed as a **Progressive Web App (PWA)** for faster loading and offline viewing
 - ☁ Your notes are **synced to the cloud** and can be **accessed on any device**
 - 🔀 Use the **graph view** to analyze your knowledge graph
