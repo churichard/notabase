@@ -15,10 +15,6 @@ module.exports = {
     /* Handle image imports
     https://jestjs.io/docs/webpack#handling-static-assets */
     '^.+\\.(jpg|jpeg|png|gif|webp|svg)$': '<rootDir>/__mocks__/fileMock.js',
-
-    // Handle zustand
-    '^zustand$': '<rootDir>/__mocks__/zustand.js',
-    '^zustand/vanilla$': '<rootDir>/__mocks__/zustand.js',
   },
   testPathIgnorePatterns: ['<rootDir>/node_modules/', '<rootDir>/.next/'],
   testEnvironment: 'jsdom',
