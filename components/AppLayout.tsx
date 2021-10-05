@@ -266,7 +266,7 @@ export default function AppLayout(props: Props) {
   }, [router]);
 
   const appContainerClassName = classNames(
-    'flex h-screen',
+    'h-screen',
     { dark: darkMode },
     className
   );
@@ -284,23 +284,25 @@ export default function AppLayout(props: Props) {
         />
       </Head>
       <div id="app-container" className={appContainerClassName}>
-        <Sidebar
-          setIsFindOrCreateModalOpen={setIsFindOrCreateModalOpen}
-          setIsSettingsOpen={setIsSettingsOpen}
-        />
-        <div className="relative flex flex-col flex-1 overflow-y-hidden">
-          <OfflineBanner />
-          <UpdateBanner />
-          <UpgradeBanner />
-          {children}
+        <div className="flex w-full h-full dark:bg-gray-900">
+          <Sidebar
+            setIsFindOrCreateModalOpen={setIsFindOrCreateModalOpen}
+            setIsSettingsOpen={setIsSettingsOpen}
+          />
+          <div className="relative flex flex-col flex-1 overflow-y-hidden">
+            <OfflineBanner />
+            <UpdateBanner />
+            <UpgradeBanner />
+            {children}
+          </div>
+          {isSettingsOpen ? (
+            <SettingsModal setIsOpen={setIsSettingsOpen} />
+          ) : null}
+          {isFindOrCreateModalOpen ? (
+            <FindOrCreateModal setIsOpen={setIsFindOrCreateModalOpen} />
+          ) : null}
+          {isUpgradeModalOpen ? <UpgradeModal /> : null}
         </div>
-        {isSettingsOpen ? (
-          <SettingsModal setIsOpen={setIsSettingsOpen} />
-        ) : null}
-        {isFindOrCreateModalOpen ? (
-          <FindOrCreateModal setIsOpen={setIsFindOrCreateModalOpen} />
-        ) : null}
-        {isUpgradeModalOpen ? <UpgradeModal /> : null}
       </div>
     </>
   );
