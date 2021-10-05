@@ -333,7 +333,10 @@ export default function ForceGraph(props: Props) {
   }, []);
 
   return (
-    <div ref={containerRefCallback} className={`relative ${className}`}>
+    <div
+      ref={containerRefCallback}
+      className={`relative select-none ${className}`}
+    >
       <canvas
         ref={canvasRef}
         className="absolute w-full h-full dark:bg-gray-800"
