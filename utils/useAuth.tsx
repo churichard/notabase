@@ -24,7 +24,9 @@ type AuthContextType = {
   signOut: () => ReturnType<GoTrueClient['signOut']>;
 };
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+export const AuthContext = createContext<AuthContextType | undefined>(
+  undefined
+);
 
 // Provider hook that creates auth object and handles state
 function useProvideAuth(): AuthContextType {
