@@ -34,6 +34,7 @@ module.exports = {
       colors: {
         primary: colors.emerald,
         gray: colors.trueGray,
+        orange: colors.orange,
       },
       boxShadow: {
         popover:
