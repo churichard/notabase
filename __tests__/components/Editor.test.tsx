@@ -1,13 +1,10 @@
 import { render, screen, act } from '@testing-library/react';
-import { v4 as uuidv4 } from 'uuid';
 import Editor from 'components/editor/Editor';
-import { getDefaultEditorValue } from 'editor/constants';
 import { store } from 'lib/store';
 import { AuthContext } from 'utils/useAuth';
+import notes from '__fixtures__/notes';
 
 describe('Editor', () => {
-  const noteId = uuidv4();
-
   const renderEditor = () => {
     const auth = {
       isLoaded: true,
@@ -22,9 +19,10 @@ describe('Editor', () => {
       signUp: jest.fn(),
       signOut: jest.fn(),
     };
+    const firstNoteId = Object.keys(store.getState().notes)[0];
     render(
       <AuthContext.Provider value={auth}>
-        <Editor noteId={noteId} onChange={jest.fn()} />
+        <Editor noteId={firstNoteId} onChange={jest.fn()} />
       </AuthContext.Provider>
     );
   };
@@ -32,17 +30,7 @@ describe('Editor', () => {
   beforeAll(() => {
     // Initialize notes
     act(() => {
-      const date = new Date().toISOString();
-      store.getState().setNotes({
-        [noteId]: {
-          id: noteId,
-          title: 'Test',
-          content: getDefaultEditorValue(),
-          user_id: '1',
-          created_at: date,
-          updated_at: date,
-        },
-      });
+      store.getState().setNotes(notes);
     });
   });
 

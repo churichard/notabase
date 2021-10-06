@@ -16,8 +16,12 @@ module.exports = {
     https://jestjs.io/docs/webpack#handling-static-assets */
     '^.+\\.(jpg|jpeg|png|gif|webp|svg)$': '<rootDir>/__mocks__/fileMock.js',
 
-    /* Handle supabase */
-    '^lib/supabase$': '<rootDir>/__mocks__/supabaseMock.js',
+    /* Handle libraries */
+    '^lib/supabase$': '<rootDir>/__mocks__/supabase.js',
+    '^d3-force$': '<rootDir>/__mocks__/d3-force.js',
+    '^d3-drag$': '<rootDir>/__mocks__/d3-drag.js',
+    '^d3-zoom$': '<rootDir>/__mocks__/d3-zoom.js',
+    '^d3-selection$': '<rootDir>/__mocks__/d3-selection.js',
   },
   testPathIgnorePatterns: ['<rootDir>/node_modules/', '<rootDir>/.next/'],
   testEnvironment: 'jsdom',
