@@ -49,6 +49,7 @@
     "react-highlight-words": "^0.17.0",
     "react-popper": "^2.2.5",
     "react-toastify": "^8.0.3",
+    "react-virtual": "^2.8.2",
     "react-virtualized": "^9.22.3",
     "remark-gfm": "^2.0.0",
     "remark-parse": "^10.0.0",
@@ -59,7 +60,6 @@
     "stripe": "^8.178.0",
     "tailwindcss": "^2.2.16",
     "unified": "^10.1.0",
-    "use-resize-observer": "^8.0.0",
     "uuid": "^8.3.2",
     "zustand": "^3.5.12"
   },

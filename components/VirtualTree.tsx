@@ -1,9 +1,5 @@
-import { useState, useMemo, useCallback, memo, useRef, useEffect } from 'react';
-import List, { ListRowProps } from 'react-virtualized/dist/commonjs/List';
-import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
-import CellMeasurer, {
-  CellMeasurerCache,
-} from 'react-virtualized/dist/commonjs/CellMeasurer';
+import { useState, useMemo, useCallback, memo, useRef } from 'react';
+import { useVirtual } from 'react-virtual';
 import { FlattenedTreeNode, TreeNode as TreeNodeType } from './Tree';
 import TreeNode from './TreeNode';
 
@@ -15,14 +11,6 @@ type Props = {
 
 function VirtualTree(props: Props) {
   const { data, className, collapseAll = false } = props;
-
-  const listRef = useRef<List | null>(null);
-  const cellMeasurerCache = useRef(
-    new CellMeasurerCache({
-      defaultHeight: 32,
-      fixedWidth: true,
-    })
-  );
 
   const [closedNodeIds, setClosedNodeIds] = useState<string[]>(
     collapseAll ? data.map((node) => node.id) : []
@@ -68,55 +56,40 @@ function VirtualTree(props: Props) {
     return result;
   }, [data, flattenNode]);
 
-  useEffect(() => {
-    // Clear cell cache and recompute row heights when flattened data changes
-    cellMeasurerCache.current.clearAll();
-    listRef.current?.recomputeRowHeights();
-  }, [flattenedData]);
-
-  const Row = useCallback(
-    ({ index, style, parent, key }: ListRowProps) => {
-      const node = flattenedData[index];
-      return (
-        <CellMeasurer
-          key={key}
-          cache={cellMeasurerCache.current}
-          columnIndex={0}
-          parent={parent}
-          rowIndex={index}
-        >
-          {({ registerChild, measure }) => (
-            <TreeNode
-              ref={
-                registerChild as (element: HTMLDivElement) => void | undefined
-              }
-              node={node}
-              onClick={onNodeClick}
-              style={style}
-              onResize={measure}
-            />
-          )}
-        </CellMeasurer>
-      );
-    },
-    [flattenedData, onNodeClick]
-  );
+  const parentRef = useRef<HTMLDivElement | null>(null);
+  const rowVirtualizer = useVirtual({
+    size: flattenedData.length,
+    parentRef,
+  });
 
   return (
-    <div className={className}>
-      <AutoSizer>
-        {({ width, height }) => (
-          <List
-            ref={listRef}
-            width={width}
-            height={height}
-            rowCount={flattenedData.length}
-            deferredMeasurementCache={cellMeasurerCache.current}
-            rowHeight={cellMeasurerCache.current.rowHeight}
-            rowRenderer={Row}
-          />
-        )}
-      </AutoSizer>
+    <div ref={parentRef} className={className}>
+      <div
+        style={{
+          height: `${rowVirtualizer.totalSize}px`,
+          width: '100%',
+          position: 'relative',
+        }}
+      >
+        {rowVirtualizer.virtualItems.map((virtualRow) => {
+          const node = flattenedData[virtualRow.index];
+          return (
+            <TreeNode
+              key={node.id}
+              ref={virtualRow.measureRef}
+              node={node}
+              onClick={onNodeClick}
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                transform: `translateY(${virtualRow.start}px)`,
+              }}
+            />
+          );
+        })}
+      </div>
     </div>
   );
 }
