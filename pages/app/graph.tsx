@@ -19,7 +19,10 @@ export default function Graph() {
     const notesArr = Object.values(notes);
 
     // Initialize linksByNoteId
-    const linksByNoteId: Record<string, Set<string> | undefined> = {};
+    const linksByNoteId: Record<string, Set<string>> = {};
+    for (const note of notesArr) {
+      linksByNoteId[note.id] = new Set();
+    }
 
     // Search for links in each note
     for (const note of notesArr) {
@@ -39,25 +42,22 @@ export default function Graph() {
       for (const [node] of matchingElements) {
         const noteLinkElement = node as NoteLink;
 
-        // Create a new set if there is no set for the note id
-        if (!linksByNoteId[note.id]) {
-          linksByNoteId[note.id] = new Set();
-        }
+        // Skip the node if it doesn't link to an existing note
         if (!linksByNoteId[noteLinkElement.noteId]) {
-          linksByNoteId[noteLinkElement.noteId] = new Set();
+          continue;
         }
 
         // Add the link to each note set
-        linksByNoteId[note.id]?.add(noteLinkElement.noteId);
-        linksByNoteId[noteLinkElement.noteId]?.add(note.id);
+        linksByNoteId[note.id].add(noteLinkElement.noteId);
+        linksByNoteId[noteLinkElement.noteId].add(note.id);
       }
     }
 
     // Create graph data
     for (const note of notesArr) {
       // Populate links
-      const linkedNoteIds = linksByNoteId[note.id]?.values() ?? [];
-      const numOfLinks = linksByNoteId[note.id]?.size ?? 0;
+      const linkedNoteIds = linksByNoteId[note.id].values();
+      const numOfLinks = linksByNoteId[note.id].size;
       for (const linkedNoteId of linkedNoteIds) {
         data.links.push({ source: note.id, target: linkedNoteId });
       }
