@@ -19,10 +19,7 @@ export default function Graph() {
     const notesArr = Object.values(notes);
 
     // Initialize linksByNoteId
-    const linksByNoteId: Record<string, Set<string>> = {};
-    for (const note of notesArr) {
-      linksByNoteId[note.id] = new Set();
-    }
+    const linksByNoteId: Record<string, Set<string> | undefined> = {};
 
     // Search for links in each note
     for (const note of notesArr) {
@@ -41,22 +38,34 @@ export default function Graph() {
       // Update linksByNoteId
       for (const [node] of matchingElements) {
         const noteLinkElement = node as NoteLink;
-        linksByNoteId[note.id].add(noteLinkElement.noteId);
-        linksByNoteId[noteLinkElement.noteId].add(note.id);
+
+        // Create a new set if there is no set for the note id
+        if (!linksByNoteId[note.id]) {
+          linksByNoteId[note.id] = new Set();
+        }
+        if (!linksByNoteId[noteLinkElement.noteId]) {
+          linksByNoteId[noteLinkElement.noteId] = new Set();
+        }
+
+        // Add the link to each note set
+        linksByNoteId[note.id]?.add(noteLinkElement.noteId);
+        linksByNoteId[noteLinkElement.noteId]?.add(note.id);
       }
     }
 
     // Create graph data
     for (const note of notesArr) {
       // Populate links
-      for (const linkNoteId of linksByNoteId[note.id].values()) {
-        data.links.push({ source: note.id, target: linkNoteId });
+      const linkedNoteIds = linksByNoteId[note.id]?.values() ?? [];
+      const numOfLinks = linksByNoteId[note.id]?.size ?? 0;
+      for (const linkedNoteId of linkedNoteIds) {
+        data.links.push({ source: note.id, target: linkedNoteId });
       }
       // Populate nodes
       data.nodes.push({
         id: note.id,
         name: note.title,
-        radius: getRadius(linksByNoteId[note.id].size),
+        radius: getRadius(numOfLinks),
       });
     }
 

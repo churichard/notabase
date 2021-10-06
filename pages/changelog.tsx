@@ -27,6 +27,12 @@ export default function Changelog() {
           .
         </p>
         <ChangelogBlock
+          title="October 6, 2021"
+          bugFixes={[
+            'Fix blank graph view when a note links to a nonexistent note',
+          ]}
+        />
+        <ChangelogBlock
           title="October 2, 2021"
           features={[
             'Add keyboard shortcut for toggling the sidebar (ctrl+\\ or cmd+\\)',
