@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 /// <reference types="cypress" />
 
 const path = require('path');
