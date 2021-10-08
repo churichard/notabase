@@ -1,7 +1,7 @@
 import user from '../fixtures/user.json';
 
-describe('Login', () => {
-  before(() => {
+describe('login', () => {
+  beforeEach(() => {
     // seed the database
     cy.exec('npm run db:seed');
   });
