@@ -23,3 +23,25 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+
+import '@testing-library/cypress/add-commands';
+
+Cypress.Commands.add(
+  'paste',
+  { prevSubject: true },
+  (selector, pastePayload) => {
+    // https://developer.mozilla.org/en-US/docs/Web/API/Element/paste_event
+    cy.wrap(selector).then(($destination) => {
+      const pasteEvent = Object.assign(
+        new Event('paste', { bubbles: true, cancelable: true }),
+        {
+          clipboardData: {
+            getData: () => pastePayload,
+            types: ['text/plain'],
+          },
+        }
+      );
+      $destination[0].dispatchEvent(pasteEvent);
+    });
+  }
+);
