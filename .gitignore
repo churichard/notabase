@@ -28,6 +28,7 @@ yarn-error.log*
 .env.development.local
 .env.test.local
 .env.production.local
+.env.test
 
 # vscode
 .vscode
@@ -41,3 +42,10 @@ public/sw.js
 public/sw.js.map
 public/workbox-*.js
 public/workbox-*.js.map
+
+# Supabase
+.supabase
+
+# Cypress
+cypress/screenshots/
+cypress/videos/
