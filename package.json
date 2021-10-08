@@ -29,7 +29,7 @@
     "@tailwindcss/forms": "^0.3.4",
     "@tailwindcss/typography": "^0.4.1",
     "@tippyjs/react": "^4.2.5",
-    "autoprefixer": "^10.3.6",
+    "autoprefixer": "^10.3.7",
     "classnames": "^2.3.1",
     "d3-drag": "^3.0.0",
     "d3-force": "^3.0.0",
