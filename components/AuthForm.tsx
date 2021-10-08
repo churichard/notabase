@@ -94,6 +94,7 @@ export default function AuthForm(props: Props) {
         ) : null}
       </div>
       <button
+        type="submit"
         className={`w-full mt-6 btn ${isLoading && 'opacity-50 cursor-wait'}`}
         disabled={isLoading}
       >

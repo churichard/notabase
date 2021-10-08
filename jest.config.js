@@ -23,7 +23,11 @@ module.exports = {
     '^d3-zoom$': '<rootDir>/__mocks__/d3-zoom.js',
     '^d3-selection$': '<rootDir>/__mocks__/d3-selection.js',
   },
-  testPathIgnorePatterns: ['<rootDir>/node_modules/', '<rootDir>/.next/'],
+  testPathIgnorePatterns: [
+    '<rootDir>/node_modules/',
+    '<rootDir>/.next/',
+    '<rootDir>/cypress/',
+  ],
   testEnvironment: 'jsdom',
   transform: {
     /* Use babel-jest to transpile tests with the next/babel preset

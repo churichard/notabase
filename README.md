@@ -34,6 +34,12 @@ Notabase is in beta and is under active development.
 
 If you need help getting started with Notabase, check out our [Help Center](https://help.notabase.io).
 
+## Sponsors
+
+Sponsors make it possible for me to continue developing Notabase. Your support is greatly appreciated!
+
+[Become a sponsor](https://github.com/sponsors/churichard)
+
 ## Self-hosting / running locally
 
 Notabase is currently focused on the hosted experience, but it is possible for you to self-host it as well. Here are some steps that you need to take to get it running locally:
@@ -56,11 +62,27 @@ Notabase is currently focused on the hosted experience, but it is possible for y
 
 4. In your local development environment, install the packages using `npm install`, and then run the project using `npm run dev`.
 
-## Sponsors
+## Testing
 
-Sponsors make it possible for me to continue developing Notabase. Your support is greatly appreciated!
+### Unit tests
 
-[Become a sponsor](https://github.com/sponsors/churichard)
+You can run unit tests by running `npm run test`.
+
+### Cypress tests
+
+First-time setup:
+
+1. Install Docker and Docker Compose.
+2. Installed the supabase-cli: `npm i -g supabase`.
+3. Run `supabase init` to initialize your Supabase project.
+4. Copy `.env.test.example` into `.env.test` and fill in the environment variables.
+
+To run tests:
+
+1. Start Docker.
+2. Run `supabase start`.
+3. Run `NODE_ENV=test npm run dev`.
+4. Run `npm run cy:open` to run Cypress tests in a GUI, or `npm run cy:run` to run them in the CLI.
 
 ## License
 
