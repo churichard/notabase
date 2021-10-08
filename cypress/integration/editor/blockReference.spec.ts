@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
-import user from '../../fixtures/user.json';
 import { Note } from 'types/supabase';
+import user from '../../fixtures/user.json';
 
 const supabase = createClient(
   Cypress.env('NEXT_PUBLIC_SUPABASE_URL'),
