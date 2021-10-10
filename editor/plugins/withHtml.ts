@@ -99,8 +99,13 @@ const withHtml = (editor: Editor) => {
 
   editor.insertData = (data) => {
     const html = data.getData('text/html');
+    const isSlateFragment = data.types.includes('application/x-slate-fragment');
 
-    if (html) {
+    // Only insert HTML if it doesn't come from a Slate editor.
+    // We assume that if it comes from a Slate editor, then it's from our own,
+    // so we want to preserve the original copy and paste behavior.
+    // We can't currently differentiate between different editors; see https://github.com/ianstormtaylor/slate/issues/1024
+    if (html && !isSlateFragment) {
       const parsed = new DOMParser().parseFromString(html, 'text/html');
       const fragment = deserialize(parsed.body);
       Transforms.insertFragment(editor, fragment);

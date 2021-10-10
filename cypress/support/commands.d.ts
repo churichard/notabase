@@ -4,11 +4,27 @@ declare namespace Cypress {
      * Gets the Slate editor element.
      * @example cy.getEditor()
      */
-    getEditor(): Chainable<Element>;
+    getEditor(): Chainable<JQuery<HTMLElement>>;
     /**
      * Custom command to paste text.
      * @example cy.paste('value')
      */
-    paste(value: string): Chainable<Element>;
+    paste(value: string | Record<string, string>): Chainable<Element>;
+    /**
+     * Sets the selection.
+     * @param query Beginning text
+     * @param endQuery End text
+     */
+    setSelection(
+      query:
+        | string
+        | {
+            anchorQuery: string;
+            anchorOffset?: number;
+            focusQuery?: string;
+            focusOffset?: number;
+          },
+      endQuery?: string
+    ): Chainable<Element>;
   }
 }

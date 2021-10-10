@@ -204,4 +204,34 @@ describe('with html', () => {
       .eq(1)
       .should('have.text', 'Quid, quod res alia tota est?');
   });
+
+  // This test won't work until Cypress supports copy and paste
+  // it('can copy and paste multiple blocks within the editor', function () {
+  //   cy.visit(`/app/note/${this.noteId}`);
+
+  //   // Type some text into the editor
+  //   cy.getEditor().type('{movetostart}This is a test{enter}> A blockquote');
+
+  //   const html = `<html>
+  //   <body>
+  //   <!--StartFragment--><div class="relative w-full group before:absolute before:top-0 before:bottom-0 before:w-full before:right-full"><div class="my-3 " data-testid="paragraph" data-slate-node="element"><span data-slate-node="text"><span data-slate-leaf="true"><span data-slate-string="true">This is a test</span></span></span></div><button class="select-none hover:bg-gray-200 active:bg-gray-300 rounded absolute top-0.5 dark:hover:bg-gray-800 dark:active:bg-gray-700 opacity-0.1 group-hover:opacity-100 -left-8" contenteditable="false" id="headlessui-menu-button-39" type="button" aria-haspopup="true" aria-expanded="false"><span><span class="flex items-center justify-center w-6 h-6"><svg class="text-gray-500 dark:text-gray-400" width="18" height="18" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="19" r="1"></circle><circle cx="12" cy="5" r="1"></circle></svg></span></span></button></div><div class="relative w-full group before:absolute before:top-0 before:bottom-0 before:w-full before:right-full" data-slate-fragment="JTVCJTdCJTIyaWQlMjIlM0ElMjJiMjBlZTBhNC1kNDRmLTQyMzYtYTVkNC03NmM5YmIxM2Q3ZDYlMjIlMkMlMjJ0eXBlJTIyJTNBJTIycGFyYWdyYXBoJTIyJTJDJTIyY2hpbGRyZW4lMjIlM0ElNUIlN0IlMjJ0ZXh0JTIyJTNBJTIyVGhpcyUyMGlzJTIwYSUyMHRlc3QlMjIlN0QlNUQlN0QlMkMlN0IlMjJpZCUyMiUzQSUyMmJlMWZhNjEwLTdiNWUtNGYwOS04ODFmLTgzM2M5Y2E4NDgxZSUyMiUyQyUyMnR5cGUlMjIlM0ElMjJibG9jay1xdW90ZSUyMiUyQyUyMmNoaWxkcmVuJTIyJTNBJTVCJTdCJTIydGV4dCUyMiUzQSUyMkElMjBibG9ja3F1b3RlJTIyJTdEJTVEJTdEJTVE"><blockquote class="pl-4 border-l-4 my-3 " data-slate-node="element"><span data-slate-node="text"><span data-slate-leaf="true"><span data-slate-string="true">A blockquote</span></span></span></blockquote></div><!--EndFragment-->
+  //   </body>
+  //   </html>`;
+
+  //   const fragment =
+  //     'JTVCJTdCJTIyaWQlMjIlM0ElMjJiMjBlZTBhNC1kNDRmLTQyMzYtYTVkNC03NmM5YmIxM2Q3ZDYlMjIlMkMlMjJ0eXBlJTIyJTNBJTIycGFyYWdyYXBoJTIyJTJDJTIyY2hpbGRyZW4lMjIlM0ElNUIlN0IlMjJ0ZXh0JTIyJTNBJTIyVGhpcyUyMGlzJTIwYSUyMHRlc3QlMjIlN0QlNUQlN0QlMkMlN0IlMjJpZCUyMiUzQSUyMmJlMWZhNjEwLTdiNWUtNGYwOS04ODFmLTgzM2M5Y2E4NDgxZSUyMiUyQyUyMnR5cGUlMjIlM0ElMjJibG9jay1xdW90ZSUyMiUyQyUyMmNoaWxkcmVuJTIyJTNBJTVCJTdCJTIydGV4dCUyMiUzQSUyMkElMjBibG9ja3F1b3RlJTIyJTdEJTVEJTdEJTVE';
+
+  //   cy.getEditor().setSelection('This', 'blockquote');
+
+  //   cy.getEditor().type('{movetoend}{enter}');
+
+  //   cy.getEditor().paste({
+  //     'text/plain': 'This is a test\nA blockquote',
+  //     'text/html': html,
+  //     'application/x-slate-fragment': fragment,
+  //   });
+
+  //   cy.getEditor().findAllByText('This is a test').should('have.length', 2);
+  //   cy.getEditor().findAllByText('A blockquote').should('have.length', 2);
+  // });
 });
