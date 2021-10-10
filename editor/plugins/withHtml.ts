@@ -21,6 +21,7 @@ const ELEMENT_TAGS: Record<
   IMG: (el: HTMLElement) => ({
     type: ElementType.Image,
     url: el.getAttribute('src') ?? '',
+    caption: el.getAttribute('alt') ?? undefined,
   }),
   LI: () => ({ type: ElementType.Paragraph }),
   // OL: () => ({ type: ElementType.NumberedList }),

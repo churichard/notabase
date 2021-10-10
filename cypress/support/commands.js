@@ -45,3 +45,5 @@ Cypress.Commands.add(
     });
   }
 );
+
+Cypress.Commands.add('getEditor', () => cy.get('[data-slate-editor=true]'));
