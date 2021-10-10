@@ -46,9 +46,14 @@ const TEXT_TAGS: Record<
 
 export const deserialize = (el: HTMLElement): Node[] => {
   if (el.nodeType === 3) {
+    // Keep the text content if there is actually content, or if it doesn't include \n
+    // This will preserve whitespace around inlines and strip out extraneous newlines
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    return el.textContent.trim() ? el.textContent : null;
+    return el.textContent &&
+      (!el.textContent.includes('\n') || el.textContent.trim())
+      ? el.textContent
+      : null;
   } else if (el.nodeType !== 1 || el.nodeName === 'BR') {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore

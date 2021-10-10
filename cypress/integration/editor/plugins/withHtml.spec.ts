@@ -220,4 +220,22 @@ describe('with html', () => {
       .should('have.text', 'This is a test');
     cy.getEditor().find('blockquote').should('have.text', 'A blockquote');
   });
+
+  it('preserves whitespace around inline elements', function () {
+    cy.visit(`/app/note/${this.noteId}`);
+
+    const html = `
+      <p>Lorem ipsum dolor sit amet,<span> </span><strong>consectetur</strong><span> </span>adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+    `;
+
+    // Paste html content
+    cy.getEditor().type('{movetostart}').paste(html, 'text/html');
+
+    cy.getEditor()
+      .findByTestId('paragraph')
+      .should(
+        'have.text',
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+      );
+  });
 });
