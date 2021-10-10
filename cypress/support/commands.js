@@ -25,23 +25,27 @@
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
 import '@testing-library/cypress/add-commands';
+import './selection';
 
 Cypress.Commands.add(
   'paste',
   { prevSubject: true },
-  (selector, pastePayload) => {
+  (selector, data, type = 'text/plain') => {
     // https://developer.mozilla.org/en-US/docs/Web/API/Element/paste_event
     cy.wrap(selector).then(($destination) => {
       const pasteEvent = Object.assign(
         new Event('paste', { bubbles: true, cancelable: true }),
         {
           clipboardData: {
-            getData: () => pastePayload,
-            types: ['text/plain'],
+            getData: () => data,
+            types: [type],
           },
         }
       );
+
       $destination[0].dispatchEvent(pasteEvent);
     });
   }
 );
+
+Cypress.Commands.add('getEditor', () => cy.get('[data-slate-editor=true]'));

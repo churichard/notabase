@@ -28,7 +28,7 @@ INSERT INTO auth.users
     'authenticated',
     'authenticated',
     'hello@example.com',
-    extensions.crypt('x6YkY76!', extensions.gen_salt('bf')),
+    extensions.crypt('pass123', extensions.gen_salt('bf')),
     now(),
     '',
     '',

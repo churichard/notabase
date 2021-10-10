@@ -37,6 +37,7 @@ import withVoidElements from 'editor/plugins/withVoidElements';
 import withNodeId from 'editor/plugins/withNodeId';
 import withBlockReferences from 'editor/plugins/withBlockReferences';
 import withTags from 'editor/plugins/withTags';
+import withHtml from 'editor/plugins/withHtml';
 import { getDefaultEditorValue } from 'editor/constants';
 import { store, useStore } from 'lib/store';
 import { ElementType, Mark } from 'types/slate';
@@ -82,13 +83,15 @@ function Editor(props: Props) {
     editorRef.current = withNormalization(
       withCustomDeleteBackward(
         withAutoMarkdown(
-          withBlockBreakout(
-            withVoidElements(
-              withBlockReferences(
-                withImages(
-                  withTags(
-                    withLinks(
-                      withNodeId(withHistory(withReact(createEditor())))
+          withHtml(
+            withBlockBreakout(
+              withVoidElements(
+                withBlockReferences(
+                  withImages(
+                    withTags(
+                      withLinks(
+                        withNodeId(withHistory(withReact(createEditor())))
+                      )
                     )
                   )
                 )

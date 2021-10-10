@@ -33,7 +33,7 @@ describe('block reference', () => {
     cy.visit(`/app/note/${this.noteId}`);
 
     // Type some text into the editor, then click the 3 dots to the left
-    cy.get('[data-slate-editor=true]')
+    cy.getEditor()
       .type('{movetostart}This is a test')
       .findAllByRole('button')
       .eq(0)
@@ -46,9 +46,7 @@ describe('block reference', () => {
     cy.window()
       .then((win) => win.navigator.clipboard.readText())
       .then((text) => {
-        cy.get('[data-slate-editor=true]')
-          .type('{movetoend}{enter}')
-          .paste(text);
+        cy.getEditor().type('{movetoend}{enter}').paste(text);
       });
 
     // Assert that there are now two blocks with the same content
