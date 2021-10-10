@@ -9,7 +9,7 @@ declare namespace Cypress {
      * Custom command to paste text.
      * @example cy.paste('value')
      */
-    paste(value: string | Record<string, string>): Chainable<Element>;
+    paste(value: string, type?: string): Chainable<Element>;
     /**
      * Sets the selection.
      * @param query Beginning text

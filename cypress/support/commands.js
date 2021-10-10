@@ -30,26 +30,17 @@ import './selection';
 Cypress.Commands.add(
   'paste',
   { prevSubject: true },
-  (selector, pastePayload) => {
+  (selector, data, type = 'text/plain') => {
     // https://developer.mozilla.org/en-US/docs/Web/API/Element/paste_event
     cy.wrap(selector).then(($destination) => {
-      let clipboardData;
-
-      if (typeof pastePayload === 'string') {
-        clipboardData = {
-          getData: (type) => (type === 'text/plain' ? pastePayload : ''),
-          types: ['text/plain'],
-        };
-      } else if (typeof pastePayload === 'object') {
-        clipboardData = {
-          getData: (type) => pastePayload[type] ?? '',
-          types: Object.keys(pastePayload),
-        };
-      }
-
       const pasteEvent = Object.assign(
         new Event('paste', { bubbles: true, cancelable: true }),
-        { clipboardData }
+        {
+          clipboardData: {
+            getData: () => data,
+            types: [type],
+          },
+        }
       );
 
       $destination[0].dispatchEvent(pasteEvent);
