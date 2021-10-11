@@ -27,8 +27,7 @@ describe('Editor', () => {
     );
   };
 
-  beforeAll(() => {
-    // Initialize notes
+  beforeEach(() => {
     act(() => {
       store.getState().setNotes(notes);
     });
