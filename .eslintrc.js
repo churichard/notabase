@@ -14,7 +14,6 @@ module.exports = {
     'plugin:import/warnings',
     'plugin:import/typescript',
     'plugin:@next/next/recommended',
-    'plugin:cypress/recommended',
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {

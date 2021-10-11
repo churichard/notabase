@@ -20,7 +20,7 @@ describe('Editor', () => {
       signOut: jest.fn(),
     };
     const firstNoteId = Object.keys(store.getState().notes)[0];
-    render(
+    return render(
       <AuthContext.Provider value={auth}>
         <Editor noteId={firstNoteId} onChange={jest.fn()} />
       </AuthContext.Provider>

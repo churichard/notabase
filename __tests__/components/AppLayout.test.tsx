@@ -27,7 +27,7 @@ describe('AppLayout', () => {
       signUp: jest.fn(),
       signOut: jest.fn(),
     };
-    render(
+    return render(
       <AuthContext.Provider value={auth}>
         <AppLayout>
           <div>Test</div>
@@ -48,7 +48,7 @@ describe('AppLayout', () => {
     expect(screen.getByTestId('spinner')).toBeInTheDocument();
     expect(supabase.from).toHaveBeenCalledWith('notes');
 
-    await waitFor(() => expect(screen.getByText('Test')).toBeInTheDocument());
+    expect(await screen.findByText('Test')).toBeInTheDocument();
   });
 
   describe('subscription', () => {

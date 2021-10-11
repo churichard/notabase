@@ -22,7 +22,7 @@ describe('AppHome', () => {
     const openSidebarButton = screen.queryByRole('button', {
       name: 'Open sidebar',
     });
-    expect(openSidebarButton).toBeNull();
+    expect(openSidebarButton).not.toBeInTheDocument();
   });
 
   it('renders open sidebar button if the sidebar is closed', () => {

@@ -30,6 +30,7 @@ module.exports = {
     '<rootDir>/node_modules/',
     '<rootDir>/.next/',
     '<rootDir>/cypress/',
+    '<rootDir>/__tests__/.eslintrc.js',
   ],
   testEnvironment: 'jsdom',
   transform: {
