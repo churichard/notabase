@@ -52,8 +52,22 @@ describe('AppLayout', () => {
   });
 
   describe('subscription', () => {
+    let setBillingDetailsSpy: jest.SpyInstance;
+
+    const mockSubscription = (data: Partial<Subscription>) => {
+      supabaseMock.maybeSingle.mockImplementation(() => ({ data }));
+    };
+
+    beforeEach(() => {
+      setBillingDetailsSpy = jest.spyOn(store.getState(), 'setBillingDetails');
+    });
+
     it('sets basic plan by default', async () => {
       renderAppLayout();
+
+      await waitFor(() => {
+        expect(supabaseMock.maybeSingle).toHaveBeenCalled();
+      });
 
       await waitFor(() => {
         const billingDetails = store.getState().billingDetails;
@@ -62,20 +76,80 @@ describe('AppLayout', () => {
     });
 
     it("sets the pro plan if the user is on pro, their subscription is active, and they haven't passed their current period end", async () => {
-      const mockSupabaseData: Partial<Subscription> = {
+      mockSubscription({
         plan_id: PlanId.Pro,
         subscription_status: SubscriptionStatus.Active,
         current_period_end: new Date(Date.now() + 1000).toISOString(),
-      };
-      supabaseMock.maybeSingle.mockImplementation(() => ({
-        data: mockSupabaseData,
-      }));
+      });
 
       renderAppLayout();
 
       await waitFor(() => {
+        expect(supabaseMock.maybeSingle).toHaveBeenCalled();
+        expect(setBillingDetailsSpy).toHaveBeenCalled();
+      });
+
+      await waitFor(() => {
         const billingDetails = store.getState().billingDetails;
         expect(billingDetails.planId).toBe(PlanId.Pro);
+      });
+    });
+
+    it("sets the basic plan if the user is on pro, their subscription is inactive, and they haven't passed their current period end", async () => {
+      mockSubscription({
+        plan_id: PlanId.Pro,
+        subscription_status: SubscriptionStatus.Inactive,
+        current_period_end: new Date(Date.now() + 1000).toISOString(),
+      });
+
+      renderAppLayout();
+
+      await waitFor(() => {
+        expect(supabaseMock.maybeSingle).toHaveBeenCalled();
+        expect(setBillingDetailsSpy).toHaveBeenCalled();
+      });
+
+      const billingDetails = store.getState().billingDetails;
+      expect(billingDetails.planId).toBe(PlanId.Basic);
+    });
+
+    it("sets the basic plan if the user is on pro, their subscription is active, and they've passed their current period end", async () => {
+      mockSubscription({
+        plan_id: PlanId.Pro,
+        subscription_status: SubscriptionStatus.Active,
+        current_period_end: new Date(Date.now() - 1000).toISOString(),
+      });
+
+      renderAppLayout();
+
+      await waitFor(() => {
+        expect(supabaseMock.maybeSingle).toHaveBeenCalled();
+        expect(setBillingDetailsSpy).toHaveBeenCalled();
+      });
+
+      await waitFor(() => {
+        const billingDetails = store.getState().billingDetails;
+        expect(billingDetails.planId).toBe(PlanId.Basic);
+      });
+    });
+
+    it('sets the basic plan if the user is on basic', async () => {
+      mockSubscription({
+        plan_id: PlanId.Basic,
+        subscription_status: SubscriptionStatus.Active,
+        current_period_end: new Date(Date.now() + 1000).toISOString(),
+      });
+
+      renderAppLayout();
+
+      await waitFor(() => {
+        expect(supabaseMock.maybeSingle).toHaveBeenCalled();
+        expect(setBillingDetailsSpy).toHaveBeenCalled();
+      });
+
+      await waitFor(() => {
+        const billingDetails = store.getState().billingDetails;
+        expect(billingDetails.planId).toBe(PlanId.Basic);
       });
     });
   });
