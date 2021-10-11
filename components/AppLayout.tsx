@@ -137,13 +137,15 @@ export default function AppLayout(props: Props) {
         .maybeSingle();
 
       if (data) {
+        const currentPeriodEndDate = new Date(data.current_period_end);
+        const isSubscriptionActiveAndNotEnded =
+          data.subscription_status === SubscriptionStatus.Active &&
+          Date.now() < currentPeriodEndDate.getTime();
+
         setBillingDetails({
-          planId:
-            data.subscription_status === SubscriptionStatus.Active
-              ? data.plan_id
-              : PlanId.Basic,
+          planId: isSubscriptionActiveAndNotEnded ? data.plan_id : PlanId.Basic,
           frequency: data.frequency,
-          currentPeriodEnd: new Date(data.current_period_end),
+          currentPeriodEnd: currentPeriodEndDate,
           cancelAtPeriodEnd: data.cancel_at_period_end,
         });
       }
