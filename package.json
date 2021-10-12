@@ -60,7 +60,7 @@
     "slate": "^0.66.5",
     "slate-history": "^0.66.0",
     "slate-hyperscript": "^0.66.0",
-    "slate-react": "^0.66.6",
+    "slate-react": "^0.66.7",
     "stripe": "^8.179.0",
     "tailwindcss": "^2.2.16",
     "unified": "^10.1.0",
