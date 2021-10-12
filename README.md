@@ -46,21 +46,10 @@ Notabase is currently focused on the hosted experience, but it is possible for y
 
 1. Notabase uses Supabase as the backend (for authentication, database, and storage), so you'll have to make a [Supabase](https://supabase.io) account. If you prefer to self-host Supabase, you can follow the instructions in their [docs](https://supabase.io/docs/guides/self-hosting).
 2. Copy `.env.local.example` into `.env.local` and fill in the `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_KEY`, and `SUPABASE_SERVICE_KEY` variables from your [Supabase dashboard](https://app.supabase.io). The other environment variables are optional.
-3. Go to the Table Editor in the Supabase dashboard and create two new tables: `users` and `notes`.
-   | users | |
-   | ----------- | ----------- |
-   | id | uuid |
-
-   | notes      |             |
-   | ---------- | ----------- |
-   | id         | uuid        |
-   | user_id    | uuid        |
-   | title      | text        |
-   | content    | jsonb       |
-   | created_at | timestamptz |
-   | updated_at | timestamptz |
-
+3. Create your database tables. The full schema is [here](https://github.com/churichard/notabase/blob/main/scripts/schema.sql).
 4. In your local development environment, install the packages using `npm install`, and then run the project using `npm run dev`.
+
+Note: by default, Notabase has a cap on the number of notes you can create. You can circumvent this by inserting an active subscription for your user id in the `subscriptions` table.
 
 ## Testing
 
