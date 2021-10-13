@@ -17,6 +17,22 @@ export default function Footer(props: Props) {
           <p className="pt-0.5 text-gray-700 max-w-sm">
             Powerful and easy-to-use note-taking app for networked thinking.
           </p>
+          <div className="mt-4">
+            <a
+              href="https://www.producthunt.com/posts/notabase?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-notabase"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=314758&theme=light"
+                alt="Notabase - Easy-to-use note-taking app for networked thinking | Product Hunt"
+                style={{ width: 250, height: 54 }}
+                width="250"
+                height="54"
+              />
+            </a>
+          </div>
         </div>
         <div className="flex flex-wrap flex-1 space-x-16 lg:justify-end">
           <div className="flex flex-col mt-8 space-y-2 lg:mt-0">

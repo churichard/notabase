@@ -18,14 +18,6 @@ import PricingFaq from 'components/PricingFaq';
 export default function Home() {
   return (
     <LandingLayout showNavbar={false} showFooter={false}>
-      <a
-        className="block w-full py-2 font-semibold text-center text-orange-900 bg-orange-300"
-        href="https://www.producthunt.com/posts/notabase"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Notabase is live on Product Hunt! 🎉
-      </a>
       <div className="flex flex-col min-h-screen">
         <div className="flex-1">
           <div className="shadow-sm bg-gradient-to-r from-yellow-50 via-green-50 to-blue-50">
