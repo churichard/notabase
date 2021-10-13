@@ -1,5 +1,7 @@
-import { ReactNode, useState } from 'react';
+import { ReactNode, useCallback, useState } from 'react';
 import {
+  BillingFrequency,
+  isSubscription,
   MAX_NUM_OF_BASIC_NOTES,
   PlanId,
   PRICING_PLANS,
@@ -22,6 +24,14 @@ const PRO_BULLET_POINTS = [
   'Community and email support',
 ];
 
+const CATALYST_BULLET_POINTS = [
+  'Everything in Pro, plus:',
+  'One-time payment for 5 years of access',
+  "Support Notabase's development",
+  'Early access to new features',
+  'Exclusive Discord role',
+];
+
 type Props = {
   buttons?: (showAnnual: boolean) => ReactNode[];
 };
@@ -29,6 +39,22 @@ type Props = {
 export default function PricingPlans(props: Props) {
   const { buttons } = props;
   const [showAnnual, setShowAnnual] = useState(true);
+
+  const getBillingPeriodPrice = useCallback(
+    (planId: PlanId, showAnnual: boolean) => {
+      const plan = PRICING_PLANS[planId];
+      let price;
+      if (isSubscription(plan.prices)) {
+        price = showAnnual
+          ? plan.prices[BillingFrequency.Annual]
+          : plan.prices[BillingFrequency.Monthly];
+      } else {
+        price = plan.prices[BillingFrequency.OneTime];
+      }
+      return +(price.amount / 100).toFixed(2);
+    },
+    []
+  );
 
   return (
     <>
@@ -48,18 +74,31 @@ export default function PricingPlans(props: Props) {
           </span>
         </span>
       </div>
-      <div className="grid max-w-4xl gap-4 mx-auto gap md:grid-cols-2">
+      <div className="grid gap-4 mx-auto lg:grid-cols-3">
         <PricingPlan
-          plan={PRICING_PLANS[PlanId.Basic]}
-          showAnnual={showAnnual}
+          className="w-full mx-auto md:w-96 lg:w-full"
+          name={PRICING_PLANS[PlanId.Basic].name}
+          price={getBillingPeriodPrice(PlanId.Basic, showAnnual)}
+          period={showAnnual ? '/ yr' : '/ mo'}
           bulletPoints={BASIC_BULLET_POINTS}
           button={buttons?.(showAnnual)[0]}
         />
         <PricingPlan
-          plan={PRICING_PLANS[PlanId.Pro]}
-          showAnnual={showAnnual}
+          className="w-full mx-auto md:w-96 lg:w-full"
+          name={PRICING_PLANS[PlanId.Pro].name}
+          price={getBillingPeriodPrice(PlanId.Pro, showAnnual)}
+          period={showAnnual ? '/ yr' : '/ mo'}
+          discount={showAnnual ? '108' : '12'}
           bulletPoints={PRO_BULLET_POINTS}
           button={buttons?.(showAnnual)[1]}
+        />
+        <PricingPlan
+          className="w-full mx-auto md:w-96 lg:w-full"
+          name={PRICING_PLANS[PlanId.Catalyst].name}
+          price={getBillingPeriodPrice(PlanId.Catalyst, showAnnual)}
+          period="/ 5 yrs"
+          bulletPoints={CATALYST_BULLET_POINTS}
+          button={buttons?.(showAnnual)[2]}
         />
       </div>
     </>

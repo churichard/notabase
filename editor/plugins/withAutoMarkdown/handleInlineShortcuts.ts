@@ -140,7 +140,7 @@ export const getOrCreateNoteId = (noteTitle: string): string | null => {
   } else {
     const billingDetails = store.getState().billingDetails;
     if (
-      (!billingDetails || billingDetails.planId === PlanId.Basic) &&
+      billingDetails.planId === PlanId.Basic &&
       notesArr.length >= MAX_NUM_OF_BASIC_NOTES
     ) {
       toast.error(

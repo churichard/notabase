@@ -9,13 +9,13 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp" with SCHEMA public;
 -- enums
 
 DROP TYPE IF EXISTS plan_id CASCADE;
-CREATE TYPE plan_id AS ENUM ('basic', 'pro');
+CREATE TYPE plan_id AS ENUM ('basic', 'pro', 'catalyst');
 
 DROP TYPE IF EXISTS subscription_status CASCADE;
 CREATE TYPE subscription_status AS ENUM ('active', 'inactive');
 
 DROP TYPE IF EXISTS billing_frequency CASCADE;
-CREATE TYPE billing_frequency AS ENUM ('monthly', 'annual');
+CREATE TYPE billing_frequency AS ENUM ('monthly', 'annual', 'one_time');
 
 
 -- public.notes definition
@@ -41,7 +41,7 @@ CREATE TABLE public.subscriptions (
   id uuid NOT NULL DEFAULT uuid_generate_v4(),
   user_id uuid NULL,
   stripe_customer_id text NOT NULL,
-  stripe_subscription_id text NOT NULL,
+  stripe_subscription_id text,
   plan_id plan_id NOT NULL,
   subscription_status subscription_status NOT NULL,
   current_period_end timestamptz NOT NULL,

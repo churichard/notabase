@@ -26,7 +26,7 @@ export type Subscription = {
   id: string;
   user_id: User['id'];
   stripe_customer_id: string;
-  stripe_subscription_id: string;
+  stripe_subscription_id: string | null;
   plan_id: PlanId;
   subscription_status: SubscriptionStatus;
   frequency: BillingFrequency;

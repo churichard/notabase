@@ -8,14 +8,22 @@ const PRO_PROD_PRODUCT_ID = 'prod_JuGvuo7cLr1UF7';
 const PRO_MONTHLY_PROD_PRICE_ID = 'price_1JGSNYCXZdSttUYjlXixrrLH';
 const PRO_ANNUAL_PROD_PRICE_ID = 'price_1JGSNYCXZdSttUYjj6EoZVez';
 
+const CATALYST_DEV_PRODUCT_ID = 'prod_KOcUXd1Nhw26xb';
+const CATALYST_DEV_PRICE_ID = 'price_1JjpFYCXZdSttUYj0xNwhxnR';
+
+const CATALYST_PROD_PRODUCT_ID = 'prod_KP0b9KmLK40Zqg';
+const CATALYST_PROD_PRICE_ID = 'price_1JkCaYCXZdSttUYj45twL98c';
+
 export enum PlanId {
   Basic = 'basic',
   Pro = 'pro',
+  Catalyst = 'catalyst',
 }
 
 export enum BillingFrequency {
   Monthly = 'monthly',
   Annual = 'annual',
+  OneTime = 'one_time',
 }
 
 export enum Feature {
@@ -28,17 +36,35 @@ export type Price = {
   priceId?: string;
 };
 
-export type Plan = {
+type PlanPrices = SubscriptionPrices | OneTimePrices;
+type SubscriptionPrices = {
+  [BillingFrequency.Monthly]: Price;
+  [BillingFrequency.Annual]: Price;
+};
+type OneTimePrices = { [BillingFrequency.OneTime]: Price };
+
+export type Plan<Prices extends PlanPrices> = {
   id: PlanId;
   name: string;
   productId: string | null;
-  prices: Record<BillingFrequency, Price>;
+  prices: Prices;
   features: readonly { name: Feature; amount: number }[];
 };
 
-type Plans = { basic: Plan; pro: Plan };
-
 export const MAX_NUM_OF_BASIC_NOTES = 100;
+
+const BASIC_FEATURES = [
+  { name: Feature.NumOfNotes, amount: MAX_NUM_OF_BASIC_NOTES },
+];
+const PRO_FEATURES = [
+  { name: Feature.NumOfNotes, amount: Number.POSITIVE_INFINITY },
+];
+
+type Plans = {
+  [PlanId.Basic]: Plan<SubscriptionPrices>;
+  [PlanId.Pro]: Plan<SubscriptionPrices>;
+  [PlanId.Catalyst]: Plan<OneTimePrices>;
+};
 
 export const PRICING_PLANS: Plans = {
   [PlanId.Basic]: {
@@ -55,7 +81,7 @@ export const PRICING_PLANS: Plans = {
         amount: 0,
       },
     },
-    features: [{ name: Feature.NumOfNotes, amount: MAX_NUM_OF_BASIC_NOTES }],
+    features: BASIC_FEATURES,
   },
   [PlanId.Pro]: {
     id: PlanId.Pro,
@@ -73,7 +99,20 @@ export const PRICING_PLANS: Plans = {
         priceId: isDev ? PRO_ANNUAL_DEV_PRICE_ID : PRO_ANNUAL_PROD_PRICE_ID,
       },
     },
-    features: [{ name: Feature.NumOfNotes, amount: Number.POSITIVE_INFINITY }],
+    features: PRO_FEATURES,
+  },
+  [PlanId.Catalyst]: {
+    id: PlanId.Catalyst,
+    name: 'Catalyst',
+    productId: isDev ? CATALYST_DEV_PRODUCT_ID : CATALYST_PROD_PRODUCT_ID,
+    prices: {
+      [BillingFrequency.OneTime]: {
+        frequency: BillingFrequency.OneTime,
+        amount: 30000,
+        priceId: isDev ? CATALYST_DEV_PRICE_ID : CATALYST_PROD_PRICE_ID,
+      },
+    },
+    features: PRO_FEATURES,
   },
 } as const;
 
@@ -95,4 +134,11 @@ export const getFrequencyByPriceId = (priceId: string): BillingFrequency => {
     }
   }
   return BillingFrequency.Monthly;
+};
+
+export const isSubscription = (
+  prices: PlanPrices
+): prices is SubscriptionPrices => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return !!(prices as any).monthly && !!(prices as any).annual;
 };

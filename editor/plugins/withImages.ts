@@ -68,8 +68,13 @@ export const uploadAndInsertImage = async (
       'Your image is over the 5 MB limit. Upgrade to the Pro plan for 20 MB file uploads.'
     );
     return;
-  } else if (planId === PlanId.Pro && file.size > PRO_UPLOAD_LIMIT) {
-    toast.error('Your image is over the 20 MB limit for the Pro plan.');
+  } else if (
+    (planId === PlanId.Pro || planId === PlanId.Catalyst) &&
+    file.size > PRO_UPLOAD_LIMIT
+  ) {
+    toast.error(
+      'Your image is over the 20 MB limit. Please upload a smaller image.'
+    );
     return;
   }
 
