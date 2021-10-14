@@ -48,7 +48,9 @@ const DraggableSidebarNoteLink = (
 
   const className = classNames(
     { invisible: isDragging },
-    { '!bg-primary-100': isSorting && over?.id === node.id }
+    {
+      '!bg-primary-100 dark:!bg-primary-900': isSorting && over?.id === node.id,
+    }
   );
 
   return (
