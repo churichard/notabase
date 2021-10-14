@@ -1,13 +1,13 @@
-import { useMemo } from 'react';
 import { useSlate } from 'slate-react';
-import type { TablerIcon } from '@tabler/icons';
 import {
+  TablerIcon,
   IconBold,
   IconItalic,
   IconUnderline,
   IconStrikethrough,
   IconCode,
   IconLink,
+  IconEraser,
 } from '@tabler/icons';
 import { toggleMark, isMarkActive, isElementActive } from 'editor/formatting';
 import { ElementType, Mark } from 'types/slate';
@@ -27,11 +27,36 @@ export default function HoveringToolbar(props: Props) {
         setAddLinkPopoverState={setAddLinkPopoverState}
         className="border-r dark:border-gray-700"
       />
-      <FormatButton format={Mark.Bold} />
-      <FormatButton format={Mark.Italic} />
-      <FormatButton format={Mark.Underline} />
-      <FormatButton format={Mark.Strikethrough} />
-      <FormatButton format={Mark.Code} />
+      <FormatButton
+        format={Mark.Bold}
+        Icon={IconBold}
+        tooltip="Bold (Ctrl+B)"
+      />
+      <FormatButton
+        format={Mark.Italic}
+        Icon={IconItalic}
+        tooltip="Italic (Ctrl+I)"
+      />
+      <FormatButton
+        format={Mark.Underline}
+        Icon={IconUnderline}
+        tooltip="Underline (Ctrl+U)"
+      />
+      <FormatButton
+        format={Mark.Strikethrough}
+        Icon={IconStrikethrough}
+        tooltip="Strikethrough (Ctrl+Shift+S)"
+      />
+      <FormatButton
+        format={Mark.Code}
+        Icon={IconCode}
+        tooltip="Code (Ctrl+`)"
+      />
+      <FormatButton
+        format={Mark.Highlight}
+        Icon={IconEraser}
+        tooltip="Highlight (Ctrl+Shift+H)"
+      />
     </EditorPopover>
   );
 }
@@ -82,46 +107,15 @@ export const ToolbarButton = (props: ToolbarButtonProps) => {
 
 type FormatButtonProps = {
   format: Mark;
+  Icon: TablerIcon;
+  tooltip?: string;
   className?: string;
 };
 
-const FormatButton = ({ format, className = '' }: FormatButtonProps) => {
+const FormatButton = (props: FormatButtonProps) => {
+  const { format, Icon, tooltip, className } = props;
   const editor = useSlate();
   const isActive = isMarkActive(editor, format);
-
-  const Icon = useMemo(() => {
-    switch (format) {
-      case Mark.Bold:
-        return IconBold;
-      case Mark.Italic:
-        return IconItalic;
-      case Mark.Underline:
-        return IconUnderline;
-      case Mark.Strikethrough:
-        return IconStrikethrough;
-      case Mark.Code:
-        return IconCode;
-      default:
-        throw new Error(`Format ${format} is not a valid format`);
-    }
-  }, [format]);
-
-  const tooltip = useMemo(() => {
-    switch (format) {
-      case Mark.Bold:
-        return 'Bold (Ctrl+B)';
-      case Mark.Italic:
-        return 'Italic (Ctrl+I)';
-      case Mark.Underline:
-        return 'Underline (Ctrl+U)';
-      case Mark.Strikethrough:
-        return 'Strikethrough (Ctrl+Shift+S)';
-      case Mark.Code:
-        return 'Code (Ctrl+`)';
-      default:
-        return undefined;
-    }
-  }, [format]);
 
   return (
     <ToolbarButton
