@@ -249,13 +249,13 @@ export const store = createVanilla<Store>(
       name: 'notabase-storage',
       version: 1,
       getStorage: () => storage,
-      whitelist: [
-        'openNoteIds',
-        'isSidebarOpen',
-        'noteSort',
-        'darkMode',
-        'isPageStackingOn',
-      ],
+      partialize: (state) => ({
+        openNoteIds: state.openNoteIds,
+        isSidebarOpen: state.isSidebarOpen,
+        noteSort: state.noteSort,
+        darkMode: state.darkMode,
+        isPageStackingOn: state.isPageStackingOn,
+      }),
       onRehydrateStorage: () => () => {
         useStore.setState({ _hasHydrated: true });
       },
