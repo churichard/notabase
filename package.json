@@ -80,7 +80,7 @@
   "devDependencies": {
     "@next/bundle-analyzer": "^11.1.2",
     "@testing-library/cypress": "^8.0.1",
-    "@testing-library/dom": "^8.9.0",
+    "@testing-library/dom": "^8.9.1",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.3.0",
