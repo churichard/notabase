@@ -1,29 +1,26 @@
-import { ReactNode, useMemo } from 'react';
+import { ReactNode } from 'react';
 import Link from 'next/link';
 import classNames from 'classnames';
 import { IconCheck } from '@tabler/icons';
-import { Plan, PlanId } from 'constants/pricing';
 
 type Props = {
-  plan: Plan;
+  name: string;
+  price: number;
+  period: string;
   bulletPoints: string[];
-  showAnnual: boolean;
+  discount?: string;
   button?: ReactNode;
   className?: string;
 };
 
 const PricingPlan = (props: Props) => {
-  const { plan, showAnnual, bulletPoints, button, className } = props;
+  const { name, price, period, discount, bulletPoints, button, className } =
+    props;
 
   const pricingPlanClassName = classNames(
     'flex flex-col rounded-lg border overflow-hidden shadow-md',
     className
   );
-
-  const getBillingPeriodPrice = useMemo(() => {
-    const price = showAnnual ? plan.prices.annual : plan.prices.monthly;
-    return +(price.amount / 100).toFixed(2);
-  }, [showAnnual, plan]);
 
   return (
     <div className={pricingPlanClassName}>
@@ -31,21 +28,20 @@ const PricingPlan = (props: Props) => {
         <div>
           <div>
             <span className="inline-flex px-4 py-1 text-sm font-semibold leading-5 tracking-wide uppercase rounded-full text-primary-900 bg-primary-100 dark:bg-primary-900 dark:text-primary-100">
-              {plan.name}
+              {name}
             </span>
           </div>
           <div className="flex flex-wrap items-baseline mt-4 leading-none">
-            <span className="text-6xl font-extrabold">
-              ${getBillingPeriodPrice}
+            <span className="text-5xl font-extrabold xl:text-6xl">
+              ${price}
             </span>
-            {/* TODO: this is temporary for early bird pricing */}
-            {plan.id !== PlanId.Basic ? (
-              <span className="px-1 text-3xl text-gray-500 line-through">
-                ${showAnnual ? '108' : '12'}
+            {discount ? (
+              <span className="px-1 text-2xl text-gray-500 line-through xl:text-3xl">
+                ${discount}
               </span>
             ) : null}
-            <span className="ml-1 text-2xl font-medium leading-8 text-gray-500">
-              {showAnnual ? '/yr' : '/mo'}
+            <span className="ml-1 text-xl font-medium leading-8 text-gray-500 xl:text-2xl">
+              {period}
             </span>
           </div>
         </div>

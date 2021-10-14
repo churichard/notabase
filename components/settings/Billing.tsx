@@ -2,12 +2,7 @@ import { useCallback } from 'react';
 import { loadStripe } from '@stripe/stripe-js/pure';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
-import {
-  BillingFrequency,
-  Plan,
-  PlanId,
-  PRICING_PLANS,
-} from 'constants/pricing';
+import { BillingFrequency, PlanId, PRICING_PLANS } from 'constants/pricing';
 import { useAuth } from 'utils/useAuth';
 import { BillingDetails, useStore } from 'lib/store';
 import PricingPlans from 'components/PricingPlans';
@@ -19,7 +14,12 @@ export default function Billing() {
   const router = useRouter();
 
   const onSubscribe = useCallback(
-    async (plan: Plan, showAnnual: boolean) => {
+    async (priceId: string | undefined, isSubscription: boolean) => {
+      if (!priceId) {
+        toast.error(`Price id ${priceId} is invalid.`);
+        return;
+      }
+
       // Create stripe checkout session
       const res = await fetch('/api/create-checkout-session', {
         method: 'POST',
@@ -30,9 +30,8 @@ export default function Billing() {
           userId: user?.id,
           userEmail: user?.email,
           redirectPath: router.asPath,
-          priceId: showAnnual
-            ? plan.prices.annual.priceId
-            : plan.prices.monthly.priceId,
+          priceId,
+          isSubscription,
         }),
       });
 
@@ -82,14 +81,39 @@ export default function Billing() {
           Switch plan
         </button>
       );
-      const subscribeButton = (
+
+      const proPlanPrices = PRICING_PLANS[PlanId.Pro].prices;
+      const proSubscribeButton = (
         <button
           className="block w-full px-4 py-2 btn"
-          onClick={() => onSubscribe(PRICING_PLANS.pro, showAnnual)}
+          onClick={() =>
+            onSubscribe(
+              showAnnual
+                ? proPlanPrices.annual.priceId
+                : proPlanPrices.monthly.priceId,
+              true
+            )
+          }
         >
           Upgrade
         </button>
       );
+
+      const catalystPlanPrices = PRICING_PLANS[PlanId.Catalyst].prices;
+      const catalystSubscribeButton = (
+        <button
+          className="block w-full px-4 py-2 btn"
+          onClick={() =>
+            onSubscribe(
+              catalystPlanPrices[BillingFrequency.OneTime].priceId,
+              false
+            )
+          }
+        >
+          Upgrade
+        </button>
+      );
+
       const currentPlanBlock = (
         <div className="block w-full px-4 py-2 text-center text-gray-600 border rounded dark:text-gray-400">
           Current plan
@@ -98,11 +122,15 @@ export default function Billing() {
 
       // Current plan is pro
       if (currentPlanId === PlanId.Pro) {
-        return [switchPlanButton, currentPlanBlock];
+        return [switchPlanButton, currentPlanBlock, catalystSubscribeButton];
+      }
+      // Current plan is catalyst
+      else if (currentPlanId === PlanId.Catalyst) {
+        return [switchPlanButton, switchPlanButton, currentPlanBlock];
       }
       // Current plan is basic
       else {
-        return [currentPlanBlock, subscribeButton];
+        return [currentPlanBlock, proSubscribeButton, catalystSubscribeButton];
       }
     },
     [onSubscribe, billingDetails, onChangePlan]
@@ -129,9 +157,12 @@ const BillingBanner = (props: BillingBannerProps) => {
   const { billingDetails, onChangePlan } = props;
 
   const planId = billingDetails.planId;
-  const isNotBasicPlan = planId !== PlanId.Basic;
+  const isSubscriptionPlan =
+    planId !== PlanId.Basic &&
+    billingDetails.frequency !== BillingFrequency.OneTime;
+  const isCatalystPlan = planId === PlanId.Catalyst;
   const planName = PRICING_PLANS[planId].name;
-  const frequencyText = isNotBasicPlan
+  const frequencyText = isSubscriptionPlan
     ? `, billed ${
         billingDetails.frequency === BillingFrequency.Monthly
           ? 'monthly'
@@ -145,7 +176,7 @@ const BillingBanner = (props: BillingBannerProps) => {
     </span>
   );
 
-  if (isNotBasicPlan && billingDetails.cancelAtPeriodEnd) {
+  if (isSubscriptionPlan && billingDetails.cancelAtPeriodEnd) {
     // Subscription is cancelling at the end of the current period
     return (
       <div className="w-full pb-6 mb-6 space-y-2 border-b dark:border-gray-700">
@@ -163,7 +194,7 @@ const BillingBanner = (props: BillingBannerProps) => {
         </p>
       </div>
     );
-  } else if (isNotBasicPlan && !billingDetails.cancelAtPeriodEnd) {
+  } else if (isSubscriptionPlan && !billingDetails.cancelAtPeriodEnd) {
     // Subscription is renewing at the end of the current period
     return (
       <div className="w-full pb-6 mb-6 space-y-2 border-b dark:border-gray-700">
@@ -177,6 +208,15 @@ const BillingBanner = (props: BillingBannerProps) => {
             click here
           </button>
           .
+        </p>
+      </div>
+    );
+  } else if (isCatalystPlan) {
+    return (
+      <div className="w-full pb-6 mb-6 space-y-2 border-b dark:border-gray-700">
+        <p>
+          {currentPlanText} Your 5 year plan will end on{' '}
+          {getReadableDate(billingDetails.currentPeriodEnd)}.
         </p>
       </div>
     );

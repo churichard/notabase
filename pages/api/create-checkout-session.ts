@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import Stripe from 'stripe';
 import { createClient } from '@supabase/supabase-js';
 import { Subscription } from 'types/supabase';
+import { PlanId } from 'constants/pricing';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL ?? '',
@@ -21,7 +22,13 @@ export default async function handler(
     res.status(405).end('Method Not Allowed');
   }
 
-  const { userId, userEmail, priceId, redirectPath = '/app' } = req.body;
+  const {
+    userId,
+    userEmail,
+    priceId,
+    isSubscription,
+    redirectPath = '/app',
+  } = req.body;
 
   if (!userId || !priceId || !userEmail) {
     return res.status(400).json({ message: 'Invalid params' });
@@ -36,6 +43,7 @@ export default async function handler(
 
   try {
     const baseUrl = process.env.BASE_URL ?? 'https://notabase.io';
+    const planId = isSubscription ? PlanId.Pro : PlanId.Catalyst;
     const session = await stripe.checkout.sessions.create({
       client_reference_id: userId,
       ...(stripeCustomerId
@@ -48,8 +56,8 @@ export default async function handler(
           quantity: 1,
         },
       ],
-      mode: 'subscription',
-      success_url: `${baseUrl}${redirectPath}?checkout_session_id={CHECKOUT_SESSION_ID}`,
+      mode: isSubscription ? 'subscription' : 'payment',
+      success_url: `${baseUrl}${redirectPath}?checkout_session_id={CHECKOUT_SESSION_ID}&planId=${planId}`,
       cancel_url: `${baseUrl}${redirectPath}`,
       allow_promotion_codes: true,
     });

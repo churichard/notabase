@@ -23,7 +23,7 @@ import {
 } from 'types/supabase';
 import { useAuth } from 'utils/useAuth';
 import useHotkeys from 'utils/useHotkeys';
-import { PlanId } from 'constants/pricing';
+import { PlanId, PRICING_PLANS } from 'constants/pricing';
 import { isMobile } from 'utils/device';
 import Sidebar from './sidebar/Sidebar';
 import FindOrCreateModal from './FindOrCreateModal';
@@ -253,12 +253,21 @@ export default function AppLayout(props: Props) {
 
   useEffect(() => {
     const {
-      query: { checkout_session_id: checkoutSessionId, ...otherQueryParams },
+      query: {
+        checkout_session_id: checkoutSessionId,
+        planId,
+        ...otherQueryParams
+      },
     } = router;
 
     if (checkoutSessionId) {
       // Show toast if the user successfully subscribed to Notabase
-      toast.success('You have successfully subscribed to Notabase! 🎉');
+      const plan = PRICING_PLANS[planId as PlanId];
+      if (plan) {
+        toast.success(`Congrats! You now have Notabase ${plan.name} 🎉`);
+      } else {
+        toast.success('Congrats! Your payment was processed successfully 🎉');
+      }
       router.push(
         { pathname: router.pathname, query: otherQueryParams },
         undefined,

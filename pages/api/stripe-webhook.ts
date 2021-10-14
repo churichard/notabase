@@ -4,7 +4,11 @@ import Cors from 'micro-cors';
 import Stripe from 'stripe';
 import { createClient } from '@supabase/supabase-js';
 import { Subscription, SubscriptionStatus, User } from 'types/supabase';
-import { getFrequencyByPriceId, getPlanIdByProductId } from 'constants/pricing';
+import {
+  BillingFrequency,
+  getFrequencyByPriceId,
+  getPlanIdByProductId,
+} from 'constants/pricing';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL ?? '',
@@ -50,50 +54,33 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
       typeof session.customer === 'string'
         ? session.customer
         : session.customer?.id ?? null;
-    const subscriptionId =
-      typeof session.subscription === 'string'
-        ? session.subscription
-        : session.subscription?.id ?? null;
 
-    if (!userId || !customerId || !subscriptionId) {
+    if (!userId || !customerId) {
       res.status(500).send('Invalid user id, customer id, or subscription id');
       return;
     }
 
-    const subscription = await stripe.subscriptions.retrieve(subscriptionId);
-    const isSubscriptionActive = subscription.status === 'active';
-    const currentPeriodEnd = subscription.current_period_end * 1000;
-    const cancelAtPeriodEnd = subscription.cancel_at_period_end;
-    const priceId = subscription.items.data[0].price.id;
-    const product = subscription.items.data[0].price.product;
-    const productId =
-      typeof product === 'string' ? product : product?.id ?? null;
+    if (session.mode === 'subscription') {
+      const subscriptionId =
+        typeof session.subscription === 'string'
+          ? session.subscription
+          : session.subscription?.id ?? null;
 
-    // Create new subscription
-    const { data: subscriptionData } = await supabase
-      .from<Subscription>('subscriptions')
-      .upsert(
-        {
-          user_id: userId,
-          stripe_customer_id: customerId,
-          stripe_subscription_id: subscriptionId,
-          plan_id: getPlanIdByProductId(productId),
-          subscription_status: isSubscriptionActive
-            ? SubscriptionStatus.Active
-            : SubscriptionStatus.Inactive,
-          frequency: getFrequencyByPriceId(priceId),
-          current_period_end: new Date(currentPeriodEnd).toISOString(),
-          cancel_at_period_end: cancelAtPeriodEnd,
-        },
-        { onConflict: 'user_id' }
-      )
-      .single();
+      if (!subscriptionId) {
+        res.status(500).send('Invalid subscription id');
+        return;
+      }
 
-    // Add subscription id to user
-    await supabase
-      .from<User>('users')
-      .update({ subscription_id: subscriptionData?.id })
-      .eq('id', userId);
+      await handleSubscriptionCompleted(userId, customerId, subscriptionId);
+    } else if (
+      session.mode === 'payment' &&
+      session.payment_status === 'paid'
+    ) {
+      const lineItemsResult = await stripe.checkout.sessions.listLineItems(
+        session.id
+      );
+      await handlePaymentCompleted(userId, customerId, lineItemsResult.data);
+    }
   } else if (
     event.type === 'invoice.paid' ||
     event.type === 'invoice.payment_failed'
@@ -169,4 +156,98 @@ export const config = {
   api: {
     bodyParser: false,
   },
+};
+
+const handleSubscriptionCompleted = async (
+  userId: string,
+  customerId: string,
+  subscriptionId: string
+) => {
+  const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+  const isSubscriptionActive = subscription.status === 'active';
+  const currentPeriodEnd = subscription.current_period_end * 1000;
+  const cancelAtPeriodEnd = subscription.cancel_at_period_end;
+  const priceId = subscription.items.data[0].price.id;
+  const product = subscription.items.data[0].price.product;
+  const productId = typeof product === 'string' ? product : product?.id ?? null;
+
+  // Create new subscription
+  const { data: subscriptionData, error } = await supabase
+    .from<Subscription>('subscriptions')
+    .upsert(
+      {
+        user_id: userId,
+        stripe_customer_id: customerId,
+        stripe_subscription_id: subscriptionId,
+        plan_id: getPlanIdByProductId(productId),
+        subscription_status: isSubscriptionActive
+          ? SubscriptionStatus.Active
+          : SubscriptionStatus.Inactive,
+        frequency: getFrequencyByPriceId(priceId),
+        current_period_end: new Date(currentPeriodEnd).toISOString(),
+        cancel_at_period_end: cancelAtPeriodEnd,
+      },
+      { onConflict: 'user_id' }
+    )
+    .single();
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  // Add subscription id to user
+  await supabase
+    .from<User>('users')
+    .update({ subscription_id: subscriptionData?.id })
+    .eq('id', userId);
+};
+
+const handlePaymentCompleted = async (
+  userId: string,
+  customerId: string,
+  lineItems: Stripe.LineItem[]
+) => {
+  for (const item of lineItems) {
+    if (!item.price) {
+      continue;
+    }
+
+    const productId =
+      typeof item.price.product === 'string'
+        ? item.price.product
+        : item.price.product.id;
+    const currentPeriodEnd = new Date();
+    currentPeriodEnd.setFullYear(currentPeriodEnd.getFullYear() + 5);
+
+    // Create new subscription
+    const { data: subscriptionData, error } = await supabase
+      .from<Subscription>('subscriptions')
+      .upsert(
+        {
+          user_id: userId,
+          stripe_customer_id: customerId,
+          plan_id: getPlanIdByProductId(productId),
+          subscription_status: SubscriptionStatus.Active,
+          frequency: BillingFrequency.OneTime,
+          current_period_end: currentPeriodEnd.toISOString(),
+          cancel_at_period_end: true,
+        },
+        { onConflict: 'user_id' }
+      )
+      .single();
+
+    if (error) {
+      console.error(error);
+      return;
+    }
+
+    // Add subscription id to user
+    await supabase
+      .from<User>('users')
+      .update({ subscription_id: subscriptionData?.id })
+      .eq('id', userId);
+
+    return;
+  }
 };

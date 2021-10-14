@@ -56,7 +56,8 @@ export default function PricingFaq(props: Props) {
                 Sign up for an account and log in. Click on
                 &ldquo;Notabase&rdquo; in the sidebar, then &ldquo;Settings &
                 Billing&rdquo;. From there, select &ldquo;Billing&rdquo; in the
-                sidebar and click &ldquo;Upgrade&rdquo; underneath the Pro plan.
+                sidebar and click &ldquo;Upgrade&rdquo; underneath the plan you
+                want.
               </p>
             </div>
           </div>
@@ -66,10 +67,10 @@ export default function PricingFaq(props: Props) {
             </h3>
             <div className="mt-2">
               <p className="text-gray-600 dark:text-gray-300">
-                If you subscribe now, you&apos;ll get a lifetime discount on the
-                full price. You&apos;ll be locked in at this lower price as long
-                as your subscription remains active. Prices will go up soon, so
-                act fast.
+                If you subscribe now, you&apos;ll automatically get a lifetime
+                discount on the full price. You&apos;ll be locked in at this
+                lower price as long as your subscription remains active. Prices
+                will go up soon, so act fast.
               </p>
             </div>
           </div>
