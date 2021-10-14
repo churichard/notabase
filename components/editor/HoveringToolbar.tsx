@@ -1,3 +1,4 @@
+import { HTMLAttributes } from 'react';
 import { useSlate } from 'slate-react';
 import {
   TablerIcon,
@@ -9,6 +10,7 @@ import {
   IconLink,
   IconEraser,
 } from '@tabler/icons';
+import classNames from 'classnames';
 import { toggleMark, isMarkActive, isElementActive } from 'editor/formatting';
 import { ElementType, Mark } from 'types/slate';
 import Tooltip from 'components/Tooltip';
@@ -31,44 +33,51 @@ export default function HoveringToolbar(props: Props) {
         format={Mark.Bold}
         Icon={IconBold}
         tooltip="Bold (Ctrl+B)"
+        aria-label="Bold"
       />
       <FormatButton
         format={Mark.Italic}
         Icon={IconItalic}
         tooltip="Italic (Ctrl+I)"
+        aria-label="Italic"
       />
       <FormatButton
         format={Mark.Underline}
         Icon={IconUnderline}
         tooltip="Underline (Ctrl+U)"
+        aria-label="Underline"
       />
       <FormatButton
         format={Mark.Strikethrough}
         Icon={IconStrikethrough}
         tooltip="Strikethrough (Ctrl+Shift+S)"
+        aria-label="Strikethrough"
       />
       <FormatButton
         format={Mark.Code}
         Icon={IconCode}
         tooltip="Code (Ctrl+`)"
+        aria-label="Code"
       />
       <FormatButton
         format={Mark.Highlight}
         Icon={IconEraser}
         tooltip="Highlight (Ctrl+Shift+H)"
+        aria-label="Highlight"
       />
     </EditorPopover>
   );
 }
 
-type ToolbarButtonProps = {
+interface ToolbarButtonProps
+  extends Omit<HTMLAttributes<HTMLSpanElement>, 'onClick'> {
   icon: TablerIcon;
   onClick: () => void;
   text?: string;
   tooltip?: string;
   isActive?: boolean;
   className?: string;
-};
+}
 
 export const ToolbarButton = (props: ToolbarButtonProps) => {
   const {
@@ -77,17 +86,22 @@ export const ToolbarButton = (props: ToolbarButtonProps) => {
     text,
     tooltip,
     isActive = false,
-    className = '',
+    className,
+    ...otherProps
   } = props;
+
+  const buttonClassName = classNames(
+    'flex items-center px-2 py-2 cursor-pointer hover:bg-gray-100 active:bg-gray-200 dark:hover:bg-gray-700 dark:active:bg-gray-600',
+    { 'text-primary-500 dark:text-primary-400': isActive },
+    { 'text-gray-800 dark:text-gray-200': !isActive },
+    className
+  );
 
   return (
     <Tooltip content={tooltip} placement="top" disabled={!tooltip}>
       <span
-        className={`flex items-center px-2 py-2 cursor-pointer hover:bg-gray-100 active:bg-gray-200 dark:hover:bg-gray-700 dark:active:bg-gray-600 ${
-          isActive
-            ? 'text-primary-500 dark:text-primary-400'
-            : 'text-gray-800 dark:text-gray-200'
-        } ${className}`}
+        role="button"
+        className={buttonClassName}
         onPointerDown={(event) => event.preventDefault()}
         onPointerUp={(event) => {
           if (event.button === 0) {
@@ -95,6 +109,7 @@ export const ToolbarButton = (props: ToolbarButtonProps) => {
             onClick();
           }
         }}
+        {...otherProps}
       >
         <Icon size={18} />
         {text ? (
@@ -105,15 +120,16 @@ export const ToolbarButton = (props: ToolbarButtonProps) => {
   );
 };
 
-type FormatButtonProps = {
+interface FormatButtonProps
+  extends Omit<HTMLAttributes<HTMLSpanElement>, 'onClick'> {
   format: Mark;
   Icon: TablerIcon;
   tooltip?: string;
   className?: string;
-};
+}
 
 const FormatButton = (props: FormatButtonProps) => {
-  const { format, Icon, tooltip, className } = props;
+  const { format, Icon, tooltip, className, ...otherProps } = props;
   const editor = useSlate();
   const isActive = isMarkActive(editor, format);
 
@@ -124,6 +140,7 @@ const FormatButton = (props: FormatButtonProps) => {
       isActive={isActive}
       className={className}
       tooltip={tooltip}
+      {...otherProps}
     />
   );
 };
