@@ -54,10 +54,7 @@ describe('hovering toolbar', () => {
 
     cy.findByLabelText('Bold').click();
 
-    cy.getEditor()
-      .find('span.font-semibold')
-      .eq(0)
-      .should('have.text', 'This is');
+    cy.getEditor().find('b').eq(0).should('have.text', 'This is');
   });
 
   it('can make text italics', function () {

@@ -6,7 +6,7 @@ export type EditorLeafProps = {
 
 const EditorLeaf = ({ attributes, children, leaf }: EditorLeafProps) => {
   if (leaf.bold) {
-    children = <span className="font-semibold">{children}</span>;
+    children = <b className="font-semibold">{children}</b>;
   }
 
   if (leaf.code) {

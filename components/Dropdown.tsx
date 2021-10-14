@@ -52,6 +52,7 @@ export default function Dropdown(props: Props) {
       {({ open }) => (
         <>
           <Menu.Button
+            data-testid="dropdown-button"
             ref={referenceElementRef}
             className={buttonClassName}
             contentEditable={false}

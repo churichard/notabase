@@ -174,10 +174,7 @@ describe('with html', () => {
       .should('have.attr', 'alt', 'test');
 
     // Bold
-    cy.getEditor()
-      .find('span.font-semibold')
-      .eq(0)
-      .should('have.text', 'tuetur illam quidem');
+    cy.getEditor().find('b').eq(0).should('have.text', 'tuetur illam quidem');
 
     // Italics
     cy.getEditor()
