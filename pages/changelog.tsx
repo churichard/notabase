@@ -27,6 +27,10 @@ export default function Changelog() {
           .
         </p>
         <ChangelogBlock
+          title="October 14, 2021"
+          features={['Add Notabase Catalyst plan']}
+        />
+        <ChangelogBlock
           title="October 10, 2021"
           features={['Add support for pasting HTML']}
         />
