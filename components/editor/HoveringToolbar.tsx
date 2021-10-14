@@ -109,15 +109,15 @@ const FormatButton = ({ format, className = '' }: FormatButtonProps) => {
   const tooltip = useMemo(() => {
     switch (format) {
       case Mark.Bold:
-        return 'Bold';
+        return 'Bold (Ctrl+B)';
       case Mark.Italic:
-        return 'Italic';
+        return 'Italic (Ctrl+I)';
       case Mark.Underline:
-        return 'Underline';
+        return 'Underline (Ctrl+U)';
       case Mark.Strikethrough:
-        return 'Strikethrough';
+        return 'Strikethrough (Ctrl+Shift+S)';
       case Mark.Code:
-        return 'Code';
+        return 'Code (Ctrl+`)';
       default:
         return undefined;
     }
@@ -162,7 +162,7 @@ const LinkButton = (props: LinkButtonProps) => {
       text="Link"
       isActive={isActive}
       className={className}
-      tooltip="Link to a note or web page"
+      tooltip="Link to a note or web page (Ctrl+K)"
     />
   );
 };
