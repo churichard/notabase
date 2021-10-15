@@ -54,7 +54,7 @@
     "micro": "^9.3.4",
     "micro-cors": "^0.1.1",
     "next": "^11.1.2",
-    "next-pwa": "5.3.1",
+    "next-pwa": "5.4.0",
     "nprogress": "^0.2.0",
     "postcss": "^8.3.9",
     "react": "17.0.2",
