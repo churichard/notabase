@@ -119,6 +119,10 @@ export default function serialize(
       if (chunk.underline) {
         children = retainWhitespaceAndFormat(children, '<u>');
       }
+
+      if (chunk.highlight) {
+        children = retainWhitespaceAndFormat(children, '<mark>');
+      }
     }
   }
 
@@ -238,8 +242,8 @@ function retainWhitespaceAndFormat(string: string, format: string) {
 }
 
 const getEndFormat = (format: string) => {
-  if (format === '<u>') {
-    return '</u>';
+  if (format.startsWith('<')) {
+    return format.substring(0, 1) + '/' + format.substring(1);
   } else {
     return format.split('').reverse().join('');
   }

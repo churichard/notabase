@@ -79,6 +79,7 @@ export default function EditorPopover(props: Props) {
   return (
     <Portal>
       <div
+        data-testid="editor-popover"
         ref={setPopperElement}
         className={`z-10 flex items-stretch overflow-hidden transition-opacity bg-white border rounded shadow-popover dark:bg-gray-800 dark:text-gray-200 dark:border-gray-700 ${className}`}
         style={styles.popper}

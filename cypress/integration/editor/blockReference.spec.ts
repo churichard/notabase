@@ -35,7 +35,7 @@ describe('block reference', () => {
     // Type some text into the editor, then click the 3 dots to the left
     cy.getEditor()
       .type('{movetostart}This is a test')
-      .findAllByRole('button')
+      .findByTestId('dropdown-button')
       .eq(0)
       .click();
 

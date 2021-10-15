@@ -56,7 +56,7 @@ describe('with html', () => {
       
       <h2>Itaque nostrum est-quod nostrum dico, artis est-ad ea principia, quae accepimus.</h2>
       
-      <p>Bonum incolumis acies: misera caecitas. <u>Si longus, levis.</u> Itaque dicunt nec dubitant: <em>mihi sic usus est</em>, tibi ut opus est facto, fac. Ergo in eadem voluptate eum, qui alteri misceat mulsum ipse non sitiens, et eum, qui illud sitiens bibat? Vide igitur ne non debeas verbis nostris uti, sententiis tuis. <del>Quid, quod res alia tota est?</del> </p>
+      <p>Bonum incolumis acies: misera caecitas. <u>Si longus, levis.</u> Itaque dicunt nec dubitant: <em>mihi sic usus est</em>, tibi ut opus est facto, fac. <mark>Ergo in eadem voluptate eum</mark>, qui alteri misceat mulsum ipse non sitiens, et eum, qui illud sitiens bibat? Vide igitur ne non debeas verbis nostris uti, sententiis tuis. <del>Quid, quod res alia tota est?</del> </p>
       
       <h3>Morbi placerat dolor eu finibus rutrum.</h3>
 
@@ -174,10 +174,7 @@ describe('with html', () => {
       .should('have.attr', 'alt', 'test');
 
     // Bold
-    cy.getEditor()
-      .find('span.font-semibold')
-      .eq(0)
-      .should('have.text', 'tuetur illam quidem');
+    cy.getEditor().find('b').eq(0).should('have.text', 'tuetur illam quidem');
 
     // Italics
     cy.getEditor()
@@ -203,6 +200,12 @@ describe('with html', () => {
       .find('s')
       .eq(1)
       .should('have.text', 'Quid, quod res alia tota est?');
+
+    // Highlight
+    cy.getEditor()
+      .find('mark')
+      .eq(0)
+      .should('have.text', 'Ergo in eadem voluptate eum');
   });
 
   it('can paste multiple blocks within the editor', function () {

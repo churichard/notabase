@@ -6,7 +6,7 @@ export type EditorLeafProps = {
 
 const EditorLeaf = ({ attributes, children, leaf }: EditorLeafProps) => {
   if (leaf.bold) {
-    children = <span className="font-semibold">{children}</span>;
+    children = <b className="font-semibold">{children}</b>;
   }
 
   if (leaf.code) {
@@ -27,6 +27,14 @@ const EditorLeaf = ({ attributes, children, leaf }: EditorLeafProps) => {
 
   if (leaf.strikethrough) {
     children = <s className="line-through">{children}</s>;
+  }
+
+  if (leaf.highlight) {
+    children = (
+      <mark className="bg-yellow-100 dark:bg-yellow-900 dark:text-white">
+        {children}
+      </mark>
+    );
   }
 
   return <span {...attributes}>{children}</span>;

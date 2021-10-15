@@ -159,6 +159,10 @@ function Editor(props: Props) {
         callback: () => toggleMark(editor, Mark.Strikethrough),
       },
       {
+        hotkey: 'mod+shift+h',
+        callback: () => toggleMark(editor, Mark.Highlight),
+      },
+      {
         hotkey: 'mod+shift+1',
         callback: () => toggleElement(editor, ElementType.HeadingOne),
       },

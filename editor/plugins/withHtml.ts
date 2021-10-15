@@ -42,6 +42,7 @@ const TEXT_TAGS: Record<
   S: () => ({ [Mark.Strikethrough]: true }),
   STRONG: () => ({ [Mark.Bold]: true }),
   U: () => ({ [Mark.Underline]: true }),
+  MARK: () => ({ [Mark.Highlight]: true }),
 };
 
 export const deserialize = (el: HTMLElement): Node[] => {
