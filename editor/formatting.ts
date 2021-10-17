@@ -112,6 +112,12 @@ export const toggleElement = (
     };
     Transforms.wrapNodes(editor, block, { at: getCurrentLocation() });
   }
+
+  // Insert newline if ElementType is CodeBlock to workaround a bug:
+  // cannot focus cursor if end a CodeBlock.
+  if (format === ElementType.CodeBlock) {
+    editor.insertBreak();
+  }
 };
 
 export const handleIndent = (editor: Editor) => {

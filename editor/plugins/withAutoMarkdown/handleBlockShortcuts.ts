@@ -108,6 +108,12 @@ const handleBlockShortcuts = (editor: Editor, text: string): boolean => {
       Transforms.setNodes(editor, { checked: false });
     }
 
+    // Insert newline if ElementType is CodeBlock to workaround a bug:
+    // cannot focus cursor if end a CodeBlock.
+    if (type === ElementType.CodeBlock) {
+      editor.insertBreak();
+    }
+
     return true;
   }
 
