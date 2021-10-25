@@ -27,7 +27,7 @@
     "analyze": "env ANALYZE=true next build"
   },
   "dependencies": {
-    "@dnd-kit/core": "^4.0.0",
+    "@dnd-kit/core": "^4.0.1",
     "@dnd-kit/sortable": "^5.0.0",
     "@headlessui/react": "^1.4.1",
     "@popperjs/core": "^2.10.2",
