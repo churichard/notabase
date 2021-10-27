@@ -78,7 +78,7 @@
     "zustand": "^3.5.13"
   },
   "devDependencies": {
-    "@next/bundle-analyzer": "^12.0.0",
+    "@next/bundle-analyzer": "^12.0.1",
     "@testing-library/cypress": "^8.0.1",
     "@testing-library/dom": "^8.10.1",
     "@testing-library/jest-dom": "^5.14.1",
