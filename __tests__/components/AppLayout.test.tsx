@@ -86,8 +86,8 @@ describe('AppLayout', () => {
 
       await waitFor(() => {
         expect(supabaseMock.maybeSingle).toHaveBeenCalled();
-        expect(setBillingDetailsSpy).toHaveBeenCalled();
       });
+      expect(setBillingDetailsSpy).toHaveBeenCalled();
 
       await waitFor(() => {
         const billingDetails = store.getState().billingDetails;
@@ -106,8 +106,8 @@ describe('AppLayout', () => {
 
       await waitFor(() => {
         expect(supabaseMock.maybeSingle).toHaveBeenCalled();
-        expect(setBillingDetailsSpy).toHaveBeenCalled();
       });
+      expect(setBillingDetailsSpy).toHaveBeenCalled();
 
       const billingDetails = store.getState().billingDetails;
       expect(billingDetails.planId).toBe(PlanId.Basic);
@@ -124,8 +124,8 @@ describe('AppLayout', () => {
 
       await waitFor(() => {
         expect(supabaseMock.maybeSingle).toHaveBeenCalled();
-        expect(setBillingDetailsSpy).toHaveBeenCalled();
       });
+      expect(setBillingDetailsSpy).toHaveBeenCalled();
 
       await waitFor(() => {
         const billingDetails = store.getState().billingDetails;
@@ -144,8 +144,8 @@ describe('AppLayout', () => {
 
       await waitFor(() => {
         expect(supabaseMock.maybeSingle).toHaveBeenCalled();
-        expect(setBillingDetailsSpy).toHaveBeenCalled();
       });
+      expect(setBillingDetailsSpy).toHaveBeenCalled();
 
       await waitFor(() => {
         const billingDetails = store.getState().billingDetails;
