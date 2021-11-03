@@ -1,6 +1,6 @@
-import create, { State, StateCreator } from 'zustand';
+import create, { State, StateCreator, SetState, GetState } from 'zustand';
 import createVanilla from 'zustand/vanilla';
-import { persist, StateStorage } from 'zustand/middleware';
+import { persist, StateStorage, StoreApiWithPersist } from 'zustand/middleware';
 import produce, { Draft } from 'immer';
 import localforage from 'localforage';
 import type { Note } from 'types/supabase';
@@ -33,6 +33,9 @@ const storage: StateStorage = {
   },
   setItem: async (name: string, value: string): Promise<void> => {
     await localforage.setItem(name, value);
+  },
+  removeItem: async (name: string): Promise<void> => {
+    await localforage.removeItem(name);
   },
 };
 
@@ -108,7 +111,12 @@ export const setter =
     }
   };
 
-export const store = createVanilla<Store>(
+export const store = createVanilla<
+  Store,
+  SetState<Store>,
+  GetState<Store>,
+  StoreApiWithPersist<Store>
+>(
   persist(
     immer((set) => ({
       _hasHydrated: false,
@@ -263,7 +271,12 @@ export const store = createVanilla<Store>(
   )
 );
 
-export const useStore = create(store);
+export const useStore = create<
+  Store,
+  SetState<Store>,
+  GetState<Store>,
+  StoreApiWithPersist<Store>
+>(store);
 
 /**
  * Deletes the tree item with the given id and returns it.
