@@ -27,6 +27,10 @@ export default function Changelog() {
           .
         </p>
         <ChangelogBlock
+          title="November 3, 2021"
+          features={['Support separate settings for separate accounts']}
+        />
+        <ChangelogBlock
           title="October 15, 2021"
           features={['Add text highlighting']}
         />

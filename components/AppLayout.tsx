@@ -43,8 +43,18 @@ export default function AppLayout(props: Props) {
   const { children, className = '' } = props;
   const { user, isLoaded } = useAuth();
   const router = useRouter();
-
   const [isPageLoaded, setIsPageLoaded] = useState(false);
+
+  useEffect(() => {
+    if (!isPageLoaded && isLoaded && user) {
+      // Use user's specific store and rehydrate data
+      useStore.persist.setOptions({
+        name: `notabase-storage-${user.id}`,
+      });
+      useStore.persist.rehydrate();
+    }
+  }, [isPageLoaded, isLoaded, user]);
+
   const setNotes = useStore((state) => state.setNotes);
   const setNoteTree = useStore((state) => state.setNoteTree);
   const initData = useCallback(async () => {
