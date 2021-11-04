@@ -27,6 +27,10 @@ export default function Changelog() {
           .
         </p>
         <ChangelogBlock
+          title="November 4, 2021"
+          features={['Add "Add block below" button to block menu']}
+        />
+        <ChangelogBlock
           title="November 3, 2021"
           features={['Support separate settings for separate accounts']}
         />
