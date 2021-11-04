@@ -8,7 +8,7 @@ import {
   IconStrikethrough,
   IconCode,
   IconLink,
-  IconEraser,
+  IconHighlight,
 } from '@tabler/icons';
 import classNames from 'classnames';
 import { toggleMark, isMarkActive, isElementActive } from 'editor/formatting';
@@ -61,7 +61,7 @@ export default function HoveringToolbar(props: Props) {
       />
       <FormatButton
         format={Mark.Highlight}
-        Icon={IconEraser}
+        Icon={IconHighlight}
         tooltip="Highlight (Ctrl+Shift+H)"
         aria-label="Highlight"
       />
