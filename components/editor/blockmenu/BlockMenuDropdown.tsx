@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react';
-import { Element, Transforms } from 'slate';
+import { Editor, Element, Transforms } from 'slate';
 import { ReactEditor, useSlateStatic } from 'slate-react';
-import { IconDotsVertical, IconLink } from '@tabler/icons';
+import { IconDotsVertical, IconLink, IconPlus } from '@tabler/icons';
 import { ReferenceableBlockElement, ElementType } from 'types/slate';
 import Dropdown, { DropdownItem } from 'components/Dropdown';
 import { isReferenceableBlockElement } from 'editor/checks';
@@ -17,7 +17,22 @@ export default function BlockMenuDropdown(props: BlockMenuDropdownProps) {
   const { element, className = '' } = props;
   const editor = useSlateStatic();
 
-  const onCopyBlockRef = useCallback(async () => {
+  const onAddBlock = useCallback(() => {
+    // Insert new paragraph after the current block
+    const path = ReactEditor.findPath(editor, element);
+    const location = Editor.after(editor, path, { unit: 'line', voids: true });
+    Transforms.insertNodes(
+      editor,
+      {
+        id: createNodeId(),
+        type: ElementType.Paragraph,
+        children: [{ text: '' }],
+      },
+      { at: location ?? Editor.end(editor, []) }
+    );
+  }, [editor, element]);
+
+  const onCopyBlockRef = useCallback(() => {
     let blockId;
 
     // We still need this because there are cases where block ids might not exist
@@ -74,6 +89,10 @@ export default function BlockMenuDropdown(props: BlockMenuDropdownProps) {
       tooltipContent={<span className="text-xs">Click to open menu</span>}
       tooltipPlacement="bottom"
     >
+      <DropdownItem onClick={onAddBlock}>
+        <IconPlus size={18} className="mr-1" />
+        <span>Add block below</span>
+      </DropdownItem>
       <DropdownItem onClick={onCopyBlockRef}>
         <IconLink size={18} className="mr-1" />
         <span>Copy block reference</span>
