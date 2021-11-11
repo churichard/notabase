@@ -36,6 +36,10 @@ If you need help getting started with Notabase, check out our [Help Center](http
 
 ## Sponsors
 
+Special thanks to the following people for their support:
+
+- [@Jaydon-chai](https://github.com/Jaydon-chai)
+
 Sponsors make it possible for me to continue developing Notabase. Your support is greatly appreciated!
 
 [Become a sponsor](https://github.com/sponsors/churichard)
