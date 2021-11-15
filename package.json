@@ -25,7 +25,8 @@
     "prettier:check": "prettier --check \"**/*.{tsx, ts, jsx, js}\"",
     "prettier:write": "prettier --write .",
     "db:seed": "node ./scripts/seed.js",
-    "analyze": "env ANALYZE=true next build"
+    "analyze": "env ANALYZE=true next build",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@dnd-kit/core": "^4.0.1",
@@ -117,11 +118,17 @@
     "eslint-plugin-react": "^7.27.0",
     "eslint-plugin-react-hooks": "^4.3.0",
     "eslint-plugin-testing-library": "^5.0.0",
+    "husky": "^7.0.4",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^27.3.1",
+    "lint-staged": "^12.0.2",
     "pg": "^8.7.1",
     "prettier": "2.4.1",
     "react-test-renderer": "^17.0.2",
     "typescript": "^4.4.4"
+  },
+  "lint-staged": {
+    "*.{tsx,ts,jsx,js}": "eslint --cache --fix",
+    "*.{tsx,ts,jsx,js,css,md}": "prettier --write"
   }
 }

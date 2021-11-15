@@ -52,3 +52,6 @@ cypress/videos/
 
 # Typescript
 tsconfig.tsbuildinfo
+
+# eslint
+.eslintcache
