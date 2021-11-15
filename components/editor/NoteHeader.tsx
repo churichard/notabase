@@ -26,6 +26,7 @@ import { DropdownItem } from 'components/Dropdown';
 import useDeleteNote from 'utils/useDeleteNote';
 import NoteMetadata from 'components/NoteMetadata';
 import MoveToModal from 'components/MoveToModal';
+import { nextTick } from 'process';
 
 export default function NoteHeader() {
   const currentNote = useCurrentNote();
@@ -54,10 +55,12 @@ export default function NoteHeader() {
     }
 
     if (currentNoteIndex == 0) {
+      // Changes Current Note to first note in stack 
+      currentNote.id = stackedNoteIds[0];
       stackedNoteIds.splice(
-        0, // Remove First Stacked Note
+        0, 
         1
-      );
+      );// Removes first note in stack from the stack 
       router.push(
         {
           pathname: router.pathname,
