@@ -39,7 +39,7 @@ export default function NoteHeader() {
     (state) => !state.isSidebarOpen && state.openNoteIds?.[0] === currentNote.id
   );
   const isCloseButtonVisible = useStore(
-    (state) => (state.openNoteIds.length > 1)
+    (state) => state.openNoteIds.length > 1
   );
   const note = useStore((state) => state.notes[currentNote.id]);
 
@@ -54,7 +54,7 @@ export default function NoteHeader() {
     }
 
     if (currentNoteIndex == 0) {
-      // Changes Current Note to first note in stack 
+      // Changes Current Note to first note in stack
       currentNote.id = stackedNoteIds.shift();
       router.push(
         {
@@ -64,9 +64,8 @@ export default function NoteHeader() {
         undefined,
         { shallow: true }
       );
-    }
-
-    else {// Remove from stacked notes and shallowly route
+    } else {
+      // Remove from stacked notes and shallowly route
       stackedNoteIds.splice(
         currentNoteIndex - 1, // Stacked notes don't include the main note
         1
@@ -80,7 +79,6 @@ export default function NoteHeader() {
         { shallow: true }
       );
     }
-
   }, [currentNote.id, stackQuery, router]);
 
   const menuButtonRef = useRef<HTMLButtonElement | null>(null);
@@ -203,4 +201,3 @@ const getNoteAsBlob = (note: Note) => {
   });
   return blob;
 };
-
