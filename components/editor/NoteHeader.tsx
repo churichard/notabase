@@ -39,7 +39,7 @@ export default function NoteHeader() {
     (state) => !state.isSidebarOpen && state.openNoteIds?.[0] === currentNote.id
   );
   const isCloseButtonVisible = useStore(
-    (state) => state.openNoteIds?.[0] !== currentNote.id
+    (state) => state.openNoteIds?.[1]
   );
   const note = useStore((state) => state.notes[currentNote.id]);
 
@@ -47,26 +47,42 @@ export default function NoteHeader() {
     const currentNoteIndex = store
       .getState()
       .openNoteIds.findIndex((openNoteId) => openNoteId === currentNote.id);
+    const stackedNoteIds = queryParamToArray(stackQuery);
 
     if (currentNoteIndex < 0) {
       return;
     }
 
-    // Remove from stacked notes and shallowly route
-    const stackedNoteIds = queryParamToArray(stackQuery);
-    stackedNoteIds.splice(
-      currentNoteIndex - 1, // Stacked notes don't include the main note
-      1
-    );
+    if (currentNoteIndex == 0) {
+      stackedNoteIds.splice(
+        0, // Remove First Stacked Note
+        1
+      );
+      router.push(
+        {
+          pathname: router.pathname,
+          query: { ...currentNote, stack: stackedNoteIds },
+        },
+        undefined,
+        { shallow: true }
+      );
+    }
 
-    router.push(
-      {
-        pathname: router.pathname,
-        query: { ...router.query, stack: stackedNoteIds },
-      },
-      undefined,
-      { shallow: true }
-    );
+    else {// Remove from stacked notes and shallowly route
+      stackedNoteIds.splice(
+        currentNoteIndex - 1, // Stacked notes don't include the main note
+        1
+      );
+      router.push(
+        {
+          pathname: router.pathname,
+          query: { ...router.query, stack: stackedNoteIds },
+        },
+        undefined,
+        { shallow: true }
+      );
+    }
+
   }, [currentNote.id, stackQuery, router]);
 
   const menuButtonRef = useRef<HTMLButtonElement | null>(null);
@@ -189,3 +205,4 @@ const getNoteAsBlob = (note: Note) => {
   });
   return blob;
 };
+
