@@ -22,7 +22,8 @@
     "cy:run": "cypress run",
     "lint": "eslint . --ext .tsx,.ts",
     "typecheck": "tsc",
-    "prettier": "prettier --write .",
+    "prettier:check": "prettier --check \"**/*.{tsx, ts, jsx, js}\"",
+    "prettier:write": "prettier --write .",
     "db:seed": "node ./scripts/seed.js",
     "analyze": "env ANALYZE=true next build"
   },
