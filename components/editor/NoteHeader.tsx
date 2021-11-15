@@ -26,6 +26,7 @@ import { DropdownItem } from 'components/Dropdown';
 import useDeleteNote from 'utils/useDeleteNote';
 import NoteMetadata from 'components/NoteMetadata';
 import MoveToModal from 'components/MoveToModal';
+import { nextTick } from 'process';
 
 export default function NoteHeader() {
   const currentNote = useCurrentNote();
