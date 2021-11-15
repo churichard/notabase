@@ -39,7 +39,7 @@ export default function NoteHeader() {
     (state) => !state.isSidebarOpen && state.openNoteIds?.[0] === currentNote.id
   );
   const isCloseButtonVisible = useStore(
-    (state) => state.openNoteIds?.[1]
+    (state) => (state.openNoteIds.length > 1)
   );
   const note = useStore((state) => state.notes[currentNote.id]);
 
@@ -55,15 +55,11 @@ export default function NoteHeader() {
 
     if (currentNoteIndex == 0) {
       // Changes Current Note to first note in stack 
-      currentNote.id = stackedNoteIds[0];
-      stackedNoteIds.splice(
-        0, 
-        1
-      );// Removes first note in stack from the stack 
+      currentNote.id = stackedNoteIds.shift();
       router.push(
         {
           pathname: router.pathname,
-          query: { ...currentNote, stack: stackedNoteIds },
+          query: { ...currentNote.id, stack: stackedNoteIds },
         },
         undefined,
         { shallow: true }
