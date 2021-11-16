@@ -59,7 +59,7 @@ export default function NoteHeader() {
       router.push(
         {
           pathname: router.pathname,
-          query: { ...currentNote.id, stack: stackedNoteIds },
+          query: { ...currentNote, stack: stackedNoteIds },
         },
         undefined,
         { shallow: true }
