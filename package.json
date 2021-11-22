@@ -29,7 +29,7 @@
     "prepare": "husky install"
   },
   "dependencies": {
-    "@dnd-kit/core": "^4.0.1",
+    "@dnd-kit/core": "^4.0.2",
     "@dnd-kit/sortable": "^5.0.0",
     "@headlessui/react": "^1.4.2",
     "@popperjs/core": "^2.10.2",
