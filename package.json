@@ -67,7 +67,7 @@
     "react-virtual": "^2.8.2",
     "react-virtualized": "^9.22.3",
     "remark-gfm": "^3.0.1",
-    "remark-parse": "^10.0.0",
+    "remark-parse": "^10.0.1",
     "remark-wiki-link": "^1.0.4",
     "slate": "^0.66.5",
     "slate-history": "^0.66.0",
