@@ -29,7 +29,7 @@
     "prepare": "husky install"
   },
   "dependencies": {
-    "@dnd-kit/core": "^4.0.1",
+    "@dnd-kit/core": "^4.0.2",
     "@dnd-kit/sortable": "^5.0.0",
     "@headlessui/react": "^1.4.2",
     "@popperjs/core": "^2.10.2",
@@ -55,7 +55,7 @@
     "localforage": "^1.10.0",
     "micro": "^9.3.4",
     "micro-cors": "^0.1.1",
-    "next": "^12.0.3",
+    "next": "^12.0.4",
     "next-pwa": "5.4.0",
     "nprogress": "^0.2.0",
     "postcss": "^8.3.11",
@@ -80,7 +80,7 @@
     "zustand": "^3.6.4"
   },
   "devDependencies": {
-    "@next/bundle-analyzer": "^12.0.3",
+    "@next/bundle-analyzer": "^12.0.4",
     "@testing-library/cypress": "^8.0.1",
     "@testing-library/dom": "^8.11.1",
     "@testing-library/jest-dom": "^5.15.0",
