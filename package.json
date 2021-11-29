@@ -32,7 +32,7 @@
     "@dnd-kit/core": "^4.0.3",
     "@dnd-kit/sortable": "^5.1.0",
     "@headlessui/react": "^1.4.2",
-    "@popperjs/core": "^2.10.2",
+    "@popperjs/core": "^2.11.0",
     "@react-spring/web": "^9.3.1",
     "@sentry/nextjs": "^6.15.0",
     "@stripe/stripe-js": "^1.21.1",
