@@ -83,7 +83,7 @@
     "@next/bundle-analyzer": "^12.0.4",
     "@testing-library/cypress": "^8.0.2",
     "@testing-library/dom": "^8.11.1",
-    "@testing-library/jest-dom": "^5.15.0",
+    "@testing-library/jest-dom": "^5.15.1",
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",
     "@types/d3-drag": "^3.0.1",
