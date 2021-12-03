@@ -36,7 +36,7 @@
     "@react-spring/web": "^9.3.1",
     "@sentry/nextjs": "^6.15.0",
     "@stripe/stripe-js": "^1.21.1",
-    "@supabase/supabase-js": "^1.28.2",
+    "@supabase/supabase-js": "^1.28.5",
     "@tabler/icons": "^1.46.0",
     "@tailwindcss/forms": "^0.3.4",
     "@tailwindcss/typography": "^0.4.1",
