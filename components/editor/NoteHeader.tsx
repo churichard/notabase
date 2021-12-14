@@ -53,13 +53,12 @@ export default function NoteHeader() {
       return;
     }
 
-    if (currentNoteIndex == 0) {
-      // Changes Current Note to first note in stack
-      currentNote.id = stackedNoteIds.shift();
+    if (currentNoteIndex === 0) {
+      // Changes current note to first note in stack
       router.push(
         {
           pathname: router.pathname,
-          query: { ...currentNote, stack: stackedNoteIds },
+          query: { id: stackedNoteIds[0], stack: stackedNoteIds.slice(1) },
         },
         undefined,
         { shallow: true }
