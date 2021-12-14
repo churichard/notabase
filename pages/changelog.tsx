@@ -27,6 +27,12 @@ export default function Changelog() {
           .
         </p>
         <ChangelogBlock
+          title="December 14, 2021"
+          features={[
+            'Add the ability to close the main note when other notes are stacked',
+          ]}
+        />
+        <ChangelogBlock
           title="November 4, 2021"
           features={['Add "Add block below" button to block menu']}
         />
