@@ -39,7 +39,7 @@ export default function NoteHeader() {
     (state) => !state.isSidebarOpen && state.openNoteIds?.[0] === currentNote.id
   );
   const isCloseButtonVisible = useStore(
-    (state) => state.openNoteIds?.[0] !== currentNote.id
+    (state) => state.openNoteIds.length > 1
   );
   const note = useStore((state) => state.notes[currentNote.id]);
 
@@ -47,26 +47,37 @@ export default function NoteHeader() {
     const currentNoteIndex = store
       .getState()
       .openNoteIds.findIndex((openNoteId) => openNoteId === currentNote.id);
+    const stackedNoteIds = queryParamToArray(stackQuery);
 
     if (currentNoteIndex < 0) {
       return;
     }
 
-    // Remove from stacked notes and shallowly route
-    const stackedNoteIds = queryParamToArray(stackQuery);
-    stackedNoteIds.splice(
-      currentNoteIndex - 1, // Stacked notes don't include the main note
-      1
-    );
-
-    router.push(
-      {
-        pathname: router.pathname,
-        query: { ...router.query, stack: stackedNoteIds },
-      },
-      undefined,
-      { shallow: true }
-    );
+    if (currentNoteIndex === 0) {
+      // Changes current note to first note in stack
+      router.push(
+        {
+          pathname: router.pathname,
+          query: { id: stackedNoteIds[0], stack: stackedNoteIds.slice(1) },
+        },
+        undefined,
+        { shallow: true }
+      );
+    } else {
+      // Remove from stacked notes and shallowly route
+      stackedNoteIds.splice(
+        currentNoteIndex - 1, // Stacked notes don't include the main note
+        1
+      );
+      router.push(
+        {
+          pathname: router.pathname,
+          query: { ...router.query, stack: stackedNoteIds },
+        },
+        undefined,
+        { shallow: true }
+      );
+    }
   }, [currentNote.id, stackQuery, router]);
 
   const menuButtonRef = useRef<HTMLButtonElement | null>(null);
@@ -110,7 +121,11 @@ export default function NoteHeader() {
       <div>
         {isCloseButtonVisible ? (
           <Tooltip content="Close pane">
-            <button className={buttonClassName} onClick={onClosePane}>
+            <button
+              className={buttonClassName}
+              onClick={onClosePane}
+              title="Close pane"
+            >
               <span className="flex items-center justify-center w-8 h-8">
                 <IconX className={iconClassName} />
               </span>
@@ -120,7 +135,11 @@ export default function NoteHeader() {
         <Menu>
           {({ open }) => (
             <>
-              <Menu.Button ref={menuButtonRef} className={buttonClassName}>
+              <Menu.Button
+                ref={menuButtonRef}
+                className={buttonClassName}
+                title="Options (export, import, etc.)"
+              >
                 <Tooltip content="Options (export, import, etc.)">
                   <span className="flex items-center justify-center w-8 h-8">
                     <IconDots className={iconClassName} />
