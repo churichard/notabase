@@ -121,7 +121,11 @@ export default function NoteHeader() {
       <div>
         {isCloseButtonVisible ? (
           <Tooltip content="Close pane">
-            <button className={buttonClassName} onClick={onClosePane}>
+            <button
+              className={buttonClassName}
+              onClick={onClosePane}
+              title="Close pane"
+            >
               <span className="flex items-center justify-center w-8 h-8">
                 <IconX className={iconClassName} />
               </span>
@@ -131,7 +135,11 @@ export default function NoteHeader() {
         <Menu>
           {({ open }) => (
             <>
-              <Menu.Button ref={menuButtonRef} className={buttonClassName}>
+              <Menu.Button
+                ref={menuButtonRef}
+                className={buttonClassName}
+                title="Options (export, import, etc.)"
+              >
                 <Tooltip content="Options (export, import, etc.)">
                   <span className="flex items-center justify-center w-8 h-8">
                     <IconDots className={iconClassName} />

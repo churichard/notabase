@@ -8,10 +8,6 @@ import { AuthContext } from 'utils/useAuth';
 import notes from '__fixtures__/notes';
 import { Subscription, SubscriptionStatus } from 'types/supabase';
 
-jest.mock('next/router', () => ({
-  useRouter: () => ({ query: {}, pathname: '/app' }),
-}));
-
 describe('AppLayout', () => {
   const renderAppLayout = () => {
     const auth = {

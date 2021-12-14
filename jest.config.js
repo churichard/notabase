@@ -25,6 +25,7 @@ module.exports = {
     '^unified$': '<rootDir>/__mocks__/unified.ts',
     '^remark-parse$': '<rootDir>/__mocks__/remark-parse.ts',
     '^remark-gfm$': '<rootDir>/__mocks__/remark-gfm.ts',
+    '^next/router$': '<rootDir>/__mocks__/next-router.ts',
   },
   testPathIgnorePatterns: [
     '<rootDir>/node_modules/',
