@@ -125,7 +125,7 @@
     "pg": "^8.7.1",
     "prettier": "2.5.1",
     "react-test-renderer": "^17.0.2",
-    "typescript": "^4.5.3"
+    "typescript": "^4.5.4"
   },
   "lint-staged": {
     "*.{tsx,ts,jsx,js}": "eslint --cache --fix",
