@@ -93,7 +93,7 @@
     "@types/file-saver": "^2.0.4",
     "@types/micro": "^7.3.6",
     "@types/micro-cors": "^0.1.2",
-    "@types/node": "^16.11.11",
+    "@types/node": "^16.11.12",
     "@types/nprogress": "^0.2.0",
     "@types/pg": "^8.6.1",
     "@types/react": "^17.0.37",
