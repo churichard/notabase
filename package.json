@@ -107,7 +107,7 @@
     "babel-jest": "^27.4.6",
     "canvas": "^2.8.0",
     "cypress": "^8.7.0",
-    "dotenv": "^10.0.0",
+    "dotenv": "^11.0.0",
     "eslint": "^8.6.0",
     "eslint-config-next": "^12.0.7",
     "eslint-config-prettier": "^8.3.0",
