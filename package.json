@@ -72,7 +72,7 @@
     "slate": "^0.66.5",
     "slate-history": "^0.66.0",
     "slate-hyperscript": "^0.67.0",
-    "slate-react": "^0.66.7",
+    "slate-react": "^0.72.4",
     "stripe": "^8.195.0",
     "tailwindcss": "^2.2.19",
     "unified": "^10.1.1",
