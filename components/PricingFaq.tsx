@@ -63,19 +63,6 @@ export default function PricingFaq(props: Props) {
           </div>
           <div>
             <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
-              Can I get a discount?
-            </h3>
-            <div className="mt-2">
-              <p className="text-gray-600 dark:text-gray-300">
-                If you subscribe now, you&apos;ll automatically get a lifetime
-                discount on the full price. You&apos;ll be locked in at this
-                lower price as long as your subscription remains active. Prices
-                will go up soon, so act fast.
-              </p>
-            </div>
-          </div>
-          <div>
-            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
               What happens if I reach {MAX_NUM_OF_BASIC_NOTES} notes on the
               Basic plan?
             </h3>

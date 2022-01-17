@@ -88,7 +88,6 @@ export default function PricingPlans(props: Props) {
           name={PRICING_PLANS[PlanId.Pro].name}
           price={getBillingPeriodPrice(PlanId.Pro, showAnnual)}
           period={showAnnual ? '/ yr' : '/ mo'}
-          discount={showAnnual ? '108' : '12'}
           bulletPoints={PRO_BULLET_POINTS}
           button={buttons?.(showAnnual)[1]}
         />
