@@ -37,7 +37,7 @@
     "@sentry/nextjs": "^6.16.1",
     "@stripe/stripe-js": "^1.22.0",
     "@supabase/supabase-js": "^1.29.1",
-    "@tabler/icons": "^1.51.0",
+    "@tabler/icons": "^1.52.0",
     "@tailwindcss/forms": "^0.3.4",
     "@tailwindcss/typography": "^0.4.1",
     "@tippyjs/react": "^4.2.6",
