@@ -53,7 +53,7 @@ Notabase is currently focused on the hosted experience, but it is possible for y
 3. Create your database tables. The full schema is [here](https://github.com/churichard/notabase/blob/main/scripts/schema.sql).
 4. In your local development environment, install the packages using `npm install`, and then run the project using `npm run dev`.
 
-Note: by default, Notabase has a cap on the number of notes you can create. You can circumvent this by inserting an active subscription for your user id in the `subscriptions` table.
+Note: the hosted and self-hosted versions of Notabase share the same codebase, so by default, there is a cap on the number of notes you can create. You can circumvent this by inserting a new row in the `subscriptions` table for your user id, with `pro` in the `plan_id` column and `active` in the `subscription_status` column.
 
 ## Testing
 
