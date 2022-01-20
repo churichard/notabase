@@ -301,7 +301,7 @@ export default function AppLayout(props: Props) {
       <Head>
         <meta
           name="theme-color"
-          content={darkMode ? colors.trueGray[900] : colors.white}
+          content={darkMode ? colors.neutral[900] : colors.white}
         />
       </Head>
       <div id="app-container" className={appContainerClassName}>
