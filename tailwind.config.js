@@ -33,7 +33,7 @@ module.exports = {
       },
       colors: {
         primary: colors.emerald,
-        gray: colors.trueGray,
+        gray: colors.neutral,
         orange: colors.orange,
       },
       boxShadow: {
