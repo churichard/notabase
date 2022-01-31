@@ -102,7 +102,7 @@
     "@types/react-virtualized": "^9.21.16",
     "@types/tailwindcss": "^3.0.3",
     "@types/uuid": "^8.3.4",
-    "@typescript-eslint/eslint-plugin": "^5.10.0",
+    "@typescript-eslint/eslint-plugin": "^5.10.2",
     "@typescript-eslint/parser": "^5.10.0",
     "babel-jest": "^27.4.6",
     "canvas": "^2.9.0",
