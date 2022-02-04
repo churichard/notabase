@@ -73,7 +73,7 @@
     "slate-history": "^0.66.0",
     "slate-hyperscript": "^0.67.0",
     "slate-react": "^0.66.7",
-    "stripe": "^8.200.0",
+    "stripe": "^8.202.0",
     "tailwindcss": "^3.0.18",
     "unified": "^10.1.1",
     "uuid": "^8.3.2",
