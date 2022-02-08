@@ -100,7 +100,7 @@
     "@types/react-dom": "^17.0.11",
     "@types/react-highlight-words": "^0.16.4",
     "@types/react-virtualized": "^9.21.16",
-    "@types/tailwindcss": "^3.0.3",
+    "@types/tailwindcss": "^3.0.7",
     "@types/uuid": "^8.3.4",
     "@typescript-eslint/eslint-plugin": "^5.10.0",
     "@typescript-eslint/parser": "^5.10.0",
