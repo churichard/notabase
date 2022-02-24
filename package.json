@@ -33,7 +33,7 @@
     "@dnd-kit/sortable": "^5.1.0",
     "@headlessui/react": "^1.4.3",
     "@popperjs/core": "^2.11.2",
-    "@react-spring/web": "^9.4.2",
+    "@react-spring/web": "^9.4.3",
     "@sentry/nextjs": "^6.17.6",
     "@stripe/stripe-js": "^1.22.0",
     "@supabase/supabase-js": "^1.29.4",
@@ -80,7 +80,7 @@
     "zustand": "^3.6.9"
   },
   "devDependencies": {
-    "@next/bundle-analyzer": "^12.0.10",
+    "@next/bundle-analyzer": "^12.1.0",
     "@testing-library/cypress": "^8.0.2",
     "@testing-library/dom": "^8.11.3",
     "@testing-library/jest-dom": "^5.16.2",
