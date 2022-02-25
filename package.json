@@ -115,7 +115,7 @@
     "eslint-plugin-cypress": "^2.12.1",
     "eslint-plugin-import": "^2.25.4",
     "eslint-plugin-jest-dom": "^4.0.1",
-    "eslint-plugin-react": "^7.28.0",
+    "eslint-plugin-react": "^7.29.1",
     "eslint-plugin-react-hooks": "^4.3.0",
     "eslint-plugin-testing-library": "^5.0.5",
     "husky": "^7.0.4",
