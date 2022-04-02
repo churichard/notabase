@@ -95,7 +95,7 @@
     "@types/micro-cors": "^0.1.2",
     "@types/node": "^17.0.21",
     "@types/nprogress": "^0.2.0",
-    "@types/pg": "^8.6.4",
+    "@types/pg": "^8.6.5",
     "@types/react": "^17.0.39",
     "@types/react-dom": "^17.0.14",
     "@types/react-highlight-words": "^0.16.4",
