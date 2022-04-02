@@ -31,7 +31,7 @@
   "dependencies": {
     "@dnd-kit/core": "^4.0.3",
     "@dnd-kit/sortable": "^5.1.0",
-    "@headlessui/react": "^1.4.3",
+    "@headlessui/react": "^1.5.0",
     "@popperjs/core": "^2.11.2",
     "@react-spring/web": "^9.4.3",
     "@sentry/nextjs": "^6.17.6",
