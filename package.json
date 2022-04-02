@@ -51,7 +51,7 @@
     "fuse.js": "^6.5.3",
     "immer": "^9.0.12",
     "is-hotkey": "^0.2.0",
-    "jszip": "^3.7.1",
+    "jszip": "^3.8.0",
     "localforage": "^1.10.0",
     "micro": "^9.3.4",
     "micro-cors": "^0.1.1",
