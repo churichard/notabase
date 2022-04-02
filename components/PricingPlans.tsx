@@ -24,14 +24,6 @@ const PRO_BULLET_POINTS = [
   'Community and email support',
 ];
 
-const CATALYST_BULLET_POINTS = [
-  'Everything in Pro, plus:',
-  'One-time payment for 5 years of access',
-  "Support Notabase's development",
-  'Early access to new features',
-  'Exclusive Discord role',
-];
-
 type Props = {
   buttons?: (showAnnual: boolean) => ReactNode[];
 };
@@ -74,9 +66,9 @@ export default function PricingPlans(props: Props) {
           </span>
         </span>
       </div>
-      <div className="grid gap-4 mx-auto lg:grid-cols-3">
+      <div className="grid max-w-4xl gap-4 mx-auto md:grid-cols-2">
         <PricingPlan
-          className="w-full mx-auto md:w-96 lg:w-full"
+          className="w-full mx-auto lg:w-full"
           name={PRICING_PLANS[PlanId.Basic].name}
           price={getBillingPeriodPrice(PlanId.Basic, showAnnual)}
           period={showAnnual ? '/ yr' : '/ mo'}
@@ -84,20 +76,12 @@ export default function PricingPlans(props: Props) {
           button={buttons?.(showAnnual)[0]}
         />
         <PricingPlan
-          className="w-full mx-auto md:w-96 lg:w-full"
+          className="w-full mx-auto lg:w-full"
           name={PRICING_PLANS[PlanId.Pro].name}
           price={getBillingPeriodPrice(PlanId.Pro, showAnnual)}
           period={showAnnual ? '/ yr' : '/ mo'}
           bulletPoints={PRO_BULLET_POINTS}
           button={buttons?.(showAnnual)[1]}
-        />
-        <PricingPlan
-          className="w-full mx-auto md:w-96 lg:w-full"
-          name={PRICING_PLANS[PlanId.Catalyst].name}
-          price={getBillingPeriodPrice(PlanId.Catalyst, showAnnual)}
-          period="/ 5 yrs"
-          bulletPoints={CATALYST_BULLET_POINTS}
-          button={buttons?.(showAnnual)[2]}
         />
       </div>
     </>

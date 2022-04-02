@@ -32,15 +32,15 @@ const PricingPlan = (props: Props) => {
             </span>
           </div>
           <div className="flex flex-wrap items-baseline mt-4 leading-none">
-            <span className="text-5xl font-extrabold xl:text-6xl">
+            <span className="text-5xl font-extrabold lg:text-6xl">
               ${price}
             </span>
             {discount ? (
-              <span className="px-1 text-2xl text-gray-500 line-through xl:text-3xl">
+              <span className="px-1 text-2xl text-gray-500 line-through lg:text-3xl">
                 ${discount}
               </span>
             ) : null}
-            <span className="ml-1 text-xl font-medium leading-8 text-gray-500 xl:text-2xl">
+            <span className="ml-1 text-xl font-medium leading-8 text-gray-500 lg:text-2xl">
               {period}
             </span>
           </div>
