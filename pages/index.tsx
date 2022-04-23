@@ -328,14 +328,14 @@ export default function Home() {
                 </p>
                 <p className="text-xl italic leading-normal">
                   &ldquo;Migrant here—have gone through almost all the apps out
-                  there, most recently Roam / Craft / Mem / Obsidian. Strangely,
-                  even just an hour or so in, I&apos;m getting a sense Notabase
-                  is already fulfilling a lot of what I&apos;m looking for : OS
-                  interoperability; Markdown exports; clean UI.{' '}
+                  there, most recently Roam / Craft / Mem / Obsidian.{' '}
                   <span className="font-semibold bg-yellow-100">
-                    All of those other apps have faltered in one way or another.
+                    Strangely, even just an hour or so in, I&apos;m getting a
+                    sense Notabase is already fulfilling a lot of what I&apos;m
+                    looking for
                   </span>
-                  &rdquo;
+                  : OS interoperability; Markdown exports; clean UI. All of
+                  those other apps have faltered in one way or another. &rdquo;
                 </p>
                 <p className="text-xl italic leading-normal">
                   &ldquo;Just tested this application today,{' '}
