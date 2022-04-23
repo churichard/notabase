@@ -61,7 +61,7 @@
     "postcss": "^8.4.12",
     "react": "17.0.2",
     "react-dom": "17.0.2",
-    "react-highlight-words": "^0.17.0",
+    "react-highlight-words": "^0.18.0",
     "react-popper": "^2.2.5",
     "react-toastify": "^8.2.0",
     "react-virtual": "^2.10.4",
