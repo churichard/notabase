@@ -27,6 +27,12 @@ export default function Changelog() {
           .
         </p>
         <ChangelogBlock
+          title="April 24, 2022"
+          bugFixes={[
+            'Paths in wikilinks are now stripped out when importing files',
+          ]}
+        />
+        <ChangelogBlock
           title="December 14, 2021"
           features={[
             'Add the ability to close the main note when other notes are stacked',

@@ -72,7 +72,7 @@ export default function useImport() {
       const noteLinkUpsertData: NoteUpsert[] = [];
       const noteTitleToIdCache: Record<string, string | undefined> = {};
       for (const file of inputElement.files) {
-        const fileName = file.name.replace(/\.[^/.]+$/, '');
+        const fileName = file.name.replace(/\.[^/.]+$/, ''); // Remove file extension
         if (!fileName) {
           continue;
         }

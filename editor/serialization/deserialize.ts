@@ -96,19 +96,21 @@ export default function deserialize(
         url: node.url ?? '',
         children,
       };
-    case 'wikiLink':
+    case 'wikiLink': {
+      const noteTitle = node.value?.split('/').pop() ?? ''; // Handle pathnames by removing the last slash and everything before it
       // Note ids are omitted and are added later
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       return {
         id: createNodeId(),
         type: ElementType.NoteLink,
-        noteTitle: node.value ?? '',
+        noteTitle,
         ...(node.data?.alias && node.data.alias !== node.value
           ? { customText: node.data.alias }
           : {}),
-        children: [{ text: node.value ?? '' }],
+        children: [{ text: noteTitle }],
       };
+    }
 
     case 'image':
       return {
