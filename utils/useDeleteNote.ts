@@ -3,9 +3,11 @@ import { useRouter } from 'next/router';
 import deleteBacklinks from 'editor/backlinks/deleteBacklinks';
 import deleteNote from 'lib/api/deleteNote';
 import { store, useStore } from 'lib/store';
+import { useAuth } from './useAuth';
 
 export default function useDeleteNote(noteId: string) {
   const router = useRouter();
+  const { user } = useAuth();
 
   const openNoteIds = useStore((state) => state.openNoteIds);
 
@@ -32,9 +34,13 @@ export default function useDeleteNote(noteId: string) {
       }
     }
 
-    await deleteNote(noteId);
+    if (!user) {
+      return;
+    }
+
+    await deleteNote(user.id, noteId);
     await deleteBacklinks(noteId);
-  }, [router, noteId, openNoteIds]);
+  }, [router, user, noteId, openNoteIds]);
 
   return onDeleteClick;
 }
