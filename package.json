@@ -120,7 +120,7 @@
     "eslint-plugin-testing-library": "^5.5.0",
     "husky": "^8.0.1",
     "identity-obj-proxy": "^3.0.0",
-    "jest": "^27.5.1",
+    "jest": "^28.1.1",
     "lint-staged": "^12.4.1",
     "pg": "^8.7.3",
     "prettier": "2.6.2",
