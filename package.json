@@ -63,7 +63,7 @@
     "react-dom": "17.0.2",
     "react-highlight-words": "^0.18.0",
     "react-popper": "^2.3.0",
-    "react-toastify": "^9.0.1",
+    "react-toastify": "^9.0.6",
     "react-virtual": "^2.10.4",
     "react-virtualized": "^9.22.3",
     "remark-gfm": "^3.0.1",
