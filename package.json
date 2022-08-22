@@ -103,7 +103,7 @@
     "@types/tailwindcss": "^3.0.10",
     "@types/uuid": "^8.3.4",
     "@typescript-eslint/eslint-plugin": "^5.25.0",
-    "@typescript-eslint/parser": "^5.25.0",
+    "@typescript-eslint/parser": "^5.34.0",
     "babel-jest": "^28.1.0",
     "canvas": "^2.9.1",
     "cypress": "^8.7.0",
