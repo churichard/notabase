@@ -33,7 +33,7 @@
     "@dnd-kit/sortable": "^5.1.0",
     "@headlessui/react": "^1.6.6",
     "@popperjs/core": "^2.11.5",
-    "@react-spring/web": "^9.4.5",
+    "@react-spring/web": "^9.5.2",
     "@sentry/nextjs": "^7.8.1",
     "@stripe/stripe-js": "^1.29.0",
     "@supabase/supabase-js": "^1.35.3",
