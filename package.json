@@ -106,7 +106,7 @@
     "@typescript-eslint/parser": "^5.35.1",
     "babel-jest": "^28.1.0",
     "canvas": "^2.9.3",
-    "cypress": "^8.7.0",
+    "cypress": "^10.9.0",
     "dotenv": "^16.0.1",
     "eslint": "^8.23.0",
     "eslint-config-next": "^12.2.5",
