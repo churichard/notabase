@@ -18,6 +18,10 @@
   .link {
     @apply cursor-pointer text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300;
   }
+
+  .underline-strikethrough {
+    text-decoration-line: underline line-through;
+  }
 }
 
 :root {
