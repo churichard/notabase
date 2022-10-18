@@ -51,7 +51,7 @@ describe('User sign up, login, and logout', () => {
 
     cy.get('button[type="submit"]').click();
 
-    cy.selectToastByContent('Invalid login credentials');
+    cy.selectToastByContent('Invalid');
   });
 
   it('displays toastify login validation error for incorrect username', () => {
@@ -62,7 +62,7 @@ describe('User sign up, login, and logout', () => {
 
     cy.get('button[type="submit"]').click();
 
-    cy.selectToastByContent('Invalid login credentials');
+    cy.selectToastByContent('Invalid');
   });
 
   it('can sign up using UI', () => {
