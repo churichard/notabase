@@ -2,7 +2,7 @@ import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import type { Path } from 'slate';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
-import Editor from 'components/editor/Editor';
+import Editor from 'components/lexical/Editor';
 import Title from 'components/editor/Title';
 import { store, useStore } from 'lib/store';
 import type { NoteUpdate } from 'lib/api/updateNote';
@@ -177,12 +177,13 @@ function Note(props: Props) {
                 noteId={noteId}
                 onChange={onTitleChange}
               />
-              <Editor
+              <Editor className="flex-1 px-8 pt-2 pb-8 md:pb-12 md:px-12" />
+              {/* <Editor
                 className="flex-1 px-8 pt-2 pb-8 md:pb-12 md:px-12"
                 noteId={noteId}
                 onChange={onEditorValueChange}
                 highlightedPath={highlightedPath}
-              />
+              /> */}
               <Backlinks className="mx-4 mb-8 md:mx-8 md:mb-12" />
             </div>
           </div>
