@@ -1,6 +1,11 @@
 declare namespace Cypress {
   interface Chainable {
     /**
+     * Selects a Toastify element by its content
+     * @example cy.selectToastByContent('content')
+     */
+    selectToastByContent(content: string);
+    /**
      * Gets the Slate editor element.
      * @example cy.getEditor()
      */
