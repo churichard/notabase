@@ -49,3 +49,9 @@ Cypress.Commands.add(
 );
 
 Cypress.Commands.add('getEditor', () => cy.get('[data-slate-editor=true]'));
+
+// This is not a great way to target elements, but
+// toastify doesn't support adding data attributes
+Cypress.Commands.add('selectToastByContent', (content) =>
+  cy.get('.Toastify__toast-body').should('be.visible').contains(content)
+);

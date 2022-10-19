@@ -101,7 +101,10 @@ export default function AuthForm(props: Props) {
         {signup ? 'Sign up' : 'Sign in'}
       </button>
       {signup && showEmailConfirmationMessage ? (
-        <div className="mt-4 text-primary-500">
+        <div
+          data-testid="email-confirmation-message"
+          className="mt-4 text-primary-500"
+        >
           We just sent you a confirmation email. Please check your inbox and
           confirm your email address.
         </div>
