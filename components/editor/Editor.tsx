@@ -42,6 +42,7 @@ import { getDefaultEditorValue } from 'editor/constants';
 import { store, useStore } from 'lib/store';
 import { ElementType, Mark } from 'types/slate';
 import useIsMounted from 'utils/useIsMounted';
+import { resetNodes } from 'editor/transforms';
 import HoveringToolbar from './HoveringToolbar';
 import AddLinkPopover from './AddLinkPopover';
 import EditorElement from './elements/EditorElement';
@@ -72,11 +73,17 @@ function Editor(props: Props) {
   const value = useStore(
     (state) => state.notes[noteId]?.content ?? getDefaultEditorValue()
   );
-  const setValue = useCallback(
+  const updateStoreNote = useCallback(
     (value: Descendant[]) =>
       store.getState().updateNote({ id: noteId, content: value }),
     [noteId]
   );
+
+  const initialValueRef = useRef<Descendant[]>();
+  if (!initialValueRef.current) {
+    initialValueRef.current = value;
+  }
+  const initialValue = initialValueRef.current;
 
   const editorRef = useRef<SlateEditor>();
   if (!editorRef.current) {
@@ -253,15 +260,24 @@ function Editor(props: Props) {
   const onSlateChange = useCallback(
     (newValue: Descendant[]) => {
       setSelection(editor.selection);
-      // We need this check because this function is called every time
-      // the selection changes
-      if (newValue !== value) {
-        setValue(newValue);
+      // Check if there are changes other than the selection
+      const isAstChange = editor.operations.some(
+        (op) => 'set_selection' !== op.type
+      );
+      if (isAstChange) {
+        updateStoreNote(newValue);
         onChange(newValue);
       }
     },
-    [editor.selection, onChange, value, setValue]
+    [editor.selection, editor.operations, updateStoreNote, onChange]
   );
+
+  // If this note's content has changed, then update the editor to match it.
+  useEffect(() => {
+    if (editor.children !== value) {
+      resetNodes(editor, { nodes: value, at: editor.selection ?? undefined });
+    }
+  }, [editor, value]);
 
   // If highlightedPath is defined, highlight the path
   const darkMode = useStore((state) => state.darkMode);
@@ -300,7 +316,7 @@ function Editor(props: Props) {
   }, [editor, highlightedPath, darkMode]);
 
   return (
-    <Slate editor={editor} value={value} onChange={onSlateChange}>
+    <Slate editor={editor} value={initialValue} onChange={onSlateChange}>
       {isToolbarVisible ? (
         <HoveringToolbar setAddLinkPopoverState={setAddLinkPopoverState} />
       ) : null}
