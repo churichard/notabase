@@ -125,23 +125,7 @@ function Editor(props: Props) {
       isLink: false,
     });
 
-  const [selection, setSelection] = useState(editor.selection);
   const [toolbarCanBeVisible, setToolbarCanBeVisible] = useState(true);
-  const hasExpandedSelection = useMemo(
-    () =>
-      !!selection &&
-      ReactEditor.isFocused(editor) &&
-      !Range.isCollapsed(selection) &&
-      SlateEditor.string(editor, selection, { voids: true }) !== '',
-    [editor, selection]
-  );
-  const isToolbarVisible = useMemo(
-    () =>
-      toolbarCanBeVisible &&
-      hasExpandedSelection &&
-      !addLinkPopoverState.isVisible,
-    [toolbarCanBeVisible, hasExpandedSelection, addLinkPopoverState.isVisible]
-  );
 
   const hotkeys = useMemo(
     () => [
@@ -259,7 +243,6 @@ function Editor(props: Props) {
 
   const onSlateChange = useCallback(
     (newValue: Descendant[]) => {
-      setSelection(editor.selection);
       // Check if there are changes other than the selection
       const isAstChange = editor.operations.some(
         (op) => 'set_selection' !== op.type
@@ -269,7 +252,7 @@ function Editor(props: Props) {
         onChange(newValue);
       }
     },
-    [editor.selection, editor.operations, updateStoreNote, onChange]
+    [editor.operations, updateStoreNote, onChange]
   );
 
   // If this note's content has changed, then update the editor to match it.
@@ -317,9 +300,10 @@ function Editor(props: Props) {
 
   return (
     <Slate editor={editor} value={initialValue} onChange={onSlateChange}>
-      {isToolbarVisible ? (
-        <HoveringToolbar setAddLinkPopoverState={setAddLinkPopoverState} />
-      ) : null}
+      <HoveringToolbar
+        canBeVisible={toolbarCanBeVisible && !addLinkPopoverState.isVisible}
+        setAddLinkPopoverState={setAddLinkPopoverState}
+      />
       {addLinkPopoverState.isVisible ? (
         <AddLinkPopover
           addLinkPopoverState={addLinkPopoverState}
