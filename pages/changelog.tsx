@@ -27,6 +27,14 @@ export default function Changelog() {
           .
         </p>
         <ChangelogBlock
+          title="October 26, 2022"
+          bugFixes={[
+            'Improved Android support',
+            'Improved Grammarly support',
+            'Editor performance optimizations',
+          ]}
+        />
+        <ChangelogBlock
           title="April 24, 2022"
           bugFixes={[
             'Paths in wikilinks are now stripped out when importing files',
