@@ -1,6 +1,8 @@
-import { useState, useMemo, useCallback, memo } from 'react';
-import List from 'react-virtualized/dist/commonjs/List';
-import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
+import { useState, useMemo, useCallback, memo, FC, CSSProperties } from 'react';
+import _List, { ListProps } from 'react-virtualized/dist/commonjs/List';
+import _AutoSizer, {
+  AutoSizerProps,
+} from 'react-virtualized/dist/commonjs/AutoSizer';
 import { useRouter } from 'next/router';
 import {
   DndContext,
@@ -25,6 +27,11 @@ import { User } from 'types/supabase';
 import { useAuth } from 'utils/useAuth';
 import SidebarNoteLink from './SidebarNoteLink';
 import DraggableSidebarNoteLink from './DraggableSidebarNoteLink';
+
+// This is to workaround a type error that occurs with React 18.
+// Ideally, find a way to remove react-virtualized since it is not maintained anymore.
+const List = _List as unknown as FC<ListProps>;
+const AutoSizer = _AutoSizer as unknown as FC<AutoSizerProps>;
 
 export type FlattenedNoteTreeItem = {
   id: string;
@@ -123,7 +130,7 @@ function SidebarNotesTree(props: Props) {
   );
 
   const Row = useCallback(
-    ({ index, style }) => {
+    ({ index, style }: { index: number; style: CSSProperties }) => {
       const node = flattenedData[index];
       return (
         <DraggableSidebarNoteLink

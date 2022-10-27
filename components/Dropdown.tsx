@@ -103,7 +103,7 @@ export function DropdownItem(props: DropdownItemProps) {
   const { children, className = '' } = props;
 
   const itemClassName = useCallback(
-    (active) =>
+    (active: boolean) =>
       `flex w-full items-center px-4 py-2 text-left text-sm text-gray-800 dark:text-gray-200 select-none ${
         active ? 'bg-gray-100 dark:bg-gray-700' : ''
       } ${className}`,

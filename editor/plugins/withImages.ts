@@ -90,7 +90,7 @@ export const uploadAndInsertImage = async (
 
   if (uploadError) {
     toast.dismiss(uploadingToast);
-    toast.error(uploadError);
+    toast.error(uploadError.message);
     return;
   }
 
@@ -103,7 +103,7 @@ export const uploadAndInsertImage = async (
   if (signedURL) {
     insertImage(editor, signedURL, path);
   } else if (signedUrlError) {
-    toast.error(signedUrlError);
+    toast.error(signedUrlError.message);
   } else {
     toast.error(
       'There was a problem uploading your image. Please try again later.'
