@@ -1,5 +1,5 @@
-import { HTMLAttributes } from 'react';
-import { useSlate } from 'slate-react';
+import { HTMLAttributes, useMemo } from 'react';
+import { ReactEditor, useSlate, useSlateSelection } from 'slate-react';
 import {
   TablerIcon,
   IconBold,
@@ -11,6 +11,7 @@ import {
   IconHighlight,
 } from '@tabler/icons';
 import classNames from 'classnames';
+import { Editor, Range } from 'slate';
 import { toggleMark, isMarkActive, isElementActive } from 'editor/formatting';
 import { ElementType, Mark } from 'types/slate';
 import Tooltip from 'components/Tooltip';
@@ -19,10 +20,33 @@ import EditorPopover from './EditorPopover';
 import type { AddLinkPopoverState } from './Editor';
 
 type Props = {
+  canBeVisible: boolean;
   setAddLinkPopoverState: (state: AddLinkPopoverState) => void;
 };
+
 export default function HoveringToolbar(props: Props) {
-  const { setAddLinkPopoverState } = props;
+  const { canBeVisible, setAddLinkPopoverState } = props;
+
+  const editor = useSlate();
+  const selection = useSlateSelection();
+
+  const hasExpandedSelection = useMemo(
+    () =>
+      !!selection &&
+      ReactEditor.isFocused(editor) &&
+      !Range.isCollapsed(selection) &&
+      Editor.string(editor, selection, { voids: true }) !== '',
+    [editor, selection]
+  );
+  const isToolbarVisible = useMemo(
+    () => canBeVisible && hasExpandedSelection,
+    [canBeVisible, hasExpandedSelection]
+  );
+
+  if (!isToolbarVisible) {
+    return null;
+  }
+
   return (
     <EditorPopover placement={isMobile() ? 'bottom-start' : 'top-start'}>
       <LinkButton
