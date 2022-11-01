@@ -139,6 +139,7 @@ export default function NoteHeader() {
                 ref={menuButtonRef}
                 className={buttonClassName}
                 title="Options (export, import, etc.)"
+                data-testid="note-menu-button"
               >
                 <Tooltip content="Options (export, import, etc.)">
                   <span className="flex items-center justify-center w-8 h-8">
@@ -150,6 +151,7 @@ export default function NoteHeader() {
                 <Portal>
                   <Menu.Items
                     ref={setPopperElement}
+                    data-testid="note-menu-button-dropdown"
                     className="z-10 w-56 overflow-hidden bg-white rounded shadow-popover dark:bg-gray-800 focus:outline-none"
                     static
                     style={styles.popper}

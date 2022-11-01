@@ -32,6 +32,7 @@ function Title(props: Props) {
     <>
       <div
         ref={titleRef}
+        data-testid="note-title"
         className={`title text-3xl md:text-4xl font-semibold border-none focus:outline-none p-0 leading-tight cursor-text ${className}`}
         role="textbox"
         placeholder="Untitled"

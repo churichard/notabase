@@ -81,7 +81,10 @@ const SidebarNoteLink = (
             fill="currentColor"
           />
         </button>
-        <span className="overflow-hidden overflow-ellipsis whitespace-nowrap">
+        <span
+          data-testid={'sidebar-note-link-' + note.title}
+          className="overflow-hidden overflow-ellipsis whitespace-nowrap"
+        >
           {note.title}
         </span>
       </div>

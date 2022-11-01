@@ -5,10 +5,11 @@ import { useCurrentNote } from 'utils/useCurrentNote';
 
 type BacklinkNoteBranchProps = {
   backlink: Backlink;
+  isLinked: boolean;
 };
 
 const BacklinkNoteBranch = (props: BacklinkNoteBranchProps) => {
-  const { backlink } = props;
+  const { backlink, isLinked } = props;
   const currentNote = useCurrentNote();
   const { onClick: onNoteLinkClick, defaultStackingBehavior } =
     useOnNoteLinkClick(currentNote.id);
@@ -16,6 +17,7 @@ const BacklinkNoteBranch = (props: BacklinkNoteBranchProps) => {
   return (
     <button
       className="py-1 link"
+      data-testid={isLinked ? 'linked-reference' : 'unlinked-reference'}
       onClick={(e) => {
         e.stopPropagation();
         onNoteLinkClick(backlink.id, defaultStackingBehavior(e));

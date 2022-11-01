@@ -315,6 +315,7 @@ function Editor(props: Props) {
       <TagAutocompletePopover />
       <Editable
         className={`overflow-hidden placeholder-gray-300 ${className}`}
+        data-testid="note-editor"
         renderElement={renderElement}
         renderLeaf={EditorLeaf}
         placeholder="Start typing here…"
