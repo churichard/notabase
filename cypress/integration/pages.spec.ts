@@ -36,12 +36,12 @@ describe('pages', () => {
     // first() is specified because there are multiple links to note 211
     cy.getNoteLinkElement('421').first().click();
 
-    // reference existing '001=>421' page alias to target the element inside
+    // target page '001=>421' so we can target elements inside
     cy.targetPage('001=>421').within(() => {
       cy.getEditor().type('l');
     });
 
-    // reference existing '421' page alias to target the element inside
+    // target page '421' so we can target elements inside
     cy.targetPage('421').within(() => {
       cy.getEditor().type('r');
     });
