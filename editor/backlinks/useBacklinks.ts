@@ -22,8 +22,15 @@ export type BacklinkMatch = {
   path: Path;
 };
 
+export enum BacklinkType {
+  Linked = 'linked',
+  Unlinked = 'unlinked',
+  Block = 'block',
+}
+
 export type Backlink = {
   id: string;
+  type: BacklinkType;
   title: string;
   matches: Array<BacklinkMatch>;
 };
@@ -61,6 +68,7 @@ export const computeLinkedBacklinks = (
     if (matches.length > 0) {
       result.push({
         id: note.id,
+        type: BacklinkType.Linked,
         title: note.title,
         matches,
       });
@@ -91,6 +99,7 @@ const computeUnlinkedBacklinks = (
     if (matches.length > 0) {
       result.push({
         id: note.id,
+        type: BacklinkType.Unlinked,
         title: note.title,
         matches,
       });
