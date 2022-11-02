@@ -58,9 +58,7 @@ const getTreeData = (
           title={`${numOfLinkedMatches} Linked References`}
         />
       ),
-      children: linkedBacklinks.map((backlink) =>
-        backlinkToTreeData(true, backlink)
-      ),
+      children: linkedBacklinks.map(backlinkToTreeData),
     },
     {
       id: 'unlinked-backlinks',
@@ -69,14 +67,12 @@ const getTreeData = (
           title={`${numOfUnlinkedMatches} Unlinked References`}
         />
       ),
-      children: unlinkedBacklinks.map((backlink) =>
-        backlinkToTreeData(false, backlink)
-      ),
+      children: unlinkedBacklinks.map(backlinkToTreeData),
     },
   ];
 };
 
-const backlinkToTreeData = (isLinked: boolean, backlink: Backlink) => {
+const backlinkToTreeData = (backlink: Backlink) => {
   const matches: Array<BacklinkMatch> = [];
   const linePaths: Record<string, boolean> = {};
 
@@ -89,13 +85,11 @@ const backlinkToTreeData = (isLinked: boolean, backlink: Backlink) => {
     }
   }
 
-  const idPrefix = isLinked ? 'linked' : 'unlinked';
-
   return {
-    id: `${idPrefix}-${backlink.id}`,
+    id: `${backlink.type}-${backlink.id}`,
     labelNode: <BacklinkNoteBranch backlink={backlink} />,
     children: matches.map((match) => ({
-      id: `${idPrefix}-${backlink.id}-${match.path.toString()}`,
+      id: `${backlink.type}-${backlink.id}-${match.path.toString()}`,
       labelNode: (
         <BacklinkMatchLeaf
           noteId={backlink.id}

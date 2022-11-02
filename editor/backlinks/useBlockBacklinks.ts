@@ -3,7 +3,7 @@ import { createEditor, Editor, Element } from 'slate';
 import { Notes, useStore } from 'lib/store';
 import useDebounce from 'utils/useDebounce';
 import { BlockReference, ElementType } from 'types/slate';
-import { Backlink } from './useBacklinks';
+import { Backlink, BacklinkType } from './useBacklinks';
 
 const DEBOUNCE_MS = 1000;
 
@@ -67,6 +67,7 @@ export const computeBlockBacklinks = (notes: Notes) => {
       } else {
         blockBacklinks.push({
           id: note.id,
+          type: BacklinkType.Block,
           title: note.title,
           matches: [newMatch],
         });
