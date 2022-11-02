@@ -1,7 +1,8 @@
-import create, { State, StateCreator, SetState, GetState } from 'zustand';
+import create from 'zustand';
 import createVanilla from 'zustand/vanilla';
-import { persist, StateStorage, StoreApiWithPersist } from 'zustand/middleware';
-import produce, { Draft } from 'immer';
+import { persist, StateStorage } from 'zustand/middleware';
+import { immer } from 'zustand/middleware/immer';
+import { Draft } from 'immer';
 import localforage from 'localforage';
 import type { Note } from 'types/supabase';
 import { BillingFrequency, PlanId } from 'constants/pricing';
@@ -13,13 +14,6 @@ import createUserSettingsSlice, {
 import type { NoteUpdate } from './api/updateNote';
 
 export { default as shallowEqual } from 'zustand/shallow';
-
-const immer =
-  <T extends State>(
-    config: StateCreator<T, (fn: (draft: Draft<T>) => void) => void>
-  ): StateCreator<T> =>
-  (set, get, api) =>
-    config((fn) => set(produce<T>(fn)), get, api);
 
 localforage.config({
   name: 'notabase',
@@ -111,12 +105,7 @@ export const setter =
     }
   };
 
-export const store = createVanilla<
-  Store,
-  SetState<Store>,
-  GetState<Store>,
-  StoreApiWithPersist<Store>
->(
+export const store = createVanilla<Store>()(
   persist(
     immer((set) => ({
       _hasHydrated: false,
@@ -271,12 +260,7 @@ export const store = createVanilla<
   )
 );
 
-export const useStore = create<
-  Store,
-  SetState<Store>,
-  GetState<Store>,
-  StoreApiWithPersist<Store>
->(store);
+export const useStore = create(store);
 
 /**
  * Deletes the tree item with the given id and returns it.
