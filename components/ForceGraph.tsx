@@ -151,8 +151,7 @@ export default function ForceGraph(props: Props) {
         context.globalAlpha = 0;
       }
       context.fillStyle = darkMode ? colors.neutral[100] : colors.neutral[600];
-      // @ts-expect-error sans should exist on fontFamily, this is a problem in the types package
-      context.font = `4px ${defaultTheme.fontFamily?.sans.join(', ')}`;
+      context.font = `4px ${defaultTheme.fontFamily.sans.join(', ')}`;
 
       const lines = getLines(context, node.name, 50);
       let yPos = node.y + node.radius + 5;
