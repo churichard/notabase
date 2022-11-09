@@ -57,11 +57,13 @@ Cypress.Commands.add('getToastByContent', (content) =>
 );
 
 Cypress.Commands.add('getSidebarNoteLink', (noteTitle) => {
-  cy.get(`[data-testid="sidebar-note-link-${noteTitle}"]`);
+  cy.get('[data-testid="sidebar-note-link"]').contains(
+    new RegExp('^' + noteTitle + '$')
+  );
 });
 
 Cypress.Commands.add('getNoteLinkElement', (noteTitle) => {
-  cy.get(`[data-testid="note-link-element-${noteTitle}"]`);
+  cy.get('[data-testid="note-link-element"]').should('contain', noteTitle);
 });
 
 // Gets the element where the note's title is editable
@@ -75,27 +77,22 @@ Cypress.Commands.add('getNoteTitle', (noteTitle) => {
   );
 });
 
-// Gets a linked or unlinked reference by the note's title
-// You must pass "linked" or "unlinked" for referenceType
-// Linked references have the testid of "linked-reference"
-// Unlinked references have the testid of "unlinked-reference"
-Cypress.Commands.add('getReference', (noteTitle, referenceType) => {
-  cy.get(`[data-testid="${referenceType}-reference"]`).contains(
+// Gets a linked reference by the note's title
+Cypress.Commands.add('getLinkedReference', (noteTitle) => {
+  cy.get(`[data-testid="linked-reference"]`).contains(
     new RegExp('^' + noteTitle + '$')
   );
 });
 
-// Asserts the amount of references of a specific type a note should have
-// You must pass "linked" or "unlinked" for referenceType
-Cypress.Commands.add(
-  'numberOfReferencesShouldEqual',
-  (number, referenceType) => {
-    cy.get(`[data-testid="${referenceType}-reference"]`).should(
-      'have.length',
-      number
-    );
-  }
-);
+// Gets elements for each note in the linked references section
+Cypress.Commands.add('getNumberOfNotesWithLinkedReferences', () => {
+  cy.get('[data-testid="linked-reference"]');
+});
+
+// Gets the number of linked references to a page
+Cypress.Commands.add('getNumberOfLinkedReferencesTo', (pageTitle) => {
+  cy.get('[contenteditable="false"] [data-testid="note-link-element"]');
+});
 
 // Uses within() to target elements within that page
 // see: https://docs.cypress.io/api/commands/within

@@ -7,19 +7,24 @@ declare namespace Cypress {
     targetPage(noteTitle: string): Chainable<JQuery<HTMLElement>>;
 
     /**
-     * Assert there is a certain amount of backlinks
-     * @example cy.numberOfReferencesShouldEqual('linked', 5)
+     * Gets elements for each note in the linked references section
+     * @example cy.getNumberOfNotesWithLinkedReferences()
      */
-    numberOfReferencesShouldEqual(amount: number, referenceType: string);
+    getNumberOfNotesWithLinkedReferences(): Chainable<JQuery<HTMLElement>>;
 
     /**
-     * Get linked or unlinked reference based its note title
-     * @example cy.getReference('linked', 'title')
+     * Get the number of linked references to a page
+     * @example cy.getNumberOfLinkedReferencesTo('pageTitle')
      */
-    getReference(
-      noteTitle: string,
-      referenceType: string
+    getNumberOfLinkedReferencesTo(
+      pageTitle: string
     ): Chainable<JQuery<HTMLElement>>;
+
+    /**
+     * Get linked reference based on its note title
+     * @example cy.getLinkedReference('title')
+     */
+    getLinkedReference(noteTitle: string): Chainable<JQuery<HTMLElement>>;
 
     /**
      * Get note link element in the editor

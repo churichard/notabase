@@ -32,8 +32,8 @@ export default function NoteLinkElement(props: NoteLinkElementProps) {
     <Tooltip content={element.noteTitle} placement="bottom-start">
       <span
         role="button"
-        data-testid={'note-link-element-' + element.noteTitle}
         className={noteLinkClassName}
+        data-testid="note-link-element"
         onClick={(e) => {
           e.stopPropagation();
           onNoteLinkClick(element.noteId, defaultStackingBehavior(e));

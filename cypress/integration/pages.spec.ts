@@ -21,7 +21,7 @@ describe('pages', () => {
 
         // insert returned user_id into '../fixtures/notes.json'
         for (const note of notes) {
-          ((<any>note).user_id = result.user?.id), data.push(note);
+          (note.user_id = result.user?.id), data.push(note);
         }
         await supabase.from('notes').insert(data);
       });

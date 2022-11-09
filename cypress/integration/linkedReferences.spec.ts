@@ -36,7 +36,7 @@ describe('linked references', () => {
 
         // insert returned user_id into '../fixtures/notes.json'
         for (const note of notes) {
-          ((<any>note).user_id = result.user?.id), data.push(note);
+          (note.user_id = result.user?.id), data.push(note);
         }
 
         // insert completed notes to supabase
@@ -67,9 +67,9 @@ describe('linked references', () => {
     // target page '001=>111' so we can target elements inside
     cy.targetPage('111').within(() => {
       // check note '111' has 1 linked reference
-      cy.numberOfReferencesShouldEqual(1, 'linked');
+      cy.getNumberOfLinkedReferencesTo('111').should('have.length', 1);
       // check the linked reference is from '001=>111'
-      cy.getReference('001=>111', 'linked');
+      cy.getLinkedReference('001=>111');
     });
   });
 
@@ -83,19 +83,13 @@ describe('linked references', () => {
       cy.getNoteLinkElement('112').click();
     });
 
-    // intercept the next request trying to update the note
-    cy.intercept('PATCH', '/rest/v1/notes?id=*').as('updateNote');
-
     // target page '112' so we can target elements inside
     cy.targetPage('112').within(() => {
       // change the title from '112' to '112x'
       cy.getNoteTitle('112').type('x');
     });
 
-    // wait for the note to finish updating so the link can be found
-    cy.wait('@updateNote').its('response.statusCode').should('eq', 200);
-
-    // reference existing '001=>112' page to target the element inside
+    // target page '001=>112' so we can target elements inside
     cy.targetPage('001=>112').within(() => {
       // the link in note '001=>112' should have changed from '112' to '112x'
       cy.getNoteLinkElement('112x');
@@ -109,19 +103,19 @@ describe('linked references', () => {
     // target page '111=>112' so we can target elements inside
     cy.targetPage('111=>112').within(() => {
       // check note '111=>112' has 1 linked reference
-      cy.numberOfReferencesShouldEqual(1, 'linked');
+      cy.getNumberOfLinkedReferencesTo('111=>112').should('have.length', 1);
       // check note '111=>112' is referenced by '112=>111'
-      cy.getReference('112=>111', 'linked');
+      cy.getLinkedReference('112=>111');
       // click on the link to '112=>111'
-      cy.getNoteLinkElement('112=>111').click();
+      cy.getNoteLinkElement('112=>111').first().click();
     });
 
     // target page '112=>111' so we can target elements inside
     cy.targetPage('112=>111').within(() => {
       // check note '112=>111' has 1 linked reference
-      cy.numberOfReferencesShouldEqual(1, 'linked');
+      cy.getNumberOfLinkedReferencesTo('112=>111').should('have.length', 1);
       // check note '112=>111' is referenced by '111=>112'
-      cy.getReference('111=>112', 'linked');
+      cy.getLinkedReference('111=>112');
       // check link to note '111=>112' exists
       cy.getNoteLinkElement('111=>112');
     });
@@ -143,11 +137,11 @@ describe('linked references', () => {
     // target page '211' so we can target elements inside
     cy.targetPage('211').within(() => {
       // check there is only 1 note referencing this note
-      cy.numberOfReferencesShouldEqual(1, 'linked');
+      cy.getNumberOfNotesWithLinkedReferences().should('have.length', 1);
       // check note '211' is referenced by '001=>211'
-      cy.getReference('001=>211', 'linked');
-      // check there are 3 links within that note
-      cy.getNoteLinkElement('211').should('have.length', 3);
+      cy.getLinkedReference('001=>211');
+      // check there are 3 linked references to that note
+      cy.getNumberOfLinkedReferencesTo('211').should('have.length', 3);
     });
   });
 
@@ -158,11 +152,25 @@ describe('linked references', () => {
     // target page '211' so we can target elements inside
     cy.targetPage('221').within(() => {
       // note should be referenced by two notes
-      cy.numberOfReferencesShouldEqual(2, 'linked');
+      cy.getNumberOfNotesWithLinkedReferences().should('have.length', 2);
       // there should be 1 reference from note '001=>221'
-      cy.getReference('001=>221', 'linked').should('have.length', 1);
+      cy.getLinkedReference('001=>221').should('have.length', 1);
       // there should be 1 reference from note '002=>221'
-      cy.getReference('002=>221', 'linked').should('have.length', 1);
+      cy.getLinkedReference('002=>221').should('have.length', 1);
+    });
+  });
+
+  it('should display the correct number of total linked references', () => {
+    // open note '421'
+    cy.getSidebarNoteLink('421').click();
+
+    // target page '421' so we can target elements inside
+    cy.targetPage('421').within(() => {
+      // it should display "4 Linked References"
+      cy.get('p').contains('Linked References').and('contain', '4');
+
+      // there should be 4 link references to note '421'
+      cy.getNumberOfLinkedReferencesTo('421').should('have.length', 4);
     });
   });
 
@@ -173,7 +181,7 @@ describe('linked references', () => {
     // target page '111' so we can target elements inside
     cy.targetPage('111').within(() => {
       // click on note '001=>111' in the linked reference section
-      cy.getReference('001=>111', 'linked').click();
+      cy.getLinkedReference('001=>111').click();
     });
 
     // check if note '001=>111' is displayed
@@ -205,7 +213,7 @@ describe('linked references', () => {
       // check that the text '111' exists
       cy.getEditor().contains('111');
       // but the '111' text is no longer a note link element
-      cy.getNoteLinkElement('111').should('not.exist');
+      cy.get('[data-testid="note-link-element"]').should('not.exist');
     });
   });
 
@@ -218,7 +226,7 @@ describe('linked references', () => {
       // delete the note link element for '111' using the keyboard
       cy.getEditor().type('{moveToEnd}{backspace}');
       // check '111' note link element was deleted
-      cy.getNoteLinkElement('111').should('not.exist');
+      cy.get('[data-testid="note-link-element"]').should('not.exist');
     });
 
     // open note '111'
@@ -227,7 +235,7 @@ describe('linked references', () => {
     // target page '111' so we can target elements inside=
     cy.targetPage('111').within(() => {
       // note '001=>111' should no longer reference this note
-      cy.numberOfReferencesShouldEqual(0, 'linked');
+      cy.getNumberOfLinkedReferencesTo('111').should('have.length', 0);
     });
   });
 });
