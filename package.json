@@ -70,7 +70,7 @@
     "remark-parse": "^10.0.1",
     "remark-wiki-link": "^1.0.4",
     "slate": "^0.84.0",
-    "slate-history": "^0.66.0",
+    "slate-history": "^0.85.0",
     "slate-hyperscript": "^0.77.0",
     "slate-react": "^0.83.2",
     "stripe": "^9.2.0",
