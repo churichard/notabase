@@ -79,7 +79,7 @@ describe('NoteHeader', () => {
 
     it('routes to next note in stack when first note is closed', async () => {
       renderNoteHeader();
-      userEvent.click(screen.getByTitle('Close pane'));
+      await userEvent.click(screen.getByTitle('Close pane'));
       expect(routerPush).toHaveBeenCalledWith(
         {
           pathname: '/app/note',
@@ -90,9 +90,9 @@ describe('NoteHeader', () => {
       );
     });
 
-    it('removes note from stack if a stacked note is closed', () => {
+    it('removes note from stack if a stacked note is closed', async () => {
       renderNoteHeader('2');
-      userEvent.click(screen.getByTitle('Close pane'));
+      await userEvent.click(screen.getByTitle('Close pane'));
       expect(routerPush).toHaveBeenCalledWith(
         {
           pathname: '/app/note',
