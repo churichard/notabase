@@ -42,6 +42,12 @@ module.exports = {
       },
     ],
     'react-hooks/exhaustive-deps': 'error',
+    'react/no-unknown-property': [
+      'error',
+      {
+        ignore: ['jsx'],
+      },
+    ],
   },
   settings: {
     'import/resolver': {
