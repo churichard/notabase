@@ -90,7 +90,7 @@ Cypress.Commands.add('getNumberOfNotesWithLinkedReferences', () => {
 });
 
 // Gets the number of linked references to a page
-Cypress.Commands.add('getNumberOfLinkedReferencesTo', (pageTitle) => {
+Cypress.Commands.add('getNumberOfLinkedReferences', () => {
   cy.get('[contenteditable="false"] [data-testid="note-link-element"]');
 });
 

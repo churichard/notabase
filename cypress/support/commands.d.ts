@@ -14,11 +14,9 @@ declare namespace Cypress {
 
     /**
      * Get the number of linked references to a page
-     * @example cy.getNumberOfLinkedReferencesTo('pageTitle')
+     * @example cy.getNumberOfLinkedReferences('pageTitle')
      */
-    getNumberOfLinkedReferencesTo(
-      pageTitle: string
-    ): Chainable<JQuery<HTMLElement>>;
+    getNumberOfLinkedReferences(): Chainable<JQuery<HTMLElement>>;
 
     /**
      * Get linked reference based on its note title

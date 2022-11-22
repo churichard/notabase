@@ -67,7 +67,7 @@ describe('linked references', () => {
     // target page '001=>111' so we can target elements inside
     cy.targetPage('111').within(() => {
       // check note '111' has 1 linked reference
-      cy.getNumberOfLinkedReferencesTo('111').should('have.length', 1);
+      cy.getNumberOfLinkedReferences().should('have.length', 1);
       // check the linked reference is from '001=>111'
       cy.getLinkedReference('001=>111');
     });
@@ -103,7 +103,7 @@ describe('linked references', () => {
     // target page '111=>112' so we can target elements inside
     cy.targetPage('111=>112').within(() => {
       // check note '111=>112' has 1 linked reference
-      cy.getNumberOfLinkedReferencesTo('111=>112').should('have.length', 1);
+      cy.getNumberOfLinkedReferences().should('have.length', 1);
       // check note '111=>112' is referenced by '112=>111'
       cy.getLinkedReference('112=>111');
       // click on the link to '112=>111'
@@ -113,7 +113,7 @@ describe('linked references', () => {
     // target page '112=>111' so we can target elements inside
     cy.targetPage('112=>111').within(() => {
       // check note '112=>111' has 1 linked reference
-      cy.getNumberOfLinkedReferencesTo('112=>111').should('have.length', 1);
+      cy.getNumberOfLinkedReferences().should('have.length', 1);
       // check note '112=>111' is referenced by '111=>112'
       cy.getLinkedReference('111=>112');
       // check link to note '111=>112' exists
@@ -141,7 +141,7 @@ describe('linked references', () => {
       // check note '211' is referenced by '001=>211'
       cy.getLinkedReference('001=>211');
       // check there are 3 linked references to that note
-      cy.getNumberOfLinkedReferencesTo('211').should('have.length', 3);
+      cy.getNumberOfLinkedReferences().should('have.length', 3);
     });
   });
 
@@ -170,7 +170,7 @@ describe('linked references', () => {
       cy.get('p').contains('Linked References').and('contain', '4');
 
       // there should be 4 link references to note '421'
-      cy.getNumberOfLinkedReferencesTo('421').should('have.length', 4);
+      cy.getNumberOfLinkedReferences().should('have.length', 4);
     });
   });
 
@@ -235,7 +235,7 @@ describe('linked references', () => {
     // target page '111' so we can target elements inside=
     cy.targetPage('111').within(() => {
       // note '001=>111' should no longer reference this note
-      cy.getNumberOfLinkedReferencesTo('111').should('have.length', 0);
+      cy.getNumberOfLinkedReferences().should('have.length', 0);
     });
   });
 });
