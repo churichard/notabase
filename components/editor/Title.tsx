@@ -33,6 +33,7 @@ function Title(props: Props) {
       <div
         ref={titleRef}
         className={`title text-3xl md:text-4xl font-semibold border-none focus:outline-none p-0 leading-tight cursor-text ${className}`}
+        data-testid="note-title"
         role="textbox"
         placeholder="Untitled"
         onKeyPress={(event) => {

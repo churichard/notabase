@@ -51,7 +51,7 @@ describe('User sign up, login, and logout', () => {
 
     cy.get('button[type="submit"]').click();
 
-    cy.selectToastByContent('Invalid');
+    cy.getToastByContent('Invalid');
   });
 
   it('displays toastify login validation error for incorrect username', () => {
@@ -62,7 +62,7 @@ describe('User sign up, login, and logout', () => {
 
     cy.get('button[type="submit"]').click();
 
-    cy.selectToastByContent('Invalid');
+    cy.getToastByContent('Invalid');
   });
 
   it('can sign up using UI', () => {
@@ -91,7 +91,7 @@ describe('User sign up, login, and logout', () => {
     cy.get('input[type="password"]').type(user_new.password);
     cy.get('button[type="submit"').click();
 
-    cy.selectToastByContent('Email not confirmed');
+    cy.getToastByContent('Email not confirmed');
   });
 
   it('displays error if you try to sign up twice within 1 minute', () => {
@@ -109,7 +109,7 @@ describe('User sign up, login, and logout', () => {
     cy.get('button[type="submit"').click();
 
     // error should appear on second sign up
-    cy.selectToastByContent('For security purposes');
+    cy.getToastByContent('For security purposes');
   });
 
   it('displays error if password is less than 6 characters', () => {
@@ -120,7 +120,7 @@ describe('User sign up, login, and logout', () => {
 
     cy.get('button[type="submit"').click();
 
-    cy.selectToastByContent('Password should be at least 6 characters');
+    cy.getToastByContent('Password should be at least 6 characters');
   });
 
   it('displays built-in browser signup validation errors', () => {

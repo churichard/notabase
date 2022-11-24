@@ -33,6 +33,7 @@ export default function NoteLinkElement(props: NoteLinkElementProps) {
       <span
         role="button"
         className={noteLinkClassName}
+        data-testid="note-link-element"
         onClick={(e) => {
           e.stopPropagation();
           onNoteLinkClick(element.noteId, defaultStackingBehavior(e));

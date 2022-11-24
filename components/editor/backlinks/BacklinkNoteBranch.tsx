@@ -16,6 +16,7 @@ const BacklinkNoteBranch = (props: BacklinkNoteBranchProps) => {
   return (
     <button
       className="py-1 link"
+      data-testid={backlink.type + '-reference'}
       onClick={(e) => {
         e.stopPropagation();
         onNoteLinkClick(backlink.id, defaultStackingBehavior(e));
