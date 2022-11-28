@@ -101,7 +101,7 @@
     "@types/react-highlight-words": "^0.16.4",
     "@types/react-virtualized": "^9.21.21",
     "@types/uuid": "^8.3.4",
-    "@typescript-eslint/eslint-plugin": "^5.43.0",
+    "@typescript-eslint/eslint-plugin": "^5.45.0",
     "@typescript-eslint/parser": "^5.43.0",
     "canvas": "^2.10.2",
     "cypress": "^8.7.0",
