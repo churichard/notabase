@@ -1,0 +1,30 @@
+name: cypress tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest  
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v2
+      with:
+        node-version: 16.x
+        cache: 'npm'
+
+    - uses: supabase/setup-cli@v1.1.1
+      with:
+        version: latest
+    - run: supabase start
+    - run: supabase status -o env --override-name api.url=NEXT_PUBLIC_SUPABASE_URL --override-name auth.anon_key=NEXT_PUBLIC_SUPABASE_KEY --override-name auth.service_role_key=SUPABASE_SERVICE_KEY | tee .env.local .env.test
+
+    - name: Cypress run
+      uses: cypress-io/github-action@v4.2.0
+      with:
+        build: npm run build
+        start: npm start
