@@ -5,7 +5,7 @@ const { Client } = require('pg');
 
 const seed = async () => {
   const client = new Client(
-    'postgres://postgres:postgres@localhost:5432/postgres'
+    'postgres://postgres:postgres@localhost:54322/postgres'
   );
 
   client.connect();

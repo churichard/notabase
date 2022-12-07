@@ -28,6 +28,7 @@
   ],
   "exclude": [
     "node_modules",
-    "**/*.spec.ts"
+    "**/*.cy.ts",
+    "./cypress.config.ts"
   ]
 }
