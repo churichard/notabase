@@ -11,8 +11,9 @@ const withPWA = require('next-pwa')({
   skipWaiting: false,
 });
 
-const isSentryEnabled =
-  process.env.SENTRY_DSN || process.env.NEXT_PUBLIC_SENTRY_DSN;
+const isSentryEnabled = !!(
+  process.env.SENTRY_DSN || process.env.NEXT_PUBLIC_SENTRY_DSN
+);
 const { withSentryConfig } = require('@sentry/nextjs');
 
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
@@ -31,9 +32,12 @@ const SentryWebpackPluginOptions = {
   // https://github.com/getsentry/sentry-webpack-plugin#options.
 };
 
-module.exports = (phase) => {
+const config = (phase) => {
   const isDev = phase === PHASE_DEVELOPMENT_SERVER;
 
+  /**
+   * @type {import('next').NextConfig}
+   */
   let config = withPWA(
     withBundleAnalyzer({
       experimental: { esmExternals: true },
@@ -48,9 +52,9 @@ module.exports = (phase) => {
     })
   );
 
-  if (isSentryEnabled) {
-    config = withSentryConfig(config, SentryWebpackPluginOptions);
-  }
-
   return config;
 };
+
+module.exports = isSentryEnabled
+  ? withSentryConfig(config, SentryWebpackPluginOptions)
+  : config;
