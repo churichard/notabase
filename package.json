@@ -34,7 +34,7 @@
     "@headlessui/react": "^1.7.4",
     "@popperjs/core": "^2.11.6",
     "@react-spring/web": "^9.5.5",
-    "@sentry/nextjs": "^7.23.0",
+    "@sentry/nextjs": "^7.27.0",
     "@stripe/stripe-js": "^1.44.1",
     "@supabase/supabase-js": "^1.35.6",
     "@tabler/icons": "^1.112.0",
