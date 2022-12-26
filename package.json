@@ -104,7 +104,7 @@
     "@typescript-eslint/eslint-plugin": "^5.43.0",
     "@typescript-eslint/parser": "^5.43.0",
     "canvas": "^2.10.2",
-    "cypress": "^11.2.0",
+    "cypress": "^12.2.0",
     "dotenv": "^16.0.3",
     "eslint": "^8.28.0",
     "eslint-config-next": "^12.2.5",
