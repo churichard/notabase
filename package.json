@@ -106,7 +106,7 @@
     "canvas": "^2.10.2",
     "cypress": "^11.2.0",
     "dotenv": "^16.0.3",
-    "eslint": "^8.28.0",
+    "eslint": "^8.31.0",
     "eslint-config-next": "^12.2.5",
     "eslint-config-prettier": "^8.5.0",
     "eslint-import-resolver-typescript": "^3.5.2",
