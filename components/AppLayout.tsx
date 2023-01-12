@@ -45,15 +45,28 @@ export default function AppLayout(props: Props) {
   const router = useRouter();
   const [isPageLoaded, setIsPageLoaded] = useState(false);
 
-  useEffect(() => {
+  const setIsSidebarOpen = useStore((state) => state.setIsSidebarOpen);
+  const setIsPageStackingOn = useStore((state) => state.setIsPageStackingOn);
+  const setupStore = useCallback(async () => {
     if (!isPageLoaded && isLoaded && user) {
       // Use user's specific store and rehydrate data
       useStore.persist.setOptions({
         name: `notabase-storage-${user.id}`,
       });
-      useStore.persist.rehydrate();
+      await useStore.persist.rehydrate();
+
+      // If the user is mobile, change the initial values of isSidebarOpen and isPageStackingOn to better suit mobile devices
+      // TODO: ideally this change would be temporary so that we don't override the user's existing values
+      if (isMobile()) {
+        setIsSidebarOpen(false);
+        setIsPageStackingOn(false);
+      }
     }
-  }, [isPageLoaded, isLoaded, user]);
+  }, [isPageLoaded, isLoaded, user, setIsSidebarOpen, setIsPageStackingOn]);
+
+  useEffect(() => {
+    setupStore();
+  }, [setupStore]);
 
   const setNotes = useStore((state) => state.setNotes);
   const setNoteTree = useStore((state) => state.setNoteTree);
@@ -174,8 +187,6 @@ export default function AppLayout(props: Props) {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   const darkMode = useStore((state) => state.darkMode);
-  const setIsSidebarOpen = useStore((state) => state.setIsSidebarOpen);
-  const setIsPageStackingOn = useStore((state) => state.setIsPageStackingOn);
   const setSidebarTab = useStore((state) => state.setSidebarTab);
 
   const isUpgradeModalOpen = useStore((state) => state.isUpgradeModalOpen);
@@ -183,22 +194,6 @@ export default function AppLayout(props: Props) {
   const upsertNote = useStore((state) => state.upsertNote);
   const updateNote = useStore((state) => state.updateNote);
   const deleteNote = useStore((state) => state.deleteNote);
-
-  const hasHydrated = useStore((state) => state._hasHydrated);
-  useEffect(() => {
-    // If the user is mobile, the persisted data has been hydrated, and there are no open note ids (a proxy for the first load),
-    // change the initial values of isSidebarOpen and isPageStackingOn to better suit mobile devices
-    // We need to wait until after hydration because otherwise the persisted state gets overridden and thrown away
-    // After https://github.com/pmndrs/zustand/issues/562 is fixed, we can change this
-    if (
-      isMobile() &&
-      hasHydrated &&
-      store.getState().openNoteIds.length === 0
-    ) {
-      setIsSidebarOpen(false);
-      setIsPageStackingOn(false);
-    }
-  }, [setIsSidebarOpen, setIsPageStackingOn, hasHydrated]);
 
   useEffect(() => {
     if (!user) {
