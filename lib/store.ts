@@ -1,5 +1,5 @@
-import create from 'zustand';
-import createVanilla from 'zustand/vanilla';
+import { create } from 'zustand';
+import { createStore as createVanilla } from 'zustand/vanilla';
 import { persist, StateStorage } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 import { Draft } from 'immer';
