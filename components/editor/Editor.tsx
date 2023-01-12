@@ -43,7 +43,7 @@ import { store, useStore } from 'lib/store';
 import { ElementType, Mark } from 'types/slate';
 import useIsMounted from 'utils/useIsMounted';
 import { resetNodes } from 'editor/transforms';
-import HoveringToolbar from './HoveringToolbar';
+import HoveringToolbar from './toolbar/HoveringToolbar';
 import AddLinkPopover from './AddLinkPopover';
 import EditorElement from './elements/EditorElement';
 import withVerticalSpacing from './elements/withVerticalSpacing';
