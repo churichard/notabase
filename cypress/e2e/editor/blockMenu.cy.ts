@@ -34,6 +34,7 @@ describe('block menu', () => {
 
     // Type some text into the editor, then click the 3 dots to the left
     cy.getEditor()
+      .focus()
       .type('{movetostart}This is a test')
       .findByTestId('dropdown-button')
       .eq(0)

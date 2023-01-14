@@ -32,7 +32,7 @@ describe('hovering toolbar', () => {
   it('toolbar appears when text is selected and disappears when text is deselected', function () {
     cy.visit(`/app/note/${this.noteId}`);
 
-    cy.getEditor().type('{movetostart}This is a test');
+    cy.getEditor().focus().type('{movetostart}This is a test');
 
     cy.getEditor().setSelection('This is');
 
@@ -48,7 +48,7 @@ describe('hovering toolbar', () => {
   it('can make text bold', function () {
     cy.visit(`/app/note/${this.noteId}`);
 
-    cy.getEditor().type('{movetostart}This is a test');
+    cy.getEditor().focus().type('{movetostart}This is a test');
 
     cy.getEditor().setSelection('This is');
 
@@ -60,7 +60,7 @@ describe('hovering toolbar', () => {
   it('can make text italics', function () {
     cy.visit(`/app/note/${this.noteId}`);
 
-    cy.getEditor().type('{movetostart}This is a test');
+    cy.getEditor().focus().type('{movetostart}This is a test');
 
     cy.getEditor().setSelection('This is');
 
@@ -72,7 +72,7 @@ describe('hovering toolbar', () => {
   it('can make text underlined', function () {
     cy.visit(`/app/note/${this.noteId}`);
 
-    cy.getEditor().type('{movetostart}This is a test');
+    cy.getEditor().focus().type('{movetostart}This is a test');
 
     cy.getEditor().setSelection('This is');
 
@@ -84,7 +84,7 @@ describe('hovering toolbar', () => {
   it('can make text strikethrough', function () {
     cy.visit(`/app/note/${this.noteId}`);
 
-    cy.getEditor().type('{movetostart}This is a test');
+    cy.getEditor().focus().type('{movetostart}This is a test');
 
     cy.getEditor().setSelection('This is');
 
@@ -96,7 +96,7 @@ describe('hovering toolbar', () => {
   it('can make text code', function () {
     cy.visit(`/app/note/${this.noteId}`);
 
-    cy.getEditor().type('{movetostart}This is a test');
+    cy.getEditor().focus().type('{movetostart}This is a test');
 
     cy.getEditor().setSelection('This is');
 
@@ -108,7 +108,7 @@ describe('hovering toolbar', () => {
   it('can make text highlighted', function () {
     cy.visit(`/app/note/${this.noteId}`);
 
-    cy.getEditor().type('{movetostart}This is a test');
+    cy.getEditor().focus().type('{movetostart}This is a test');
 
     cy.getEditor().setSelection('This is');
 
