@@ -1,5 +1,4 @@
-import { Draft } from 'immer';
-import { setter, Setter, Store } from './store';
+import { CreateSetter, Setter } from './store';
 
 export enum Sort {
   TitleAscending = 'TITLE_ASCENDING',
@@ -30,17 +29,15 @@ export type UserSettings = {
   setNoteSort: Setter<Sort>;
 };
 
-const createUserSettingsSlice = (
-  set: (fn: (draft: Draft<Store>) => void) => void
-) => ({
+const createUserSettingsSlice = (createSetter: CreateSetter) => ({
   darkMode: false,
-  setDarkMode: setter(set, 'darkMode'),
+  setDarkMode: createSetter('darkMode'),
   isSidebarOpen: true,
-  setIsSidebarOpen: setter(set, 'isSidebarOpen'),
+  setIsSidebarOpen: createSetter('isSidebarOpen'),
   isPageStackingOn: true,
-  setIsPageStackingOn: setter(set, 'isPageStackingOn'),
+  setIsPageStackingOn: createSetter('isPageStackingOn'),
   noteSort: Sort.TitleAscending,
-  setNoteSort: setter(set, 'noteSort'),
+  setNoteSort: createSetter('noteSort'),
 });
 
 export default createUserSettingsSlice;
