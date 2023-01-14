@@ -12,7 +12,7 @@ import { usePopper } from 'react-popper';
 import { ReferenceableBlockElement } from 'types/slate';
 import Portal from 'components/Portal';
 import updateBlockBacklinks from 'editor/backlinks/updateBlockBacklinks';
-import { shallowEqual, Store, useStore } from 'lib/store';
+import { shallow, Store, useStore } from 'lib/store';
 import BlockBacklinks from '../backlinks/BlockBacklinks';
 import { getNumOfMatches } from '../backlinks/Backlinks';
 
@@ -42,7 +42,7 @@ export default function BacklinksPopover(props: BacklinksPopoverProps) {
     (state: Store) => state.blockIdToBacklinksMap[element.id] ?? [],
     [element.id]
   );
-  const blockBacklinks = useStore(blockBacklinksSelector, shallowEqual);
+  const blockBacklinks = useStore(blockBacklinksSelector, shallow);
   const numOfMatches = useMemo(
     () => getNumOfMatches(blockBacklinks),
     [blockBacklinks]

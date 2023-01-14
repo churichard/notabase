@@ -13,7 +13,7 @@ import createUserSettingsSlice, {
 } from './createUserSettingsSlice';
 import type { NoteUpdate } from './api/updateNote';
 
-export { default as shallowEqual } from 'zustand/shallow';
+export { shallow } from 'zustand/shallow';
 
 localforage.config({
   name: 'notabase',
