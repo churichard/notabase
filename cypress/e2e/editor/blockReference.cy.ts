@@ -34,6 +34,7 @@ describe('block reference', () => {
 
     // Type some text into the editor, then click the 3 dots to the left
     cy.getEditor()
+      .focus()
       .type('{movetostart}This is a test')
       .findByTestId('dropdown-button')
       .eq(0)
@@ -46,7 +47,7 @@ describe('block reference', () => {
     cy.window()
       .then((win) => win.navigator.clipboard.readText())
       .then((text) => {
-        cy.getEditor().type('{movetoend}{enter}').paste(text);
+        cy.getEditor().focus().type('{movetoend}{enter}').paste(text);
       });
 
     // Assert that there are now two blocks with the same content

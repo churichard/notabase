@@ -180,7 +180,7 @@ export default function BlockAutocompletePopover() {
   );
 
   const onKeyDown = useCallback(
-    (event) => {
+    (event: KeyboardEvent) => {
       // Update the selected option based on arrow key input
       if (event.key === 'ArrowUp') {
         event.preventDefault();

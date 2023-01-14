@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState, useCallback } from 'react';
+import { useMemo, useRef, useState, useCallback, KeyboardEvent } from 'react';
 import { Transforms } from 'slate';
 import { ReactEditor, useSlate } from 'slate-react';
 import type { TablerIcon } from '@tabler/icons';
@@ -155,7 +155,7 @@ export default function AddLinkPopover(props: Props) {
   );
 
   const onKeyDown = useCallback(
-    (event) => {
+    (event: KeyboardEvent<HTMLInputElement>) => {
       // Update the selected option based on arrow key input
       if (event.key === 'ArrowUp') {
         event.preventDefault();

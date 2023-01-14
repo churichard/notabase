@@ -35,7 +35,7 @@ const DraggableSidebarNoteLink = (
   });
 
   const ref = useCallback(
-    (node) => {
+    (node: HTMLDivElement) => {
       if (typeof forwardedRef === 'function') {
         forwardedRef(node);
       } else if (forwardedRef) {

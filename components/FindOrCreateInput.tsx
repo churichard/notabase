@@ -1,4 +1,4 @@
-import type { ForwardedRef } from 'react';
+import type { ForwardedRef, KeyboardEvent } from 'react';
 import { forwardRef, useCallback, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 import type { TablerIcon } from '@tabler/icons';
@@ -111,7 +111,7 @@ function FindOrCreateInput(props: Props, ref: ForwardedRef<HTMLInputElement>) {
   );
 
   const onKeyDown = useCallback(
-    (event) => {
+    (event: KeyboardEvent<HTMLInputElement>) => {
       // Update the selected option based on arrow key input
       if (event.key === 'ArrowUp') {
         event.preventDefault();
