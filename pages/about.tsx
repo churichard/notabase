@@ -86,10 +86,6 @@ export default function About() {
               open source
             </a>{' '}
             with a public{' '}
-            <Link href="/changelog">
-              <a>changelog</a>
-            </Link>{' '}
-            and{' '}
             <a
               href="https://trello.com/b/dpZLRkRR"
               className="link"

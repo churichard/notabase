@@ -48,9 +48,6 @@ export default function Footer(props: Props) {
             >
               Help Center
             </a>
-            <Link href="/changelog">
-              <a className="text-gray-700 hover:text-primary-500">Changelog</a>
-            </Link>
             <a
               href="https://trello.com/b/dpZLRkRR"
               className="text-gray-700 hover:text-primary-500"

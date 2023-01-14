@@ -204,7 +204,7 @@ export default function Home() {
                   </p>
                   <p className="mt-2 text-lg leading-relaxed text-gray-700">
                     Contribute to our development! Notabase is open source with
-                    a public changelog and roadmap.
+                    a public roadmap.
                   </p>
                 </div>
               </div>
