@@ -27,6 +27,12 @@ export default function Changelog() {
           .
         </p>
         <ChangelogBlock
+          title="January 13, 2023"
+          bugFixes={[
+            'Fix dark mode and other local settings not saving properly',
+          ]}
+        />
+        <ChangelogBlock
           title="October 26, 2022"
           bugFixes={[
             'Improved Android support',

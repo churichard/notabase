@@ -50,6 +50,7 @@ export default function AppLayout(props: Props) {
   const setupStore = useCallback(async () => {
     if (!isPageLoaded && isLoaded && user) {
       // Use user's specific store and rehydrate data
+      useStore.persist.clearStorage();
       useStore.persist.setOptions({
         name: `notabase-storage-${user.id}`,
       });
