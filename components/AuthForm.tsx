@@ -87,8 +87,8 @@ export default function AuthForm(props: Props) {
         />
         {!signup ? (
           <div className="mt-2">
-            <Link href="/reset">
-              <a className="link text-sm">Forgot your password?</a>
+            <Link href="/reset" className="link text-sm">
+              Forgot your password?
             </Link>
           </div>
         ) : null}

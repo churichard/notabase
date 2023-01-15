@@ -23,8 +23,11 @@ export default function Signup() {
           </div>
           <p className="mt-4 text-center text-sm text-gray-700">
             Have an account?{' '}
-            <Link href="/login">
-              <a className="text-primary-600 hover:text-primary-700">Sign in</a>
+            <Link
+              href="/login"
+              className="text-primary-600 hover:text-primary-700"
+            >
+              Sign in
             </Link>
           </p>
         </div>

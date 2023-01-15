@@ -4,6 +4,7 @@ import Script from 'next/script';
 import { ToastContainer } from 'react-toastify';
 import NProgress from 'nprogress';
 import type { AppProps } from 'next/app';
+import { Inter } from '@next/font/google';
 import { ProvideAuth } from 'utils/useAuth';
 import AppLayout from 'components/AppLayout';
 import ServiceWorker from 'components/ServiceWorker';
@@ -11,6 +12,12 @@ import 'styles/styles.css';
 import 'styles/nprogress.css';
 import 'react-toastify/dist/ReactToastify.css';
 import 'tippy.js/dist/tippy.css';
+
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-inter',
+});
 
 Router.events.on('routeChangeStart', () => NProgress.start());
 Router.events.on('routeChangeComplete', () => NProgress.done());
@@ -44,7 +51,9 @@ export default function MyApp({ Component, pageProps, router }: AppProps) {
               <Component {...pageProps} />
             </AppLayout>
           ) : (
-            <Component {...pageProps} />
+            <main className={`${inter.variable} font-display`}>
+              <Component {...pageProps} />
+            </main>
           )}
         </ProvideAuth>
       </ServiceWorker>

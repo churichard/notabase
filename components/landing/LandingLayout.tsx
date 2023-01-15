@@ -6,22 +6,16 @@ type Props = {
   children: ReactNode;
   showNavbar?: boolean;
   showFooter?: boolean;
-  className?: string;
 };
 
 export default function LandingLayout(props: Props) {
-  const {
-    children,
-    showNavbar = true,
-    showFooter = true,
-    className = '',
-  } = props;
+  const { children, showNavbar = true, showFooter = true } = props;
 
   return (
-    <div className={`font-display ${className}`}>
+    <>
       {showNavbar ? <Navbar /> : null}
       {children}
       {showFooter ? <Footer /> : null}
-    </div>
+    </>
   );
 }

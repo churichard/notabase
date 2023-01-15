@@ -19,13 +19,14 @@ export default function Navbar() {
           <IconMenu2 className="text-gray-700" />
         </button>
         <div className="hidden items-center space-x-2 md:flex">
-          <Link href="/login">
-            <a className="rounded px-4 py-2 font-medium transition duration-200 ease-in-out hover:text-gray-600">
-              Sign in
-            </a>
+          <Link
+            href="/login"
+            className="rounded px-4 py-2 font-medium transition duration-200 ease-in-out hover:text-gray-600"
+          >
+            Sign in
           </Link>
-          <Link href="/signup">
-            <a className="btn px-4 py-2">Get started</a>
+          <Link href="/signup" className="btn px-4 py-2">
+            Get started
           </Link>
         </div>
       </div>

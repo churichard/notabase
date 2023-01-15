@@ -37,8 +37,11 @@ export default function Footer(props: Props) {
         <div className="flex flex-1 flex-wrap space-x-16 lg:justify-end">
           <div className="mt-8 flex flex-col space-y-2 lg:mt-0">
             <p className="font-medium">Product</p>
-            <Link href="/pricing">
-              <a className="text-gray-700 hover:text-primary-500">Pricing</a>
+            <Link
+              href="/pricing"
+              className="text-gray-700 hover:text-primary-500"
+            >
+              Pricing
             </Link>
             <a
               href="https://help.notabase.io"
@@ -94,17 +97,29 @@ export default function Footer(props: Props) {
           </div>
           <div className="mt-8 flex flex-col space-y-2 lg:mt-0">
             <p className="font-medium">Company</p>
-            <Link href="/about">
-              <a className="text-gray-700 hover:text-primary-500">About</a>
+            <Link
+              href="/about"
+              className="text-gray-700 hover:text-primary-500"
+            >
+              About
             </Link>
-            <Link href="/sponsors">
-              <a className="text-gray-700 hover:text-primary-500">Sponsors</a>
+            <Link
+              href="/sponsors"
+              className="text-gray-700 hover:text-primary-500"
+            >
+              Sponsors
             </Link>
-            <Link href="/privacy">
-              <a className="text-gray-700 hover:text-primary-500">Privacy</a>
+            <Link
+              href="/privacy"
+              className="text-gray-700 hover:text-primary-500"
+            >
+              Privacy
             </Link>
-            <Link href="/terms">
-              <a className="text-gray-700 hover:text-primary-500">Terms</a>
+            <Link
+              href="/terms"
+              className="text-gray-700 hover:text-primary-500"
+            >
+              Terms
             </Link>
           </div>
         </div>

@@ -31,14 +31,15 @@ export default function Home() {
                   Notabase is a powerful and easy-to-use note-taking app.
                   Connect your ideas together and write more effortlessly.
                 </p>
-                <Link href="/signup">
-                  <a className="btn group mt-6 inline-flex items-center hover:shadow-lg md:mt-8">
-                    Take better notes{' '}
-                    <IconArrowRight
-                      size={18}
-                      className="ml-1 group-hover:animate-bounce-x"
-                    />
-                  </a>
+                <Link
+                  href="/signup"
+                  className="btn group mt-6 inline-flex items-center hover:shadow-lg md:mt-8"
+                >
+                  Take better notes{' '}
+                  <IconArrowRight
+                    size={18}
+                    className="ml-1 group-hover:animate-bounce-x"
+                  />
                 </Link>
                 <video
                   className="mx-auto mt-8 rounded-md bg-gray-50 shadow-popover md:mt-16"
@@ -365,14 +366,15 @@ export default function Home() {
                 </p>
               </div>
               <div className="mt-8 md:mt-0 md:flex-shrink-0">
-                <Link href="/signup">
-                  <a className="btn group inline-flex items-center">
-                    Get started for free{' '}
-                    <IconArrowRight
-                      size={18}
-                      className="ml-1 group-hover:animate-bounce-x"
-                    />
-                  </a>
+                <Link
+                  href="/signup"
+                  className="btn group inline-flex items-center"
+                >
+                  Get started for free{' '}
+                  <IconArrowRight
+                    size={18}
+                    className="ml-1 group-hover:animate-bounce-x"
+                  />
                 </Link>
               </div>
             </div>
