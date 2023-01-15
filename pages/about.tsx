@@ -143,8 +143,8 @@ export default function About() {
           </p>
           <p>
             If Notabase&apos;s principles resonate with you, I encourage you to{' '}
-            <Link href="/signup">
-              <a className="link">sign up and give it a try</a>
+            <Link href="/signup" className="link">
+              sign up and give it a try
             </Link>
             !
           </p>

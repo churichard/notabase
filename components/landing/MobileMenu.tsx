@@ -39,18 +39,20 @@ export default function MobileMenu(props: Props) {
         </div>
         <div className="space-y-4 px-6 pt-0 pb-6">
           <span className="flex w-full rounded-md shadow-sm">
-            <Link href="/signup">
-              <a className="btn block w-full px-4 py-2 text-center">
-                Get started
-              </a>
+            <Link
+              href="/signup"
+              className="btn block w-full px-4 py-2 text-center"
+            >
+              Get started
             </Link>
           </span>
           <p className="text-center text-base font-medium leading-6 text-gray-700">
             Already have an account?{' '}
-            <Link href="/login">
-              <a className="text-primary-600 transition duration-150 ease-in-out hover:text-primary-500">
-                Sign in
-              </a>
+            <Link
+              href="/login"
+              className="text-primary-600 transition duration-150 ease-in-out hover:text-primary-500"
+            >
+              Sign in
             </Link>
           </p>
         </div>

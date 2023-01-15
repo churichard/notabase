@@ -163,16 +163,14 @@ const GraphButton = (props: GraphButtonProps) => {
         touch={false}
       >
         <span>
-          <Link href="/app/graph">
-            <a className="flex items-center px-6 py-1">
-              <IconAffiliate
-                className="mr-1 flex-shrink-0 text-gray-800 dark:text-gray-300"
-                size={20}
-              />
-              <span className="select-none overflow-x-hidden overflow-ellipsis whitespace-nowrap">
-                Graph View
-              </span>
-            </a>
+          <Link href="/app/graph" className="flex items-center px-6 py-1">
+            <IconAffiliate
+              className="mr-1 flex-shrink-0 text-gray-800 dark:text-gray-300"
+              size={20}
+            />
+            <span className="select-none overflow-x-hidden overflow-ellipsis whitespace-nowrap">
+              Graph View
+            </span>
           </Link>
         </span>
       </Tooltip>

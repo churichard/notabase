@@ -59,10 +59,11 @@ const PricingPlan = (props: Props) => {
         </ul>
         <div className="mt-6">
           {button ?? (
-            <Link href="/signup">
-              <a className="btn block w-full px-4 py-2 text-center">
-                Get started for free
-              </a>
+            <Link
+              href="/signup"
+              className="btn block w-full px-4 py-2 text-center"
+            >
+              Get started for free
             </Link>
           )}
         </div>

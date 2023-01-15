@@ -113,10 +113,11 @@ export default function ResettingPassword() {
             </form>
           </div>
           <p className="mt-4 text-center text-sm text-gray-700">
-            <Link href="/login">
-              <a className="text-primary-600 hover:text-primary-700">
-                Return to sign in
-              </a>
+            <Link
+              href="/login"
+              className="text-primary-600 hover:text-primary-700"
+            >
+              Return to sign in
             </Link>
           </p>
         </div>

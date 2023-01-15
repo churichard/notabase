@@ -80,8 +80,8 @@ export default function NotePage() {
           <p className="text-center text-2xl">
             Whoops&mdash;it doesn&apos;t look like this note exists!
           </p>
-          <Link href="/app">
-            <a className="btn mt-6">Go back to my notes</a>
+          <Link href="/app" className="btn mt-6">
+            Go back to my notes
           </Link>
         </div>
       </>
