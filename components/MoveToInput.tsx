@@ -116,9 +116,12 @@ function MoveToInput(props: Props, ref: ForwardedRef<HTMLInputElement>) {
         setSelectedOptionIndex((index) => {
           return index >= options.length - 1 ? 0 : index + 1;
         });
+      } else if (event.key === 'Enter') {
+        event.preventDefault();
+        onOptionClick(options[selectedOptionIndex]);
       }
     },
-    [options.length]
+    [options, onOptionClick, selectedOptionIndex]
   );
 
   return (
@@ -135,12 +138,6 @@ function MoveToInput(props: Props, ref: ForwardedRef<HTMLInputElement>) {
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
           onKeyDown={onKeyDown}
-          onKeyPress={(event) => {
-            if (event.key === 'Enter') {
-              event.preventDefault();
-              onOptionClick(options[selectedOptionIndex]);
-            }
-          }}
           autoFocus
         />
       </div>
