@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import Image from 'next/image';
+import Image from 'next/legacy/image';
 import Link from 'next/link';
 import profileImg from 'public/richard.jpg';
 import LandingLayout from 'components/landing/LandingLayout';
