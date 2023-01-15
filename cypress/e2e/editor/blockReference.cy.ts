@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
-import { Note } from 'types/supabase';
 import user from '../../fixtures/user.json';
+import notes from '../../fixtures/notes.json';
 
 const supabase = createClient(
   Cypress.env('NEXT_PUBLIC_SUPABASE_URL'),
@@ -18,19 +18,16 @@ describe('block reference', () => {
         })
       )
       .then(async (result) => {
-        const { data } = await supabase
-          .from<Note>('notes')
-          .upsert(
-            { title: 'Test', user_id: result.user?.id },
-            { onConflict: 'user_id, title' }
-          )
-          .single();
-        cy.wrap(data?.id).as('noteId');
+        const data = notes.map((note) => ({
+          ...note,
+          user_id: result.user?.id,
+        }));
+        await supabase.from('notes').insert(data);
       });
   });
 
-  it('can add a block reference by copying and pasting the block ref', function () {
-    cy.visit(`/app/note/${this.noteId}`);
+  it('can add a block reference by copying and pasting the block ref', () => {
+    cy.visit(`/app/note/2c1f8ccd-42ad-4f94-ab7d-c36abb1328ca`);
 
     // Type some text into the editor, then click the 3 dots to the left
     cy.getEditor()
@@ -63,5 +60,17 @@ describe('block reference', () => {
 
     // Assert that there is no error with the block reference
     cy.contains('Error: no block with id').should('have.length', 0);
+  });
+
+  it('can edit a block and have its references update', () => {
+    cy.visit(`/app/note/c5e7a286-5ee7-40fa-bd36-5df278ba9575`);
+
+    cy.getEditor()
+      .focus()
+      .type('{downArrow}{rightArrow}{end} Hello', { delay: 100 });
+
+    cy.getEditor()
+      .findAllByText('This paragraph will be referenced. Hello')
+      .should('have.length', 2);
   });
 });
