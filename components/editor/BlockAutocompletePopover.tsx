@@ -1,5 +1,5 @@
 import { useMemo, useState, useCallback, useEffect } from 'react';
-import { createEditor, Editor, Element, Path, Range, Transforms } from 'slate';
+import { Editor, Element, Path, Range, Transforms } from 'slate';
 import { useSlate } from 'slate-react';
 import type { TablerIcon } from '@tabler/icons';
 import { insertBlockReference } from 'editor/formatting';
@@ -12,6 +12,7 @@ import { store } from 'lib/store';
 import supabase from 'lib/supabase';
 import { Note } from 'types/supabase';
 import useDebounce from 'utils/useDebounce';
+import { getActiveOrTempEditor } from 'lib/activeEditorsStore';
 import EditorPopover from './EditorPopover';
 
 const DEBOUNCE_MS = 100;
@@ -142,8 +143,10 @@ export default function BlockAutocompletePopover() {
           blockId = createNodeId();
 
           // Set block id on the block
-          const noteEditor = createEditor();
-          noteEditor.children = store.getState().notes[option.noteId].content;
+          const noteEditor = getActiveOrTempEditor(
+            option.noteId,
+            store.getState().notes[option.noteId].content
+          );
           Transforms.setNodes(
             noteEditor,
             { id: blockId },

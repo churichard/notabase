@@ -1,9 +1,10 @@
-import { memo, useRef } from 'react';
+import { memo, useEffect, useRef } from 'react';
 import { createEditor, Descendant, Editor } from 'slate';
 import { Editable, Slate, withReact } from 'slate-react';
 import withVoidElements from 'editor/plugins/withVoidElements';
 import withLinks from 'editor/plugins/withLinks';
 import withTags from 'editor/plugins/withTags';
+import { resetNodes } from 'editor/transforms';
 import { EditorElementProps } from './elements/EditorElement';
 import { EditorLeafProps } from './elements/EditorLeaf';
 
@@ -23,6 +24,10 @@ function ReadOnlyEditor(props: Props) {
     );
   }
   const editor = editorRef.current;
+
+  useEffect(() => {
+    resetNodes(editor, { nodes: value });
+  }, [editor, value]);
 
   return (
     <Slate

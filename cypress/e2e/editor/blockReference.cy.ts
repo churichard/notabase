@@ -52,5 +52,16 @@ describe('block reference', () => {
 
     // Assert that there are now two blocks with the same content
     cy.findAllByText('This is a test').should('have.length', 2);
+
+    // Wait for network requests
+    cy.intercept({
+      method: 'PATCH',
+      url: /http:\/\/localhost:54321\/rest\/v1\/notes\?id=eq\..+/,
+    }).as('patchRequest');
+    cy.wait('@patchRequest');
+    cy.wait('@patchRequest');
+
+    // Assert that there is no error with the block reference
+    cy.contains('Error: no block with id').should('have.length', 0);
   });
 });

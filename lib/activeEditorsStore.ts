@@ -1,4 +1,4 @@
-import { Editor } from 'slate';
+import { Descendant, Editor } from 'slate';
 import createNotabaseEditor from 'editor/createEditor';
 
 // Map from note id to slate editor
@@ -32,6 +32,16 @@ function emitChange() {
   for (const listener of listeners) {
     listener();
   }
+}
+
+// Get editor from active editors if it exists, or create a new one
+export function getActiveOrTempEditor(noteId: string, content: Descendant[]) {
+  let editor = activeEditorsStore.getActiveEditor(noteId);
+  if (!editor) {
+    editor = createNotabaseEditor();
+    editor.children = content;
+  }
+  return editor;
 }
 
 export default activeEditorsStore;
