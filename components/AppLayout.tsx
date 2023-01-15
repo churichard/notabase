@@ -295,12 +295,12 @@ export default function AppLayout(props: Props) {
         />
       </Head>
       <div id="app-container" className={appContainerClassName}>
-        <div className="flex w-full h-full dark:bg-gray-900">
+        <div className="flex h-full w-full dark:bg-gray-900">
           <Sidebar
             setIsFindOrCreateModalOpen={setIsFindOrCreateModalOpen}
             setIsSettingsOpen={setIsSettingsOpen}
           />
-          <div className="relative flex flex-col flex-1 overflow-y-hidden">
+          <div className="relative flex flex-1 flex-col overflow-y-hidden">
             <OfflineBanner />
             <UpdateBanner />
             <UpgradeBanner />

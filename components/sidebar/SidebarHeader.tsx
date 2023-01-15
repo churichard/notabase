@@ -28,9 +28,9 @@ export default function Header(props: Props) {
   return (
     <div className="relative">
       <Menu>
-        <Menu.Button className="flex items-center justify-between w-full py-2 pl-6 overflow-x-hidden text-left text-gray-800 hover:bg-gray-200 active:bg-gray-300 dark:text-gray-200 dark:hover:bg-gray-700 dark:active:bg-gray-600 overflow-ellipsis whitespace-nowrap focus:outline-none">
-          <div className="flex items-center flex-1">
-            <span className="mr-1 font-semibold select-none">Notabase</span>
+        <Menu.Button className="flex w-full items-center justify-between overflow-x-hidden overflow-ellipsis whitespace-nowrap py-2 pl-6 text-left text-gray-800 hover:bg-gray-200 focus:outline-none active:bg-gray-300 dark:text-gray-200 dark:hover:bg-gray-700 dark:active:bg-gray-600">
+          <div className="flex flex-1 items-center">
+            <span className="mr-1 select-none font-semibold">Notabase</span>
             <IconSelector
               size={18}
               className="text-gray-500 dark:text-gray-400"
@@ -38,7 +38,7 @@ export default function Header(props: Props) {
           </div>
           <Tooltip content="Collapse sidebar (Ctrl+\)" placement="right">
             <span
-              className="p-1 mr-2 rounded hover:bg-gray-300 active:bg-gray-400 dark:hover:bg-gray-600 dark:active:bg-gray-500"
+              className="mr-2 rounded p-1 hover:bg-gray-300 active:bg-gray-400 dark:hover:bg-gray-600 dark:active:bg-gray-500"
               onClick={(e) => {
                 e.stopPropagation();
                 setIsSidebarOpen(false);
@@ -48,8 +48,8 @@ export default function Header(props: Props) {
             </span>
           </Tooltip>
         </Menu.Button>
-        <Menu.Items className="absolute z-20 w-56 overflow-hidden bg-white rounded left-6 top-full shadow-popover dark:bg-gray-800 focus:outline-none">
-          <p className="px-4 pt-2 pb-1 overflow-hidden text-xs text-gray-600 overflow-ellipsis dark:text-gray-400">
+        <Menu.Items className="absolute left-6 top-full z-20 w-56 overflow-hidden rounded bg-white shadow-popover focus:outline-none dark:bg-gray-800">
+          <p className="overflow-hidden overflow-ellipsis px-4 pt-2 pb-1 text-xs text-gray-600 dark:text-gray-400">
             {user?.email}
           </p>
           <DropdownItem

@@ -39,8 +39,8 @@ export default function SettingsModal(props: Props) {
         className="fixed inset-0 bg-black opacity-30"
         onClick={() => setIsOpen(false)}
       />
-      <div className="flex items-center justify-center h-screen p-6">
-        <div className="z-30 flex flex-col w-full h-full max-w-full overflow-hidden bg-white rounded sm:flex-row sm:max-h-176 sm:w-240 shadow-popover">
+      <div className="flex h-screen items-center justify-center p-6">
+        <div className="z-30 flex h-full w-full max-w-full flex-col overflow-hidden rounded bg-white shadow-popover sm:max-h-176 sm:w-240 sm:flex-row">
           <SettingsModalSidebar
             currentTab={currentTab}
             setCurrentTab={setCurrentTab}
@@ -62,7 +62,7 @@ type SettingsModalSidebarProps = {
 const SettingsModalSidebar = (props: SettingsModalSidebarProps) => {
   const { currentTab, setCurrentTab } = props;
   return (
-    <div className="flex flex-col flex-none w-full py-4 border-b sm:border-b-0 sm:border-r sm:w-48 sm:h-full bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
+    <div className="flex w-full flex-none flex-col border-b bg-gray-50 py-4 dark:border-gray-700 dark:bg-gray-800 sm:h-full sm:w-48 sm:border-b-0 sm:border-r">
       <div className="px-4 pb-2 text-sm text-gray-600 dark:text-gray-400">
         Settings & Billing
       </div>
@@ -71,7 +71,7 @@ const SettingsModalSidebar = (props: SettingsModalSidebarProps) => {
         isHighlighted={currentTab === SettingsTab.Appearance}
       >
         <button
-          className="flex items-center flex-1 px-4 py-1 overflow-hidden overflow-ellipsis whitespace-nowrap"
+          className="flex flex-1 items-center overflow-hidden overflow-ellipsis whitespace-nowrap px-4 py-1"
           onClick={() => setCurrentTab(SettingsTab.Appearance)}
         >
           <IconBrightnessHalf
@@ -86,7 +86,7 @@ const SettingsModalSidebar = (props: SettingsModalSidebarProps) => {
         isHighlighted={currentTab === SettingsTab.Editor}
       >
         <button
-          className="flex items-center flex-1 px-4 py-1 overflow-hidden overflow-ellipsis whitespace-nowrap"
+          className="flex flex-1 items-center overflow-hidden overflow-ellipsis whitespace-nowrap px-4 py-1"
           onClick={() => setCurrentTab(SettingsTab.Editor)}
         >
           <IconPencil
@@ -101,7 +101,7 @@ const SettingsModalSidebar = (props: SettingsModalSidebarProps) => {
         isHighlighted={currentTab === SettingsTab.Billing}
       >
         <button
-          className="flex items-center flex-1 px-4 py-1 overflow-hidden overflow-ellipsis whitespace-nowrap"
+          className="flex flex-1 items-center overflow-hidden overflow-ellipsis whitespace-nowrap px-4 py-1"
           onClick={() => setCurrentTab(SettingsTab.Billing)}
         >
           <IconCreditCard

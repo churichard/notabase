@@ -70,7 +70,7 @@ export default function Dropdown(props: Props) {
             <Portal>
               <Menu.Items
                 ref={setPopperElement}
-                className={`z-20 w-52 overflow-hidden text-sm bg-white rounded shadow-popover dark:bg-gray-800 focus:outline-none ${itemsClassName}`}
+                className={`z-20 w-52 overflow-hidden rounded bg-white text-sm shadow-popover focus:outline-none dark:bg-gray-800 ${itemsClassName}`}
                 static
                 style={styles.popper}
                 {...attributes.popper}

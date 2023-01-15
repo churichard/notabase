@@ -11,7 +11,7 @@ export default function PricingFaq(props: Props) {
       <h2 className="text-3xl font-semibold text-gray-900 dark:text-gray-100">
         FAQ
       </h2>
-      <div className="pt-10 mt-6 border-t dark:border-gray-700">
+      <div className="mt-6 border-t pt-10 dark:border-gray-700">
         <div className="grid gap-8 md:grid-cols-2">
           <div>
             <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">

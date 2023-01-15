@@ -338,7 +338,7 @@ export default function ForceGraph(props: Props) {
       <canvas
         data-testid="graph-canvas"
         ref={canvasRef}
-        className="absolute w-full h-full dark:bg-gray-800"
+        className="absolute h-full w-full dark:bg-gray-800"
       />
     </div>
   );

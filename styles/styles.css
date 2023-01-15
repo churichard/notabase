@@ -4,15 +4,15 @@
 
 @layer components {
   .btn {
-    @apply px-5 py-3 font-medium text-white transition duration-200 ease-in-out rounded shadow bg-primary-500 hover:bg-opacity-85;
+    @apply rounded bg-primary-500 px-5 py-3 font-medium text-white shadow transition duration-200 ease-in-out hover:bg-opacity-85;
   }
 
   .card {
-    @apply max-w-md p-8 overflow-hidden bg-white rounded shadow-md;
+    @apply max-w-md overflow-hidden rounded bg-white p-8 shadow-md;
   }
 
   .input {
-    @apply block py-1 border-gray-300 rounded shadow-sm focus:ring-primary-500 focus:border-primary-500;
+    @apply block rounded border-gray-300 py-1 shadow-sm focus:border-primary-500 focus:ring-primary-500;
   }
 
   .link {

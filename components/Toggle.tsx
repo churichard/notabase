@@ -13,23 +13,23 @@ export default function Toggle(props: Props) {
     <div className={`flex flex-col ${className}`}>
       <label
         htmlFor="toggle"
-        className="inline-flex items-center cursor-pointer"
+        className="inline-flex cursor-pointer items-center"
       >
         <span className="relative">
           <span
-            className={`block w-10 h-6 rounded-full shadow-inner transition-colors ${
+            className={`block h-6 w-10 rounded-full shadow-inner transition-colors ${
               isChecked ? 'bg-primary-500' : 'bg-gray-300'
             }`}
           ></span>
           <span
-            className={`absolute inset-y-0 left-0 block w-4 h-4 mt-1 ml-1 transition-transform duration-300 ease-in-out transform bg-white rounded-full shadow focus-within:shadow-outline ${
+            className={`focus-within:shadow-outline absolute inset-y-0 left-0 mt-1 ml-1 block h-4 w-4 transform rounded-full bg-white shadow transition-transform duration-300 ease-in-out ${
               isChecked ? 'translate-x-full' : null
             }`}
           >
             <input
               id="toggle"
               type="checkbox"
-              className="absolute w-0 h-0 opacity-0"
+              className="absolute h-0 w-0 opacity-0"
               onClick={() => setIsChecked(!isChecked)}
             />
           </span>

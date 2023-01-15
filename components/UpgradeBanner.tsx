@@ -18,7 +18,7 @@ export default function UpgradeBanner() {
 
   return showUpgradeBanner ? (
     <button
-      className="block w-full py-1 font-semibold text-center text-yellow-900 bg-yellow-300"
+      className="block w-full bg-yellow-300 py-1 text-center font-semibold text-yellow-900"
       onClick={() => setIsUpgradeModalOpen(true)}
     >
       You have {numOfNotes < MAX_NUM_OF_BASIC_NOTES ? 'almost' : ''} reached

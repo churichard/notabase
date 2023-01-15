@@ -176,13 +176,13 @@ export default function AddLinkPopover(props: Props) {
     <EditorPopover
       selection={addLinkPopoverState.selection}
       placement="bottom"
-      className="flex flex-col pt-4 pb-2 w-96"
+      className="flex w-96 flex-col pt-4 pb-2"
       onClose={hidePopover}
     >
       <input
         ref={inputRef}
         type="text"
-        className="mx-4 input dark:bg-gray-700 dark:text-gray-200 dark:border-gray-700"
+        className="input mx-4 dark:border-gray-700 dark:bg-gray-700 dark:text-gray-200"
         value={linkText}
         onChange={(e) => setLinkText(e.target.value)}
         placeholder="Search for a note or enter web page link"
@@ -226,7 +226,7 @@ const OptionItem = (props: OptionProps) => {
 
   return (
     <div
-      className={`flex flex-row items-center px-4 py-1 cursor-pointer text-gray-800 hover:bg-gray-100 active:bg-gray-200 dark:text-gray-200 dark:hover:bg-gray-700 dark:active:bg-gray-600 ${
+      className={`flex cursor-pointer flex-row items-center px-4 py-1 text-gray-800 hover:bg-gray-100 active:bg-gray-200 dark:text-gray-200 dark:hover:bg-gray-700 dark:active:bg-gray-600 ${
         isSelected ? 'bg-gray-100 dark:bg-gray-700' : ''
       } ${isDisabled ? 'text-gray-400 dark:text-gray-600' : ''}`}
       onPointerDown={(event) => event.preventDefault()}
@@ -241,7 +241,7 @@ const OptionItem = (props: OptionProps) => {
         <UpgradeButton feature={Feature.NumOfNotes} className="mr-1" />
       ) : null}
       {option.icon ? (
-        <option.icon size={18} className="flex-shrink-0 mr-1" />
+        <option.icon size={18} className="mr-1 flex-shrink-0" />
       ) : null}
       <span className="overflow-hidden overflow-ellipsis whitespace-nowrap">
         {option.text}

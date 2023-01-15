@@ -76,12 +76,12 @@ export default function NotePage() {
         <Head>
           <title>Not Found | Notabase</title>
         </Head>
-        <div className="flex flex-col items-center justify-center flex-1 h-screen p-4">
-          <p className="text-2xl text-center">
+        <div className="flex h-screen flex-1 flex-col items-center justify-center p-4">
+          <p className="text-center text-2xl">
             Whoops&mdash;it doesn&apos;t look like this note exists!
           </p>
           <Link href="/app">
-            <a className="mt-6 btn">Go back to my notes</a>
+            <a className="btn mt-6">Go back to my notes</a>
           </Link>
         </div>
       </>
@@ -93,7 +93,7 @@ export default function NotePage() {
       <Head>
         <title>{pageTitle}</title>
       </Head>
-      <div className="flex flex-1 overflow-x-auto divide-x divide-gray-200 dark:divide-gray-700">
+      <div className="flex flex-1 divide-x divide-gray-200 overflow-x-auto dark:divide-gray-700">
         {openNoteIds.length > 0
           ? openNoteIds.map((noteId, index) => (
               <Note

@@ -18,7 +18,7 @@ export default function ImageElement(props: ImageElementProps) {
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={element.url}
-        className={`select-none mx-auto max-w-full max-h-full ${
+        className={`mx-auto max-h-full max-w-full select-none ${
           selected && focused
             ? 'ring ring-primary-100 dark:ring-primary-900'
             : ''

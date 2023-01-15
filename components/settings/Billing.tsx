@@ -77,7 +77,7 @@ export default function Billing() {
       const currentPlanId = billingDetails.planId;
 
       const switchPlanButton = (
-        <button className="block w-full px-4 py-2 btn" onClick={onChangePlan}>
+        <button className="btn block w-full px-4 py-2" onClick={onChangePlan}>
           Switch plan
         </button>
       );
@@ -85,7 +85,7 @@ export default function Billing() {
       const proPlanPrices = PRICING_PLANS[PlanId.Pro].prices;
       const proSubscribeButton = (
         <button
-          className="block w-full px-4 py-2 btn"
+          className="btn block w-full px-4 py-2"
           onClick={() =>
             onSubscribe(
               showAnnual
@@ -102,7 +102,7 @@ export default function Billing() {
       const catalystPlanPrices = PRICING_PLANS[PlanId.Catalyst].prices;
       const catalystSubscribeButton = (
         <button
-          className="block w-full px-4 py-2 btn"
+          className="btn block w-full px-4 py-2"
           onClick={() =>
             onSubscribe(
               catalystPlanPrices[BillingFrequency.OneTime].priceId,
@@ -115,7 +115,7 @@ export default function Billing() {
       );
 
       const currentPlanBlock = (
-        <div className="block w-full px-4 py-2 text-center text-gray-600 border rounded dark:text-gray-400">
+        <div className="block w-full rounded border px-4 py-2 text-center text-gray-600 dark:text-gray-400">
           Current plan
         </div>
       );
@@ -137,7 +137,7 @@ export default function Billing() {
   );
 
   return (
-    <div className="flex-1 w-full h-full p-6 overflow-y-auto bg-white dark:bg-gray-800 dark:text-gray-100">
+    <div className="h-full w-full flex-1 overflow-y-auto bg-white p-6 dark:bg-gray-800 dark:text-gray-100">
       <BillingBanner
         billingDetails={billingDetails}
         onChangePlan={onChangePlan}
@@ -179,7 +179,7 @@ const BillingBanner = (props: BillingBannerProps) => {
   if (isSubscriptionPlan && billingDetails.cancelAtPeriodEnd) {
     // Subscription is cancelling at the end of the current period
     return (
-      <div className="w-full pb-6 mb-6 space-y-2 border-b dark:border-gray-700">
+      <div className="mb-6 w-full space-y-2 border-b pb-6 dark:border-gray-700">
         <p>
           {currentPlanText} Your subscription will be cancelled at the end of
           your billing period on{' '}
@@ -197,7 +197,7 @@ const BillingBanner = (props: BillingBannerProps) => {
   } else if (isSubscriptionPlan && !billingDetails.cancelAtPeriodEnd) {
     // Subscription is renewing at the end of the current period
     return (
-      <div className="w-full pb-6 mb-6 space-y-2 border-b dark:border-gray-700">
+      <div className="mb-6 w-full space-y-2 border-b pb-6 dark:border-gray-700">
         <p>
           {currentPlanText} Your subscription will renew on{' '}
           {getReadableDate(billingDetails.currentPeriodEnd)}.
@@ -213,7 +213,7 @@ const BillingBanner = (props: BillingBannerProps) => {
     );
   } else if (isCatalystPlan) {
     return (
-      <div className="w-full pb-6 mb-6 space-y-2 border-b dark:border-gray-700">
+      <div className="mb-6 w-full space-y-2 border-b pb-6 dark:border-gray-700">
         <p>
           {currentPlanText} Your 5 year plan will end on{' '}
           {getReadableDate(billingDetails.currentPeriodEnd)}.
@@ -223,7 +223,7 @@ const BillingBanner = (props: BillingBannerProps) => {
   } else {
     // No current subscription
     return (
-      <p className="w-full pb-6 mb-6 border-b dark:border-gray-700">
+      <p className="mb-6 w-full border-b pb-6 dark:border-gray-700">
         {currentPlanText} Upgrade to get unlimited notes.
       </p>
     );

@@ -15,7 +15,7 @@ function OpenSidebarButton(props: Props) {
     <Tooltip content="Open sidebar (Ctrl+\)" placement="right">
       <button
         aria-label="Open sidebar"
-        className={`p-1 rounded hover:bg-gray-300 active:bg-gray-400 dark:hover:bg-gray-700 dark:active:bg-gray-600 ${className}`}
+        className={`rounded p-1 hover:bg-gray-300 active:bg-gray-400 dark:hover:bg-gray-700 dark:active:bg-gray-600 ${className}`}
         onClick={() => setIsSidebarOpen(true)}
       >
         <IconMenu2 className="text-gray-600 dark:text-gray-300" />

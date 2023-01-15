@@ -7,7 +7,7 @@ export default function Sponsors() {
       <Head>
         <title>Sponsors | Notabase</title>
       </Head>
-      <div className="container px-6 py-16 prose lg:prose-xl prose-primary">
+      <div className="prose-primary container prose px-6 py-16 lg:prose-xl">
         <h1>Sponsors</h1>
         <div>
           <p>Special thanks to the following people for their support:</p>

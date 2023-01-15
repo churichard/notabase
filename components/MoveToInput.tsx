@@ -123,12 +123,12 @@ function MoveToInput(props: Props, ref: ForwardedRef<HTMLInputElement>) {
 
   return (
     <div className={`flex flex-col ${className}`}>
-      <div className="flex items-center flex-shrink-0 w-full">
+      <div className="flex w-full flex-shrink-0 items-center">
         <IconSearch className="ml-4 text-gray-500" size={20} />
         <input
           ref={ref}
           type="text"
-          className={`w-full py-4 px-2 text-xl border-none rounded-tl rounded-tr focus:ring-0 dark:bg-gray-800 dark:text-gray-200 ${
+          className={`w-full rounded-tl rounded-tr border-none py-4 px-2 text-xl focus:ring-0 dark:bg-gray-800 dark:text-gray-200 ${
             options.length <= 0 ? 'rounded-bl rounded-br' : ''
           }`}
           placeholder="Search note to move to"
@@ -145,7 +145,7 @@ function MoveToInput(props: Props, ref: ForwardedRef<HTMLInputElement>) {
         />
       </div>
       {options.length > 0 ? (
-        <div className="flex-1 w-full overflow-y-auto bg-white border-t rounded-bl rounded-br dark:bg-gray-800 dark:border-gray-700">
+        <div className="w-full flex-1 overflow-y-auto rounded-bl rounded-br border-t bg-white dark:border-gray-700 dark:bg-gray-800">
           {options.map((option, index) => (
             <OptionItem
               key={option.id}
@@ -170,13 +170,13 @@ const OptionItem = (props: OptionProps) => {
   const { option, isSelected, onClick } = props;
   return (
     <button
-      className={`flex flex-row w-full items-center px-4 py-2 text-gray-800 hover:bg-gray-100 active:bg-gray-200 dark:text-gray-200 dark:hover:bg-gray-700 dark:active:bg-gray-600 ${
+      className={`flex w-full flex-row items-center px-4 py-2 text-gray-800 hover:bg-gray-100 active:bg-gray-200 dark:text-gray-200 dark:hover:bg-gray-700 dark:active:bg-gray-600 ${
         isSelected ? 'bg-gray-100 dark:bg-gray-700' : ''
       }`}
       onClick={onClick}
     >
       {option.icon ? (
-        <option.icon size={18} className="flex-shrink-0 mr-1" />
+        <option.icon size={18} className="mr-1 flex-shrink-0" />
       ) : null}
       <span className="overflow-hidden overflow-ellipsis whitespace-nowrap">
         {option.text}

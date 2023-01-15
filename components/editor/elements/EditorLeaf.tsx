@@ -11,7 +11,7 @@ const EditorLeaf = ({ attributes, children, leaf }: EditorLeafProps) => {
 
   if (leaf.code) {
     children = (
-      <code className="p-0.25 bg-gray-100 border border-gray-200 rounded dark:bg-gray-800 dark:border-gray-700">
+      <code className="rounded border border-gray-200 bg-gray-100 p-0.25 dark:border-gray-700 dark:bg-gray-800">
         {children}
       </code>
     );

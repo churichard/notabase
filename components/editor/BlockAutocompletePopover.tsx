@@ -218,7 +218,7 @@ export default function BlockAutocompletePopover() {
   return isVisible && options.length > 0 ? (
     <EditorPopover
       placement="bottom"
-      className="flex flex-col w-96"
+      className="flex w-96 flex-col"
       onClose={hidePopover}
     >
       {options.map((option, index) => (
@@ -243,7 +243,7 @@ const OptionItem = (props: OptionProps) => {
   const { option, isSelected, onClick } = props;
   return (
     <div
-      className={`flex flex-row items-center px-4 py-1 cursor-pointer text-gray-800 hover:bg-gray-100 active:bg-gray-200 dark:text-gray-200 dark:hover:bg-gray-700 dark:active:bg-gray-600 ${
+      className={`flex cursor-pointer flex-row items-center px-4 py-1 text-gray-800 hover:bg-gray-100 active:bg-gray-200 dark:text-gray-200 dark:hover:bg-gray-700 dark:active:bg-gray-600 ${
         isSelected ? 'bg-gray-100 dark:bg-gray-700' : ''
       }`}
       onPointerDown={(event) => event.preventDefault()}
@@ -255,7 +255,7 @@ const OptionItem = (props: OptionProps) => {
       }}
     >
       {option.icon ? (
-        <option.icon size={18} className="flex-shrink-0 mr-1" />
+        <option.icon size={18} className="mr-1 flex-shrink-0" />
       ) : null}
       <div className="overflow-hidden overflow-ellipsis whitespace-nowrap">
         <div>{option.text}</div>

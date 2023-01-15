@@ -84,7 +84,7 @@ function Sidebar(props: Props) {
             />
           ) : null}
           <animated.div
-            className="fixed top-0 bottom-0 left-0 z-20 w-64 shadow-popover md:shadow-none md:static md:z-0"
+            className="fixed top-0 bottom-0 left-0 z-20 w-64 shadow-popover md:static md:z-0 md:shadow-none"
             style={{
               transform: styles.transform,
               display: styles.dspl.to((displ) =>
@@ -93,7 +93,7 @@ function Sidebar(props: Props) {
             }}
           >
             <div
-              className={`flex flex-col flex-none h-full border-r bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 ${className}`}
+              className={`flex h-full flex-none flex-col border-r bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 ${className}`}
             >
               <SidebarHeader setIsSettingsOpen={setIsSettingsOpen} />
               <FindOrCreateModalButton
@@ -104,7 +104,7 @@ function Sidebar(props: Props) {
               />
               <GraphButton onClick={hideSidebarOnMobile} />
               <SidebarContent
-                className="flex-1 mt-3 overflow-x-hidden overflow-y-auto"
+                className="mt-3 flex-1 overflow-y-auto overflow-x-hidden"
                 setIsFindOrCreateModalOpen={setIsFindOrCreateModalOpen}
               />
             </div>
@@ -128,14 +128,14 @@ const FindOrCreateModalButton = (props: FindOrCreateModalButtonProps) => {
         touch={false}
       >
         <button
-          className="flex items-center w-full px-6 py-1 text-left"
+          className="flex w-full items-center px-6 py-1 text-left"
           onClick={onClick}
         >
           <IconSearch
-            className="flex-shrink-0 mr-1 text-gray-800 dark:text-gray-300"
+            className="mr-1 flex-shrink-0 text-gray-800 dark:text-gray-300"
             size={20}
           />
-          <span className="overflow-x-hidden select-none overflow-ellipsis whitespace-nowrap">
+          <span className="select-none overflow-x-hidden overflow-ellipsis whitespace-nowrap">
             Find or Create Note
           </span>
         </button>
@@ -166,10 +166,10 @@ const GraphButton = (props: GraphButtonProps) => {
           <Link href="/app/graph">
             <a className="flex items-center px-6 py-1">
               <IconAffiliate
-                className="flex-shrink-0 mr-1 text-gray-800 dark:text-gray-300"
+                className="mr-1 flex-shrink-0 text-gray-800 dark:text-gray-300"
                 size={20}
               />
-              <span className="overflow-x-hidden select-none overflow-ellipsis whitespace-nowrap">
+              <span className="select-none overflow-x-hidden overflow-ellipsis whitespace-nowrap">
                 Graph View
               </span>
             </a>

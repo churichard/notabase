@@ -27,10 +27,10 @@ export default function UpgradeButton(props: Props) {
   return (
     <Tooltip content={content}>
       <span
-        className={`flex items-center p-2 text-xs btn ${className}`}
+        className={`btn flex items-center p-2 text-xs ${className}`}
         onClick={() => setIsUpgradeModalOpen(true)}
       >
-        <IconArrowUpCircle size={18} className="flex-shrink-0 mr-1" />
+        <IconArrowUpCircle size={18} className="mr-1 flex-shrink-0" />
         <span className="whitespace-nowrap">Upgrade to Pro</span>
       </span>
     </Tooltip>

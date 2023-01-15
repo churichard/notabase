@@ -27,14 +27,14 @@ function SidebarNotes(props: SidebarNotesProps) {
 
   return (
     <ErrorBoundary>
-      <div className={`flex flex-col flex-1 overflow-x-hidden ${className}`}>
+      <div className={`flex flex-1 flex-col overflow-x-hidden ${className}`}>
         {sortedNoteTree && sortedNoteTree.length > 0 ? (
           <SidebarNotesTree
             data={sortedNoteTree}
             className="flex-1 overflow-y-auto"
           />
         ) : (
-          <p className="flex-1 px-6 my-2 text-center text-gray-500">
+          <p className="my-2 flex-1 px-6 text-center text-gray-500">
             No notes yet
           </p>
         )}
