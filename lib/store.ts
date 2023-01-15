@@ -185,22 +185,22 @@ export const store = createVanilla<Store>()(
        */
       openNoteIds: [],
       /**
-       * Replaces the active notes at the given index (0 by default)
+       * Replaces the open notes at the given index (0 by default)
        */
-      setOpenNoteIds: (openNoteIds: string[], index?: number) => {
+      setOpenNoteIds: (newOpenNoteIds: string[], index?: number) => {
         if (!index) {
-          set({ openNoteIds });
+          set((state) => {
+            state.openNoteIds = newOpenNoteIds;
+          });
           return;
         }
         // Replace the notes after the current note with the new note
         set((state) => {
-          const newOpenNoteIds = state.openNoteIds.slice();
-          newOpenNoteIds.splice(
+          state.openNoteIds.splice(
             index,
             state.openNoteIds.length - index,
-            ...openNoteIds
+            ...newOpenNoteIds
           );
-          return { openNoteIds: newOpenNoteIds };
         });
       },
       /**
