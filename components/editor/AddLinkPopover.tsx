@@ -167,9 +167,12 @@ export default function AddLinkPopover(props: Props) {
         setSelectedOptionIndex((index) => {
           return index >= options.length - 1 ? 0 : index + 1;
         });
+      } else if (event.key === 'Enter') {
+        event.preventDefault();
+        onOptionClick(options[selectedOptionIndex]);
       }
     },
-    [options.length]
+    [options, onOptionClick, selectedOptionIndex]
   );
 
   return (
@@ -186,12 +189,6 @@ export default function AddLinkPopover(props: Props) {
         value={linkText}
         onChange={(e) => setLinkText(e.target.value)}
         placeholder="Search for a note or enter web page link"
-        onKeyPress={(event) => {
-          if (event.key === 'Enter') {
-            event.preventDefault();
-            onOptionClick(options[selectedOptionIndex]);
-          }
-        }}
         onKeyDown={onKeyDown}
         autoFocus
       />

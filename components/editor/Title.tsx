@@ -36,7 +36,7 @@ function Title(props: Props) {
         data-testid="note-title"
         role="textbox"
         placeholder="Untitled"
-        onKeyPress={(event) => {
+        onKeyDown={(event) => {
           // Disallow newlines in the title field
           if (event.key === 'Enter') {
             event.preventDefault();
