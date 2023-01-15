@@ -179,7 +179,7 @@ function SidebarNotesTree(props: Props) {
                     collapsed: false,
                   }
                 }
-                className="shadow-popover !bg-gray-50 dark:!bg-gray-800"
+                className="!bg-gray-50 shadow-popover dark:!bg-gray-800"
               />
             ) : null}
           </DragOverlay>

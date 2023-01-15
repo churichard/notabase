@@ -116,7 +116,7 @@ export default function NoteHeader() {
   const iconClassName = 'text-gray-600 dark:text-gray-300';
 
   return (
-    <div className="flex items-center justify-between w-full px-4 py-1 text-right">
+    <div className="flex w-full items-center justify-between px-4 py-1 text-right">
       <div>{isSidebarButtonVisible ? <OpenSidebarButton /> : null}</div>
       <div>
         {isCloseButtonVisible ? (
@@ -126,7 +126,7 @@ export default function NoteHeader() {
               onClick={onClosePane}
               title="Close pane"
             >
-              <span className="flex items-center justify-center w-8 h-8">
+              <span className="flex h-8 w-8 items-center justify-center">
                 <IconX className={iconClassName} />
               </span>
             </button>
@@ -142,7 +142,7 @@ export default function NoteHeader() {
                 data-testid="note-menu-button"
               >
                 <Tooltip content="Options (export, import, etc.)">
-                  <span className="flex items-center justify-center w-8 h-8">
+                  <span className="flex h-8 w-8 items-center justify-center">
                     <IconDots className={iconClassName} />
                   </span>
                 </Tooltip>
@@ -152,7 +152,7 @@ export default function NoteHeader() {
                   <Menu.Items
                     ref={setPopperElement}
                     data-testid="note-menu-button-dropdown"
-                    className="z-10 w-56 overflow-hidden bg-white rounded shadow-popover dark:bg-gray-800 focus:outline-none"
+                    className="z-10 w-56 overflow-hidden rounded bg-white shadow-popover focus:outline-none dark:bg-gray-800"
                     static
                     style={styles.popper}
                     {...attributes.popper}

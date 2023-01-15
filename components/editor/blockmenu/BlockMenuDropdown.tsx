@@ -61,7 +61,7 @@ export default function BlockMenuDropdown(props: BlockMenuDropdownProps) {
 
   const buttonChildren = useMemo(
     () => (
-      <span className="flex items-center justify-center w-6 h-6">
+      <span className="flex h-6 w-6 items-center justify-center">
         <IconDotsVertical
           className="text-gray-500 dark:text-gray-400"
           size={18}
@@ -99,7 +99,7 @@ export default function BlockMenuDropdown(props: BlockMenuDropdownProps) {
       </DropdownItem>
       <ChangeBlockOptions
         element={element}
-        className="px-8 border-t dark:border-gray-700"
+        className="border-t px-8 dark:border-gray-700"
       />
     </Dropdown>
   );

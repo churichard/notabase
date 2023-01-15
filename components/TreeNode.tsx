@@ -22,7 +22,7 @@ const TreeNode = (props: Props, forwardedRef: ForwardedRef<HTMLDivElement>) => {
   return (
     <div
       ref={forwardedRef}
-      className={`flex items-center select-none ${
+      className={`flex select-none items-center ${
         node.showArrow ? 'hover:cursor-pointer' : ''
       }`}
       style={{ paddingLeft: `${leftPadding}px`, ...style }}
@@ -30,7 +30,7 @@ const TreeNode = (props: Props, forwardedRef: ForwardedRef<HTMLDivElement>) => {
     >
       {node.showArrow ? (
         <IconCaretRight
-          className={`flex-shrink-0 mr-1 text-gray-500 dark:text-gray-100 transform transition-transform ${
+          className={`mr-1 flex-shrink-0 transform text-gray-500 transition-transform dark:text-gray-100 ${
             !node.collapsed ? 'rotate-90' : ''
           }`}
           size={16}

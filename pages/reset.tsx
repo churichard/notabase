@@ -41,11 +41,11 @@ export default function Reset() {
       </Head>
       <div className="min-h-screen bg-gray-50">
         <div className="container p-8 md:p-24">
-          <div className="flex items-center justify-center mb-6">
+          <div className="mb-6 flex items-center justify-center">
             <LogoWithText />
           </div>
-          <div className="mx-auto card md:p-12">
-            <p className="pb-4 -mt-2 text-xl text-center">
+          <div className="card mx-auto md:p-12">
+            <p className="-mt-2 pb-4 text-center text-xl">
               Reset your password
             </p>
             <p className="pb-6 text-sm text-gray-600">
@@ -62,15 +62,15 @@ export default function Reset() {
                   name="email"
                   id="email"
                   autoComplete="email"
-                  className="w-full py-2 mt-2 input"
+                  className="input mt-2 w-full py-2"
                   value={email}
                   onChange={(event) => setEmail(event.target.value)}
                   required
                 />
               </div>
               <button
-                className={`w-full mt-6 btn ${
-                  isLoading && 'opacity-50 cursor-wait'
+                className={`btn mt-6 w-full ${
+                  isLoading && 'cursor-wait opacity-50'
                 }`}
                 disabled={isLoading}
               >
@@ -84,7 +84,7 @@ export default function Reset() {
               ) : null}
             </form>
           </div>
-          <p className="mt-4 text-sm text-center text-gray-700">
+          <p className="mt-4 text-center text-sm text-gray-700">
             <Link href="/login">
               <a className="text-primary-600 hover:text-primary-700">
                 Return to sign in

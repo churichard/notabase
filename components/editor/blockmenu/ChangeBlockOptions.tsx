@@ -125,7 +125,7 @@ const BlockButton = ({
     <Tooltip content={tooltip} placement="top" disabled={!tooltip}>
       <span>
         <DropdownItem
-          className={`flex items-center px-2 py-2 cursor-pointer rounded hover:bg-gray-100 active:bg-gray-200 dark:hover:bg-gray-700 dark:active:bg-gray-600 ${className}`}
+          className={`flex cursor-pointer items-center rounded px-2 py-2 hover:bg-gray-100 active:bg-gray-200 dark:hover:bg-gray-700 dark:active:bg-gray-600 ${className}`}
           onClick={() => toggleElement(editor, format, path)}
         >
           <Icon
@@ -188,7 +188,7 @@ const ImageButton = ({
     <Tooltip content={tooltip} placement="top" disabled={!tooltip}>
       <span>
         <DropdownItem
-          className={`flex items-center px-2 py-2 cursor-pointer rounded hover:bg-gray-100 active:bg-gray-200 dark:hover:bg-gray-700 dark:active:bg-gray-600 ${className}`}
+          className={`flex cursor-pointer items-center rounded px-2 py-2 hover:bg-gray-100 active:bg-gray-200 dark:hover:bg-gray-700 dark:active:bg-gray-600 ${className}`}
           onClick={onClick}
         >
           <Icon

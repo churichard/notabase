@@ -10,8 +10,8 @@ export default function Pricing() {
         <title>Pricing | Notabase</title>
       </Head>
       <div className="container px-6 py-16">
-        <h1 className="text-5xl font-semibold text-center">Pricing</h1>
-        <h2 className="mt-4 text-2xl text-center text-gray-500">
+        <h1 className="text-center text-5xl font-semibold">Pricing</h1>
+        <h2 className="mt-4 text-center text-2xl text-gray-500">
           Simple & straightforward pricing
         </h2>
         <PricingPlans />

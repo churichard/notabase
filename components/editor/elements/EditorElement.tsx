@@ -66,14 +66,14 @@ export default function EditorElement(props: EditorElementProps) {
       );
     case ElementType.Blockquote:
       return (
-        <blockquote className={`pl-4 border-l-4 ${className}`} {...attributes}>
+        <blockquote className={`border-l-4 pl-4 ${className}`} {...attributes}>
           {children}
         </blockquote>
       );
     case ElementType.CodeBlock:
       return (
         <code
-          className={`block p-2 bg-gray-100 border border-gray-200 rounded dark:bg-gray-800 dark:border-gray-700 ${className}`}
+          className={`block rounded border border-gray-200 bg-gray-100 p-2 dark:border-gray-700 dark:bg-gray-800 ${className}`}
           {...attributes}
         >
           {children}

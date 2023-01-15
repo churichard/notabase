@@ -7,12 +7,12 @@ export default function Offline() {
       <Head>
         <title>You&apos;re offline | Notabase</title>
       </Head>
-      <div className="flex flex-col items-center justify-center flex-1 h-screen p-4">
+      <div className="flex h-screen flex-1 flex-col items-center justify-center p-4">
         <IconWifiOff
           size={64}
-          className="p-2 text-white bg-yellow-500 rounded-full"
+          className="rounded-full bg-yellow-500 p-2 text-white"
         />
-        <p className="mt-4 text-2xl text-center">
+        <p className="mt-4 text-center text-2xl">
           It looks like you&apos;re offline. To view this page, please reconnect
           to the Internet.
         </p>

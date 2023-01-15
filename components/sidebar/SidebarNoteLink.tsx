@@ -47,14 +47,14 @@ const SidebarNoteLink = (
   return (
     <SidebarItem
       ref={forwardedRef}
-      className={`relative flex items-center justify-between overflow-x-hidden group focus:outline-none ${className}`}
+      className={`group relative flex items-center justify-between overflow-x-hidden focus:outline-none ${className}`}
       isHighlighted={isHighlighted}
       style={style}
       {...otherProps}
     >
       <div
         role="button"
-        className="flex items-center flex-1 px-2 py-1 overflow-hidden select-none overflow-ellipsis whitespace-nowrap"
+        className="flex flex-1 select-none items-center overflow-hidden overflow-ellipsis whitespace-nowrap px-2 py-1"
         onClick={(e) => {
           e.preventDefault();
           onNoteLinkClick(note.id, e.shiftKey);
@@ -66,7 +66,7 @@ const SidebarNoteLink = (
         draggable={false}
       >
         <button
-          className="p-1 mr-1 rounded hover:bg-gray-300 active:bg-gray-400 dark:hover:bg-gray-600 dark:active:bg-gray-500"
+          className="mr-1 rounded p-1 hover:bg-gray-300 active:bg-gray-400 dark:hover:bg-gray-600 dark:active:bg-gray-500"
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
@@ -74,7 +74,7 @@ const SidebarNoteLink = (
           }}
         >
           <IconCaretRight
-            className={`flex-shrink-0 text-gray-500 dark:text-gray-100 transform transition-transform ${
+            className={`flex-shrink-0 transform text-gray-500 transition-transform dark:text-gray-100 ${
               !node.collapsed ? 'rotate-90' : ''
             }`}
             size={16}

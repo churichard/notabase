@@ -61,14 +61,14 @@ export default function PricingPlans(props: Props) {
         />
         <span className="text-sm text-gray-600 dark:text-gray-300">
           Annual{' '}
-          <span className="px-3 py-1 ml-1 font-semibold rounded-full text-primary-900 bg-primary-100 whitespace-nowrap dark:bg-primary-900 dark:text-primary-100">
+          <span className="ml-1 whitespace-nowrap rounded-full bg-primary-100 px-3 py-1 font-semibold text-primary-900 dark:bg-primary-900 dark:text-primary-100">
             2 months free!
           </span>
         </span>
       </div>
-      <div className="grid max-w-4xl gap-4 mx-auto md:grid-cols-2">
+      <div className="mx-auto grid max-w-4xl gap-4 md:grid-cols-2">
         <PricingPlan
-          className="w-full mx-auto lg:w-full"
+          className="mx-auto w-full lg:w-full"
           name={PRICING_PLANS[PlanId.Basic].name}
           price={getBillingPeriodPrice(PlanId.Basic, showAnnual)}
           period={showAnnual ? '/ yr' : '/ mo'}
@@ -76,7 +76,7 @@ export default function PricingPlans(props: Props) {
           button={buttons?.(showAnnual)[0]}
         />
         <PricingPlan
-          className="w-full mx-auto lg:w-full"
+          className="mx-auto w-full lg:w-full"
           name={PRICING_PLANS[PlanId.Pro].name}
           price={getBillingPeriodPrice(PlanId.Pro, showAnnual)}
           period={showAnnual ? '/ yr' : '/ mo'}

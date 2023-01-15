@@ -74,7 +74,7 @@ export default function BacklinksPopover(props: BacklinksPopoverProps) {
         <>
           <Popover.Button
             ref={referenceElementRef}
-            className="absolute flex items-center select-none justify-center w-6 h-6 text-sm font-medium rounded text-primary-700 top-0.5 -right-8 hover:bg-gray-100 active:bg-gray-200 dark:text-primary-400 dark:hover:bg-gray-800 dark:active:bg-gray-700 focus:outline-none"
+            className="absolute top-0.5 -right-8 flex h-6 w-6 select-none items-center justify-center rounded text-sm font-medium text-primary-700 hover:bg-gray-100 focus:outline-none active:bg-gray-200 dark:text-primary-400 dark:hover:bg-gray-800 dark:active:bg-gray-700"
             contentEditable={false}
           >
             {numOfMatches}
@@ -82,9 +82,9 @@ export default function BacklinksPopover(props: BacklinksPopoverProps) {
           {open && (
             <Portal>
               <Popover.Panel
-                className={`z-10 p-2 overflow-y-auto bg-white rounded shadow-popover w-64 md:w-96 lg:w-128 max-h-128 dark:bg-gray-800 ${
+                className={`z-10 max-h-128 w-64 overflow-y-auto rounded bg-white p-2 shadow-popover dark:bg-gray-800 md:w-96 lg:w-128 ${
                   state?.modifiersData.hide?.isReferenceHidden
-                    ? 'invisible pointer-events-none'
+                    ? 'pointer-events-none invisible'
                     : ''
                 }`}
                 contentEditable={false}

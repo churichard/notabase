@@ -12,16 +12,16 @@ export default function Signup() {
       </Head>
       <div className="min-h-screen bg-gray-50">
         <div className="container p-8 md:p-24">
-          <div className="flex items-center justify-center mb-6">
+          <div className="mb-6 flex items-center justify-center">
             <LogoWithText />
           </div>
-          <div className="mx-auto card md:p-12">
-            <p className="pb-6 -mt-2 text-xl text-center">
+          <div className="card mx-auto md:p-12">
+            <p className="-mt-2 pb-6 text-center text-xl">
               Create your Notabase account
             </p>
             <AuthForm signup />
           </div>
-          <p className="mt-4 text-sm text-center text-gray-700">
+          <p className="mt-4 text-center text-sm text-gray-700">
             Have an account?{' '}
             <Link href="/login">
               <a className="text-primary-600 hover:text-primary-700">Sign in</a>

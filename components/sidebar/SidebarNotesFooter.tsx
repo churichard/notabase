@@ -30,23 +30,23 @@ function SidebarNotesFooter(props: Props) {
     <div className="flex items-center justify-between border-t dark:border-gray-700">
       <Tooltip content="Create a new note (Ctrl+P)">
         <button
-          className="p-1 mx-2 my-1 rounded hover:bg-gray-200 active:bg-gray-300 dark:hover:bg-gray-700 dark:active:bg-gray-600"
+          className="mx-2 my-1 rounded p-1 hover:bg-gray-200 active:bg-gray-300 dark:hover:bg-gray-700 dark:active:bg-gray-600"
           onClick={onCreateNoteClick}
         >
           <IconPlus size={16} className="text-gray-600 dark:text-gray-300" />
         </button>
       </Tooltip>
-      <span className="p-1 mx-2 my-1 overflow-hidden text-xs text-gray-500 dark:text-gray-400 overflow-ellipsis whitespace-nowrap">
+      <span className="mx-2 my-1 overflow-hidden overflow-ellipsis whitespace-nowrap p-1 text-xs text-gray-500 dark:text-gray-400">
         {numOfNotes} notes
       </span>
-      <div className="flex mx-2 my-1">
+      <div className="mx-2 my-1 flex">
         <SidebarNotesSortDropdown
           currentSort={noteSort}
           setCurrentSort={setNoteSort}
         />
         <Tooltip content="Import">
           <button
-            className="p-1 rounded hover:bg-gray-200 active:bg-gray-300 dark:hover:bg-gray-700 dark:active:bg-gray-600"
+            className="rounded p-1 hover:bg-gray-200 active:bg-gray-300 dark:hover:bg-gray-700 dark:active:bg-gray-600"
             onClick={onImport}
           >
             <IconDownload

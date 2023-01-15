@@ -50,10 +50,10 @@ export default function SidebarSearch(props: Props) {
 
   return (
     <ErrorBoundary>
-      <div className={`flex flex-col flex-1 overflow-y-auto ${className}`}>
+      <div className={`flex flex-1 flex-col overflow-y-auto ${className}`}>
         <input
           type="text"
-          className="block py-1 mx-4 my-2 bg-white border-gray-200 rounded dark:bg-gray-700 dark:border-gray-700"
+          className="mx-4 my-2 block rounded border-gray-200 bg-white py-1 dark:border-gray-700 dark:bg-gray-700"
           placeholder="Search notes"
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
@@ -67,7 +67,7 @@ export default function SidebarSearch(props: Props) {
         />
         {!searchQuery || searchResultsData.length > 0 ? (
           <VirtualTree
-            className="flex-1 px-1 overflow-y-auto"
+            className="flex-1 overflow-y-auto px-1"
             data={searchResultsData}
           />
         ) : (
@@ -87,7 +87,7 @@ const SidebarSearchBranch = memo(function SidebarSearchBranch(
 ) {
   const { text } = props;
   return (
-    <p className="py-1 overflow-hidden overflow-ellipsis whitespace-nowrap dark:text-gray-200">
+    <p className="overflow-hidden overflow-ellipsis whitespace-nowrap py-1 dark:text-gray-200">
       {text}
     </p>
   );
@@ -107,14 +107,14 @@ const SidebarSearchLeaf = memo(function SidebarSearchLeaf(
   const router = useRouter();
   return (
     <button
-      className="w-full text-left rounded hover:bg-gray-200 active:bg-gray-300 dark:hover:bg-gray-700 dark:active:bg-gray-600"
+      className="w-full rounded text-left hover:bg-gray-200 active:bg-gray-300 dark:hover:bg-gray-700 dark:active:bg-gray-600"
       onClick={() => {
         const hash = block ? `#0-${block.path}` : '';
         router.push(`/app/note/${noteId}${hash}`);
       }}
     >
       <Highlighter
-        className="block px-1 py-2 text-xs text-gray-600 break-words dark:text-gray-300"
+        className="block break-words px-1 py-2 text-xs text-gray-600 dark:text-gray-300"
         highlightClassName="bg-yellow-200 text-gray-600 dark:bg-yellow-800 dark:text-gray-300"
         searchWords={searchQuery.split(' ')}
         autoEscape={true}

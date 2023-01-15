@@ -66,7 +66,7 @@ export default function AuthForm(props: Props) {
           name="email"
           id="email"
           autoComplete="email"
-          className="w-full py-2 mt-2 input"
+          className="input mt-2 w-full py-2"
           value={email}
           onChange={(event) => setEmail(event.target.value)}
           required
@@ -80,7 +80,7 @@ export default function AuthForm(props: Props) {
           type="password"
           name="password"
           id="password"
-          className="w-full py-2 mt-2 input"
+          className="input mt-2 w-full py-2"
           value={password}
           onChange={(event) => setPassword(event.target.value)}
           required
@@ -88,14 +88,14 @@ export default function AuthForm(props: Props) {
         {!signup ? (
           <div className="mt-2">
             <Link href="/reset">
-              <a className="text-sm link">Forgot your password?</a>
+              <a className="link text-sm">Forgot your password?</a>
             </Link>
           </div>
         ) : null}
       </div>
       <button
         type="submit"
-        className={`w-full mt-6 btn ${isLoading && 'opacity-50 cursor-wait'}`}
+        className={`btn mt-6 w-full ${isLoading && 'cursor-wait opacity-50'}`}
         disabled={isLoading}
       >
         {signup ? 'Sign up' : 'Sign in'}

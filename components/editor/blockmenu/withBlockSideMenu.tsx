@@ -15,7 +15,7 @@ export default function withBlockSideMenu(
     }
 
     return (
-      <div className="relative w-full group before:absolute before:top-0 before:bottom-0 before:w-full before:right-full">
+      <div className="group relative w-full before:absolute before:top-0 before:bottom-0 before:right-full before:w-full">
         <EditorElement {...props} />
         <BlockMenuDropdown
           element={element}

@@ -31,7 +31,7 @@ const SidebarNotesSortDropdown = (props: Props) => {
             ref={buttonRef}
           >
             <Tooltip content="Sort notes">
-              <span className="flex items-center justify-center w-6 h-6">
+              <span className="flex h-6 w-6 items-center justify-center">
                 <IconSortDescending
                   size={16}
                   className="text-gray-600 dark:text-gray-300"
@@ -42,7 +42,7 @@ const SidebarNotesSortDropdown = (props: Props) => {
           {open && (
             <Portal>
               <Menu.Items
-                className="z-20 w-56 overflow-hidden bg-white rounded dark:bg-gray-800 shadow-popover focus:outline-none"
+                className="z-20 w-56 overflow-hidden rounded bg-white shadow-popover focus:outline-none dark:bg-gray-800"
                 static
                 ref={setPopperElement}
                 style={styles.popper}
@@ -56,7 +56,7 @@ const SidebarNotesSortDropdown = (props: Props) => {
                     <Menu.Item key={sort}>
                       {({ active }) => (
                         <button
-                          className={`flex w-full items-center px-4 py-2 text-left text-gray-800 dark:text-gray-200 text-sm ${
+                          className={`flex w-full items-center px-4 py-2 text-left text-sm text-gray-800 dark:text-gray-200 ${
                             showDivider ? 'border-b dark:border-gray-700' : ''
                           } ${active ? 'bg-gray-100 dark:bg-gray-700' : ''}`}
                           onClick={() => setCurrentSort(sort)}

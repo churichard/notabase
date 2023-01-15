@@ -19,7 +19,7 @@ export default function SidebarContent(props: Props) {
   return (
     <div className={`flex flex-col ${className}`}>
       <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
-      <div className="flex flex-col flex-1 overflow-x-hidden">
+      <div className="flex flex-1 flex-col overflow-x-hidden">
         {activeTab === SidebarTabType.Notes ? (
           <SidebarNotes
             setIsFindOrCreateModalOpen={setIsFindOrCreateModalOpen}

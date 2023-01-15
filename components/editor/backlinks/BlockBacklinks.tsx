@@ -45,7 +45,7 @@ const backlinkToTreeData = (backlink: Backlink) => {
         <BacklinkMatchLeaf
           noteId={backlink.id}
           match={match}
-          className="text-gray-500 bg-gray-50 dark:text-gray-100 dark:bg-gray-700"
+          className="bg-gray-50 text-gray-500 dark:bg-gray-700 dark:text-gray-100"
         />
       ),
       showArrow: false,
