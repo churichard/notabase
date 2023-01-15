@@ -6,14 +6,7 @@ import { toast } from 'react-toastify';
 import type { User } from '@supabase/supabase-js';
 import classNames from 'classnames';
 import colors from 'tailwindcss/colors';
-import {
-  useStore,
-  store,
-  NoteTreeItem,
-  getNoteTreeItem,
-  Notes,
-  SidebarTab,
-} from 'lib/store';
+import { useStore, store, NoteTreeItem, Notes, SidebarTab } from 'lib/store';
 import supabase from 'lib/supabase';
 import {
   Note,
@@ -25,6 +18,7 @@ import { useAuth } from 'utils/useAuth';
 import useHotkeys from 'utils/useHotkeys';
 import { PlanId, PRICING_PLANS } from 'constants/pricing';
 import { isMobile } from 'utils/device';
+import { getNoteTreeItem } from 'lib/storeUtils';
 import Sidebar from './sidebar/Sidebar';
 import FindOrCreateModal from './FindOrCreateModal';
 import PageLoading from './PageLoading';

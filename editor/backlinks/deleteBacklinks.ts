@@ -1,8 +1,10 @@
-import { createEditor, Editor, Element, Transforms } from 'slate';
+import { Editor, Element, Transforms } from 'slate';
 import { ElementType } from 'types/slate';
 import { Note } from 'types/supabase';
 import supabase from 'lib/supabase';
 import { store } from 'lib/store';
+import activeEditorsStore from 'lib/activeEditorsStore';
+import createNotabaseEditor from 'editor/createEditor';
 import { computeLinkedBacklinks } from './useBacklinks';
 
 /**
@@ -20,8 +22,12 @@ const deleteBacklinks = async (noteId: string) => {
       continue;
     }
 
-    const editor = createEditor();
-    editor.children = note.content;
+    // Get editor from active editors if it exists, or create a new one
+    let editor = activeEditorsStore.getActiveEditor(backlink.id);
+    if (!editor) {
+      editor = createNotabaseEditor();
+      editor.children = note.content;
+    }
 
     Transforms.unwrapNodes(editor, {
       at: [],
@@ -30,6 +36,7 @@ const deleteBacklinks = async (noteId: string) => {
         Element.isElement(n) &&
         n.type === ElementType.NoteLink &&
         n.noteId === noteId,
+      voids: true,
     });
 
     updateData.push({

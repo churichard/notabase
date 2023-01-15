@@ -3,7 +3,7 @@ import { createStore as createVanilla } from 'zustand/vanilla';
 import { persist, StateStorage } from 'zustand/middleware';
 import localforage from 'localforage';
 import type { Draft } from 'immer';
-import produce from 'immer';
+import { immer } from 'zustand/middleware/immer';
 import type { Note } from 'types/supabase';
 import { BillingFrequency, PlanId } from 'constants/pricing';
 import { caseInsensitiveStringEqual } from 'utils/string';
@@ -17,7 +17,6 @@ import {
   insertTreeItem,
   toggleNoteTreeItemCollapsed,
 } from './storeUtils';
-import createEditorSlice, { EditorSlice } from './createEditorSlice';
 
 export { shallow } from 'zustand/shallow';
 
@@ -47,8 +46,24 @@ type StoreWithoutFunctions = Omit<Store, FunctionPropertyNames<Store>>;
 
 export type Setter<T> = (value: T | ((value: T) => T)) => void;
 export type CreateSetter = <K extends keyof StoreWithoutFunctions>(
+  set: (fn: (draft: Draft<Store>) => void) => void,
   key: K
 ) => (value: Store[K] | ((value: Store[K]) => Store[K])) => void;
+
+/**
+ * Helper function that constructs a setter function.
+ */
+export const createSetter: CreateSetter = (set, key) => (value) => {
+  if (typeof value === 'function') {
+    set((state) => {
+      state[key] = value(state[key]);
+    });
+  } else {
+    set((state) => {
+      state[key] = value;
+    });
+  }
+};
 
 export type Notes = Record<Note['id'], Note>;
 
@@ -80,6 +95,8 @@ export type Store = {
   upsertNote: (note: Note) => void;
   updateNote: (note: NoteUpdate) => void;
   deleteNote: (noteId: string) => void;
+  openNoteIds: string[];
+  setOpenNoteIds: (openNoteIds: string[], index?: number) => void;
   noteTree: NoteTreeItem[];
   setNoteTree: Setter<NoteTreeItem[]>;
   moveNoteTreeItem: (noteId: string, newParentNoteId: string | null) => void;
@@ -92,156 +109,150 @@ export type Store = {
   setSidebarTab: Setter<SidebarTab>;
   sidebarSearchQuery: string;
   setSidebarSearchQuery: Setter<string>;
-} & UserSettings &
-  EditorSlice;
+} & UserSettings;
 
 export const store = createVanilla<Store>()(
   persist(
-    (set) => {
+    immer((set) => ({
       /**
-       * Helper function that modifies the set function to use immer.
+       * The billing details of the current user
        */
-      const immerSet = (
-        setter: (state: Draft<Store>, initialState: Store) => void
-      ) => set(produce<Store>(setter));
-
+      billingDetails: { planId: PlanId.Basic },
+      setBillingDetails: createSetter(set, 'billingDetails'),
       /**
-       * Helper function that constructs a setter function.
+       * Map of note id to notes
        */
-      const createSetter: CreateSetter = (key) => (value) => {
-        if (typeof value === 'function') {
-          immerSet((state) => {
-            state[key] = value(state[key]);
-          });
-        } else {
-          immerSet((state) => {
-            state[key] = value;
-          });
-        }
-      };
-
-      return {
-        /**
-         * The billing details of the current user
-         */
-        billingDetails: { planId: PlanId.Basic },
-        setBillingDetails: createSetter('billingDetails'),
-        /**
-         * Map of note id to notes
-         */
-        notes: {},
-        /**
-         * Sets the notes
-         */
-        setNotes: createSetter('notes'),
-        /**
-         * If the note id exists, then update the note. Otherwise, insert it
-         */
-        upsertNote: (note: Note) => {
-          immerSet((state) => {
-            if (state.notes[note.id]) {
-              state.notes[note.id] = { ...state.notes[note.id], ...note };
+      notes: {},
+      /**
+       * Sets the notes
+       */
+      setNotes: createSetter(set, 'notes'),
+      /**
+       * If the note id exists, then update the note. Otherwise, insert it
+       */
+      upsertNote: (note: Note) => {
+        set((state) => {
+          if (state.notes[note.id]) {
+            state.notes[note.id] = { ...state.notes[note.id], ...note };
+          } else {
+            const existingNote = Object.values(state.notes).find((n) =>
+              caseInsensitiveStringEqual(n.title, note.title)
+            );
+            if (existingNote) {
+              // Update existing note
+              state.notes[existingNote.id] = {
+                ...state.notes[existingNote.id],
+                ...note,
+              };
             } else {
-              const existingNote = Object.values(state.notes).find((n) =>
-                caseInsensitiveStringEqual(n.title, note.title)
+              // Insert new note
+              state.notes[note.id] = note;
+              insertTreeItem(
+                state.noteTree,
+                { id: note.id, children: [], collapsed: true },
+                null
               );
-              if (existingNote) {
-                // Update existing note
-                state.notes[existingNote.id] = {
-                  ...state.notes[existingNote.id],
-                  ...note,
-                };
-              } else {
-                // Insert new note
-                state.notes[note.id] = note;
-                insertTreeItem(
-                  state.noteTree,
-                  { id: note.id, children: [], collapsed: true },
-                  null
-                );
-              }
             }
-          });
-        },
-        /**
-         * Update the given note
-         */
-        updateNote: (note: NoteUpdate) => {
-          immerSet((state) => {
-            if (state.notes[note.id]) {
-              state.notes[note.id] = { ...state.notes[note.id], ...note };
-            }
-          });
-        },
-        /**
-         * Delete the note with the given noteId
-         */
-        deleteNote: (noteId: string) => {
-          immerSet((state) => {
-            delete state.notes[noteId];
-            const item = deleteTreeItem(state.noteTree, noteId);
-            if (item && item.children.length > 0) {
-              for (const child of item.children) {
-                insertTreeItem(state.noteTree, child, null);
-              }
-            }
-          });
-        },
-        /**
-         * The tree of notes visible in the sidebar
-         */
-        noteTree: [],
-        setNoteTree: createSetter('noteTree'),
-        /**
-         * Moves the tree item with the given noteId to the given newParentNoteId's children
-         */
-        moveNoteTreeItem: (noteId: string, newParentNoteId: string | null) => {
-          // Don't do anything if the note ids are the same
-          if (noteId === newParentNoteId) {
-            return;
           }
-          immerSet((state) => {
-            const item = deleteTreeItem(state.noteTree, noteId);
-            if (item) {
-              insertTreeItem(state.noteTree, item, newParentNoteId);
+        });
+      },
+      /**
+       * Update the given note
+       */
+      updateNote: (note: NoteUpdate) => {
+        set((state) => {
+          if (state.notes[note.id]) {
+            state.notes[note.id] = { ...state.notes[note.id], ...note };
+          }
+        });
+      },
+      /**
+       * Delete the note with the given noteId
+       */
+      deleteNote: (noteId: string) => {
+        set((state) => {
+          delete state.notes[noteId];
+          const item = deleteTreeItem(state.noteTree, noteId);
+          if (item && item.children.length > 0) {
+            for (const child of item.children) {
+              insertTreeItem(state.noteTree, child, null);
             }
-          });
-        },
-        /**
-         * Expands or collapses the tree item with the given noteId
-         */
-        toggleNoteTreeItemCollapsed: (noteId: string) => {
-          immerSet((state) => {
-            toggleNoteTreeItemCollapsed(state.noteTree, noteId);
-          });
-        },
-        /**
-         * Whether or not the upgrade modal is open
-         */
-        isUpgradeModalOpen: false,
-        setIsUpgradeModalOpen: createSetter('isUpgradeModalOpen'),
-        /**
-         * Cache of block id to backlinks
-         */
-        blockIdToBacklinksMap: {},
-        setBlockIdToBacklinksMap: createSetter('blockIdToBacklinksMap'),
-        sidebarTab: SidebarTab.Notes,
-        setSidebarTab: createSetter('sidebarTab'),
-        sidebarSearchQuery: '',
-        setSidebarSearchQuery: createSetter('sidebarSearchQuery'),
-        ...createUserSettingsSlice(createSetter),
-        ...createEditorSlice(set),
-      };
-    },
+          }
+        });
+      },
+      /**
+       * The notes that have their content visible, including the main note and the stacked notes
+       */
+      openNoteIds: [],
+      /**
+       * Replaces the active notes at the given index (0 by default)
+       */
+      setOpenNoteIds: (openNoteIds: string[], index?: number) => {
+        if (!index) {
+          set({ openNoteIds });
+          return;
+        }
+        // Replace the notes after the current note with the new note
+        set((state) => {
+          const newOpenNoteIds = state.openNoteIds.slice();
+          newOpenNoteIds.splice(
+            index,
+            state.openNoteIds.length - index,
+            ...openNoteIds
+          );
+          return { openNoteIds: newOpenNoteIds };
+        });
+      },
+      /**
+       * The tree of notes visible in the sidebar
+       */
+      noteTree: [],
+      setNoteTree: createSetter(set, 'noteTree'),
+      /**
+       * Moves the tree item with the given noteId to the given newParentNoteId's children
+       */
+      moveNoteTreeItem: (noteId: string, newParentNoteId: string | null) => {
+        // Don't do anything if the note ids are the same
+        if (noteId === newParentNoteId) {
+          return;
+        }
+        set((state) => {
+          const item = deleteTreeItem(state.noteTree, noteId);
+          if (item) {
+            insertTreeItem(state.noteTree, item, newParentNoteId);
+          }
+        });
+      },
+      /**
+       * Expands or collapses the tree item with the given noteId
+       */
+      toggleNoteTreeItemCollapsed: (noteId: string) => {
+        set((state) => {
+          toggleNoteTreeItemCollapsed(state.noteTree, noteId);
+        });
+      },
+      /**
+       * Whether or not the upgrade modal is open
+       */
+      isUpgradeModalOpen: false,
+      setIsUpgradeModalOpen: createSetter(set, 'isUpgradeModalOpen'),
+      /**
+       * Cache of block id to backlinks
+       */
+      blockIdToBacklinksMap: {},
+      setBlockIdToBacklinksMap: createSetter(set, 'blockIdToBacklinksMap'),
+      sidebarTab: SidebarTab.Notes,
+      setSidebarTab: createSetter(set, 'sidebarTab'),
+      sidebarSearchQuery: '',
+      setSidebarSearchQuery: createSetter(set, 'sidebarSearchQuery'),
+      ...createUserSettingsSlice(set),
+    })),
     {
       name: 'notabase-storage',
       version: 1,
       getStorage: () => storage,
       partialize: (state) => ({
-        activeNotes: state.activeNotes.map((note) => ({
-          id: note.id,
-          editor: null,
-        })),
+        openNoteIds: state.openNoteIds,
         isSidebarOpen: state.isSidebarOpen,
         noteSort: state.noteSort,
         darkMode: state.darkMode,
