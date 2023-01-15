@@ -39,6 +39,7 @@ export default function NotePage() {
       return;
     }
 
+    // Initialize open note ids
     const newOpenNoteIds = [noteId, ...queryParamToArray(stackQuery)];
     setOpenNoteIds(newOpenNoteIds);
 

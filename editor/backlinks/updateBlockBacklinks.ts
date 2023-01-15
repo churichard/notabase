@@ -1,7 +1,9 @@
-import { createEditor, Transforms } from 'slate';
+import { Editor, Element, Transforms } from 'slate';
 import { Note } from 'types/supabase';
 import supabase from 'lib/supabase';
 import { store } from 'lib/store';
+import { getActiveOrTempEditor } from 'lib/activeEditorsStore';
+import { ElementType } from 'types/slate';
 import { Backlink } from './useBacklinks';
 
 /**
@@ -22,16 +24,21 @@ const updateBlockBacklinks = async (
       continue;
     }
 
-    const editor = createEditor();
-    editor.children = note.content;
+    const editor = getActiveOrTempEditor(backlink.id, note.content);
 
-    // Update the text of each block reference
-    for (const match of backlink.matches) {
-      Transforms.insertText(editor, newText, {
-        at: match.path,
+    Transforms.setNodes(
+      editor,
+      { children: [{ text: newText }] },
+      {
+        at: [],
+        match: (n) =>
+          !Editor.isEditor(n) &&
+          Element.isElement(n) &&
+          n.type === ElementType.BlockReference &&
+          n.blockId === backlink.id,
         voids: true,
-      });
-    }
+      }
+    );
 
     updateData.push({
       id: backlink.id,

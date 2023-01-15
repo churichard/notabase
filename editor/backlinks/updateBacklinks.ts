@@ -1,9 +1,9 @@
-import { Element } from 'slate';
-import produce from 'immer';
+import { Element, Editor, Transforms } from 'slate';
 import { ElementType } from 'types/slate';
 import { Note } from 'types/supabase';
 import { store } from 'lib/store';
 import updateNote from 'lib/api/updateNote';
+import { getActiveOrTempEditor } from 'lib/activeEditorsStore';
 import { computeLinkedBacklinks } from './useBacklinks';
 
 /**
@@ -22,41 +22,25 @@ const updateBacklinks = async (newTitle: string, noteId: string) => {
       continue;
     }
 
-    let newBacklinkContent = note.content;
-    for (const match of backlink.matches) {
-      newBacklinkContent = produce(newBacklinkContent, (draftState) => {
-        // Path should not be empty
-        const path = match.path;
-        if (path.length <= 0) {
-          return;
-        }
+    const editor = getActiveOrTempEditor(backlink.id, note.content);
 
-        // Get the node from the path
-        let linkNode = draftState[path[0]];
-        for (const pathNumber of path.slice(1)) {
-          linkNode = (linkNode as Element).children[pathNumber];
-        }
+    Transforms.setNodes(
+      editor,
+      { noteTitle: newTitle, children: [{ text: newTitle }] },
+      {
+        at: [],
+        match: (n) =>
+          !Editor.isEditor(n) &&
+          Element.isElement(n) &&
+          n.type === ElementType.NoteLink &&
+          n.noteId === noteId,
+        voids: true,
+      }
+    );
 
-        // Assert that linkNode is a note link
-        if (
-          !Element.isElement(linkNode) ||
-          linkNode.type !== ElementType.NoteLink
-        ) {
-          return;
-        }
-
-        // Update noteTitle property on the node
-        linkNode.noteTitle = newTitle;
-
-        // If there is no custom text, then the link text should be the same as the note title
-        if (!linkNode.customText) {
-          linkNode.children = [{ text: newTitle }];
-        }
-      });
-    }
     updateData.push({
       id: backlink.id,
-      content: newBacklinkContent,
+      content: editor.children,
     });
   }
 

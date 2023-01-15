@@ -1,9 +1,9 @@
 import { create } from 'zustand';
 import { createStore as createVanilla } from 'zustand/vanilla';
 import { persist, StateStorage } from 'zustand/middleware';
-import { immer } from 'zustand/middleware/immer';
-import { Draft } from 'immer';
 import localforage from 'localforage';
+import type { Draft } from 'immer';
+import { immer } from 'zustand/middleware/immer';
 import type { Note } from 'types/supabase';
 import { BillingFrequency, PlanId } from 'constants/pricing';
 import { caseInsensitiveStringEqual } from 'utils/string';
@@ -12,6 +12,11 @@ import createUserSettingsSlice, {
   UserSettings,
 } from './createUserSettingsSlice';
 import type { NoteUpdate } from './api/updateNote';
+import {
+  deleteTreeItem,
+  insertTreeItem,
+  toggleNoteTreeItemCollapsed,
+} from './storeUtils';
 
 export { shallow } from 'zustand/shallow';
 
@@ -31,6 +36,33 @@ const storage: StateStorage = {
   removeItem: async (name: string): Promise<void> => {
     await localforage.removeItem(name);
   },
+};
+
+type FunctionPropertyNames<T> = {
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  [K in keyof T]: T[K] extends Function ? K : never;
+}[keyof T];
+type StoreWithoutFunctions = Omit<Store, FunctionPropertyNames<Store>>;
+
+export type Setter<T> = (value: T | ((value: T) => T)) => void;
+export type CreateSetter = <K extends keyof StoreWithoutFunctions>(
+  set: (fn: (draft: Draft<Store>) => void) => void,
+  key: K
+) => (value: Store[K] | ((value: Store[K]) => Store[K])) => void;
+
+/**
+ * Helper function that constructs a setter function.
+ */
+export const createSetter: CreateSetter = (set, key) => (value) => {
+  if (typeof value === 'function') {
+    set((state) => {
+      state[key] = value(state[key]);
+    });
+  } else {
+    set((state) => {
+      state[key] = value;
+    });
+  }
 };
 
 export type Notes = Record<Note['id'], Note>;
@@ -79,31 +111,6 @@ export type Store = {
   setSidebarSearchQuery: Setter<string>;
 } & UserSettings;
 
-type FunctionPropertyNames<T> = {
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  [K in keyof T]: T[K] extends Function ? K : never;
-}[keyof T];
-
-type StoreWithoutFunctions = Omit<Store, FunctionPropertyNames<Store>>;
-
-export type Setter<T> = (value: T | ((value: T) => T)) => void;
-export const setter =
-  <K extends keyof StoreWithoutFunctions>(
-    set: (fn: (draft: Draft<Store>) => void) => void,
-    key: K
-  ) =>
-  (value: Store[K] | ((value: Store[K]) => Store[K])) => {
-    if (typeof value === 'function') {
-      set((state) => {
-        state[key] = value(state[key]);
-      });
-    } else {
-      set((state) => {
-        state[key] = value;
-      });
-    }
-  };
-
 export const store = createVanilla<Store>()(
   persist(
     immer((set) => ({
@@ -111,7 +118,7 @@ export const store = createVanilla<Store>()(
        * The billing details of the current user
        */
       billingDetails: { planId: PlanId.Basic },
-      setBillingDetails: setter(set, 'billingDetails'),
+      setBillingDetails: createSetter(set, 'billingDetails'),
       /**
        * Map of note id to notes
        */
@@ -119,7 +126,7 @@ export const store = createVanilla<Store>()(
       /**
        * Sets the notes
        */
-      setNotes: setter(set, 'notes'),
+      setNotes: createSetter(set, 'notes'),
       /**
        * If the note id exists, then update the note. Otherwise, insert it
        */
@@ -178,29 +185,29 @@ export const store = createVanilla<Store>()(
        */
       openNoteIds: [],
       /**
-       * Replaces the open notes at the given index (0 by default)
+       * Replaces the active notes at the given index (0 by default)
        */
-      setOpenNoteIds: (newOpenNoteIds: string[], index?: number) => {
+      setOpenNoteIds: (openNoteIds: string[], index?: number) => {
         if (!index) {
-          set((state) => {
-            state.openNoteIds = newOpenNoteIds;
-          });
+          set({ openNoteIds });
           return;
         }
         // Replace the notes after the current note with the new note
         set((state) => {
-          state.openNoteIds.splice(
+          const newOpenNoteIds = state.openNoteIds.slice();
+          newOpenNoteIds.splice(
             index,
             state.openNoteIds.length - index,
-            ...newOpenNoteIds
+            ...openNoteIds
           );
+          return { openNoteIds: newOpenNoteIds };
         });
       },
       /**
        * The tree of notes visible in the sidebar
        */
       noteTree: [],
-      setNoteTree: setter(set, 'noteTree'),
+      setNoteTree: createSetter(set, 'noteTree'),
       /**
        * Moves the tree item with the given noteId to the given newParentNoteId's children
        */
@@ -228,16 +235,16 @@ export const store = createVanilla<Store>()(
        * Whether or not the upgrade modal is open
        */
       isUpgradeModalOpen: false,
-      setIsUpgradeModalOpen: setter(set, 'isUpgradeModalOpen'),
+      setIsUpgradeModalOpen: createSetter(set, 'isUpgradeModalOpen'),
       /**
        * Cache of block id to backlinks
        */
       blockIdToBacklinksMap: {},
-      setBlockIdToBacklinksMap: setter(set, 'blockIdToBacklinksMap'),
+      setBlockIdToBacklinksMap: createSetter(set, 'blockIdToBacklinksMap'),
       sidebarTab: SidebarTab.Notes,
-      setSidebarTab: setter(set, 'sidebarTab'),
+      setSidebarTab: createSetter(set, 'sidebarTab'),
       sidebarSearchQuery: '',
-      setSidebarSearchQuery: setter(set, 'sidebarSearchQuery'),
+      setSidebarSearchQuery: createSetter(set, 'sidebarSearchQuery'),
       ...createUserSettingsSlice(set),
     })),
     {
@@ -256,97 +263,3 @@ export const store = createVanilla<Store>()(
 );
 
 export const useStore = create(store);
-
-/**
- * Deletes the tree item with the given id and returns it.
- */
-const deleteTreeItem = (
-  tree: NoteTreeItem[],
-  id: string
-): NoteTreeItem | null => {
-  for (let i = 0; i < tree.length; i++) {
-    const item = tree[i];
-    if (item.id === id) {
-      tree.splice(i, 1);
-      return item;
-    } else if (item.children.length > 0) {
-      const result = deleteTreeItem(item.children, id);
-      if (result) {
-        return result;
-      }
-    }
-  }
-  return null;
-};
-
-/**
- * Inserts the given item into the tree as a child of the item with targetId, and returns true if it was inserted.
- * If targetId is null, inserts the item into the root level.
- */
-const insertTreeItem = (
-  tree: NoteTreeItem[],
-  item: NoteTreeItem,
-  targetId: string | null
-): boolean => {
-  if (targetId === null) {
-    tree.push(item);
-    return true;
-  }
-
-  for (let i = 0; i < tree.length; i++) {
-    const treeItem = tree[i];
-    if (treeItem.id === targetId) {
-      tree[i].children.push(item);
-      return true;
-    } else if (treeItem.children.length > 0) {
-      const result = insertTreeItem(treeItem.children, item, targetId);
-      if (result) {
-        return result;
-      }
-    }
-  }
-  return false;
-};
-
-/**
- * Expands or collapses the tree item with the given id, and returns true if it was updated.
- */
-const toggleNoteTreeItemCollapsed = (
-  tree: NoteTreeItem[],
-  id: string
-): boolean => {
-  for (let i = 0; i < tree.length; i++) {
-    const item = tree[i];
-    if (item.id === id) {
-      tree[i] = { ...item, collapsed: !item.collapsed };
-      return true;
-    } else if (item.children.length > 0) {
-      const result = toggleNoteTreeItemCollapsed(item.children, id);
-      if (result) {
-        return result;
-      }
-    }
-  }
-  return false;
-};
-
-/**
- * Gets the note tree item corresponding to the given noteId.
- */
-export const getNoteTreeItem = (
-  tree: NoteTreeItem[],
-  id: string
-): NoteTreeItem | null => {
-  for (let i = 0; i < tree.length; i++) {
-    const item = tree[i];
-    if (item.id === id) {
-      return item;
-    } else if (item.children.length > 0) {
-      const result = getNoteTreeItem(item.children, id);
-      if (result) {
-        return result;
-      }
-    }
-  }
-  return null;
-};

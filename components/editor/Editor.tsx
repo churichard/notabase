@@ -6,17 +6,16 @@ import {
   KeyboardEvent,
   useEffect,
   memo,
+  useSyncExternalStore,
 } from 'react';
 import {
-  createEditor,
   Range,
   Editor as SlateEditor,
   Transforms,
   Descendant,
   Path,
 } from 'slate';
-import { withReact, Editable, ReactEditor, Slate } from 'slate-react';
-import { withHistory } from 'slate-history';
+import { Editable, ReactEditor, Slate } from 'slate-react';
 import { isHotkey } from 'is-hotkey';
 import colors from 'tailwindcss/colors';
 import {
@@ -27,22 +26,11 @@ import {
   toggleElement,
   toggleMark,
 } from 'editor/formatting';
-import withAutoMarkdown from 'editor/plugins/withAutoMarkdown';
-import withBlockBreakout from 'editor/plugins/withBlockBreakout';
-import withLinks from 'editor/plugins/withLinks';
-import withNormalization from 'editor/plugins/withNormalization';
-import withCustomDeleteBackward from 'editor/plugins/withCustomDeleteBackward';
-import withImages from 'editor/plugins/withImages';
-import withVoidElements from 'editor/plugins/withVoidElements';
-import withNodeId from 'editor/plugins/withNodeId';
-import withBlockReferences from 'editor/plugins/withBlockReferences';
-import withTags from 'editor/plugins/withTags';
-import withHtml from 'editor/plugins/withHtml';
 import { getDefaultEditorValue } from 'editor/constants';
 import { store, useStore } from 'lib/store';
 import { ElementType, Mark } from 'types/slate';
 import useIsMounted from 'utils/useIsMounted';
-import { resetNodes } from 'editor/transforms';
+import activeEditorsStore from 'lib/activeEditorsStore';
 import HoveringToolbar from './toolbar/HoveringToolbar';
 import AddLinkPopover from './AddLinkPopover';
 import EditorElement from './elements/EditorElement';
@@ -70,9 +58,6 @@ function Editor(props: Props) {
   const { noteId, onChange, className = '', highlightedPath } = props;
   const isMounted = useIsMounted();
 
-  const value = useStore(
-    (state) => state.notes[noteId]?.content ?? getDefaultEditorValue()
-  );
   const updateStoreNote = useCallback(
     (value: Descendant[]) =>
       store.getState().updateNote({ id: noteId, content: value }),
@@ -81,35 +66,15 @@ function Editor(props: Props) {
 
   const initialValueRef = useRef<Descendant[]>();
   if (!initialValueRef.current) {
-    initialValueRef.current = value;
+    activeEditorsStore.addActiveEditor(noteId);
+    initialValueRef.current =
+      store.getState().notes[noteId]?.content ?? getDefaultEditorValue();
   }
   const initialValue = initialValueRef.current;
 
-  const editorRef = useRef<SlateEditor>();
-  if (!editorRef.current) {
-    editorRef.current = withNormalization(
-      withCustomDeleteBackward(
-        withAutoMarkdown(
-          withHtml(
-            withBlockBreakout(
-              withVoidElements(
-                withBlockReferences(
-                  withImages(
-                    withTags(
-                      withLinks(
-                        withNodeId(withHistory(withReact(createEditor())))
-                      )
-                    )
-                  )
-                )
-              )
-            )
-          )
-        )
-      )
-    );
-  }
-  const editor = editorRef.current;
+  const editor = useSyncExternalStore(activeEditorsStore.subscribe, () =>
+    activeEditorsStore.getActiveEditor(noteId)
+  );
 
   const renderElement = useMemo(() => {
     const ElementWithSideMenu = withBlockSideMenu(
@@ -254,13 +219,6 @@ function Editor(props: Props) {
     },
     [editor.operations, updateStoreNote, onChange]
   );
-
-  // If this note's content has changed, then update the editor to match it.
-  useEffect(() => {
-    if (editor.children !== value) {
-      resetNodes(editor, { nodes: value, at: editor.selection ?? undefined });
-    }
-  }, [editor, value]);
 
   // If highlightedPath is defined, highlight the path
   const darkMode = useStore((state) => state.darkMode);

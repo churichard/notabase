@@ -3,334 +3,410 @@
     "id": "bea6ab7b-b4bd-4239-ba38-f170562ff7a9",
     "user_id": "",
     "title": "001=>111",
-    "content": [{
-      "type": "paragraph",
-      "children": [
-        {
-        "text": "Link to "
-        },
-        {
-        "id": "23d66660-57a9-4078-b1d0-58edf9aa0562",
-        "type": "note-link",
-        "noteId": "7f301e32-3d96-4cd4-b502-58de01018370",
+    "content": [
+      {
+        "type": "paragraph",
         "children": [
-            {
-            "text": "111"
-            }
-        ],
-        "noteTitle": "111"
-        },
-        {
-        "text": ""
-        }
-      ]
-    }]
+          {
+            "text": "Link to "
+          },
+          {
+            "id": "23d66660-57a9-4078-b1d0-58edf9aa0562",
+            "type": "note-link",
+            "noteId": "7f301e32-3d96-4cd4-b502-58de01018370",
+            "children": [
+              {
+                "text": "111"
+              }
+            ],
+            "noteTitle": "111"
+          },
+          {
+            "text": ""
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "44936756-b0ad-4c6e-a792-4bb4597c1c1d",
     "title": "112=>111",
-    "content": [{ 
-      "type": "paragraph",
-      "children": [
-        {
-        "text": "Link to "
-        },
-        {
-        "id": "a498cd87-2879-48e5-baa9-74bc0de7458e",
-        "type": "note-link",
-        "noteId": "7d0148ad-6e29-4118-8231-32195b471917",
+    "content": [
+      {
+        "type": "paragraph",
         "children": [
-            {
-            "text": "111=>112"
-            }
-        ],
-        "noteTitle": "111=>112"
-        },
-        {
-        "text": ""
-        }
-      ]
-    }]
+          {
+            "text": "Link to "
+          },
+          {
+            "id": "a498cd87-2879-48e5-baa9-74bc0de7458e",
+            "type": "note-link",
+            "noteId": "7d0148ad-6e29-4118-8231-32195b471917",
+            "children": [
+              {
+                "text": "111=>112"
+              }
+            ],
+            "noteTitle": "111=>112"
+          },
+          {
+            "text": ""
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "bcfb64cf-67ea-40be-aab6-60121da26e16",
     "title": "001=>211",
-    "content": [{ 
-      "type": "paragraph",
-      "children": [
-        {
-        "text": "Link to "
-        },
-        {
-        "id": "38c013d1-288d-443e-b189-35e71be5010e",
-        "type": "note-link",
-        "noteId": "c8207f92-b927-4ba5-b1bb-8828723999f3",
+    "content": [
+      {
+        "type": "paragraph",
         "children": [
-            {
-            "text": "211"
-            }
-        ],
-        "noteTitle": "211"
-        },
-        {
-        "text": "Link to "
-        },
-        {
-        "id": "38c013d1-288d-443e-b189-35e71be5010e",
-        "type": "note-link",
-        "noteId": "c8207f92-b927-4ba5-b1bb-8828723999f3",
-        "children": [
-            {
-            "text": "211"
-            }
-        ],
-        "noteTitle": "211"
-        }
-      ]
-    }]
+          {
+            "text": "Link to "
+          },
+          {
+            "id": "38c013d1-288d-443e-b189-35e71be5010e",
+            "type": "note-link",
+            "noteId": "c8207f92-b927-4ba5-b1bb-8828723999f3",
+            "children": [
+              {
+                "text": "211"
+              }
+            ],
+            "noteTitle": "211"
+          },
+          {
+            "text": "Link to "
+          },
+          {
+            "id": "38c013d1-288d-443e-b189-35e71be5010e",
+            "type": "note-link",
+            "noteId": "c8207f92-b927-4ba5-b1bb-8828723999f3",
+            "children": [
+              {
+                "text": "211"
+              }
+            ],
+            "noteTitle": "211"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "f0ffa7b9-794d-4b52-8404-8c70ef7d2e7f",
     "title": "001=>112",
-    "content": [{ 
-      "type": "paragraph",
-      "children": [
-        {
-        "text": "Link to "
-        },
-        {
-        "id": "a6e871fa-bf95-4bc2-81fc-9a1f65da036f",
-        "type": "note-link",
-        "noteId": "94975cb2-0a63-4acd-a6cc-3c849d88f51c",
+    "content": [
+      {
+        "type": "paragraph",
         "children": [
-            {
-            "text": "112"
-            }
-        ],
-        "noteTitle": "112"
-        },
-        {
-        "text": ""
-        }
-      ]
-    }]
+          {
+            "text": "Link to "
+          },
+          {
+            "id": "a6e871fa-bf95-4bc2-81fc-9a1f65da036f",
+            "type": "note-link",
+            "noteId": "94975cb2-0a63-4acd-a6cc-3c849d88f51c",
+            "children": [
+              {
+                "text": "112"
+              }
+            ],
+            "noteTitle": "112"
+          },
+          {
+            "text": ""
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "7d0148ad-6e29-4118-8231-32195b471917",
     "title": "111=>112",
-    "content": [{
-      "type": "paragraph",
-      "children": [
-        {
-        "text": "Link to "
-        },
-        {
-        "id": "a6e871fa-bf95-4bc2-81fc-9a1f65da036f",
-        "type": "note-link",
-        "noteId": "44936756-b0ad-4c6e-a792-4bb4597c1c1d",
+    "content": [
+      {
+        "type": "paragraph",
         "children": [
-            {
-            "text": "112=>111"
-            }
-        ],
-        "noteTitle": "112=>111"
-        },
-        {
-        "text": ""
-        }
-      ]
-    }]
+          {
+            "text": "Link to "
+          },
+          {
+            "id": "a6e871fa-bf95-4bc2-81fc-9a1f65da036f",
+            "type": "note-link",
+            "noteId": "44936756-b0ad-4c6e-a792-4bb4597c1c1d",
+            "children": [
+              {
+                "text": "112=>111"
+              }
+            ],
+            "noteTitle": "112=>111"
+          },
+          {
+            "text": ""
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "97bd9dea-3b65-45d7-be48-50d3f0f1324a",
     "title": "002=>221",
-    "content": [{
-      "type": "paragraph",
-      "children": [
-        {
-        "text": "Link to "
-        },
-        {
-        "id": "ee6bbfaf-602b-4ca4-ad40-6bf17a2e49e0",
-        "type": "note-link",
-        "noteId": "471f463c-6b3a-47a6-8c35-08d951790aa6",
+    "content": [
+      {
+        "type": "paragraph",
         "children": [
-            {
-            "text": "221"
-            }
-        ],
-        "noteTitle": "221"
-        },
-        {
-        "text": ""
-        }
-      ]
-    }]
+          {
+            "text": "Link to "
+          },
+          {
+            "id": "ee6bbfaf-602b-4ca4-ad40-6bf17a2e49e0",
+            "type": "note-link",
+            "noteId": "471f463c-6b3a-47a6-8c35-08d951790aa6",
+            "children": [
+              {
+                "text": "221"
+              }
+            ],
+            "noteTitle": "221"
+          },
+          {
+            "text": ""
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "5de87bfd-3efb-4daf-b8ae-be362bc54c36",
     "title": "001=>221",
-    "content": [{ 
-      "type": "paragraph",
-      "children": [
-        {
-        "text": "Link to "
-        },
-        {
-        "id": "0eddf41b-08d3-4ce8-b1ab-a8b90f7a6bb9",
-        "type": "note-link",
-        "noteId": "471f463c-6b3a-47a6-8c35-08d951790aa6",
+    "content": [
+      {
+        "type": "paragraph",
         "children": [
-            {
-            "text": "221"
-            }
-        ],
-        "noteTitle": "221"
-        },
-        {
-        "text": ". "
-        }
-      ]
-    }]
+          {
+            "text": "Link to "
+          },
+          {
+            "id": "0eddf41b-08d3-4ce8-b1ab-a8b90f7a6bb9",
+            "type": "note-link",
+            "noteId": "471f463c-6b3a-47a6-8c35-08d951790aa6",
+            "children": [
+              {
+                "text": "221"
+              }
+            ],
+            "noteTitle": "221"
+          },
+          {
+            "text": ". "
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "ca2b54eb-289a-47bc-bcb1-930900bae0c1",
     "title": "001=>421",
-    "content": [{
-      "type": "paragraph",
-      "children": [
-        {
-        "text": "First link to "
-        },
-        {
-        "id": "5f664989-7eb3-43f5-b87d-42e52b7c9c9f",
-        "type": "note-link",
-        "noteId": "a0950eb3-8e8d-440a-8c6c-6f27256038bf",
+    "content": [
+      {
+        "type": "paragraph",
         "children": [
-            {
-            "text": "421"
-            }
-        ],
-        "noteTitle": "421"
-        },
-        {
-        "text": ". Second link to "
-        },
-        {
-        "id": "2a6ed4b6-ca97-4807-bc17-af2775fe4d13",
-        "type": "note-link",
-        "noteId": "a0950eb3-8e8d-440a-8c6c-6f27256038bf",
-        "children": [
-            {
-            "text": "421"
-            }
-        ],
-        "noteTitle": "421"
-        },
-        {
-        "text": ""
-        }
-      ]
-    }]
+          {
+            "text": "First link to "
+          },
+          {
+            "id": "5f664989-7eb3-43f5-b87d-42e52b7c9c9f",
+            "type": "note-link",
+            "noteId": "a0950eb3-8e8d-440a-8c6c-6f27256038bf",
+            "children": [
+              {
+                "text": "421"
+              }
+            ],
+            "noteTitle": "421"
+          },
+          {
+            "text": ". Second link to "
+          },
+          {
+            "id": "2a6ed4b6-ca97-4807-bc17-af2775fe4d13",
+            "type": "note-link",
+            "noteId": "a0950eb3-8e8d-440a-8c6c-6f27256038bf",
+            "children": [
+              {
+                "text": "421"
+              }
+            ],
+            "noteTitle": "421"
+          },
+          {
+            "text": ""
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "f2c38b3e-88ff-4c9b-8f2b-abf053034fb7",
     "title": "002=>421",
-    "content": [{
-      "type": "paragraph",
-      "children": [
-        {
-        "text": "First link to "
-        },
-        {
-        "id": "5f664989-7eb3-43f5-b87d-42e52b7c9c9f",
-        "type": "note-link",
-        "noteId": "a0950eb3-8e8d-440a-8c6c-6f27256038bf",
+    "content": [
+      {
+        "type": "paragraph",
         "children": [
-            {
-            "text": "421"
-            }
-        ],
-        "noteTitle": "421"
-        },
-        {
-        "text": ". Second link to "
-        },
-        {
-        "id": "2a6ed4b6-ca97-4807-bc17-af2775fe4d13",
-        "type": "note-link",
-        "noteId": "a0950eb3-8e8d-440a-8c6c-6f27256038bf",
-        "children": [
-            {
-            "text": "421"
-            }
-        ],
-        "noteTitle": "421"
-        },
-        {
-        "text": ""
-        }
-      ]
-    }]
+          {
+            "text": "First link to "
+          },
+          {
+            "id": "5f664989-7eb3-43f5-b87d-42e52b7c9c9f",
+            "type": "note-link",
+            "noteId": "a0950eb3-8e8d-440a-8c6c-6f27256038bf",
+            "children": [
+              {
+                "text": "421"
+              }
+            ],
+            "noteTitle": "421"
+          },
+          {
+            "text": ". Second link to "
+          },
+          {
+            "id": "2a6ed4b6-ca97-4807-bc17-af2775fe4d13",
+            "type": "note-link",
+            "noteId": "a0950eb3-8e8d-440a-8c6c-6f27256038bf",
+            "children": [
+              {
+                "text": "421"
+              }
+            ],
+            "noteTitle": "421"
+          },
+          {
+            "text": ""
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "94975cb2-0a63-4acd-a6cc-3c849d88f51c",
     "title": "112",
-    "content": [{ 
-      "type": "paragraph",
-      "children": [
-        {
-        "text": ""
-        }
-      ]
-    }]
+    "content": [
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "text": ""
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "471f463c-6b3a-47a6-8c35-08d951790aa6",
     "title": "221",
-    "content": [{ 
-      "type": "paragraph",
-      "children": [
-        {
-        "text": ""
-        }
-      ]
-    }]
+    "content": [
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "text": ""
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "7f301e32-3d96-4cd4-b502-58de01018370",
     "title": "111",
-    "content": [{ 
-      "type": "paragraph",
-      "children": [
-        {
-        "text": ""
-        }
-      ]
-    }]
+    "content": [
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "text": ""
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "a0950eb3-8e8d-440a-8c6c-6f27256038bf",
     "title": "421",
-    "content": [{ 
-      "type": "paragraph",
-      "children": [
-        {
-        "text": ""
-        }
-      ]
-    }]
+    "content": [
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "text": ""
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "c8207f92-b927-4ba5-b1bb-8828723999f3",
     "title": "211",
-    "content": [{ 
-      "type": "paragraph",
-      "children": [
-        {
-        "text": ""
-        }
-      ]
-    }]
+    "content": [
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "text": ""
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "2c1f8ccd-42ad-4f94-ab7d-c36abb1328ca",
+    "title": "Test Note",
+    "content": [
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "text": ""
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "c5e7a286-5ee7-40fa-bd36-5df278ba9575",
+    "title": "Block Reference Test",
+    "content": [
+      {
+        "id": "d8e6d490-f103-4857-b672-9c568d121941",
+        "type": "paragraph",
+        "children": [
+          {
+            "text": ""
+          }
+        ]
+      },
+      {
+        "id": "67d12e1d-3347-4a94-8533-ace2798b69bb",
+        "type": "paragraph",
+        "children": [
+          {
+            "text": "This paragraph will be referenced."
+          }
+        ]
+      },
+      {
+        "id": "e78da8ce-0a78-4ba2-bd62-d26bd099d9e2",
+        "type": "block-reference",
+        "blockId": "67d12e1d-3347-4a94-8533-ace2798b69bb",
+        "children": [
+          {
+            "text": "This paragraph will be referenced."
+          }
+        ]
+      }
+    ]
   }
 ]

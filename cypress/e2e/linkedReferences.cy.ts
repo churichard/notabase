@@ -32,13 +32,10 @@ describe('linked references', () => {
         })
       )
       .then(async (result) => {
-        const data = [];
-
-        // insert returned user_id into '../fixtures/notes.json'
-        for (const note of notes) {
-          (note.user_id = result.user?.id), data.push(note);
-        }
-
+        const data = notes.map((note) => ({
+          ...note,
+          user_id: result.user?.id,
+        }));
         // insert completed notes to supabase
         await supabase.from('notes').insert(data);
       });
