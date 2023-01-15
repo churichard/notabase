@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const defaultTheme = require('tailwindcss/defaultTheme');
+const { fontFamily } = require('tailwindcss/defaultTheme');
 const colors = require('tailwindcss/colors');
 
+/** @type {import('tailwindcss').Config} \*/
 module.exports = {
   mode: 'jit',
   content: [
@@ -22,7 +23,7 @@ module.exports = {
     },
     extend: {
       fontFamily: {
-        display: ['Inter', ...defaultTheme.fontFamily.sans],
+        display: ['var(--font-inter)', ...fontFamily.sans],
       },
       spacing: {
         0.25: '0.0625rem',
@@ -104,10 +105,5 @@ module.exports = {
       },
     },
   },
-  // variants: {
-  //   backgroundColor: ['responsive', 'hover', 'focus', 'active'],
-  //   display: ['responsive', 'group-hover'],
-  //   extend: {},
-  // },
   plugins: [require('@tailwindcss/typography'), require('@tailwindcss/forms')],
 };
