@@ -10,5 +10,11 @@ export default defineConfig({
     },
     baseUrl: 'http://localhost:3000',
     video: false,
+    retries: {
+      // Configure retry attempts for `cypress run`
+      runMode: 2,
+      // Configure retry attempts for `cypress open`
+      openMode: 0,
+    },
   },
 });
