@@ -4,7 +4,6 @@ import { Editable, Slate, withReact } from 'slate-react';
 import withVoidElements from 'editor/plugins/withVoidElements';
 import withLinks from 'editor/plugins/withLinks';
 import withTags from 'editor/plugins/withTags';
-import { resetNodes } from 'editor/transforms';
 import { EditorElementProps } from './elements/EditorElement';
 import { EditorLeafProps } from './elements/EditorLeaf';
 
@@ -26,7 +25,7 @@ function ReadOnlyEditor(props: Props) {
   const editor = editorRef.current;
 
   useEffect(() => {
-    resetNodes(editor, { nodes: value });
+    editor.children = value;
   }, [editor, value]);
 
   return (

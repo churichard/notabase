@@ -67,7 +67,7 @@ describe('block reference', () => {
 
     cy.getEditor()
       .focus()
-      .type('{downArrow}{rightArrow}{end} Hello', { delay: 100 });
+      .type('{moveToStart}{downArrow}{rightArrow}{end} Hello');
 
     cy.getEditor()
       .findAllByText('This paragraph will be referenced. Hello')
