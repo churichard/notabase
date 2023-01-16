@@ -1,6 +1,11 @@
-import supabase from 'cypress/support/supabaseCypress';
+import { createClient } from '@supabase/supabase-js';
 import user from '../fixtures/user.json';
 import user_new from '../fixtures/user_new.json';
+
+const supabase = createClient(
+  Cypress.env('NEXT_PUBLIC_SUPABASE_URL'),
+  Cypress.env('NEXT_PUBLIC_SUPABASE_KEY')
+);
 
 describe('User sign up, login, and logout', () => {
   beforeEach(() => {

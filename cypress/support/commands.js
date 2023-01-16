@@ -24,11 +24,16 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
+import { createClient } from '@supabase/supabase-js';
 import user from '../fixtures/user.json';
 import notes from '../fixtures/notes.json';
-import supabase from './supabaseCypress';
 import '@testing-library/cypress/add-commands';
 import './selection';
+
+const supabase = createClient(
+  Cypress.env('NEXT_PUBLIC_SUPABASE_URL'),
+  Cypress.env('NEXT_PUBLIC_SUPABASE_KEY')
+);
 
 Cypress.Commands.add('setup', () => {
   cy.exec('npm run db:seed')
