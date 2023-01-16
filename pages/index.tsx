@@ -336,7 +336,7 @@ export default function Home() {
                     looking for
                   </span>
                   : OS interoperability; Markdown exports; clean UI. All of
-                  those other apps have faltered in one way or another. &rdquo;
+                  those other apps have faltered in one way or another.&rdquo;
                 </p>
                 <p className="text-xl italic leading-normal">
                   &ldquo;Just tested this application today,{' '}

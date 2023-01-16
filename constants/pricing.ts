@@ -5,8 +5,8 @@ const PRO_MONTHLY_DEV_PRICE_ID = 'price_1JGSVLCXZdSttUYj13lhWEzJ';
 const PRO_ANNUAL_DEV_PRICE_ID = 'price_1JGSVLCXZdSttUYj2LUZT3T5';
 
 const PRO_PROD_PRODUCT_ID = 'prod_JuGvuo7cLr1UF7';
-const PRO_MONTHLY_PROD_PRICE_ID = 'price_1JGSNYCXZdSttUYjlXixrrLH';
-const PRO_ANNUAL_PROD_PRICE_ID = 'price_1JGSNYCXZdSttUYjj6EoZVez';
+const PRO_MONTHLY_PROD_PRICE_ID = 'price_1MQy2MCXZdSttUYjUGfCB1Z4';
+const PRO_ANNUAL_PROD_PRICE_ID = 'price_1MQy1xCXZdSttUYjLbsUOwPn';
 
 const CATALYST_DEV_PRODUCT_ID = 'prod_KOcUXd1Nhw26xb';
 const CATALYST_DEV_PRICE_ID = 'price_1JjpFYCXZdSttUYj0xNwhxnR';
@@ -90,12 +90,12 @@ export const PRICING_PLANS: Plans = {
     prices: {
       [BillingFrequency.Monthly]: {
         frequency: BillingFrequency.Monthly,
-        amount: 700,
+        amount: 800,
         priceId: isDev ? PRO_MONTHLY_DEV_PRICE_ID : PRO_MONTHLY_PROD_PRICE_ID,
       },
       [BillingFrequency.Annual]: {
         frequency: BillingFrequency.Annual,
-        amount: 7000,
+        amount: 8000,
         priceId: isDev ? PRO_ANNUAL_DEV_PRICE_ID : PRO_ANNUAL_PROD_PRICE_ID,
       },
     },
