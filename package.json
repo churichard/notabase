@@ -87,7 +87,7 @@
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^14.4.3",
-    "@types/d3-drag": "^3.0.1",
+    "@types/d3-drag": "^3.0.2",
     "@types/d3-force": "^3.0.3",
     "@types/d3-selection": "^3.0.3",
     "@types/d3-zoom": "^3.0.2",
