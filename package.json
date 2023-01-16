@@ -50,7 +50,7 @@
     "d3-zoom": "^3.0.0",
     "file-saver": "^2.0.5",
     "fuse.js": "^6.6.2",
-    "immer": "^9.0.16",
+    "immer": "^9.0.18",
     "is-hotkey": "^0.2.0",
     "jszip": "^3.10.1",
     "localforage": "^1.10.0",
