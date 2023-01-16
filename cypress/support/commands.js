@@ -24,16 +24,20 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
-import { signIn } from 'utils/useAuth';
 import user from '../fixtures/user.json';
 import notes from '../fixtures/notes.json';
-import supabase from './supabase';
+import supabase from './supabaseCypress';
 import '@testing-library/cypress/add-commands';
 import './selection';
 
 Cypress.Commands.add('setup', () => {
   cy.exec('npm run db:seed')
-    .then(() => signIn(user.email, user.password))
+    .then(() =>
+      supabase.auth.signInWithPassword({
+        email: user.email,
+        password: user.password,
+      })
+    )
     .then(async (result) => {
       const data = notes.map((note) => ({
         ...note,
@@ -42,6 +46,7 @@ Cypress.Commands.add('setup', () => {
       // insert completed notes to supabase
       await supabase.from('notes').insert(data);
     });
+
   cy.visit('/app');
 });
 

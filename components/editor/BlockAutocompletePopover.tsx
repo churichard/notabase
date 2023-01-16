@@ -10,7 +10,6 @@ import { createNodeId } from 'editor/plugins/withNodeId';
 import { isReferenceableBlockElement } from 'editor/checks';
 import { store } from 'lib/store';
 import supabase from 'lib/supabase';
-import { Note } from 'types/supabase';
 import useDebounce from 'utils/useDebounce';
 import { getActiveOrTempEditor } from 'lib/activeEditorsStore';
 import EditorPopover from './EditorPopover';
@@ -165,7 +164,7 @@ export default function BlockAutocompletePopover() {
 
           // Update note in database
           await supabase
-            .from<Note>('notes')
+            .from('notes')
             .update({ content: noteEditor.children })
             .eq('id', option.noteId);
         } else {

@@ -16,12 +16,9 @@ export default function Reset() {
       event.preventDefault();
       setIsLoading(true);
 
-      const { data, error } = await supabase.auth.api.resetPasswordForEmail(
-        email,
-        {
-          redirectTo: `${process.env.BASE_URL}/resetting-password`,
-        }
-      );
+      const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${process.env.BASE_URL}/resetting-password`,
+      });
 
       if (error) {
         toast.error(error.message);

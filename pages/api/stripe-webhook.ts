@@ -3,14 +3,14 @@ import { buffer } from 'micro';
 import Cors from 'micro-cors';
 import Stripe from 'stripe';
 import { createClient } from '@supabase/supabase-js';
-import { Subscription, SubscriptionStatus, User } from 'types/supabase';
+import { Database, SubscriptionStatus } from 'types/supabase';
 import {
   BillingFrequency,
   getFrequencyByPriceId,
   getPlanIdByProductId,
 } from 'constants/pricing';
 
-const supabase = createClient(
+const supabase = createClient<Database>(
   process.env.NEXT_PUBLIC_SUPABASE_URL ?? '',
   process.env.SUPABASE_SERVICE_KEY ?? ''
 );
@@ -101,7 +101,7 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     // Update subscription status
     await supabase
-      .from<Subscription>('subscriptions')
+      .from('subscriptions')
       .update({
         subscription_status: isSubscriptionActive
           ? SubscriptionStatus.Active
@@ -120,7 +120,7 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     // Update subscription status and plan id
     await supabase
-      .from<Subscription>('subscriptions')
+      .from('subscriptions')
       .update({
         plan_id: getPlanIdByProductId(productId),
         subscription_status: isSubscriptionActive
@@ -137,7 +137,7 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     // Update subscription status
     await supabase
-      .from<Subscription>('subscriptions')
+      .from('subscriptions')
       .update({
         subscription_status: isSubscriptionActive
           ? SubscriptionStatus.Active
@@ -173,7 +173,7 @@ const handleSubscriptionCompleted = async (
 
   // Create new subscription
   const { data: subscriptionData, error } = await supabase
-    .from<Subscription>('subscriptions')
+    .from('subscriptions')
     .upsert(
       {
         user_id: userId,
@@ -189,6 +189,7 @@ const handleSubscriptionCompleted = async (
       },
       { onConflict: 'user_id' }
     )
+    .select('id')
     .single();
 
   if (error) {
@@ -198,8 +199,8 @@ const handleSubscriptionCompleted = async (
 
   // Add subscription id to user
   await supabase
-    .from<User>('users')
-    .update({ subscription_id: subscriptionData?.id })
+    .from('users')
+    .update({ subscription_id: subscriptionData.id })
     .eq('id', userId);
 };
 
@@ -222,7 +223,7 @@ const handlePaymentCompleted = async (
 
     // Create new subscription
     const { data: subscriptionData, error } = await supabase
-      .from<Subscription>('subscriptions')
+      .from('subscriptions')
       .upsert(
         {
           user_id: userId,
@@ -235,6 +236,7 @@ const handlePaymentCompleted = async (
         },
         { onConflict: 'user_id' }
       )
+      .select()
       .single();
 
     if (error) {
@@ -244,7 +246,7 @@ const handlePaymentCompleted = async (
 
     // Add subscription id to user
     await supabase
-      .from<User>('users')
+      .from('users')
       .update({ subscription_id: subscriptionData?.id })
       .eq('id', userId);
 

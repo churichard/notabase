@@ -5,7 +5,6 @@ import { useAuth } from 'utils/useAuth';
 import useNoteSearch from 'utils/useNoteSearch';
 import supabase from 'lib/supabase';
 import { store, useStore } from 'lib/store';
-import { User } from 'types/supabase';
 import { caseInsensitiveStringCompare } from 'utils/string';
 
 enum OptionType {
@@ -96,7 +95,7 @@ function MoveToInput(props: Props, ref: ForwardedRef<HTMLInputElement>) {
       }
 
       await supabase
-        .from<User>('users')
+        .from('users')
         .update({ note_tree: store.getState().noteTree })
         .eq('id', user.id);
     },

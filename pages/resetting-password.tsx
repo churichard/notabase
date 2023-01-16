@@ -1,4 +1,4 @@
-import { FormEvent, useCallback, useEffect, useState } from 'react';
+import { FormEvent, useCallback, useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { toast } from 'react-toastify';
@@ -7,52 +7,17 @@ import LandingLayout from 'components/landing/LandingLayout';
 import supabase from 'lib/supabase';
 
 export default function ResettingPassword() {
-  const [hash, setHash] = useState<string | null>(null);
   const [newPassword, setNewPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [showConfirmationMessage, setShowConfirmationMessage] = useState(false);
-
-  useEffect(() => {
-    setHash(window.location.hash);
-  }, []);
 
   const onSubmit = useCallback(
     async (event: FormEvent<HTMLFormElement>) => {
       event.preventDefault();
 
-      if (!hash) {
-        toast.error('Invalid access token or type');
-        return;
-      }
-
-      // Format is #access_token=x&refresh_token=y&expires_in=z&token_type=bearer&type=recovery
-      const hashArr = hash
-        .substring(1)
-        .split('&')
-        .map((param) => param.split('='));
-
-      let type;
-      let accessToken;
-      for (const [key, value] of hashArr) {
-        if (key === 'type') {
-          type = value;
-        } else if (key === 'access_token') {
-          accessToken = value;
-        }
-      }
-
-      if (
-        type !== 'recovery' ||
-        !accessToken ||
-        typeof accessToken === 'object'
-      ) {
-        toast.error('Invalid access token or type');
-        return;
-      }
-
       setIsLoading(true);
 
-      const { error } = await supabase.auth.api.updateUser(accessToken, {
+      const { error } = await supabase.auth.updateUser({
         password: newPassword,
       });
 
@@ -64,7 +29,7 @@ export default function ResettingPassword() {
 
       setIsLoading(false);
     },
-    [newPassword, hash]
+    [newPassword]
   );
 
   return (

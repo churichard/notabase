@@ -5,7 +5,6 @@ import { ElementType, Mark } from 'types/slate';
 import { isMark } from 'editor/formatting';
 import { store } from 'lib/store';
 import upsertNote from 'lib/api/upsertNote';
-import supabase from 'lib/supabase';
 import { caseInsensitiveStringEqual } from 'utils/string';
 import { MAX_NUM_OF_BASIC_NOTES, PlanId } from 'constants/pricing';
 import { deleteText } from 'editor/transforms';
@@ -148,11 +147,8 @@ export const getOrCreateNoteId = (noteTitle: string): string | null => {
       );
       return null;
     }
-    const userId = supabase.auth.user()?.id;
     noteId = uuidv4();
-    if (userId) {
-      upsertNote({ id: noteId, user_id: userId, title: noteTitle });
-    }
+    upsertNote({ id: noteId, title: noteTitle });
   }
 
   return noteId;
