@@ -128,14 +128,14 @@ const FindOrCreateModalButton = (props: FindOrCreateModalButtonProps) => {
         touch={false}
       >
         <button
-          className="flex w-full items-center px-6 py-1 text-left"
+          className="flex h-8 w-full items-center px-6 py-1 text-left"
           onClick={onClick}
         >
           <IconSearch
             className="mr-1 flex-shrink-0 text-gray-800 dark:text-gray-300"
-            size={20}
+            size={16}
           />
-          <span className="select-none overflow-x-hidden overflow-ellipsis whitespace-nowrap">
+          <span className="select-none overflow-x-hidden overflow-ellipsis whitespace-nowrap text-sm">
             Find or Create Note
           </span>
         </button>
@@ -163,12 +163,12 @@ const GraphButton = (props: GraphButtonProps) => {
         touch={false}
       >
         <span>
-          <Link href="/app/graph" className="flex items-center px-6 py-1">
+          <Link href="/app/graph" className="flex h-8 items-center px-6 py-1">
             <IconAffiliate
               className="mr-1 flex-shrink-0 text-gray-800 dark:text-gray-300"
-              size={20}
+              size={16}
             />
-            <span className="select-none overflow-x-hidden overflow-ellipsis whitespace-nowrap">
+            <span className="select-none overflow-x-hidden overflow-ellipsis whitespace-nowrap text-sm">
               Graph View
             </span>
           </Link>

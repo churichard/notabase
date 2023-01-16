@@ -37,6 +37,7 @@ export type FlattenedNoteTreeItem = {
   id: string;
   depth: number;
   collapsed: boolean;
+  hasChildren: boolean;
 };
 
 type Props = {
@@ -74,7 +75,7 @@ function SidebarNotesTree(props: Props) {
   const flattenNode = useCallback(
     (node: NoteTreeItem, depth: number, result: FlattenedNoteTreeItem[]) => {
       const { id, children, collapsed } = node;
-      result.push({ id, depth, collapsed });
+      result.push({ id, depth, collapsed, hasChildren: children.length > 0 });
 
       /**
        * Only push in children if:
@@ -177,6 +178,7 @@ function SidebarNotesTree(props: Props) {
                     id: activeId,
                     depth: 0,
                     collapsed: false,
+                    hasChildren: false,
                   }
                 }
                 className="!bg-gray-50 shadow-popover dark:!bg-gray-800"
