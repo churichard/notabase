@@ -16,7 +16,7 @@ type AuthContextType = {
   signIn: (
     email: string,
     password: string
-  ) => ReturnType<GoTrueClient['signIn']>;
+  ) => ReturnType<GoTrueClient['signInWithPassword']>;
   signUp: (
     email: string,
     password: string
@@ -28,6 +28,21 @@ export const AuthContext = createContext<AuthContextType | undefined>(
   undefined
 );
 
+export const signIn = (email: string, password: string) =>
+  supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
+
+export const signUp = (email: string, password: string) =>
+  supabase.auth.signUp({
+    email,
+    password,
+    options: { emailRedirectTo: `${process.env.BASE_URL}/app` },
+  });
+
+export const signOut = () => supabase.auth.signOut();
+
 // Provider hook that creates auth object and handles state
 function useProvideAuth(): AuthContextType {
   const router = useRouter();
@@ -36,7 +51,9 @@ function useProvideAuth(): AuthContextType {
 
   // Initialize the user based on the stored session
   const initUser = useCallback(async () => {
-    const session = supabase.auth.session();
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
     if (session) {
       setUser(session.user);
     }
@@ -47,45 +64,22 @@ function useProvideAuth(): AuthContextType {
     initUser();
   }, [initUser]);
 
-  const signIn = useCallback(
-    (email: string, password: string) =>
-      supabase.auth.signIn({
-        email,
-        password,
-      }),
-    []
-  );
-
-  const signUp = useCallback(
-    (email: string, password: string) =>
-      supabase.auth.signUp(
-        {
-          email,
-          password,
-        },
-        { redirectTo: `${process.env.BASE_URL}/app` }
-      ),
-    []
-  );
-
-  const signOut = useCallback(() => supabase.auth.signOut(), []);
-
   useEffect(() => {
-    const { data: authListener } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        // Update user
-        setUser(session?.user ?? null);
-        setIsLoaded(true);
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      // Update user
+      setUser(session?.user ?? null);
+      setIsLoaded(true);
 
-        // Redirect to /app if the user has signed in
-        if (event === 'SIGNED_IN' && router.pathname === '/login') {
-          router.push('/app');
-        } else if (event === 'SIGNED_OUT') {
-          router.push('/login');
-        }
+      // Redirect to /app if the user has signed in
+      if (event === 'SIGNED_IN' && router.pathname === '/login') {
+        router.push('/app');
+      } else if (event === 'SIGNED_OUT') {
+        router.push('/login');
       }
-    );
-    return () => authListener?.unsubscribe();
+    });
+    return () => subscription.unsubscribe();
   }, [router]);
 
   // Return the user object and auth methods
