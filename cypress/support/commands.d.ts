@@ -1,6 +1,12 @@
 declare namespace Cypress {
   interface Chainable {
     /**
+     * Signs in and seeds the database with notes, then navigates to /app.
+     * @example cy.setup();
+     */
+    setup(): void;
+
+    /**
      * Target a page to test elements within it
      * @example cy.targetPage('title')
      */

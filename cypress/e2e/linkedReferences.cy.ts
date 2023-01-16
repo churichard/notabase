@@ -1,12 +1,3 @@
-import { createClient } from '@supabase/supabase-js';
-import user from '../fixtures/user.json';
-import notes from '../fixtures/notes.json';
-
-const supabase = createClient(
-  Cypress.env('NEXT_PUBLIC_SUPABASE_URL'),
-  Cypress.env('NEXT_PUBLIC_SUPABASE_KEY')
-);
-
 // These tests use the notes from the the 'notes.json fixture
 // The note titles can be read as:
 // {# of references}{# of notes referrencing it}{id}
@@ -24,22 +15,7 @@ const supabase = createClient(
 
 describe('linked references', () => {
   beforeEach(() => {
-    cy.exec('npm run db:seed')
-      .then(() =>
-        supabase.auth.signIn({
-          email: user.email,
-          password: user.password,
-        })
-      )
-      .then(async (result) => {
-        const data = notes.map((note) => ({
-          ...note,
-          user_id: result.user?.id,
-        }));
-        // insert completed notes to supabase
-        await supabase.from('notes').insert(data);
-      });
-    cy.visit('/app');
+    cy.setup();
   });
 
   it('should open an existing note after clicking on a note link element', () => {
@@ -236,3 +212,5 @@ describe('linked references', () => {
     });
   });
 });
+
+export {};

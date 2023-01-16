@@ -1,11 +1,7 @@
-import { createClient } from '@supabase/supabase-js';
+import supabase from 'cypress/support/supabase';
+import { signIn, signUp } from 'utils/useAuth';
 import user from '../fixtures/user.json';
 import user_new from '../fixtures/user_new.json';
-
-const supabase = createClient(
-  Cypress.env('NEXT_PUBLIC_SUPABASE_URL'),
-  Cypress.env('NEXT_PUBLIC_SUPABASE_KEY')
-);
 
 describe('User sign up, login, and logout', () => {
   beforeEach(() => {
@@ -79,12 +75,7 @@ describe('User sign up, login, and logout', () => {
 
   it('can sign up but cannot login until email is confirmed', () => {
     // sign up using the API
-    cy.visit('/login').then(() =>
-      supabase.auth.signUp({
-        email: user_new.email,
-        password: user_new.password,
-      })
-    );
+    cy.visit('/login').then(() => signUp(user_new.email, user_new.password));
 
     // login using UI
     cy.get('input[type="email"]').type(user_new.email);
@@ -144,12 +135,7 @@ describe('User sign up, login, and logout', () => {
   });
 
   it('removes cookie when user logs out', () => {
-    cy.visit('/').then(() =>
-      supabase.auth.signIn({
-        email: user.email,
-        password: user.password,
-      })
-    );
+    cy.visit('/').then(() => signIn(user.email, user.password));
 
     cy.visit('/login');
     cy.url().should('include', '/app');
