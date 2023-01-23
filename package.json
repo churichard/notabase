@@ -32,7 +32,7 @@
     "@dnd-kit/core": "^4.0.3",
     "@dnd-kit/sortable": "^5.1.0",
     "@headlessui/react": "^1.7.7",
-    "@next/font": "^13.1.2",
+    "@next/font": "^13.1.5",
     "@popperjs/core": "^2.11.6",
     "@react-spring/web": "^9.6.1",
     "@sentry/nextjs": "^7.28.1",
