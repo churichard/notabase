@@ -46,7 +46,7 @@ Cypress.Commands.add('setup', () => {
     .then(async (result) => {
       const data = notes.map((note) => ({
         ...note,
-        user_id: result.user?.id,
+        user_id: result.data.user?.id,
       }));
       // insert completed notes to supabase
       await supabase.from('notes').insert(data);

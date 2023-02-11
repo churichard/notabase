@@ -8,7 +8,7 @@ const seed = async () => {
     'postgres://postgres:postgres@localhost:54322/postgres'
   );
 
-  client.connect();
+  await client.connect();
 
   const schema = fs
     .readFileSync(path.resolve(__dirname, './schema.sql'))
