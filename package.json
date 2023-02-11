@@ -35,7 +35,7 @@
     "@next/font": "^13.1.6",
     "@popperjs/core": "^2.11.6",
     "@react-spring/web": "^9.6.1",
-    "@sentry/nextjs": "^7.32.1",
+    "@sentry/nextjs": "^7.36.0",
     "@stripe/stripe-js": "^1.46.0",
     "@supabase/supabase-js": "^1.35.6",
     "@tabler/icons": "^1.119.0",
