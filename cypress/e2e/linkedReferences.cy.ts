@@ -176,7 +176,7 @@ describe('linked references', () => {
       .click();
 
     // wait for the note to be deleted
-    cy.wait('@deleted').its('response.statusCode').should('eq', 200);
+    cy.wait('@deleted').its('response.statusCode').should('eq', 204);
 
     // open note '001=>111'
     cy.getSidebarNoteLink('001=>111').click();

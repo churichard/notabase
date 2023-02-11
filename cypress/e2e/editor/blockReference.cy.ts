@@ -7,7 +7,7 @@ describe('block reference', () => {
   });
 
   it('can add a block reference by copying and pasting the block ref', () => {
-    cy.visit(`/app/note/${NOTE_WITH_BLOCK_REF_ID}`);
+    cy.visit(`/app/note/${BLANK_NOTE_ID}`);
 
     // Type some text into the editor, then click the 3 dots to the left
     cy.getEditor()
@@ -43,7 +43,7 @@ describe('block reference', () => {
   });
 
   it('can edit a block and have its references update', () => {
-    cy.visit(`/app/note/${BLANK_NOTE_ID}`);
+    cy.visit(`/app/note/${NOTE_WITH_BLOCK_REF_ID}`);
 
     cy.getEditor()
       .focus()
