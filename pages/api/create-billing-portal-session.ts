@@ -1,9 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import Stripe from 'stripe';
 import { createClient } from '@supabase/supabase-js';
-import { Subscription } from 'types/supabase';
+import { Database } from 'types/supabase';
 
-const supabase = createClient(
+const supabase = createClient<Database>(
   process.env.NEXT_PUBLIC_SUPABASE_URL ?? '',
   process.env.SUPABASE_SERVICE_KEY ?? ''
 );
@@ -28,7 +28,7 @@ export default async function handler(
   }
 
   const { data } = await supabase
-    .from<Subscription>('subscriptions')
+    .from('subscriptions')
     .select('stripe_customer_id')
     .eq('user_id', userId)
     .maybeSingle();

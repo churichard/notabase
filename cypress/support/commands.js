@@ -24,8 +24,36 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
+import { createClient } from '@supabase/supabase-js';
+import user from '../fixtures/user.json';
+import notes from '../fixtures/notes.json';
 import '@testing-library/cypress/add-commands';
 import './selection';
+
+const supabase = createClient(
+  Cypress.env('NEXT_PUBLIC_SUPABASE_URL'),
+  Cypress.env('NEXT_PUBLIC_SUPABASE_KEY')
+);
+
+Cypress.Commands.add('setup', () => {
+  cy.exec('npm run db:seed')
+    .then(() =>
+      supabase.auth.signInWithPassword({
+        email: user.email,
+        password: user.password,
+      })
+    )
+    .then(async (result) => {
+      const data = notes.map((note) => ({
+        ...note,
+        user_id: result.data.user?.id,
+      }));
+      // insert completed notes to supabase
+      await supabase.from('notes').insert(data);
+    });
+
+  cy.visit('/app');
+});
 
 Cypress.Commands.add(
   'paste',

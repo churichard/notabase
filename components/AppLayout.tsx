@@ -8,12 +8,7 @@ import classNames from 'classnames';
 import colors from 'tailwindcss/colors';
 import { useStore, store, NoteTreeItem, Notes, SidebarTab } from 'lib/store';
 import supabase from 'lib/supabase';
-import {
-  Note,
-  Subscription,
-  SubscriptionStatus,
-  User as DbUser,
-} from 'types/supabase';
+import { Note, SubscriptionStatus } from 'types/supabase';
 import { useAuth } from 'utils/useAuth';
 import useHotkeys from 'utils/useHotkeys';
 import { PlanId, PRICING_PLANS } from 'constants/pricing';
@@ -71,8 +66,8 @@ export default function AppLayout(props: Props) {
     }
 
     const { data: notes } = await supabase
-      .from<Note>('notes')
-      .select('id, title, content, created_at, updated_at')
+      .from('notes')
+      .select()
       .eq('user_id', user.id)
       .order('title');
 
@@ -106,7 +101,7 @@ export default function AppLayout(props: Props) {
 
     // Set note tree
     const { data: userData } = await supabase
-      .from<DbUser>('users')
+      .from('users')
       .select('note_tree')
       .eq('id', user.id)
       .single();
@@ -147,7 +142,7 @@ export default function AppLayout(props: Props) {
   const initBillingDetails = useCallback(
     async (user: User) => {
       const { data } = await supabase
-        .from<Subscription>('subscriptions')
+        .from('subscriptions')
         .select(
           'plan_id, subscription_status, frequency, current_period_end, cancel_at_period_end'
         )
@@ -197,20 +192,32 @@ export default function AppLayout(props: Props) {
 
     // Subscribe to changes on the notes table for the logged in user
     const subscription = supabase
-      .from<Note>(`notes:user_id=eq.${user.id}`)
-      .on('*', (payload) => {
-        if (payload.eventType === 'INSERT') {
+      .channel(`public:notes:user_id=eq.${user.id}`)
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'notes' },
+        (payload: { new: Note }) => {
           upsertNote(payload.new);
-        } else if (payload.eventType === 'UPDATE') {
+        }
+      )
+      .on(
+        'postgres_changes',
+        { event: 'UPDATE', schema: 'public', table: 'notes' },
+        (payload: { new: Note }) => {
           // Don't update the note if it is currently open
           const openNoteIds = store.getState().openNoteIds;
           if (!openNoteIds.includes(payload.new.id)) {
             updateNote(payload.new);
           }
-        } else if (payload.eventType === 'DELETE') {
+        }
+      )
+      .on(
+        'postgres_changes',
+        { event: 'DELETE', schema: 'public', table: 'notes' },
+        (payload) => {
           deleteNote(payload.old.id);
         }
-      })
+      )
       .subscribe();
 
     return () => {

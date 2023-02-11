@@ -23,7 +23,6 @@ import { toast } from 'react-toastify';
 import { NoteTreeItem, store, useStore } from 'lib/store';
 import Portal from 'components/Portal';
 import supabase from 'lib/supabase';
-import { User } from 'types/supabase';
 import { useAuth } from 'utils/useAuth';
 import SidebarNoteLink from './SidebarNoteLink';
 import DraggableSidebarNoteLink from './DraggableSidebarNoteLink';
@@ -116,7 +115,7 @@ function SidebarNotesTree(props: Props) {
       if (over && user) {
         moveNoteTreeItem(active.id, over.id);
         await supabase
-          .from<User>('users')
+          .from('users')
           .update({ note_tree: store.getState().noteTree })
           .eq('id', user.id);
       } else {

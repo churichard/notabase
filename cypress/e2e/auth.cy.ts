@@ -77,7 +77,7 @@ describe('User sign up, login, and logout', () => {
     );
   });
 
-  it('can sign up but cannot login until email is confirmed', () => {
+  it('can sign up but cannot login until email is confirmed', function () {
     // sign up using the API
     cy.visit('/login').then(() =>
       supabase.auth.signUp({
@@ -145,7 +145,7 @@ describe('User sign up, login, and logout', () => {
 
   it('removes cookie when user logs out', () => {
     cy.visit('/').then(() =>
-      supabase.auth.signIn({
+      supabase.auth.signInWithPassword({
         email: user.email,
         password: user.password,
       })

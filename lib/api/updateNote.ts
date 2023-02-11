@@ -10,9 +10,10 @@ export type NoteUpdate = PickPartial<
 
 export default async function updateNote(note: NoteUpdate) {
   const response = await supabase
-    .from<Note>('notes')
+    .from('notes')
     .update({ ...note, updated_at: new Date().toISOString() })
     .eq('id', note.id)
+    .select()
     .single();
 
   if (response.data) {

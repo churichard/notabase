@@ -1,33 +1,13 @@
-import { createClient } from '@supabase/supabase-js';
-import user from '../../fixtures/user.json';
-import notes from '../../fixtures/notes.json';
-
-const supabase = createClient(
-  Cypress.env('NEXT_PUBLIC_SUPABASE_URL'),
-  Cypress.env('NEXT_PUBLIC_SUPABASE_KEY')
-);
+const BLANK_NOTE_ID = '2c1f8ccd-42ad-4f94-ab7d-c36abb1328ca';
+const NOTE_WITH_BLOCK_REF_ID = 'c5e7a286-5ee7-40fa-bd36-5df278ba9575';
 
 describe('block reference', () => {
   beforeEach(() => {
-    // seed the database and create a new note
-    cy.exec('npm run db:seed')
-      .then(() =>
-        supabase.auth.signIn({
-          email: user.email,
-          password: user.password,
-        })
-      )
-      .then(async (result) => {
-        const data = notes.map((note) => ({
-          ...note,
-          user_id: result.user?.id,
-        }));
-        await supabase.from('notes').insert(data);
-      });
+    cy.setup();
   });
 
   it('can add a block reference by copying and pasting the block ref', () => {
-    cy.visit(`/app/note/2c1f8ccd-42ad-4f94-ab7d-c36abb1328ca`);
+    cy.visit(`/app/note/${BLANK_NOTE_ID}`);
 
     // Type some text into the editor, then click the 3 dots to the left
     cy.getEditor()
@@ -63,7 +43,7 @@ describe('block reference', () => {
   });
 
   it('can edit a block and have its references update', () => {
-    cy.visit(`/app/note/c5e7a286-5ee7-40fa-bd36-5df278ba9575`);
+    cy.visit(`/app/note/${NOTE_WITH_BLOCK_REF_ID}`);
 
     cy.getEditor()
       .focus()
@@ -74,3 +54,5 @@ describe('block reference', () => {
       .should('have.length', 2);
   });
 });
+
+export {};

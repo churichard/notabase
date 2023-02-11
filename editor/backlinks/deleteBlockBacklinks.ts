@@ -61,10 +61,7 @@ const deleteBlockBacklinks = async (editor: Editor, blockId: string) => {
   const promises = [];
   for (const data of updateData) {
     promises.push(
-      supabase
-        .from<Note>('notes')
-        .update({ content: data.content })
-        .eq('id', data.id)
+      supabase.from('notes').update({ content: data.content }).eq('id', data.id)
     );
   }
   await Promise.all(promises);

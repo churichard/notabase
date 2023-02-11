@@ -1,5 +1,6 @@
 export default {
   from: jest.fn().mockReturnThis(),
+  channel: jest.fn().mockReturnThis(),
   on: jest.fn().mockReturnThis(),
   select: jest.fn().mockReturnThis(),
   eq: jest.fn().mockReturnThis(),

@@ -1,31 +1,6 @@
-import { createClient } from '@supabase/supabase-js';
-import user from '../fixtures/user.json';
-import notes from '../fixtures/notes.json';
-
-const supabase = createClient(
-  Cypress.env('NEXT_PUBLIC_SUPABASE_URL'),
-  Cypress.env('NEXT_PUBLIC_SUPABASE_KEY')
-);
-
 describe('pages', () => {
   beforeEach(() => {
-    cy.exec('npm run db:seed')
-      .then(() =>
-        supabase.auth.signIn({
-          email: user.email,
-          password: user.password,
-        })
-      )
-      .then(async (result) => {
-        const data = [];
-
-        // insert returned user_id into '../fixtures/notes.json'
-        for (const note of notes) {
-          (note.user_id = result.user?.id), data.push(note);
-        }
-        await supabase.from('notes').insert(data);
-      });
-    cy.visit('/app');
+    cy.setup();
   });
 
   it('should be able to target elements on different pages', () => {
@@ -47,3 +22,5 @@ describe('pages', () => {
     });
   });
 });
+
+export {};
