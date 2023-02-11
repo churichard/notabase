@@ -4,7 +4,8 @@ const { PHASE_DEVELOPMENT_SERVER } = require('next/constants');
 const withPWA = require('next-pwa')({
   dest: 'public',
   scope: '/app/',
-  disable: process.env.NODE_ENV === 'development',
+  disable:
+    process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test',
   dynamicStartUrlRedirect: '/login',
   reloadOnOnline: false,
   register: false,
