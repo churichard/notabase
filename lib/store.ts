@@ -1,6 +1,6 @@
 import { useStore } from 'zustand';
 import { createStore } from 'zustand/vanilla';
-import { persist, StateStorage } from 'zustand/middleware';
+import { createJSONStorage, persist, StateStorage } from 'zustand/middleware';
 import localforage from 'localforage';
 import type { Draft } from 'immer';
 import { immer } from 'zustand/middleware/immer';
@@ -250,7 +250,7 @@ export const store = createStore<Store>()(
     {
       name: 'notabase-storage',
       version: 1,
-      getStorage: () => storage,
+      storage: createJSONStorage(() => storage),
       partialize: (state) => ({
         openNoteIds: state.openNoteIds,
         isSidebarOpen: state.isSidebarOpen,
