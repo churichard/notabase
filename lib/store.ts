@@ -1,6 +1,6 @@
-import { create } from 'zustand';
-import { createStore as createVanilla } from 'zustand/vanilla';
-import { persist, StateStorage } from 'zustand/middleware';
+import { useStore } from 'zustand';
+import { createStore } from 'zustand/vanilla';
+import { createJSONStorage, persist, StateStorage } from 'zustand/middleware';
 import localforage from 'localforage';
 import type { Draft } from 'immer';
 import { immer } from 'zustand/middleware/immer';
@@ -111,7 +111,7 @@ export type Store = {
   setSidebarSearchQuery: Setter<string>;
 } & UserSettings;
 
-export const store = createVanilla<Store>()(
+export const store = createStore<Store>()(
   persist(
     immer((set) => ({
       /**
@@ -250,7 +250,7 @@ export const store = createVanilla<Store>()(
     {
       name: 'notabase-storage',
       version: 1,
-      getStorage: () => storage,
+      storage: createJSONStorage(() => storage),
       partialize: (state) => ({
         openNoteIds: state.openNoteIds,
         isSidebarOpen: state.isSidebarOpen,
@@ -262,4 +262,9 @@ export const store = createVanilla<Store>()(
   )
 );
 
-export const useStore = create(store);
+const useBoundStore = <T>(
+  selector: (state: Store) => T,
+  equals?: (a: T, b: T) => boolean
+) => useStore(store, selector, equals);
+
+export { useBoundStore as useStore };
