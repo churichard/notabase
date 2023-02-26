@@ -39,11 +39,11 @@ export default function AppLayout(props: Props) {
   const setupStore = useCallback(async () => {
     if (!isPageLoaded && isLoaded && user) {
       // Use user's specific store and rehydrate data
-      useStore.persist.clearStorage();
-      useStore.persist.setOptions({
+      store.persist.clearStorage();
+      store.persist.setOptions({
         name: `notabase-storage-${user.id}`,
       });
-      await useStore.persist.rehydrate();
+      await store.persist.rehydrate();
 
       // If the user is mobile, change the initial values of isSidebarOpen and isPageStackingOn to better suit mobile devices
       // TODO: ideally this change would be temporary so that we don't override the user's existing values
