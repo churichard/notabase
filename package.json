@@ -29,7 +29,7 @@
     "prepare": "husky install"
   },
   "dependencies": {
-    "@dnd-kit/core": "^4.0.3",
+    "@dnd-kit/core": "^6.0.8",
     "@dnd-kit/sortable": "^5.1.0",
     "@headlessui/react": "^1.7.11",
     "@next/font": "^13.2.3",
