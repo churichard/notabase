@@ -103,7 +103,7 @@
     "@types/react-virtualized": "^9.21.21",
     "@types/uuid": "^9.0.0",
     "@typescript-eslint/eslint-plugin": "^5.48.1",
-    "@typescript-eslint/parser": "^5.48.1",
+    "@typescript-eslint/parser": "^5.57.1",
     "canvas": "^2.11.0",
     "cypress": "^12.6.0",
     "dotenv": "^16.0.3",
