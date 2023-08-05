@@ -1,7 +1,7 @@
 {
-  "name": "Notabase",
-  "short_name": "Notabase",
-  "description": "Notabase is a powerful and easy-to-use note-taking app for networked thinking.",
+  "name": "VS. NOTES",
+  "short_name": "VS. NOTES",
+  "description": "VS. NOTES is a research and and note-taking tool for networked thinking.",
   "icons": [
     {
       "src": "/android-chrome-192x192.png",

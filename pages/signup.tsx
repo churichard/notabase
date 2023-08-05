@@ -8,7 +8,7 @@ export default function Signup() {
   return (
     <LandingLayout showNavbar={false} showFooter={false}>
       <Head>
-        <title>Sign Up | Notabase</title>
+        <title>Sign Up | VS. NOTES</title>
       </Head>
       <div className="min-h-screen bg-gray-50">
         <div className="container p-8 md:p-24">
@@ -17,7 +17,7 @@ export default function Signup() {
           </div>
           <div className="card mx-auto md:p-12">
             <p className="-mt-2 pb-6 text-center text-xl">
-              Create your Notabase account
+              Create your VS. NOTES account
             </p>
             <AuthForm signup />
           </div>

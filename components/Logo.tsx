@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import logo from 'public/logo.svg';
+import logo from 'public/logo.png';
 
 type Props = {
   width: number;
@@ -8,5 +8,5 @@ type Props = {
 
 export default function Logo(props: Props) {
   const { width, height } = props;
-  return <Image src={logo} width={width} height={height} alt="Notabase logo" />;
+  return <Image src={logo} width={width} height={height} alt="vs. notes logo" />;
 }
