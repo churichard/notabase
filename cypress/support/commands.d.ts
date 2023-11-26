@@ -64,7 +64,7 @@ declare namespace Cypress {
      * Custom command to paste text.
      * @example cy.paste('value')
      */
-    paste(value: string, type?: string): Chainable<Element>;
+    paste(value: string, type?: string): Chainable<JQuery<HTMLElement>>;
 
     /**
      * Sets the selection.
@@ -81,6 +81,12 @@ declare namespace Cypress {
             focusOffset?: number;
           },
       endQuery?: string
-    ): Chainable<Element>;
+    ): Chainable<JQuery<HTMLElement>>;
+
+    /**
+     * Visits the particular note page given by the noteId param.
+     * @param noteId id of the note to navigate to
+     */
+    visitNote(noteId: string): Chainable<JQuery<HTMLElement>>;
   }
 }

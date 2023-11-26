@@ -101,7 +101,8 @@ describe('linked references', () => {
     // target page '001=>211' so we can target elements inside
     cy.targetPage('001=>211').within(() => {
       // create a new note link element referencing note 211
-      cy.getEditor().focus().type('{movetoend}[[211]]');
+      cy.getEditor().focus();
+      cy.getEditor().type('{movetoend}[[211]]');
       // click on the link to note '211'
       // first() is specified because there are multiple links to note 211
       cy.getNoteLinkElement('211').first().click();
@@ -197,7 +198,8 @@ describe('linked references', () => {
     // target page '001=>111' so we can target elements inside
     cy.targetPage('001=>111').within(() => {
       // delete the note link element for '111' using the keyboard
-      cy.getEditor().focus().type('{moveToEnd}{backspace}');
+      cy.getEditor().focus();
+      cy.getEditor().type('{moveToEnd}{backspace}');
       // check '111' note link element was deleted
       cy.get('[data-testid="note-link-element"]').should('not.exist');
     });

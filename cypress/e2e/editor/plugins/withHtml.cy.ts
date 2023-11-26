@@ -6,7 +6,7 @@ describe('with html', () => {
   });
 
   it('can copy and paste html', function () {
-    cy.visit(`/app/note/${NOTE_ID}`);
+    cy.visitNote(NOTE_ID);
 
     const html = `
       <h1>Quis contra in illa aetate pudorem, constantiam, etiamsi sua nihil intersit, non tamen diligat?</h1>
@@ -54,7 +54,9 @@ describe('with html', () => {
     `;
 
     // Paste html content
-    cy.getEditor().focus().type('{movetostart}').paste(html, 'text/html');
+    cy.getEditor().focus();
+    cy.getEditor().type('{movetostart}');
+    cy.getEditor().paste(html, 'text/html');
 
     // Heading 1
     cy.getEditor()
@@ -185,15 +187,14 @@ describe('with html', () => {
   });
 
   it('can paste multiple blocks within the editor', function () {
-    cy.visit(`/app/note/${NOTE_ID}`);
+    cy.visitNote(NOTE_ID);
 
     const fragment =
       'JTVCJTdCJTIyaWQlMjIlM0ElMjJiMjBlZTBhNC1kNDRmLTQyMzYtYTVkNC03NmM5YmIxM2Q3ZDYlMjIlMkMlMjJ0eXBlJTIyJTNBJTIycGFyYWdyYXBoJTIyJTJDJTIyY2hpbGRyZW4lMjIlM0ElNUIlN0IlMjJ0ZXh0JTIyJTNBJTIyVGhpcyUyMGlzJTIwYSUyMHRlc3QlMjIlN0QlNUQlN0QlMkMlN0IlMjJpZCUyMiUzQSUyMmJlMWZhNjEwLTdiNWUtNGYwOS04ODFmLTgzM2M5Y2E4NDgxZSUyMiUyQyUyMnR5cGUlMjIlM0ElMjJibG9jay1xdW90ZSUyMiUyQyUyMmNoaWxkcmVuJTIyJTNBJTVCJTdCJTIydGV4dCUyMiUzQSUyMkElMjBibG9ja3F1b3RlJTIyJTdEJTVEJTdEJTVE';
 
-    cy.getEditor()
-      .focus()
-      .type('{movetostart}')
-      .paste(fragment, 'application/x-slate-fragment');
+    cy.getEditor().focus();
+    cy.getEditor().type('{movetostart}');
+    cy.getEditor().paste(fragment, 'application/x-slate-fragment');
 
     cy.getEditor()
       .findByTestId('paragraph')
@@ -202,14 +203,16 @@ describe('with html', () => {
   });
 
   it('preserves whitespace around inline elements', function () {
-    cy.visit(`/app/note/${NOTE_ID}`);
+    cy.visitNote(NOTE_ID);
 
     const html = `
       <p>Lorem ipsum dolor sit amet,<span> </span><strong>consectetur</strong><span> </span>adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
     `;
 
     // Paste html content
-    cy.getEditor().focus().type('{movetostart}').paste(html, 'text/html');
+    cy.getEditor().focus();
+    cy.getEditor().type('{movetostart}');
+    cy.getEditor().paste(html, 'text/html');
 
     cy.getEditor()
       .findByTestId('paragraph')

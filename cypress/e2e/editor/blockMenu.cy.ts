@@ -6,15 +6,12 @@ describe('block menu', () => {
   });
 
   it('can add a block below', function () {
-    cy.visit(`/app/note/${NOTE_ID}`);
+    cy.visitNote(NOTE_ID);
 
     // Type some text into the editor, then click the 3 dots to the left
-    cy.getEditor()
-      .focus()
-      .type('{movetostart}This is a test')
-      .findByTestId('dropdown-button')
-      .eq(0)
-      .click();
+    cy.getEditor().focus();
+    cy.getEditor().type('{movetostart}This is a test');
+    cy.findByTestId('dropdown-button').eq(0).click();
 
     // Assert that there is one paragraph
     cy.findAllByTestId('paragraph').should('have.length', 1);
