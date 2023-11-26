@@ -4,7 +4,7 @@ import Script from 'next/script';
 import { ToastContainer } from 'react-toastify';
 import NProgress from 'nprogress';
 import type { AppProps } from 'next/app';
-import { Inter } from '@next/font/google';
+import { Inter } from 'next/font/google';
 import { ProvideAuth } from 'utils/useAuth';
 import AppLayout from 'components/AppLayout';
 import ServiceWorker from 'components/ServiceWorker';
