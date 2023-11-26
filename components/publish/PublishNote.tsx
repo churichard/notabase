@@ -1,11 +1,11 @@
 import { memo, useMemo } from 'react';
 import type { Path } from 'slate';
 import ErrorBoundary from 'components/ErrorBoundary';
-import NoteHeader from 'components/editor/NoteHeader';
 import { ProvideCurrentNote } from 'utils/useCurrentNote';
 import { store } from 'lib/store';
 import PublishEditor from './PublishEditor';
 import PublishTitle from './PublishTitle';
+import PublishNoteHeader from './PublishNoteHeader';
 
 type Props = {
   noteId: string;
@@ -34,7 +34,7 @@ function PublishNote(props: Props) {
     >
       <ProvideCurrentNote value={currentNoteValue}>
         <div id={noteId} className={`${noteContainerClassName} ${className}`}>
-          <NoteHeader />
+          <PublishNoteHeader />
           <div className="flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
             <div className="mx-auto flex w-full flex-1 flex-col md:w-128 lg:w-160 xl:w-192">
               {noteExists ? (

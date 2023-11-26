@@ -12,28 +12,23 @@ import {
 import { usePopper } from 'react-popper';
 import { saveAs } from 'file-saver';
 import JSZip from 'jszip';
-import { useRouter } from 'next/router';
 import Portal from 'components/Portal';
 import { useCurrentNote } from 'utils/useCurrentNote';
 import { store, useStore } from 'lib/store';
 import serialize from 'editor/serialization/serialize';
 import { Note } from 'types/supabase';
 import useImport from 'utils/useImport';
-import { queryParamToArray } from 'utils/url';
 import Tooltip from 'components/Tooltip';
 import OpenSidebarButton from 'components/sidebar/OpenSidebarButton';
 import { DropdownItem } from 'components/Dropdown';
 import useDeleteNote from 'utils/useDeleteNote';
 import NoteMetadata from 'components/NoteMetadata';
 import MoveToModal from 'components/MoveToModal';
+import useOnClosePane from 'utils/useOnClosePane';
 
 export default function NoteHeader() {
   const currentNote = useCurrentNote();
   const onImport = useImport();
-  const router = useRouter();
-  const {
-    query: { stack: stackQuery },
-  } = router;
 
   const isSidebarButtonVisible = useStore(
     (state) => !state.isSidebarOpen && state.openNoteIds?.[0] === currentNote.id
@@ -43,42 +38,7 @@ export default function NoteHeader() {
   );
   const note = useStore((state) => state.notes[currentNote.id]);
 
-  const onClosePane = useCallback(() => {
-    const currentNoteIndex = store
-      .getState()
-      .openNoteIds.findIndex((openNoteId) => openNoteId === currentNote.id);
-    const stackedNoteIds = queryParamToArray(stackQuery);
-
-    if (currentNoteIndex < 0) {
-      return;
-    }
-
-    if (currentNoteIndex === 0) {
-      // Changes current note to first note in stack
-      router.push(
-        {
-          pathname: router.pathname,
-          query: { id: stackedNoteIds[0], stack: stackedNoteIds.slice(1) },
-        },
-        undefined,
-        { shallow: true }
-      );
-    } else {
-      // Remove from stacked notes and shallowly route
-      stackedNoteIds.splice(
-        currentNoteIndex - 1, // Stacked notes don't include the main note
-        1
-      );
-      router.push(
-        {
-          pathname: router.pathname,
-          query: { ...router.query, stack: stackedNoteIds },
-        },
-        undefined,
-        { shallow: true }
-      );
-    }
-  }, [currentNote.id, stackQuery, router]);
+  const onClosePane = useOnClosePane();
 
   const menuButtonRef = useRef<HTMLButtonElement | null>(null);
   const [popperElement, setPopperElement] = useState<HTMLDivElement | null>(
