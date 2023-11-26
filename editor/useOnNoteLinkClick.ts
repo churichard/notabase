@@ -77,7 +77,6 @@ export default function useOnNoteLinkClick(currentNoteId: string) {
         : undefined;
       router.push(
         {
-          pathname: '/app/note/[id]',
           query: { ...router.query, stack: stackedNoteIds },
           hash,
         },

@@ -21,12 +21,14 @@ export type PublishNote = PickPartial<
 export default function NotePage() {
   const router = useRouter();
   const {
-    query: { id: noteId, stack: stackQuery },
+    query: { userId, noteId, stack: stackQuery },
   } = router;
 
   const [isPageLoaded, setIsPageLoaded] = useState(false);
-  const [note, setNote] = useState<PublishNote | null>(null);
-  const [openNoteIds, setOpenNoteIds] = useState<string[]>([]);
+
+  const openNoteIds = useStore((state) => state.openNoteIds);
+  const setOpenNoteIds = useStore((state) => state.setOpenNoteIds);
+  const setNotes = useStore((state) => state.setNotes);
   const prevOpenNoteIds = usePrevious(openNoteIds);
 
   const pageTitle = useStore((state) => {
@@ -46,18 +48,27 @@ export default function NotePage() {
       return;
     }
 
-    const { data: note, status } = await supabase
+    const { data: notes, status } = await supabase
       .from('notes')
-      .select('id, title, content')
-      .eq('id', noteId)
-      .single();
+      .select('id, user_id, title, content, created_at, updated_at')
+      .eq('user_id', userId);
 
-    if (status === 200) {
-      setNote(note);
+    if (status !== 200 || !notes) {
+      setIsPageLoaded(true);
+      return;
     }
 
+    const notesAsObj = notes.reduce<Record<NoteType['id'], NoteType>>(
+      (acc, note) => {
+        acc[note.id] = note;
+        return acc;
+      },
+      {}
+    );
+    setNotes(notesAsObj);
+
     setIsPageLoaded(true);
-  }, [noteId]);
+  }, [noteId, userId, setNotes]);
 
   useEffect(() => {
     initData();
@@ -104,7 +115,12 @@ export default function NotePage() {
     return <PageLoading />;
   }
 
-  if (!noteId || typeof noteId !== 'string' || !note) {
+  if (
+    !userId ||
+    typeof userId !== 'string' ||
+    !noteId ||
+    typeof noteId !== 'string'
+  ) {
     return (
       <>
         <Head>
@@ -133,7 +149,7 @@ export default function NotePage() {
           ? openNoteIds.map((noteId, index) => (
               <PublishNote
                 key={noteId}
-                note={note}
+                noteId={noteId}
                 className="sticky left-0"
                 highlightedPath={
                   highlightedPath?.index === index
