@@ -28,9 +28,16 @@ describe('Editor', () => {
   };
 
   beforeEach(() => {
+    jest.useFakeTimers();
+
     act(() => {
       store.getState().setNotes(notes);
     });
+  });
+
+  afterEach(() => {
+    jest.runOnlyPendingTimers();
+    jest.useRealTimers();
   });
 
   it('renders editor and placeholder', () => {
@@ -38,6 +45,8 @@ describe('Editor', () => {
 
     const editor = screen.getByRole('textbox');
     expect(editor).toBeInTheDocument();
+
+    act(() => jest.runAllTimers());
 
     const placeholder = screen.getByText('Start typing here…');
     expect(placeholder).toBeInTheDocument();

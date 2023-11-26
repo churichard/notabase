@@ -42,7 +42,7 @@ const handleBlockShortcuts = (editor: Editor, text: string): boolean => {
   }
 
   const block = Editor.above(editor, {
-    match: (n) => Editor.isBlock(editor, n),
+    match: (n) => Element.isElement(n) && Editor.isBlock(editor, n),
   });
   const path = block ? block[1] : [];
   const lineStart = Editor.start(editor, path);
@@ -82,7 +82,7 @@ const handleBlockShortcuts = (editor: Editor, text: string): boolean => {
     Transforms.setNodes(
       editor,
       { type },
-      { match: (n) => Editor.isBlock(editor, n) }
+      { match: (n) => Element.isElement(n) && Editor.isBlock(editor, n) }
     );
 
     if (type === ElementType.ListItem) {

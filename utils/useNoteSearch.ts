@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import Fuse from 'fuse.js';
-import { createEditor, Descendant, Editor, Node, Path } from 'slate';
+import { createEditor, Descendant, Editor, Node, Path, Element } from 'slate';
 import { Notes, store } from 'lib/store';
 import withLinks from 'editor/plugins/withLinks';
 import withTags from 'editor/plugins/withTags';
@@ -79,7 +79,7 @@ const flattenContent = (content: Descendant[]): NoteBlock[] => {
 
   const blocks = Editor.nodes(editor, {
     at: [],
-    match: (n) => !Editor.isEditor(n) && Editor.isBlock(editor, n),
+    match: (n) => Element.isElement(n) && Editor.isBlock(editor, n),
     mode: 'lowest',
   });
 

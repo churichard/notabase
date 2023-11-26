@@ -257,7 +257,7 @@ function Editor(props: Props) {
   }, [editor, highlightedPath, darkMode]);
 
   return (
-    <Slate editor={editor} value={initialValue} onChange={onSlateChange}>
+    <Slate editor={editor} initialValue={initialValue} onChange={onSlateChange}>
       <HoveringToolbar
         canBeVisible={toolbarCanBeVisible && !addLinkPopoverState.isVisible}
         setAddLinkPopoverState={setAddLinkPopoverState}
@@ -272,7 +272,7 @@ function Editor(props: Props) {
       <BlockAutocompletePopover />
       <TagAutocompletePopover />
       <Editable
-        className={`overflow-hidden placeholder-gray-300 ${className}`}
+        className={`overflow-hidden placeholder-gray-300 focus:outline-none ${className}`}
         data-testid="note-editor"
         renderElement={renderElement}
         renderLeaf={EditorLeaf}
