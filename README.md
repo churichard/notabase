@@ -66,14 +66,13 @@ You can run unit tests by running `npm run test`.
 First-time setup:
 
 1. Install Docker and Docker Compose.
-2. Installed the supabase-cli: `npm i -g supabase`.
-3. Run `supabase init` to initialize your Supabase project.
-4. Copy `.env.test.example` into `.env.test` and fill in the environment variables.
+2. Run `npx supabase init` to initialize your Supabase project.
+3. Copy `.env.test.example` into `.env.test` and fill in the environment variables.
 
 To run tests:
 
 1. Start Docker.
-2. Run `supabase start`.
+2. Run `npx supabase start`.
 3. Run `NODE_ENV=test npm run dev`.
 4. Run `npm run cy:open` to run Cypress tests in a GUI, or `npm run cy:run` to run them in the CLI.
 

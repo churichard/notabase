@@ -37,16 +37,22 @@ const supabase = createClient(
 
 Cypress.Commands.add('setup', () => {
   cy.exec('npm run db:seed')
-    .then(() =>
-      supabase.auth.signInWithPassword({
+    .then(async () => {
+      const { data, error } = await supabase.auth.signInWithPassword({
         email: user.email,
         password: user.password,
-      })
-    )
-    .then(async (result) => {
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      return data.user;
+    })
+    .then(async (user) => {
       const data = notes.map((note) => ({
         ...note,
-        user_id: result.data.user?.id,
+        user_id: user?.id,
       }));
       // insert completed notes to supabase
       await supabase.from('notes').insert(data);
