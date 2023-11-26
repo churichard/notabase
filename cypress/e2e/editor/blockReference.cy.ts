@@ -7,15 +7,12 @@ describe('block reference', () => {
   });
 
   it('can add a block reference by copying and pasting the block ref', () => {
-    cy.visit(`/app/note/${BLANK_NOTE_ID}`);
+    cy.visitNote(BLANK_NOTE_ID);
 
     // Type some text into the editor, then click the 3 dots to the left
-    cy.getEditor()
-      .focus()
-      .type('{movetostart}This is a test')
-      .findByTestId('dropdown-button')
-      .eq(0)
-      .click();
+    cy.getEditor().focus();
+    cy.getEditor().type('{movetostart}This is a test');
+    cy.findByTestId('dropdown-button').eq(0).click();
 
     // Copy the block reference
     cy.findByText('Copy block reference').click();
@@ -24,7 +21,9 @@ describe('block reference', () => {
     cy.window()
       .then((win) => win.navigator.clipboard.readText())
       .then((text) => {
-        cy.getEditor().focus().type('{movetoend}{enter}').paste(text);
+        cy.getEditor().focus();
+        cy.getEditor().type('{movetoend}{enter}');
+        cy.getEditor().paste(text);
       });
 
     // Assert that there are now two blocks with the same content
@@ -35,11 +34,10 @@ describe('block reference', () => {
   });
 
   it('can edit a block and have its references update', () => {
-    cy.visit(`/app/note/${NOTE_WITH_BLOCK_REF_ID}`);
+    cy.visitNote(NOTE_WITH_BLOCK_REF_ID);
 
-    cy.getEditor()
-      .focus()
-      .type('{moveToStart}{downArrow}{rightArrow}{end} Hello');
+    cy.getEditor().focus();
+    cy.getEditor().type('{moveToStart}{downArrow}{rightArrow}{end} Hello');
 
     cy.getEditor()
       .findAllByText('This paragraph will be referenced. Hello')

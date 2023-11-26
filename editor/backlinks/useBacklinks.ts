@@ -127,7 +127,7 @@ const computeLinkedMatches = (nodes: Descendant[], noteId: string) => {
     // Get the line element
     const block = Editor.above<Element>(editor, {
       at: path,
-      match: (n) => Editor.isBlock(editor, n),
+      match: (n) => Element.isElement(n) && Editor.isBlock(editor, n),
     });
 
     if (block) {
@@ -160,7 +160,7 @@ const computeUnlinkedMatches = (nodes: Descendant[], noteTitle: string) => {
     // Get the line element
     const block = Editor.above<Element>(editor, {
       at: path,
-      match: (n) => Editor.isBlock(editor, n),
+      match: (n) => Element.isElement(n) && Editor.isBlock(editor, n),
     });
 
     if (block) {

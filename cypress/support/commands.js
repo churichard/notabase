@@ -138,3 +138,8 @@ Cypress.Commands.add('getNumberOfLinkedReferences', () => {
 Cypress.Commands.add('targetPage', (noteTitle) => {
   cy.getNoteTitle(noteTitle).parent();
 });
+
+Cypress.Commands.add('visitNote', (noteId) => {
+  // eslint-disable-next-line cypress/no-unnecessary-waiting
+  cy.visit(`/app/note/${noteId}`).wait(500);
+});

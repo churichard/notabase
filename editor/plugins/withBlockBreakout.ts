@@ -21,7 +21,7 @@ const withBlockBreakout = (editor: Editor) => {
 
     const { anchor } = selection;
     const block = Editor.above(editor, {
-      match: (n) => Editor.isBlock(editor, n),
+      match: (n) => Element.isElement(n) && Editor.isBlock(editor, n),
     });
 
     if (!block) {

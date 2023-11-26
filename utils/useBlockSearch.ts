@@ -66,7 +66,7 @@ const flattenContent = (
 
   const blocks = Editor.nodes<Element>(editor, {
     at: [],
-    match: (n) => !Editor.isEditor(n) && Editor.isBlock(editor, n),
+    match: (n) => Element.isElement(n) && Editor.isBlock(editor, n),
     mode: 'lowest',
   });
 

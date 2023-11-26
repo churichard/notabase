@@ -131,7 +131,7 @@ const isAtLineEnd = (editor: Editor, selection: Selection) => {
 
   const { anchor } = selection;
   const block = Editor.above(editor, {
-    match: (n) => Editor.isBlock(editor, n),
+    match: (n) => Element.isElement(n) && Editor.isBlock(editor, n),
   });
   const linePath = block ? block[1] : [];
 

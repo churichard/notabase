@@ -9,7 +9,7 @@ const withCustomDeleteBackward = (editor: Editor) => {
   editor.deleteBackward = (...args) => {
     const { selection } = editor;
     const block = Editor.above(editor, {
-      match: (n) => Editor.isBlock(editor, n),
+      match: (n) => Element.isElement(n) && Editor.isBlock(editor, n),
     });
 
     if (!selection || !block) {
