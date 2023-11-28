@@ -12,6 +12,7 @@ import { PickPartial } from 'types/utils';
 import PublishNote from 'components/publish/PublishNote';
 import PageLoading from 'components/PageLoading';
 import getHighlightedPath from 'utils/getHighlightedPath';
+import PublishFooter from 'components/publish/PublishFooter';
 
 export type PublishNote = PickPartial<
   NoteType,
@@ -160,6 +161,7 @@ export default function NotePage() {
             ))
           : null}
       </div>
+      <PublishFooter />
     </>
   );
 }
