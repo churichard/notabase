@@ -13,7 +13,7 @@ import getHighlightedPath from 'utils/getHighlightedPath';
 export default function NotePage() {
   const router = useRouter();
   const {
-    query: { id: noteId, stack: stackQuery },
+    query: { noteId, stack: stackQuery },
   } = router;
 
   const openNoteIds = useStore((state) => state.openNoteIds);

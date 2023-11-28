@@ -26,7 +26,11 @@ export default function useOnClosePane() {
       router.push(
         {
           pathname: router.pathname,
-          query: { id: stackedNoteIds[0], stack: stackedNoteIds.slice(1) },
+          query: {
+            ...router.query,
+            noteId: stackedNoteIds[0],
+            stack: stackedNoteIds.slice(1),
+          },
         },
         undefined,
         { shallow: true }
