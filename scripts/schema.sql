@@ -1,9 +1,5 @@
 -- extensions
-
-DROP EXTENSION IF EXISTS citext CASCADE;
-DROP EXTENSION IF EXISTS "uuid-ossp" CASCADE;
 CREATE EXTENSION IF NOT EXISTS citext with SCHEMA public;
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp" with SCHEMA public;
 
 
 -- enums
@@ -22,10 +18,10 @@ CREATE TYPE billing_frequency AS ENUM ('monthly', 'annual', 'one_time');
 
 DROP TABLE IF EXISTS public.notes;
 CREATE TABLE public.notes (
-  "content" jsonb NOT NULL DEFAULT (('[ { "id": "'::text || uuid_generate_v4()) || '", "type": "paragraph", "children": [{ "text": "" }] } ]'::text)::jsonb,
+  "content" jsonb NOT NULL DEFAULT (('[ { "id": "'::text || extensions.uuid_generate_v4()) || '", "type": "paragraph", "children": [{ "text": "" }] } ]'::text)::jsonb,
   title citext NOT NULL,
   user_id uuid NOT NULL,
-  id uuid NOT NULL DEFAULT uuid_generate_v4(),
+  id uuid NOT NULL DEFAULT extensions.uuid_generate_v4(),
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   CONSTRAINT non_empty_title CHECK ((title <> ''::citext)),
@@ -38,7 +34,7 @@ CREATE TABLE public.notes (
 
 DROP TABLE IF EXISTS public.subscriptions CASCADE;
 CREATE TABLE public.subscriptions (
-  id uuid NOT NULL DEFAULT uuid_generate_v4(),
+  id uuid NOT NULL DEFAULT extensions.uuid_generate_v4(),
   user_id uuid NULL,
   stripe_customer_id text NOT NULL,
   stripe_subscription_id text,
@@ -131,9 +127,9 @@ CREATE OR REPLACE FUNCTION create_onboarding_notes()
   set search_path = public
   as $$
     declare
-      getting_started_id uuid := uuid_generate_v4();
-      linked_note_id uuid := uuid_generate_v4();
-      stack_note_id uuid := uuid_generate_v4();
+      getting_started_id uuid := extensions.uuid_generate_v4();
+      linked_note_id uuid := extensions.uuid_generate_v4();
+      stack_note_id uuid := extensions.uuid_generate_v4();
     begin
       insert into public.notes (id, user_id, title, content)
       values
