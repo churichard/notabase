@@ -5,7 +5,7 @@ import { store } from 'lib/store';
 
 export type NoteUpdate = PickPartial<
   Note,
-  'user_id' | 'content' | 'title' | 'created_at' | 'updated_at'
+  'user_id' | 'content' | 'title' | 'created_at' | 'updated_at' | 'visibility'
 >;
 
 export default async function updateNote(note: NoteUpdate) {

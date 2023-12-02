@@ -8,10 +8,12 @@ import {
   IconX,
   IconTrash,
   IconCornerDownRight,
+  IconCloudUpload,
 } from '@tabler/icons';
 import { usePopper } from 'react-popper';
 import { saveAs } from 'file-saver';
 import JSZip from 'jszip';
+import classNames from 'classnames';
 import Portal from 'components/Portal';
 import { useCurrentNote } from 'utils/useCurrentNote';
 import { store, useStore } from 'lib/store';
@@ -71,6 +73,10 @@ export default function NoteHeader() {
   const [isMoveToModalOpen, setIsMoveToModalOpen] = useState(false);
   const onMoveToClick = useCallback(() => setIsMoveToModalOpen(true), []);
 
+  const setIsPublishModalOpen = useStore(
+    (state) => state.setIsPublishModalOpen
+  );
+
   const buttonClassName =
     'rounded hover:bg-gray-300 active:bg-gray-400 dark:hover:bg-gray-700 dark:active:bg-gray-600';
   const iconClassName = 'text-gray-600 dark:text-gray-300';
@@ -78,20 +84,14 @@ export default function NoteHeader() {
   return (
     <div className="flex w-full items-center justify-between px-4 py-1 text-right">
       <div>{isSidebarButtonVisible ? <OpenSidebarButton /> : null}</div>
-      <div>
-        {isCloseButtonVisible ? (
-          <Tooltip content="Close pane">
-            <button
-              className={buttonClassName}
-              onClick={onClosePane}
-              title="Close pane"
-            >
-              <span className="flex h-8 w-8 items-center justify-center">
-                <IconX className={iconClassName} />
-              </span>
-            </button>
-          </Tooltip>
-        ) : null}
+      <div className="flex items-center">
+        <button
+          className={classNames(buttonClassName, 'flex items-center py-1 px-2')}
+          onClick={() => setIsPublishModalOpen(true)}
+        >
+          <IconCloudUpload size={20} className={iconClassName} />
+          <span className="ml-1">Publish</span>
+        </button>
         <Menu>
           {({ open }) => (
             <>
@@ -147,6 +147,19 @@ export default function NoteHeader() {
             </>
           )}
         </Menu>
+        {isCloseButtonVisible ? (
+          <Tooltip content="Close pane">
+            <button
+              className={buttonClassName}
+              onClick={onClosePane}
+              title="Close pane"
+            >
+              <span className="flex h-8 w-8 items-center justify-center">
+                <IconX className={iconClassName} />
+              </span>
+            </button>
+          </Tooltip>
+        ) : null}
       </div>
       {isMoveToModalOpen ? (
         <Portal>

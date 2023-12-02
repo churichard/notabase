@@ -51,7 +51,7 @@ export default function NotePage() {
 
     const { data: notes, status } = await supabase
       .from('notes')
-      .select('id, user_id, title, content, created_at, updated_at')
+      .select('id, user_id, title, content, created_at, updated_at, visibility')
       .eq('user_id', userId);
 
     if (status !== 200 || !notes) {

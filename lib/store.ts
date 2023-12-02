@@ -103,6 +103,8 @@ export type Store = {
   toggleNoteTreeItemCollapsed: (noteId: string) => void;
   isUpgradeModalOpen: boolean;
   setIsUpgradeModalOpen: Setter<boolean>;
+  isPublishModalOpen: boolean;
+  setIsPublishModalOpen: Setter<boolean>;
   blockIdToBacklinksMap: Record<string, Backlink[] | undefined>;
   setBlockIdToBacklinksMap: Setter<Record<string, Backlink[] | undefined>>;
   sidebarTab: SidebarTab;
@@ -236,6 +238,11 @@ export const store = createStore<Store>()(
        */
       isUpgradeModalOpen: false,
       setIsUpgradeModalOpen: createSetter(set, 'isUpgradeModalOpen'),
+      /**
+       * Whether or not the publish modal is open
+       */
+      isPublishModalOpen: false,
+      setIsPublishModalOpen: createSetter(set, 'isPublishModalOpen'),
       /**
        * Cache of block id to backlinks
        */

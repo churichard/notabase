@@ -22,6 +22,7 @@ import UpgradeModal from './UpgradeModal';
 import OfflineBanner from './OfflineBanner';
 import UpdateBanner from './UpdateBanner';
 import UpgradeBanner from './UpgradeBanner';
+import PublishModal from './settings/PublishModal';
 
 type Props = {
   children: ReactNode;
@@ -180,6 +181,7 @@ export default function AppLayout(props: Props) {
   const setSidebarTab = useStore((state) => state.setSidebarTab);
 
   const isUpgradeModalOpen = useStore((state) => state.isUpgradeModalOpen);
+  const isPublishModalOpen = useStore((state) => state.isPublishModalOpen);
 
   const upsertNote = useStore((state) => state.upsertNote);
   const updateNote = useStore((state) => state.updateNote);
@@ -320,6 +322,7 @@ export default function AppLayout(props: Props) {
             <FindOrCreateModal setIsOpen={setIsFindOrCreateModalOpen} />
           ) : null}
           {isUpgradeModalOpen ? <UpgradeModal /> : null}
+          {isPublishModalOpen ? <PublishModal /> : null}
         </div>
       </div>
     </>
