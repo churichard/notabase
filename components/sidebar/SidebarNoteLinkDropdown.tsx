@@ -57,13 +57,13 @@ const SidebarNoteLinkDropdown = (props: Props) => {
                   style={styles.popper}
                   {...attributes.popper}
                 >
-                  <DropdownItem onClick={onDeleteClick}>
-                    <IconTrash size={18} className="mr-1" />
-                    <span>Delete</span>
-                  </DropdownItem>
                   <DropdownItem onClick={onMoveToClick}>
                     <IconCornerDownRight size={18} className="mr-1" />
                     <span>Move to</span>
+                  </DropdownItem>
+                  <DropdownItem onClick={onDeleteClick}>
+                    <IconTrash size={18} className="mr-1" />
+                    <span>Delete</span>
                   </DropdownItem>
                   <NoteMetadata note={note} />
                 </Menu.Items>
