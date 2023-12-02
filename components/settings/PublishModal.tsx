@@ -39,9 +39,7 @@ export default function PublishModal() {
         <div className="z-30 flex h-full w-full max-w-full flex-col overflow-hidden rounded bg-white shadow-popover sm:max-h-176 sm:w-240 sm:flex-row">
           <div className="h-full w-full flex-1 overflow-y-auto p-6 dark:bg-gray-800 dark:text-gray-100">
             <div className="mb-4">
-              <h1 className="text-lg font-medium">
-                Publish your note to the web
-              </h1>
+              <h1 className="text-lg font-medium">Publish to the web</h1>
             </div>
             <SelectMenu
               value={visibility}

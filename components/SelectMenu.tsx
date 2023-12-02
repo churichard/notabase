@@ -45,7 +45,9 @@ export default function SelectMenu<V>(props: Props<V>) {
                   value={item.value}
                   className={({ active }) =>
                     `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                      active ? 'bg-amber-100 text-amber-900' : 'text-gray-900'
+                      active
+                        ? 'bg-primary-100 text-primary-500'
+                        : 'text-gray-900'
                     }`
                   }
                 >
@@ -59,7 +61,7 @@ export default function SelectMenu<V>(props: Props<V>) {
                         {item.name}
                       </span>
                       {selected ? (
-                        <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
+                        <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-primary-500">
                           <IconCheck className="h-5 w-5" aria-hidden="true" />
                         </span>
                       ) : null}
