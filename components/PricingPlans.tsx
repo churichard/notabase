@@ -11,6 +11,9 @@ import Toggle from './Toggle';
 
 const BASIC_BULLET_POINTS = [
   'Try it out for free',
+  'Easy-to-use and powerful editor',
+  'Graph view',
+  'Import/export your notes at any time',
   `${MAX_NUM_OF_BASIC_NOTES} notes`,
   '5 MB image uploads',
   'Community support',
@@ -18,9 +21,9 @@ const BASIC_BULLET_POINTS = [
 
 const PRO_BULLET_POINTS = [
   'Everything in Basic, plus:',
+  'Publish your notes on the web',
   'Unlimited notes',
   '20 MB image uploads',
-  'Publishing to the web (coming soon)',
   'Community and email support',
 ];
 

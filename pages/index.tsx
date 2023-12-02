@@ -281,13 +281,10 @@ export default function Home() {
                   </p>
                 </div>
                 <div className="rounded-md bg-purple-50 p-8 shadow">
-                  <h3 className="text-xl font-semibold">Make a help center*</h3>
+                  <h3 className="text-xl font-semibold">Make a help center</h3>
                   <p className="pt-2">
                     Set up a help center for your product or company in minutes.
                     No coding or design required.
-                  </p>
-                  <p className="pt-2 text-xs text-gray-500">
-                    *Coming soon with Notabase Publish
                   </p>
                 </div>
               </div>
