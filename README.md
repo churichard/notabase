@@ -51,7 +51,7 @@ Notabase is currently focused on the hosted experience, but it is possible for y
 1. Notabase uses Supabase as the backend (for authentication, database, and storage), so you'll have to make a [Supabase](https://supabase.io) account. If you prefer to self-host Supabase, you can follow the instructions in their [docs](https://supabase.io/docs/guides/self-hosting).
 2. Copy `.env.local.example` into `.env.local` and fill in the `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_KEY`, and `SUPABASE_SERVICE_KEY` variables from your [Supabase dashboard](https://app.supabase.io). The other environment variables are optional.
 3. Create your database tables. Apply [full schema](https://github.com/churichard/notabase/blob/main/scripts/schema.sql) and [storage setup](https://github.com/churichard/notabase/blob/main/scripts/storage-setup.sql).
-4. In your local environment, install the packages using `npm install`, and then build and run the project using `npm run build` and `npm start -- --port 8000`. You will be able to see Notabase running on http://localhost:8000. Alternatively, for a development environment, run `npm run dev`.
+4. In your local environment, install the packages using `npm install`, and then build and run the project using `npm run build` and `npm start -- --port 3000`. You will be able to see Notabase running on http://localhost:3000. Alternatively, for a development environment, run `npm run dev`.
 
 > [!IMPORTANT]
 > The hosted and self-hosted versions of Notabase share the same codebase, so by default, there is a cap on the number of notes you can create. You can circumvent this by inserting a new row in the `subscriptions` table for your user id, with `pro` in the `plan_id` column and `active` in the `subscription_status` column.
