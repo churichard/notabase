@@ -3,6 +3,7 @@ import type { Path } from 'slate';
 import ErrorBoundary from 'components/ErrorBoundary';
 import { ProvideCurrentNote } from 'utils/useCurrentNote';
 import { store } from 'lib/store';
+import STRINGS from 'constants/strings';
 import PublishEditor from './PublishEditor';
 import PublishTitle from './PublishTitle';
 import PublishNoteHeader from './PublishNoteHeader';
@@ -51,11 +52,7 @@ function PublishNote(props: Props) {
                 </>
               ) : (
                 <div className={errorContainerClassName}>
-                  <p>
-                    It doesn&apos;t look like you have permission to view this
-                    note. You might need to sign in or ask the author to share
-                    this note.
-                  </p>
+                  <p>{STRINGS.error.publishNoPermission}</p>
                 </div>
               )}
             </div>

@@ -13,6 +13,7 @@ import PublishNote from 'components/publish/PublishNote';
 import PageLoading from 'components/PageLoading';
 import getHighlightedPath from 'utils/getHighlightedPath';
 import PublishFooter from 'components/publish/PublishFooter';
+import STRINGS from 'constants/strings';
 
 export type PublishNote = PickPartial<
   NoteType,
@@ -129,8 +130,7 @@ export default function NotePage() {
         </Head>
         <div className="flex h-screen flex-1 flex-col items-center justify-center p-4">
           <p className="text-center text-2xl">
-            Whoops! This note doesn&apos;t exist or you don&apos;t have
-            permission to view it.
+            {STRINGS.error.publishNoPermission}
           </p>
           <Link href="/app" className="btn mt-6">
             Go back to my notes
