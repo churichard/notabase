@@ -1,9 +1,8 @@
 import { useCallback, useRef, useState } from 'react';
 import { Menu } from '@headlessui/react';
-import { IconCircleCheck, IconCloudUpload } from '@tabler/icons';
+import { IconCircleCheck, IconWorldUpload } from '@tabler/icons';
 import { usePopper } from 'react-popper';
 import Portal from 'components/Portal';
-import Tooltip from 'components/Tooltip';
 import { useCurrentNote } from 'utils/useCurrentNote';
 import updateNote from 'lib/api/updateNote';
 import { Visibility } from 'types/supabase';
@@ -36,6 +35,8 @@ export default function PublishMenu() {
     await updateNote({ id: currentNote.id, visibility: Visibility.Private });
   }, [currentNote.id]);
 
+  const publicUrl = `${window.location.protocol}//${window.location.host}/publish/${user?.id}/note/${currentNote.id}`;
+
   const buttonClassName =
     'rounded hover:bg-gray-300 active:bg-gray-400 dark:hover:bg-gray-700 dark:active:bg-gray-600';
   const iconClassName = 'text-gray-600 dark:text-gray-300';
@@ -47,15 +48,24 @@ export default function PublishMenu() {
           <Menu.Button
             ref={menuButtonRef}
             className={buttonClassName}
-            title="Options (export, import, etc.)"
             data-testid="note-menu-button"
           >
-            <Tooltip content="Options (export, import, etc.)">
-              <span className="flex items-center py-1 px-2">
-                <IconCloudUpload size={20} className={iconClassName} />
-                <span className="ml-1">Publish</span>
-              </span>
-            </Tooltip>
+            <span className="flex items-center py-1 px-2">
+              {isNotePrivate ? (
+                <>
+                  <IconWorldUpload size={20} className={iconClassName} />
+                  <span className="ml-1">Publish</span>
+                </>
+              ) : (
+                <>
+                  <IconCircleCheck
+                    size={20}
+                    className="text-primary-600 dark:text-primary-300"
+                  />
+                  <span className="ml-1">Live</span>
+                </>
+              )}
+            </span>
           </Menu.Button>
           {open && (
             <Portal>
@@ -89,23 +99,36 @@ export default function PublishMenu() {
                       Publish to the web
                     </h1>
                     <p className="mt-4 flex items-center text-sm">
-                      <IconCircleCheck size={20} className="text-primary-500" />
+                      <IconCircleCheck
+                        size={20}
+                        className="text-primary-600 dark:text-primary-300"
+                      />
                       <span className="ml-1">
-                        This page is live on the web.
+                        This page is live on the web. Share it with anyone!
                       </span>
                     </p>
                     <input
                       type="text"
                       className="mt-4 block w-full rounded border-gray-300 text-sm focus:ring-0 dark:bg-gray-800 dark:text-gray-200"
-                      value={`${window.location.protocol}//${window.location.host}/publish/${user?.id}/note/${currentNote.id}`}
+                      value={publicUrl}
                       disabled
                     />
-                    <button
-                      className="btn-secondary mt-4 px-4 py-1 text-center"
-                      onClick={onUnpublishClick}
-                    >
-                      Unpublish
-                    </button>
+                    <div className="mt-4 flex items-center">
+                      <button
+                        className="btn-secondary w-full px-4 py-1 text-center"
+                        onClick={onUnpublishClick}
+                      >
+                        Unpublish
+                      </button>
+                      <a
+                        className="btn ml-2 w-full px-4 py-1 text-center"
+                        href={publicUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        View site
+                      </a>
+                    </div>
                   </div>
                 )}
               </Menu.Items>
