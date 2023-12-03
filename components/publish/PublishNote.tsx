@@ -3,7 +3,7 @@ import type { Path } from 'slate';
 import ErrorBoundary from 'components/ErrorBoundary';
 import { ProvideCurrentNote } from 'utils/useCurrentNote';
 import { store } from 'lib/store';
-import NotePermissionError from 'components/NotePermissionError';
+import STRINGS from 'constants/strings';
 import PublishEditor from './PublishEditor';
 import PublishTitle from './PublishTitle';
 import PublishNoteHeader from './PublishNoteHeader';
@@ -51,7 +51,11 @@ function PublishNote(props: Props) {
                   />
                 </>
               ) : (
-                <NotePermissionError className={errorContainerClassName} />
+                <div className={errorContainerClassName}>
+                  <p className="mt-6 text-center text-2xl">
+                    {STRINGS.error.notePermissionError}
+                  </p>
+                </div>
               )}
             </div>
           </div>
