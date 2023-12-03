@@ -7,6 +7,10 @@
     @apply rounded bg-primary-500 px-5 py-3 font-medium text-white shadow transition duration-200 ease-in-out hover:bg-opacity-85;
   }
 
+  .btn-secondary {
+    @apply rounded border px-5 py-3 shadow transition duration-200 ease-in-out hover:bg-gray-100;
+  }
+
   .card {
     @apply max-w-md overflow-hidden rounded bg-white p-8 shadow-md;
   }

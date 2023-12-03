@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { IconX, IconCloudUpload } from '@tabler/icons';
-import classNames from 'classnames';
+import { IconX } from '@tabler/icons';
 import Portal from 'components/Portal';
 import { useCurrentNote } from 'utils/useCurrentNote';
 import { useStore } from 'lib/store';
@@ -9,6 +8,7 @@ import OpenSidebarButton from 'components/sidebar/OpenSidebarButton';
 import MoveToModal from 'components/MoveToModal';
 import useOnClosePane from 'utils/useOnClosePane';
 import NoteHeaderOptionsMenu from './NoteHeaderOptionsMenu';
+import PublishMenu from './PublishMenu';
 
 export default function NoteHeader() {
   const currentNote = useCurrentNote();
@@ -22,10 +22,6 @@ export default function NoteHeader() {
 
   const [isMoveToModalOpen, setIsMoveToModalOpen] = useState(false);
 
-  const setIsPublishModalOpen = useStore(
-    (state) => state.setIsPublishModalOpen
-  );
-
   const onClosePane = useOnClosePane();
 
   const buttonClassName =
@@ -36,13 +32,7 @@ export default function NoteHeader() {
     <div className="flex w-full items-center justify-between px-4 py-1 text-right">
       <div>{isSidebarButtonVisible ? <OpenSidebarButton /> : null}</div>
       <div className="flex items-center">
-        <button
-          className={classNames(buttonClassName, 'flex items-center py-1 px-2')}
-          onClick={() => setIsPublishModalOpen(true)}
-        >
-          <IconCloudUpload size={20} className={iconClassName} />
-          <span className="ml-1">Publish</span>
-        </button>
+        <PublishMenu />
         <NoteHeaderOptionsMenu setIsMoveToModalOpen={setIsMoveToModalOpen} />
         {isCloseButtonVisible ? (
           <Tooltip content="Close pane">
