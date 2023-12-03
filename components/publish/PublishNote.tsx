@@ -1,21 +1,24 @@
 import { memo, useMemo } from 'react';
 import type { Path } from 'slate';
+import Link from 'next/link';
 import ErrorBoundary from 'components/ErrorBoundary';
 import { ProvideCurrentNote } from 'utils/useCurrentNote';
 import { store } from 'lib/store';
 import STRINGS from 'constants/strings';
+import Logo from 'components/Logo';
 import PublishEditor from './PublishEditor';
 import PublishTitle from './PublishTitle';
 import PublishNoteHeader from './PublishNoteHeader';
 
 type Props = {
   noteId: string;
+  isPublishActive: boolean;
   highlightedPath?: Path;
   className?: string;
 };
 
 function PublishNote(props: Props) {
-  const { noteId, highlightedPath, className } = props;
+  const { noteId, isPublishActive, highlightedPath, className } = props;
 
   const currentNoteValue = useMemo(() => ({ id: noteId }), [noteId]);
 
@@ -23,7 +26,7 @@ function PublishNote(props: Props) {
     'flex flex-col flex-shrink-0 md:flex-shrink w-full bg-white dark:bg-gray-900 dark:text-gray-100';
   const errorContainerClassName = `${noteContainerClassName} items-center justify-center h-full p-4`;
 
-  const noteExists = !!store.getState().notes[noteId];
+  const noteExists = isPublishActive && !!store.getState().notes[noteId];
 
   return (
     <ErrorBoundary
@@ -52,7 +55,11 @@ function PublishNote(props: Props) {
                 </>
               ) : (
                 <div className={errorContainerClassName}>
-                  <p>{STRINGS.error.publishNoPermission}</p>
+                  <Logo width={64} height={64} />
+                  <p className="mt-6">{STRINGS.error.publishNoPermission}</p>
+                  <Link href="/app" className="btn mt-6">
+                    Go back to my notes
+                  </Link>
                 </div>
               )}
             </div>

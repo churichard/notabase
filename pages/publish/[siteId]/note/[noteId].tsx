@@ -20,10 +20,16 @@ export type PublishNote = PickPartial<
   'user_id' | 'created_at' | 'updated_at'
 >;
 
-export default function NotePage() {
+type Props = {
+  userId: string;
+  isPublishActive: boolean;
+};
+
+export default function NotePage(props: Props) {
+  const { userId, isPublishActive } = props;
   const router = useRouter();
   const {
-    query: { userId, noteId, stack: stackQuery },
+    query: { noteId, stack: stackQuery },
   } = router;
 
   const [isPageLoaded, setIsPageLoaded] = useState(false);
@@ -150,6 +156,7 @@ export default function NotePage() {
           ? openNoteIds.map((noteId, index) => (
               <PublishNote
                 key={noteId}
+                isPublishActive={isPublishActive}
                 noteId={noteId}
                 className="sticky left-0"
                 highlightedPath={

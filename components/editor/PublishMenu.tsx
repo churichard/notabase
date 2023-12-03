@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Menu } from '@headlessui/react';
 import {
   IconAlertCircle,
@@ -16,6 +16,7 @@ import { useAuth } from 'utils/useAuth';
 import useFeature from 'utils/useFeature';
 import { Feature } from 'constants/pricing';
 import Tooltip from 'components/Tooltip';
+import supabase from 'lib/supabase';
 
 export default function PublishMenu() {
   const currentNote = useCurrentNote();
@@ -53,7 +54,25 @@ export default function PublishMenu() {
     await updateNote({ id: currentNote.id, visibility: Visibility.Private });
   }, [currentNote.id]);
 
-  const publicUrl = `${window.location.protocol}//${window.location.host}/publish/${user?.id}/note/${currentNote.id}`;
+  const [siteId, setSiteId] = useState<string | null>(null);
+  useEffect(() => {
+    const fetchSiteId = async (userId: string) => {
+      const { data } = await supabase
+        .from('sites')
+        .select('id, user_id')
+        .eq('user_id', userId)
+        .maybeSingle();
+
+      if (data) {
+        setSiteId(data.id);
+      }
+    };
+    if (user?.id) {
+      fetchSiteId(user.id);
+    }
+  }, [user?.id]);
+
+  const publicUrl = `${window.location.protocol}//${window.location.host}/publish/${siteId}/note/${currentNote.id}`;
 
   const buttonClassName =
     'rounded hover:bg-gray-300 active:bg-gray-400 dark:hover:bg-gray-700 dark:active:bg-gray-600';
