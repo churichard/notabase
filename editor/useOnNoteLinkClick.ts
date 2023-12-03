@@ -18,8 +18,8 @@ export default function useOnNoteLinkClick(currentNoteId: string) {
       if (!stackNote) {
         const hash = highlightedPath ? `0-${highlightedPath}` : undefined;
         router.push({
-          pathname: '/app/note/[id]',
-          query: { id: noteId },
+          pathname: router.pathname,
+          query: { noteId },
           hash,
         });
         return;
@@ -77,6 +77,7 @@ export default function useOnNoteLinkClick(currentNoteId: string) {
         : undefined;
       router.push(
         {
+          pathname: router.pathname,
           query: { ...router.query, stack: stackedNoteIds },
           hash,
         },
