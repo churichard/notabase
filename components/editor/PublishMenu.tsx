@@ -26,7 +26,7 @@ export default function PublishMenu() {
     (state) => state.notes[currentNote.id].visibility === Visibility.Private
   );
 
-  const hasPublishingFeature = useFeature(Feature.NumOfNotes);
+  const hasPublishingFeature = useFeature(Feature.Publish);
 
   const setIsUpgradeModalOpen = useStore(
     (state) => state.setIsUpgradeModalOpen
