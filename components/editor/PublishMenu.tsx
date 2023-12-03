@@ -109,9 +109,7 @@ export default function PublishMenu() {
             {!hasPublishingFeature && (
               <IconArrowUpCircle size={18} className="mr-1 flex-shrink-0" />
             )}
-            {!hasPublishingFeature
-              ? 'Upgrade to publish to web'
-              : 'Publish to web'}
+            {!hasPublishingFeature ? 'Upgrade to publish' : 'Publish to web'}
           </button>
         </Tooltip>
       </div>
