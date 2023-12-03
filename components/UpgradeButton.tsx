@@ -17,22 +17,25 @@ export default function UpgradeButton(props: Props) {
   );
 
   const content = useMemo(() => {
-    if (feature === Feature.NumOfNotes) {
-      return `You have reached your ${MAX_NUM_OF_BASIC_NOTES} note limit. Upgrade to Pro for unlimited notes.`;
-    } else {
-      return 'Upgrade to Pro to access all features.';
+    switch (feature) {
+      case Feature.NumOfNotes:
+        return `You have reached your ${MAX_NUM_OF_BASIC_NOTES} note limit. Upgrade to Notabase Pro for unlimited notes.`;
+      case Feature.Publish:
+        return 'Upgrade to Notabase Pro to publish your notes on the web.';
+      default:
+        return 'Upgrade to Notabase Pro to access all features.';
     }
   }, [feature]);
 
   return (
     <Tooltip content={content}>
-      <span
-        className={`btn flex items-center p-2 text-xs ${className}`}
+      <button
+        className={`btn flex items-center p-2 text-sm ${className}`}
         onClick={() => setIsUpgradeModalOpen(true)}
       >
         <IconArrowUpCircle size={18} className="mr-1 flex-shrink-0" />
         <span className="whitespace-nowrap">Upgrade to Pro</span>
-      </span>
+      </button>
     </Tooltip>
   );
 }

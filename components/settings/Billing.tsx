@@ -223,9 +223,13 @@ const BillingBanner = (props: BillingBannerProps) => {
   } else {
     // No current subscription
     return (
-      <p className="mb-6 w-full border-b pb-6 dark:border-gray-700">
-        {currentPlanText} Upgrade to get unlimited notes.
-      </p>
+      <div className="mb-6 w-full border-b pb-6 dark:border-gray-700">
+        <h1 className="mb-4 text-xl font-medium">Upgrade for more features</h1>
+        <p>
+          {currentPlanText} Upgrade to get unlimited notes and publishing on the
+          web.
+        </p>
+      </div>
     );
   }
 };
