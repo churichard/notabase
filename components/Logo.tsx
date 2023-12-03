@@ -8,5 +8,13 @@ type Props = {
 
 export default function Logo(props: Props) {
   const { width, height } = props;
-  return <Image src={logo} width={width} height={height} alt="Notabase logo" />;
+  return (
+    <Image
+      src={logo}
+      width={width}
+      height={height}
+      alt="Notabase logo"
+      priority={true}
+    />
+  );
 }
