@@ -75,7 +75,10 @@ export default function Header(props: Props) {
             <IconBrandDiscord size={18} className="mr-1" />
             <span>Join our Discord</span>
           </DropdownItem>
-          <DropdownItem as="a" href="https://help.notabase.io">
+          <DropdownItem
+            as="a"
+            href="https://notabase.io/publish/ed280468-4096-4b21-8298-4a97c4eb990e/note/59df6332-0356-4c06-83ba-a90682ab18fc/"
+          >
             <IconHelp size={18} className="mr-1" />
             <span>Help Center</span>
           </DropdownItem>
