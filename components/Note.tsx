@@ -10,6 +10,7 @@ import updateDbNote from 'lib/api/updateNote';
 import { ProvideCurrentNote } from 'utils/useCurrentNote';
 import { caseInsensitiveStringEqual } from 'utils/string';
 import updateBacklinks from 'editor/backlinks/updateBacklinks';
+import STRINGS from 'constants/strings';
 import Backlinks from './editor/backlinks/Backlinks';
 import NoteHeader from './editor/NoteHeader';
 import ErrorBoundary from './ErrorBoundary';
@@ -154,7 +155,7 @@ function Note(props: Props) {
   if (!noteExists) {
     return (
       <div className={errorContainerClassName}>
-        <p>Whoops&mdash;it doesn&apos;t look like this note exists!</p>
+        <p className="text-2xl">{STRINGS.error.notePermissionError}</p>
       </div>
     );
   }
@@ -163,7 +164,9 @@ function Note(props: Props) {
     <ErrorBoundary
       fallback={
         <div className={errorContainerClassName}>
-          <p>An unexpected error occurred when rendering this note.</p>
+          <p className="text-2xl">
+            An unexpected error occurred when rendering this note.
+          </p>
         </div>
       }
     >

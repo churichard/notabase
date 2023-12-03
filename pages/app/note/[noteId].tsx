@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import Head from 'next/head';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { Path } from 'slate';
 import Note from 'components/Note';
@@ -9,6 +8,7 @@ import usePrevious from 'utils/usePrevious';
 import { queryParamToArray } from 'utils/url';
 import useBlockBacklinks from 'editor/backlinks/useBlockBacklinks';
 import getHighlightedPath from 'utils/getHighlightedPath';
+import NotePermissionError from 'components/NotePermissionError';
 
 export default function NotePage() {
   const router = useRouter();
@@ -77,14 +77,7 @@ export default function NotePage() {
         <Head>
           <title>Not Found | Notabase</title>
         </Head>
-        <div className="flex h-screen flex-1 flex-col items-center justify-center p-4">
-          <p className="text-center text-2xl">
-            Whoops&mdash;it doesn&apos;t look like this note exists!
-          </p>
-          <Link href="/app" className="btn mt-6">
-            Go back to my notes
-          </Link>
-        </div>
+        <NotePermissionError className="flex h-screen flex-1 flex-col items-center justify-center p-4" />
       </>
     );
   }
