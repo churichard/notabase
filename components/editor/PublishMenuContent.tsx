@@ -11,6 +11,7 @@ import { NoteTreeItem, store, useStore } from 'lib/store';
 import { useAuth } from 'utils/useAuth';
 import Tooltip from 'components/Tooltip';
 import supabase from 'lib/supabase';
+import Spinner from 'components/Spinner';
 
 type Props = {
   hasPublishingFeature: boolean;
@@ -73,6 +74,14 @@ export default function PublishMenuContent(props: Props) {
   }, [user?.id]);
 
   const publicUrl = `${window.location.protocol}//${window.location.host}/publish/${siteId}/note/${noteId}`;
+
+  if (siteId === null) {
+    return (
+      <div className="flex items-center justify-center">
+        <Spinner />
+      </div>
+    );
+  }
 
   if (isNotePrivate) {
     return (
