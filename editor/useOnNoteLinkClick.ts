@@ -19,7 +19,7 @@ export default function useOnNoteLinkClick(currentNoteId: string) {
         const hash = highlightedPath ? `0-${highlightedPath}` : undefined;
         router.push({
           pathname: router.pathname,
-          query: { noteId },
+          query: { ...router.query, noteId },
           hash,
         });
         return;
