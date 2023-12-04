@@ -17,9 +17,10 @@ import PublishMenuContent from './PublishMenuContent';
 export default function PublishMenu() {
   const currentNote = useCurrentNote();
 
-  const isNotePrivate = useStore(
-    (state) => state.notes[currentNote.id].visibility === Visibility.Private
+  const noteVisibility = useStore(
+    (state) => state.notes[currentNote.id]?.visibility ?? Visibility.Private
   );
+  const isNotePrivate = noteVisibility === Visibility.Private;
 
   const hasPublishingFeature = useFeature(Feature.Publish);
 
