@@ -13,6 +13,9 @@ CREATE TYPE subscription_status AS ENUM ('active', 'inactive');
 DROP TYPE IF EXISTS billing_frequency CASCADE;
 CREATE TYPE billing_frequency AS ENUM ('monthly', 'annual', 'one_time');
 
+DROP TYPE IF EXISTS visibility CASCADE;
+CREATE TYPE visibility AS ENUM ('private', 'public');
+
 
 -- public.notes definition
 
@@ -24,6 +27,7 @@ CREATE TABLE public.notes (
   id uuid NOT NULL DEFAULT extensions.uuid_generate_v4(),
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
+  visibility visibility not null default 'private'::visibility,
   CONSTRAINT non_empty_title CHECK ((title <> ''::citext)),
   CONSTRAINT notes_pkey PRIMARY KEY (id),
   CONSTRAINT notes_user_id_title_key UNIQUE (user_id, title)

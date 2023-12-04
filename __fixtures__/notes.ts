@@ -1,5 +1,6 @@
 import { getDefaultEditorValue } from 'editor/constants';
 import { Notes } from 'lib/store';
+import { Visibility } from 'types/supabase';
 
 const generateNotes = () => {
   const notes: Notes = {};
@@ -12,6 +13,7 @@ const generateNotes = () => {
       user_id: '1',
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
+      visibility: Visibility.Private,
     };
   }
   return notes;

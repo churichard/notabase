@@ -8,6 +8,7 @@ import { useStore } from 'lib/store';
 import Tooltip from 'components/Tooltip';
 import useBlockReference from 'editor/backlinks/useBlockReference';
 import { useCurrentNote } from 'utils/useCurrentNote';
+import useIsPublish from 'utils/useIsPublish';
 import ReadOnlyEditor from '../ReadOnlyEditor';
 import EditorLeaf from './EditorLeaf';
 import ParagraphElement from './ParagraphElement';
@@ -91,13 +92,22 @@ type BlockRefErrorProps = {
 
 const BlockRefError = (props: BlockRefErrorProps) => {
   const { element } = props;
+  const isPublish = useIsPublish();
   return (
-    <div className="font-medium text-red-500" contentEditable={false}>
-      <div>
-        Error: no block with id &ldquo;{element.blockId}
-        &rdquo;.
-      </div>
-      <div>Last saved content: {Node.string(element)}</div>
+    <div className="italic text-red-500" contentEditable={false}>
+      {isPublish ? (
+        <div>
+          Error: You don&apos;t have permission to view this block reference.
+        </div>
+      ) : (
+        <>
+          <div>
+            Error: no block with id &ldquo;{element.blockId}
+            &rdquo;.
+          </div>
+          <div>Last saved content: {Node.string(element)}</div>
+        </>
+      )}
     </div>
   );
 };

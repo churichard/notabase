@@ -14,6 +14,11 @@ export enum SubscriptionStatus {
   Inactive = 'inactive',
 }
 
+export enum Visibility {
+  Private = 'private',
+  Public = 'public',
+}
+
 export interface Database {
   public: {
     Tables: {
@@ -25,6 +30,7 @@ export interface Database {
           title: string;
           updated_at: string;
           user_id: string;
+          visibility: Visibility;
         };
         Insert: {
           content?: Descendant[];
@@ -33,6 +39,7 @@ export interface Database {
           title: string;
           updated_at?: string;
           user_id: string;
+          visibility?: Visibility;
         };
         Update: {
           content?: Descendant[];
@@ -41,6 +48,7 @@ export interface Database {
           title?: string;
           updated_at?: string;
           user_id?: string;
+          visibility?: Visibility;
         };
       };
       subscriptions: {

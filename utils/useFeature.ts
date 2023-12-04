@@ -20,6 +20,8 @@ export default function useFeature(feature: Feature) {
     switch (feature) {
       case Feature.NumOfNotes:
         return numOfNotes < planFeature.amount;
+      case Feature.Publish:
+        return !!planFeature.amount;
       default:
         return false;
     }

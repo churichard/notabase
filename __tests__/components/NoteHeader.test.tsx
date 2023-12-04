@@ -60,7 +60,7 @@ describe('NoteHeader', () => {
       routerPush = jest.fn();
       nextRouterMock.useRouter.mockImplementation(() => ({
         pathname: '/app/note',
-        query: { id: '1', stack: ['2', '3'] },
+        query: { noteId: '1', stack: ['2', '3'] },
         asPath: '',
         push: routerPush,
       }));
@@ -83,7 +83,7 @@ describe('NoteHeader', () => {
       expect(routerPush).toHaveBeenCalledWith(
         {
           pathname: '/app/note',
-          query: { id: '2', stack: ['3'] },
+          query: { noteId: '2', stack: ['3'] },
         },
         undefined,
         { shallow: true }
@@ -96,7 +96,7 @@ describe('NoteHeader', () => {
       expect(routerPush).toHaveBeenCalledWith(
         {
           pathname: '/app/note',
-          query: { id: '1', stack: ['3'] },
+          query: { noteId: '1', stack: ['3'] },
         },
         undefined,
         { shallow: true }

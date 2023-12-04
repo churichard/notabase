@@ -4,20 +4,12 @@ import {
   useMemo,
   useState,
   KeyboardEvent,
-  useEffect,
   memo,
   useSyncExternalStore,
 } from 'react';
-import {
-  Range,
-  Editor as SlateEditor,
-  Transforms,
-  Descendant,
-  Path,
-} from 'slate';
-import { Editable, ReactEditor, Slate } from 'slate-react';
+import { Range, Transforms, Descendant, Path } from 'slate';
+import { Editable, Slate } from 'slate-react';
 import { isHotkey } from 'is-hotkey';
-import colors from 'tailwindcss/colors';
 import {
   handleEnter,
   handleIndent,
@@ -31,6 +23,7 @@ import { store, useStore } from 'lib/store';
 import { ElementType, Mark } from 'types/slate';
 import useIsMounted from 'utils/useIsMounted';
 import activeEditorsStore from 'lib/activeEditorsStore';
+import useHighlightedPath from 'editor/useHighlightedPath';
 import HoveringToolbar from './toolbar/HoveringToolbar';
 import AddLinkPopover from './AddLinkPopover';
 import EditorElement from './elements/EditorElement';
@@ -222,39 +215,7 @@ function Editor(props: Props) {
 
   // If highlightedPath is defined, highlight the path
   const darkMode = useStore((state) => state.darkMode);
-  useEffect(() => {
-    if (!highlightedPath) {
-      return;
-    }
-
-    try {
-      // Scroll to line
-      const [node] = SlateEditor.node(editor, highlightedPath);
-      const domNode = ReactEditor.toDOMNode(editor, node);
-      domNode.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start',
-      });
-
-      // Highlight line, but restore original color if mouse is clicked or component is re-rendered
-      const originalBgColor = domNode.style.backgroundColor;
-      const removeHighlight = () => {
-        domNode.style.backgroundColor = originalBgColor;
-      };
-
-      domNode.style.backgroundColor = darkMode
-        ? colors.yellow[800]
-        : colors.yellow[200];
-      domNode.addEventListener('click', removeHighlight, { once: true });
-
-      return () => {
-        removeHighlight();
-        document.removeEventListener('click', removeHighlight);
-      };
-    } catch (e) {
-      // Do nothing if an error occurs, which sometimes happens if the router changes before the editor does
-    }
-  }, [editor, highlightedPath, darkMode]);
+  useHighlightedPath(editor, highlightedPath, darkMode);
 
   return (
     <Slate editor={editor} initialValue={initialValue} onChange={onSlateChange}>

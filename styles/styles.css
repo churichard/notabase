@@ -4,7 +4,11 @@
 
 @layer components {
   .btn {
-    @apply rounded bg-primary-500 px-5 py-3 font-medium text-white shadow transition duration-200 ease-in-out hover:bg-opacity-85;
+    @apply rounded bg-primary-500 px-5 py-3 font-medium text-white shadow transition duration-200 ease-in-out enabled:hover:bg-opacity-85 disabled:opacity-25;
+  }
+
+  .btn-secondary {
+    @apply rounded border px-5 py-3 shadow transition duration-200 ease-in-out hover:bg-gray-100;
   }
 
   .card {

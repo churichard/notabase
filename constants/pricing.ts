@@ -28,6 +28,7 @@ export enum BillingFrequency {
 
 export enum Feature {
   NumOfNotes = 'num-of-notes',
+  Publish = 'publish',
 }
 
 export type Price = {
@@ -43,21 +44,25 @@ type SubscriptionPrices = {
 };
 type OneTimePrices = { [BillingFrequency.OneTime]: Price };
 
+type PlanFeature = { name: Feature; amount: number };
+
 export type Plan<Prices extends PlanPrices> = {
   id: PlanId;
   name: string;
   productId: string | null;
   prices: Prices;
-  features: readonly { name: Feature; amount: number }[];
+  features: readonly PlanFeature[];
 };
 
 export const MAX_NUM_OF_BASIC_NOTES = 100;
 
-const BASIC_FEATURES = [
+const BASIC_FEATURES: PlanFeature[] = [
   { name: Feature.NumOfNotes, amount: MAX_NUM_OF_BASIC_NOTES },
+  { name: Feature.Publish, amount: 0 },
 ];
-const PRO_FEATURES = [
+const PRO_FEATURES: PlanFeature[] = [
   { name: Feature.NumOfNotes, amount: Number.POSITIVE_INFINITY },
+  { name: Feature.Publish, amount: 1 },
 ];
 
 type Plans = {

@@ -32,7 +32,7 @@ Notabase is in beta and is under active development.
 
 ## Documentation & Support
 
-If you need help getting started with Notabase, check out our [Help Center](https://help.notabase.io).
+If you need help getting started with Notabase, check out our [Help Center](https://notabase.io/publish/ed280468-4096-4b21-8298-4a97c4eb990e/note/59df6332-0356-4c06-83ba-a90682ab18fc/).
 
 ## Sponsors
 

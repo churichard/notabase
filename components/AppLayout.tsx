@@ -289,18 +289,27 @@ export default function AppLayout(props: Props) {
     className
   );
 
+  const head = (
+    <Head>
+      <meta
+        name="theme-color"
+        content={darkMode ? colors.neutral[900] : colors.white}
+      />
+    </Head>
+  );
+
   if (!isPageLoaded) {
-    return <PageLoading />;
+    return (
+      <>
+        {head}
+        <PageLoading />
+      </>
+    );
   }
 
   return (
     <>
-      <Head>
-        <meta
-          name="theme-color"
-          content={darkMode ? colors.neutral[900] : colors.white}
-        />
-      </Head>
+      {head}
       <div id="app-container" className={appContainerClassName}>
         <div className="flex h-full w-full dark:bg-gray-900">
           <Sidebar

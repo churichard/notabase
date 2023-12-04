@@ -44,7 +44,7 @@ export default function Footer(props: Props) {
               Pricing
             </Link>
             <a
-              href="https://help.notabase.io"
+              href="https://notabase.io/publish/ed280468-4096-4b21-8298-4a97c4eb990e/note/59df6332-0356-4c06-83ba-a90682ab18fc/"
               className="text-gray-700 hover:text-primary-500"
               target="_blank"
               rel="noopener noreferrer"

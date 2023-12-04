@@ -3,6 +3,7 @@ import { Notes, store } from 'lib/store';
 import Graph from 'pages/app/graph';
 import notes from '__fixtures__/notes';
 import { ElementType } from 'types/slate';
+import { Visibility } from 'types/supabase';
 
 describe('Graph', () => {
   it('renders graph canvas', () => {
@@ -66,6 +67,7 @@ describe('Graph', () => {
         user_id: '1',
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
+        visibility: Visibility.Private,
       };
 
       store.getState().setNotes(notes);
