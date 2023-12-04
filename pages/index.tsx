@@ -19,6 +19,9 @@ export default function Home() {
   return (
     <LandingLayout showNavbar={false} showFooter={false}>
       <div className="flex min-h-screen flex-col">
+        <div className="block w-full bg-yellow-300 py-1 text-center font-semibold text-yellow-900">
+          🎉New: You can now publish your notes on the web!
+        </div>
         <div className="flex-1">
           <div className="bg-gradient-to-r from-yellow-50 via-green-50 to-blue-50 shadow-sm">
             <Navbar />
