@@ -4,6 +4,7 @@ import ErrorBoundary from 'components/ErrorBoundary';
 import { ProvideCurrentNote } from 'utils/useCurrentNote';
 import { store } from 'lib/store';
 import STRINGS from 'constants/strings';
+import Backlinks from 'components/editor/backlinks/Backlinks';
 import PublishEditor from './PublishEditor';
 import PublishTitle from './PublishTitle';
 import PublishNoteHeader from './PublishNoteHeader';
@@ -49,6 +50,7 @@ function PublishNote(props: Props) {
                     noteId={noteId}
                     highlightedPath={highlightedPath}
                   />
+                  <Backlinks className="mx-4 mb-8 md:mx-8 md:mb-12" />
                 </>
               ) : (
                 <div className={errorContainerClassName}>
