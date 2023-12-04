@@ -1,5 +1,5 @@
 import { memo, useEffect, useMemo, useRef } from 'react';
-import { Editor, Path , Descendant } from 'slate';
+import { Editor, Path, Descendant } from 'slate';
 import { Editable, Slate } from 'slate-react';
 import EditorLeaf from 'components/editor/elements/EditorLeaf';
 import useHighlightedPath from 'editor/useHighlightedPath';
