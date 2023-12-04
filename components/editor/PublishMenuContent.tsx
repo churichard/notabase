@@ -75,7 +75,7 @@ export default function PublishMenuContent(props: Props) {
 
   const publicUrl = `${window.location.protocol}//${window.location.host}/publish/${siteId}/note/${noteId}`;
 
-  if (siteId === null) {
+  if (hasPublishingFeature && !isNotePrivate && siteId === null) {
     return (
       <div className="flex items-center justify-center">
         <Spinner />
