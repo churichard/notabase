@@ -39,7 +39,7 @@
     "@supabase/supabase-js": "^2.24.0",
     "@tabler/icons": "^1.119.0",
     "@tailwindcss/forms": "^0.5.3",
-    "@tailwindcss/typography": "^0.5.9",
+    "@tailwindcss/typography": "^0.5.10",
     "@tippyjs/react": "^4.2.6",
     "autoprefixer": "^10.4.16",
     "classnames": "^2.3.2",
