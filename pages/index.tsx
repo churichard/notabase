@@ -1,11 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import {
-  IconArrowRight,
-  IconBrandGithub,
-  IconDatabase,
-  IconMessage,
-} from '@tabler/icons';
+import { IconArrowRight, IconBrandGithub, IconDatabase } from '@tabler/icons';
 import Footer from 'components/landing/Footer';
 import Navbar from 'components/landing/Navbar';
 import LandingLayout from 'components/landing/LandingLayout';
@@ -164,27 +159,6 @@ export default function Home() {
               <div className="flex flex-col space-y-8 pt-6 md:flex-row md:space-x-8 md:space-y-0 md:pt-8">
                 <div className="flex-1">
                   <div className="mr-2 flex h-10 w-10 items-center justify-center rounded-md bg-primary-100">
-                    <IconMessage className="text-primary-700" />
-                  </div>
-                  <p className="mt-4 flex items-center text-xl font-semibold">
-                    Community
-                  </p>
-                  <p className="mt-2 text-lg leading-relaxed text-gray-700">
-                    Join our open{' '}
-                    <a
-                      href="https://discord.gg/BQKNRu7nv5"
-                      className="link"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      Discord community
-                    </a>
-                    ! You can give feedback, ask questions, or discuss
-                    note-taking strategies.
-                  </p>
-                </div>
-                <div className="flex-1">
-                  <div className="mr-2 flex h-10 w-10 items-center justify-center rounded-md bg-primary-100">
                     <IconDatabase className="text-primary-700" />
                   </div>
                   <p className="mt-4 flex items-center text-xl font-semibold">
@@ -204,8 +178,8 @@ export default function Home() {
                     Open source
                   </p>
                   <p className="mt-2 text-lg leading-relaxed text-gray-700">
-                    Contribute to our development! Notabase is open source with
-                    a public roadmap.
+                    Contribute to our development and report bugs. You can even
+                    self-host the app!
                   </p>
                 </div>
               </div>

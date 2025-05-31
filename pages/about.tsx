@@ -1,7 +1,4 @@
 import Head from 'next/head';
-import Image from 'next/image';
-import Link from 'next/link';
-import profileImg from 'public/richard.jpg';
 import LandingLayout from 'components/landing/LandingLayout';
 
 export default function About() {
@@ -84,18 +81,8 @@ export default function About() {
               className="link"
             >
               open source
-            </a>{' '}
-            with a public{' '}
-            <a
-              href="https://trello.com/b/dpZLRkRR"
-              className="link"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              roadmap
             </a>
-            , which means that development happens transparently and the entire
-            community is involved.
+            , which means that development happens transparently.
           </p>
           <p>
             Notabase will never sell your data or advertise to you. The only way
@@ -106,47 +93,6 @@ export default function About() {
             There&apos;s also no lock-in; your notes are fully owned by you. You
             can export your notes at any time to Markdown. And since Notabase is
             open source, you can even self-host it.
-          </p>
-        </div>
-        <div>
-          <h2>About me</h2>
-          <div className="flex justify-center">
-            <Image
-              className="rounded-full"
-              src={profileImg}
-              alt="Picture of the creator of Notabase"
-              placeholder="blur"
-              width={256}
-              height={256}
-            />
-          </div>
-          <p>
-            I&apos;m Richard, and I&apos;m the founder, engineer, and designer
-            behind Notabase.
-          </p>
-          <p>
-            Before Notabase, I worked at Intercom, Amazon, and BuzzFeed. I
-            graduated from Princeton University in 2018 with a Computer Science
-            B.S.E. degree.
-          </p>
-          <p>
-            Connect with me on{' '}
-            <a
-              href="https://twitter.com/richard_chu"
-              className="link"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Twitter
-            </a>
-            .
-          </p>
-          <p>
-            If Notabase&apos;s principles resonate with you, I encourage you to{' '}
-            <Link href="/signup" className="link">
-              sign up and give it a try
-            </Link>
-            !
           </p>
         </div>
       </div>

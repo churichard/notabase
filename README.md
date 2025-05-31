@@ -1,7 +1,6 @@
 # Notabase
 
 [![Twitter](https://img.shields.io/twitter/follow/notabase?style=social)](https://twitter.com/notabase)
-[![Discord](https://img.shields.io/discord/852987194619985990?label=discord&logo=discord)](https://discord.gg/BQKNRu7nv5)
 
 [Notabase](https://notabase.io) is a personal knowledge base for networked thinking.
 

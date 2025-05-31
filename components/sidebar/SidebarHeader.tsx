@@ -6,7 +6,6 @@ import {
   IconMail,
   IconMessage,
   IconChevronsLeft,
-  IconBrandDiscord,
   IconSettings,
   IconHelp,
 } from '@tabler/icons';
@@ -70,10 +69,6 @@ export default function Header(props: Props) {
           >
             <IconMessage size={18} className="mr-1" />
             <span>Give feedback</span>
-          </DropdownItem>
-          <DropdownItem as="a" href="https://discord.gg/BQKNRu7nv5">
-            <IconBrandDiscord size={18} className="mr-1" />
-            <span>Join our Discord</span>
           </DropdownItem>
           <DropdownItem
             as="a"

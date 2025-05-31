@@ -51,14 +51,6 @@ export default function Footer(props: Props) {
             >
               Help Center
             </a>
-            <a
-              href="https://trello.com/b/dpZLRkRR"
-              className="text-gray-700 hover:text-primary-500"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Roadmap
-            </a>
           </div>
           <div className="mt-8 flex flex-col space-y-2 lg:mt-0">
             <p className="font-medium">Connect</p>
@@ -69,14 +61,6 @@ export default function Footer(props: Props) {
               rel="noopener noreferrer"
             >
               Twitter
-            </a>
-            <a
-              href="https://discord.gg/BQKNRu7nv5"
-              className="text-gray-700 hover:text-primary-500"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Discord
             </a>
             <a
               href="https://github.com/churichard/notabase"
