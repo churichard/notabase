@@ -10,7 +10,9 @@ export default function Sponsors() {
       <div className="prose-primary container prose px-6 py-16 lg:prose-xl">
         <h1>Sponsors</h1>
         <div>
-          <p>Special thanks to the following people for their support:</p>
+          <p>
+            Special thanks to the following people/companies for their support:
+          </p>
           <ul>
             <li>
               <a
@@ -19,6 +21,15 @@ export default function Sponsors() {
                 rel="noopener noreferrer"
               >
                 @Jaydon-chai
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://explorejobs.ai?ref=notabase.io"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                ExploreJobs.ai
               </a>
             </li>
           </ul>
