@@ -120,11 +120,7 @@ export default function Account() {
 
     if (res.ok) {
       toast.success('Your account has been deleted.');
-      try {
-        await signOut();
-      } finally {
-        router.push('/');
-      }
+      await signOut();
     } else {
       const { message } = await res.json().catch(() => ({}));
       toast.error(
@@ -132,7 +128,7 @@ export default function Account() {
       );
       setIsDeleting(false);
     }
-  }, [requiresCancellation, router, signOut, user]);
+  }, [requiresCancellation, signOut, user]);
 
   return (
     <div className="h-full w-full flex-1 overflow-y-auto bg-white p-6 dark:bg-gray-800 dark:text-gray-100">
