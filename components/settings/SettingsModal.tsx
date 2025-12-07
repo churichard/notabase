@@ -1,15 +1,22 @@
 import { useMemo, useState } from 'react';
-import { IconBrightnessHalf, IconCreditCard, IconPencil } from '@tabler/icons';
+import {
+  IconBrightnessHalf,
+  IconCreditCard,
+  IconPencil,
+  IconUser,
+} from '@tabler/icons';
 import useHotkeys from 'utils/useHotkeys';
 import SidebarItem from '../sidebar/SidebarItem';
 import Billing from './Billing';
 import Appearance from './Appearance';
 import EditorSettings from './EditorSettings';
+import Account from './Account';
 
 enum SettingsTab {
   Appearance = 'appearance',
   Editor = 'editor',
   Billing = 'billing',
+  Account = 'account',
 }
 
 type Props = {
@@ -48,6 +55,7 @@ export default function SettingsModal(props: Props) {
           {currentTab === SettingsTab.Appearance ? <Appearance /> : null}
           {currentTab === SettingsTab.Editor ? <EditorSettings /> : null}
           {currentTab === SettingsTab.Billing ? <Billing /> : null}
+          {currentTab === SettingsTab.Account ? <Account /> : null}
         </div>
       </div>
     </div>
@@ -109,6 +117,21 @@ const SettingsModalSidebar = (props: SettingsModalSidebarProps) => {
             className="mr-1 text-gray-800 dark:text-gray-200"
           />
           <span>Billing</span>
+        </button>
+      </SidebarItem>
+      <SidebarItem
+        className="flex"
+        isHighlighted={currentTab === SettingsTab.Account}
+      >
+        <button
+          className="flex flex-1 items-center overflow-hidden overflow-ellipsis whitespace-nowrap px-4 py-1"
+          onClick={() => setCurrentTab(SettingsTab.Account)}
+        >
+          <IconUser
+            size={18}
+            className="mr-1 text-gray-800 dark:text-gray-200"
+          />
+          <span>Account</span>
         </button>
       </SidebarItem>
     </div>
