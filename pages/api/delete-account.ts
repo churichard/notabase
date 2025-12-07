@@ -62,6 +62,14 @@ export default async function handler(
     return;
   }
 
+  const { error: revokeError } = await supabase.auth.admin.signOut(token);
+  if (revokeError) {
+    res
+      .status(500)
+      .json({ message: revokeError.message ?? 'Failed to revoke sessions' });
+    return;
+  }
+
   const storageError = await deleteUserAssets(user.id);
   if (storageError) {
     res
