@@ -32,6 +32,15 @@ export default function Sponsors() {
                 ExploreJobs.ai
               </a>
             </li>
+            <li>
+              <a
+                href="https://www.fluxmail.ai?ref=notabase.io"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Fluxmail
+              </a>
+            </li>
           </ul>
           <p>
             If you&apos;d like to sponsor Notabase,{' '}
