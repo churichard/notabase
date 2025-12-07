@@ -47,7 +47,7 @@ export default function useBacklinks(noteId: string) {
   );
 
   const unlinkedBacklinks = useMemo(
-    () => computeUnlinkedBacklinks(notes, notes[noteId].title),
+    () => computeUnlinkedBacklinks(notes, notes[noteId]?.title),
     [notes, noteId]
   );
 
