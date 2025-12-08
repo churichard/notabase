@@ -33,7 +33,7 @@ export default async function upsertNote(note: NoteUpsert) {
     await supabase
       .from('users')
       .update({ note_tree: store.getState().noteTree })
-      .eq('id', note.user_id);
+      .eq('id', userId);
   } else if (error) {
     console.error(error);
   }

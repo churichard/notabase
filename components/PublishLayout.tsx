@@ -25,11 +25,11 @@ export default function PublishLayout(props: Props) {
   const userIdRef = useRef<string | null>(null);
 
   useEffect(() => {
-    const fetchBillingDetails = async () => {
+    const fetchBillingDetails = async (siteIdValue: string) => {
       const { data } = await supabase
         .from('sites')
         .select('id, user_id, is_active')
-        .eq('id', siteId)
+        .eq('id', siteIdValue)
         .maybeSingle();
 
       if (data) {
@@ -37,8 +37,8 @@ export default function PublishLayout(props: Props) {
         setIsPublishActive(data.is_active);
       }
     };
-    if (siteId) {
-      fetchBillingDetails();
+    if (typeof siteId === 'string') {
+      fetchBillingDetails(siteId);
     }
   }, [siteId]);
 

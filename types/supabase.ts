@@ -8,6 +8,7 @@ export type User = Tables['users']['Row'];
 export type Note = Tables['notes']['Row'];
 export type NoteInsert = Tables['notes']['Insert'];
 export type Subscription = Tables['subscriptions']['Row'];
+export type Site = Tables['sites']['Row'];
 
 export enum SubscriptionStatus {
   Active = 'active',
@@ -50,6 +51,7 @@ export interface Database {
           user_id?: string;
           visibility?: Visibility;
         };
+        Relationships: [];
       };
       subscriptions: {
         Row: {
@@ -85,6 +87,25 @@ export interface Database {
           subscription_status?: Database['public']['Enums']['subscription_status'];
           user_id?: string | null;
         };
+        Relationships: [];
+      };
+      sites: {
+        Row: {
+          id: string;
+          user_id: string;
+          is_active: boolean;
+        };
+        Insert: {
+          id: string;
+          user_id: string;
+          is_active?: boolean;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          is_active?: boolean;
+        };
+        Relationships: [];
       };
       users: {
         Row: {
@@ -102,6 +123,7 @@ export interface Database {
           note_tree?: NoteTreeItem[] | null;
           subscription_id?: string | null;
         };
+        Relationships: [];
       };
     };
     Views: {
