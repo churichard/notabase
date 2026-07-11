@@ -1,7 +1,7 @@
 create table if not exists public.note_backlink_index (
   note_id uuid primary key references public.notes(id) on delete cascade,
   user_id uuid not null references auth.users(id) on delete cascade,
-  title citext not null,
+  title extensions.citext not null,
   content jsonb not null default '[]'::jsonb,
   updated_at timestamptz not null default now()
 );
