@@ -1,11 +1,12 @@
 import Head from 'next/head';
 import Router from 'next/router';
-import Script from 'next/script';
+import { useEffect } from 'react';
 import { ToastContainer } from 'react-toastify';
 import NProgress from 'nprogress';
 import type { AppProps } from 'next/app';
 import { Inter } from 'next/font/google';
 import { ProvideAuth } from 'utils/useAuth';
+import { initializePostHog } from 'utils/posthog';
 import AppLayout from 'components/AppLayout';
 import ServiceWorker from 'components/ServiceWorker';
 import PublishLayout from 'components/PublishLayout';
@@ -25,6 +26,10 @@ Router.events.on('routeChangeComplete', () => NProgress.done());
 Router.events.on('routeChangeError', () => NProgress.done());
 
 export default function MyApp({ Component, pageProps, router }: AppProps) {
+  useEffect(() => {
+    initializePostHog();
+  }, []);
+
   let children;
   if (router.pathname.startsWith('/app')) {
     children = (
@@ -54,18 +59,6 @@ export default function MyApp({ Component, pageProps, router }: AppProps) {
           thinking
         </title>
       </Head>
-      <Script
-        src="https://plausible.io/js/plausible.js"
-        data-domain="notabase.io"
-        onLoad={() => {
-          window.plausible =
-            window.plausible ||
-            function () {
-              // eslint-disable-next-line prefer-rest-params
-              (window.plausible.q = window.plausible.q || []).push(arguments);
-            };
-        }}
-      />
       <ServiceWorker>
         <ProvideAuth>{children}</ProvideAuth>
       </ServiceWorker>
