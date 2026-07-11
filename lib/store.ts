@@ -95,6 +95,13 @@ export type Store = {
   upsertNote: (note: Note) => void;
   updateNote: (note: NoteUpdate) => void;
   deleteNote: (noteId: string) => void;
+  loadedNoteContent: Record<string, boolean>;
+  setLoadedNoteContent: Setter<Record<string, boolean>>;
+  setNoteContentLoaded: (noteId: string, loaded: boolean) => void;
+  backlinkNotes: Notes;
+  setBacklinkNotes: Setter<Notes>;
+  isBacklinkIndexLoaded: boolean;
+  setIsBacklinkIndexLoaded: Setter<boolean>;
   openNoteIds: string[];
   setOpenNoteIds: (openNoteIds: string[], index?: number) => void;
   noteTree: NoteTreeItem[];
@@ -132,6 +139,12 @@ export const store = createStore<Store>()(
        */
       upsertNote: (note: Note) => {
         set((state) => {
+          if (state.isBacklinkIndexLoaded) {
+            state.backlinkNotes[note.id] = {
+              ...(state.backlinkNotes[note.id] ?? note),
+              ...note,
+            };
+          }
           if (state.notes[note.id]) {
             state.notes[note.id] = { ...state.notes[note.id], ...note };
           } else {
@@ -164,6 +177,12 @@ export const store = createStore<Store>()(
           if (state.notes[note.id]) {
             state.notes[note.id] = { ...state.notes[note.id], ...note };
           }
+          if (state.backlinkNotes[note.id]) {
+            state.backlinkNotes[note.id] = {
+              ...state.backlinkNotes[note.id],
+              ...note,
+            };
+          }
         });
       },
       /**
@@ -172,6 +191,7 @@ export const store = createStore<Store>()(
       deleteNote: (noteId: string) => {
         set((state) => {
           delete state.notes[noteId];
+          delete state.backlinkNotes[noteId];
           const item = deleteTreeItem(state.noteTree, noteId);
           if (item && item.children.length > 0) {
             for (const child of item.children) {
@@ -180,6 +200,17 @@ export const store = createStore<Store>()(
           }
         });
       },
+      loadedNoteContent: {},
+      setLoadedNoteContent: createSetter(set, 'loadedNoteContent'),
+      setNoteContentLoaded: (noteId, loaded) => {
+        set((state) => {
+          state.loadedNoteContent[noteId] = loaded;
+        });
+      },
+      backlinkNotes: {},
+      setBacklinkNotes: createSetter(set, 'backlinkNotes'),
+      isBacklinkIndexLoaded: false,
+      setIsBacklinkIndexLoaded: createSetter(set, 'isBacklinkIndexLoaded'),
       /**
        * The notes that have their content visible, including the main note and the stacked notes
        */

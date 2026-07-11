@@ -14,6 +14,7 @@ import useHotkeys from 'utils/useHotkeys';
 import { PlanId, PRICING_PLANS } from 'constants/pricing';
 import { isMobile } from 'utils/device';
 import { getNoteTreeItem } from 'lib/storeUtils';
+import { refreshBacklinkNote } from 'lib/api/loadBacklinkIndex';
 import Sidebar from './sidebar/Sidebar';
 import FindOrCreateModal from './FindOrCreateModal';
 import PageLoading from './PageLoading';
@@ -59,6 +60,11 @@ export default function AppLayout(props: Props) {
   }, [setupStore]);
 
   const setNotes = useStore((state) => state.setNotes);
+  const setLoadedNoteContent = useStore((state) => state.setLoadedNoteContent);
+  const setBacklinkNotes = useStore((state) => state.setBacklinkNotes);
+  const setIsBacklinkIndexLoaded = useStore(
+    (state) => state.setIsBacklinkIndexLoaded
+  );
   const setNoteTree = useStore((state) => state.setNoteTree);
   const initData = useCallback(async () => {
     if (!user) {
@@ -67,7 +73,7 @@ export default function AppLayout(props: Props) {
 
     const { data: notes } = await supabase
       .from('notes')
-      .select()
+      .select('id, user_id, title, created_at, updated_at, visibility')
       .eq('user_id', user.id)
       .order('title');
 
@@ -94,9 +100,12 @@ export default function AppLayout(props: Props) {
 
     // Set notes
     const notesAsObj = notes.reduce<Record<Note['id'], Note>>((acc, note) => {
-      acc[note.id] = note;
+      acc[note.id] = { ...note, content: [] };
       return acc;
     }, {});
+    setLoadedNoteContent({});
+    setBacklinkNotes({});
+    setIsBacklinkIndexLoaded(false);
     setNotes(notesAsObj);
 
     // Set note tree
@@ -126,7 +135,15 @@ export default function AppLayout(props: Props) {
     }
 
     setIsPageLoaded(true);
-  }, [user, router, setNotes, setNoteTree]);
+  }, [
+    user,
+    router,
+    setNotes,
+    setNoteTree,
+    setLoadedNoteContent,
+    setBacklinkNotes,
+    setIsBacklinkIndexLoaded,
+  ]);
 
   useEffect(() => {
     if (isLoaded && !user) {
@@ -195,25 +212,55 @@ export default function AppLayout(props: Props) {
       .channel(`public:notes:user_id=eq.${user.id}`)
       .on(
         'postgres_changes',
-        { event: 'INSERT', schema: 'public', table: 'notes' },
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'notes',
+          filter: `user_id=eq.${user.id}`,
+        },
         (payload: { new: Note }) => {
-          upsertNote(payload.new);
-        }
-      )
-      .on(
-        'postgres_changes',
-        { event: 'UPDATE', schema: 'public', table: 'notes' },
-        (payload: { new: Note }) => {
-          // Don't update the note if it is currently open
-          const openNoteIds = store.getState().openNoteIds;
-          if (!openNoteIds.includes(payload.new.id)) {
-            updateNote(payload.new);
+          // Notes created by this client are already in the store with their
+          // real content; don't overwrite them with the stripped payload
+          if (!store.getState().notes[payload.new.id]) {
+            upsertNote({ ...payload.new, content: [] });
           }
         }
       )
       .on(
         'postgres_changes',
-        { event: 'DELETE', schema: 'public', table: 'notes' },
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'notes',
+          filter: `user_id=eq.${user.id}`,
+        },
+        (payload: { new: Note }) => {
+          // Don't update the note if it is currently open
+          const openNoteIds = store.getState().openNoteIds;
+          if (!openNoteIds.includes(payload.new.id)) {
+            updateNote({
+              id: payload.new.id,
+              title: payload.new.title,
+              user_id: payload.new.user_id,
+              created_at: payload.new.created_at,
+              updated_at: payload.new.updated_at,
+              visibility: payload.new.visibility,
+            });
+            // The payload doesn't include content, so any cached content is
+            // now stale; refetch it the next time the note is opened
+            store.getState().setNoteContentLoaded(payload.new.id, false);
+            refreshBacklinkNote(payload.new.id);
+          }
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: 'DELETE',
+          schema: 'public',
+          table: 'notes',
+          filter: `user_id=eq.${user.id}`,
+        },
         (payload) => {
           deleteNote(payload.old.id);
         }

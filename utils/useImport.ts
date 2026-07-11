@@ -14,6 +14,8 @@ import { caseInsensitiveStringEqual } from 'utils/string';
 import { ElementType, NoteLink } from 'types/slate';
 import { Note, NoteInsert } from 'types/supabase';
 import { Feature, MAX_NUM_OF_BASIC_NOTES, PlanId } from 'constants/pricing';
+import { normalizeInlineImages } from 'editor/normalizeInlineImages';
+import { validateNoteContent } from 'lib/noteContent';
 import { useAuth } from './useAuth';
 import useFeature from './useFeature';
 
@@ -161,8 +163,28 @@ export default function useImport() {
           .use(remarkToSlate)
           .processSync(fileContent);
 
-        const { content: slateContent, upsertData: newUpsertData } =
+        const { content: parsedContent, upsertData: newUpsertData } =
           fixNoteLinks(result as Descendant[], noteTitleToIdCache);
+        let slateContent;
+        try {
+          slateContent = await normalizeInlineImages(parsedContent);
+        } catch (error) {
+          toast.dismiss(importingToast);
+          toast.error(
+            `${file.name}: ${
+              error instanceof Error
+                ? error.message
+                : 'The embedded images could not be uploaded.'
+            }`
+          );
+          return;
+        }
+        const validationError = validateNoteContent(slateContent);
+        if (validationError) {
+          toast.dismiss(importingToast);
+          toast.error(`${file.name}: ${validationError}`);
+          return;
+        }
 
         noteLinkUpsertData.push(...newUpsertData);
         upsertData.push({

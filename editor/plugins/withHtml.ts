@@ -1,7 +1,9 @@
-import { Editor, Element, Node, Transforms } from 'slate';
+import { Descendant, Editor, Element, Node, Transforms } from 'slate';
 import { jsx } from 'slate-hyperscript';
+import { toast } from 'react-toastify';
 import { ElementType, Mark } from 'types/slate';
 import { PickPartial } from 'types/utils';
+import { normalizeInlineImages } from 'editor/normalizeInlineImages';
 
 const ELEMENT_TAGS: Record<
   string,
@@ -113,6 +115,17 @@ const withHtml = (editor: Editor) => {
     // We can't currently differentiate between different editors; see https://github.com/ianstormtaylor/slate/issues/1024
     if (html && !isSlateFragment) {
       const parsed = new DOMParser().parseFromString(html, 'text/html');
+      if (parsed.querySelector('img[src^="data:image/"]')) {
+        const fragment = deserialize(parsed.body) as Descendant[];
+        normalizeInlineImages(fragment)
+          .then((normalized) => Transforms.insertFragment(editor, normalized))
+          .catch(() =>
+            toast.error(
+              'The pasted image could not be uploaded. Please try again.'
+            )
+          );
+        return;
+      }
       const fragment = deserialize(parsed.body);
       Transforms.insertFragment(editor, fragment);
       return;

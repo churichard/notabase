@@ -26,7 +26,7 @@ export default function BlockRefElement(props: BlockRefElementProps) {
   const selected = useSelected();
   const focused = useFocused();
 
-  const blockReference = useBlockReference(element.blockId);
+  const { blockReference, isLoading } = useBlockReference(element.blockId);
   const currentNote = useCurrentNote();
   const { onClick: onBlockRefClick, defaultStackingBehavior } =
     useOnNoteLinkClick(currentNote.id);
@@ -77,6 +77,8 @@ export default function BlockRefElement(props: BlockRefElementProps) {
             renderElement={renderElement}
             renderLeaf={EditorLeaf}
           />
+        ) : isLoading ? (
+          <div contentEditable={false}>{Node.string(element)}</div>
         ) : (
           <BlockRefError element={element} />
         )}

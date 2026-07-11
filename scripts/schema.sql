@@ -19,6 +19,7 @@ CREATE TYPE visibility AS ENUM ('private', 'public');
 
 -- public.notes definition
 
+DROP TABLE IF EXISTS public.note_backlink_index;
 DROP TABLE IF EXISTS public.notes;
 CREATE TABLE public.notes (
   "content" jsonb NOT NULL DEFAULT (('[ { "id": "'::text || extensions.uuid_generate_v4()) || '", "type": "paragraph", "children": [{ "text": "" }] } ]'::text)::jsonb,
@@ -148,3 +149,67 @@ drop trigger if exists on_public_user_created on public.users;
 create trigger on_public_user_created
   after insert on public.users
   for each row execute function create_onboarding_notes();
+
+
+-- backlink index
+
+CREATE TABLE public.note_backlink_index (
+  note_id uuid PRIMARY KEY REFERENCES public.notes(id) ON DELETE CASCADE,
+  user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  title citext NOT NULL,
+  content jsonb NOT NULL DEFAULT '[]'::jsonb,
+  updated_at timestamptz NOT NULL DEFAULT now()
+);
+
+ALTER TABLE public.note_backlink_index ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can read their own backlink index"
+  ON public.note_backlink_index FOR SELECT
+  USING (auth.uid() = user_id);
+
+CREATE OR REPLACE FUNCTION public.backlink_safe_json(value jsonb)
+RETURNS jsonb
+LANGUAGE sql
+IMMUTABLE
+SET search_path = public
+AS $$
+  SELECT regexp_replace(
+    value::text,
+    '"data:image/[a-z0-9.+-]+;base64,[^\"]*"',
+    '""',
+    'gi'
+  )::jsonb;
+$$;
+
+CREATE OR REPLACE FUNCTION public.refresh_note_backlink_index()
+RETURNS trigger
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+BEGIN
+  INSERT INTO public.note_backlink_index (note_id, user_id, title, content, updated_at)
+  VALUES (
+    new.id,
+    new.user_id,
+    new.title,
+    public.backlink_safe_json(new.content),
+    new.updated_at
+  )
+  ON CONFLICT (note_id) DO UPDATE SET
+    user_id = excluded.user_id,
+    title = excluded.title,
+    content = excluded.content,
+    updated_at = excluded.updated_at;
+  RETURN new;
+END;
+$$;
+
+CREATE TRIGGER refresh_note_backlink_index
+  AFTER INSERT OR UPDATE OF title, content ON public.notes
+  FOR EACH ROW EXECUTE FUNCTION public.refresh_note_backlink_index();
+
+GRANT SELECT ON public.note_backlink_index TO authenticated;
+
+GRANT ALL ON public.notes, public.users, public.subscriptions TO authenticated;
+GRANT SELECT ON public.notes, public.users TO anon;

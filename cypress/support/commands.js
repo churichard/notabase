@@ -55,7 +55,10 @@ Cypress.Commands.add('setup', () => {
         user_id: user?.id,
       }));
       // insert completed notes to supabase
-      await supabase.from('notes').insert(data);
+      const { error } = await supabase.from('notes').insert(data);
+      if (error) {
+        throw error;
+      }
     });
 
   cy.visit('/app');

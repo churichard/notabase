@@ -1,10 +1,11 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import Fuse from 'fuse.js';
 import { createEditor, Descendant, Editor, Node, Path, Element } from 'slate';
 import { Notes, store } from 'lib/store';
 import withLinks from 'editor/plugins/withLinks';
 import withTags from 'editor/plugins/withTags';
 import withVoidElements from 'editor/plugins/withVoidElements';
+import loadBacklinkIndex from 'lib/api/loadBacklinkIndex';
 
 export type NoteBlock = { text: string; path: Path };
 
@@ -25,10 +26,13 @@ export default function useNoteSearch({
   searchContent = false,
   extendedSearch = false,
 }: NoteSearchOptions = {}) {
+  useEffect(() => {
+    if (searchContent) loadBacklinkIndex();
+  }, [searchContent]);
   const search = useCallback(
     (searchText: string) => {
       const fuse = initFuse(
-        store.getState().notes,
+        searchContent ? store.getState().backlinkNotes : store.getState().notes,
         searchContent,
         extendedSearch
       );

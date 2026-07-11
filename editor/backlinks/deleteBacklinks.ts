@@ -4,24 +4,31 @@ import { Note } from 'types/supabase';
 import supabase from 'lib/supabase';
 import { store } from 'lib/store';
 import { getActiveOrTempEditor } from 'lib/activeEditorsStore';
+import loadNotesContent from 'lib/api/loadNotesContent';
+import loadBacklinkIndex from 'lib/api/loadBacklinkIndex';
 import { computeLinkedBacklinks } from './useBacklinks';
 
 /**
  * Deletes the backlinks on each backlinked note and replaces them with the link text.
  */
 const deleteBacklinks = async (noteId: string) => {
-  const notes = store.getState().notes;
+  await loadBacklinkIndex();
+  const notes = store.getState().backlinkNotes;
   const backlinks = computeLinkedBacklinks(notes, noteId);
+  const contents = await loadNotesContent(
+    backlinks.map((backlink) => backlink.id)
+  );
   const updateData: Pick<Note, 'id' | 'content'>[] = [];
 
   for (const backlink of backlinks) {
     const note = notes[backlink.id];
 
-    if (!note) {
+    const content = contents.get(backlink.id);
+    if (!note || !content) {
       continue;
     }
 
-    const editor = getActiveOrTempEditor(backlink.id, note.content);
+    const editor = getActiveOrTempEditor(backlink.id, content);
 
     Transforms.unwrapNodes(editor, {
       at: [],

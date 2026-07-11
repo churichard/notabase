@@ -4,6 +4,8 @@ import supabase from 'lib/supabase';
 import { store } from 'lib/store';
 import { getActiveOrTempEditor } from 'lib/activeEditorsStore';
 import { ElementType } from 'types/slate';
+import loadNotesContent from 'lib/api/loadNotesContent';
+import loadBacklinkIndex from 'lib/api/loadBacklinkIndex';
 import { Backlink } from './useBacklinks';
 
 /**
@@ -11,20 +13,26 @@ import { Backlink } from './useBacklinks';
  * full-text search.
  */
 const updateBlockBacklinks = async (
+  blockId: string,
   blockBacklinks: Backlink[],
   newText: string
 ) => {
-  const notes = store.getState().notes;
+  await loadBacklinkIndex();
+  const notes = store.getState().backlinkNotes;
+  const contents = await loadNotesContent(
+    blockBacklinks.map((backlink) => backlink.id)
+  );
   const updateData: Pick<Note, 'id' | 'content'>[] = [];
 
   for (const backlink of blockBacklinks) {
     const note = notes[backlink.id];
 
-    if (!note) {
+    const content = contents.get(backlink.id);
+    if (!note || !content) {
       continue;
     }
 
-    const editor = getActiveOrTempEditor(backlink.id, note.content);
+    const editor = getActiveOrTempEditor(backlink.id, content);
 
     Transforms.setNodes(
       editor,
@@ -35,7 +43,7 @@ const updateBlockBacklinks = async (
           !Editor.isEditor(n) &&
           Element.isElement(n) &&
           n.type === ElementType.BlockReference &&
-          n.blockId === backlink.id,
+          n.blockId === blockId,
         voids: true,
       }
     );

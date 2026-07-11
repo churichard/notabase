@@ -11,6 +11,16 @@ import { ProvideCurrentNote } from 'utils/useCurrentNote';
 import { caseInsensitiveStringEqual } from 'utils/string';
 import updateBacklinks from 'editor/backlinks/updateBacklinks';
 import STRINGS from 'constants/strings';
+import loadNoteContent from 'lib/api/loadNoteContent';
+import {
+  INLINE_IMAGE_DB_ERROR,
+  INLINE_IMAGE_ERROR_MESSAGE,
+  NOTE_SIZE_ERROR_CODE,
+  NOTE_SIZE_ERROR_MESSAGE,
+  NOTE_WARNING_BYTES,
+  getNoteContentBytes,
+} from 'lib/noteContent';
+import PageLoading from './PageLoading';
 import Backlinks from './editor/backlinks/Backlinks';
 import NoteHeader from './editor/NoteHeader';
 import ErrorBoundary from './ErrorBoundary';
@@ -31,6 +41,24 @@ function Note(props: Props) {
   const router = useRouter();
 
   const updateNote = useStore((state) => state.updateNote);
+  const isContentLoaded = useStore(
+    (state) => !!state.loadedNoteContent[noteId]
+  );
+  const [contentLoadFailed, setContentLoadFailed] = useState(false);
+
+  useEffect(() => {
+    setContentLoadFailed(false);
+    if (isContentLoaded) {
+      return;
+    }
+    let cancelled = false;
+    loadNoteContent(noteId).then((loaded) => {
+      if (!loaded && !cancelled) setContentLoadFailed(true);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [isContentLoaded, noteId]);
 
   const [syncState, setSyncState] = useState({
     isTitleSynced: true,
@@ -68,10 +96,27 @@ function Note(props: Props) {
   }, []);
 
   const handleNoteUpdate = useCallback(async (note: NoteUpdate) => {
+    // This runs on the debounced sync rather than on every keystroke since
+    // measuring the content serializes the entire note
+    if (
+      note.content &&
+      getNoteContentBytes(note.content) >= NOTE_WARNING_BYTES
+    ) {
+      toast.warn('This note is close to the 5 MB limit.', {
+        toastId: `note-size-warning-${note.id}`,
+      });
+    }
     const { error } = await updateDbNote(note);
 
     if (error) {
       switch (error.code) {
+        case NOTE_SIZE_ERROR_CODE:
+          toast.error(
+            error.message === INLINE_IMAGE_DB_ERROR
+              ? INLINE_IMAGE_ERROR_MESSAGE
+              : NOTE_SIZE_ERROR_MESSAGE
+          );
+          return;
         case CHECK_VIOLATION_ERROR_CODE:
           toast.error(
             `This note cannot have an empty title. Please use a different title.`
@@ -158,6 +203,18 @@ function Note(props: Props) {
         <p className="text-2xl">{STRINGS.error.notePermissionError}</p>
       </div>
     );
+  }
+
+  if (contentLoadFailed) {
+    return (
+      <div className={errorContainerClassName}>
+        <p className="text-2xl">{STRINGS.error.notePermissionError}</p>
+      </div>
+    );
+  }
+
+  if (!isContentLoaded) {
+    return <PageLoading />;
   }
 
   return (

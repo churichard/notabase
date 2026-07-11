@@ -38,8 +38,8 @@ export default function useDeleteNote(noteId: string) {
       return;
     }
 
-    await deleteNote(user.id, noteId);
     await deleteBacklinks(noteId);
+    await deleteNote(user.id, noteId);
   }, [router, user, noteId, openNoteIds]);
 
   return onDeleteClick;

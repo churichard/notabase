@@ -4,9 +4,8 @@ import {
   IconArrowUpCircle,
   IconCircleCheck,
 } from '@tabler/icons';
-import { PostgrestSingleResponse } from '@supabase/supabase-js';
 import updateNote from 'lib/api/updateNote';
-import { Note, Visibility } from 'types/supabase';
+import { Visibility } from 'types/supabase';
 import { NoteTreeItem, store, useStore } from 'lib/store';
 import { useAuth } from 'utils/useAuth';
 import Tooltip from 'components/Tooltip';
@@ -190,8 +189,8 @@ const publishNestedNotes = async (
 
 const publishNestedNotesImpl = (
   noteTreeItem: NoteTreeItem,
-  promises: Promise<PostgrestSingleResponse<Note>>[]
-): Promise<PostgrestSingleResponse<Note>>[] => {
+  promises: Promise<unknown>[]
+): Promise<unknown>[] => {
   const promise = updateNote({
     id: noteTreeItem.id,
     visibility: Visibility.Public,

@@ -4,13 +4,19 @@ import { computeBlockBacklinks } from 'editor/backlinks/useBlockBacklinks';
 import { store } from 'lib/store';
 import supabase from 'lib/supabase';
 import { Note } from 'types/supabase';
+import loadNotesContent from 'lib/api/loadNotesContent';
+import loadBacklinkIndex from 'lib/api/loadBacklinkIndex';
 
 /**
  * Deletes the block references/backlinks on each backlinked note and replaces them with referenced block text.
  */
 const deleteBlockBacklinks = async (editor: Editor, blockId: string) => {
-  const notes = store.getState().notes;
+  await loadBacklinkIndex();
+  const notes = store.getState().backlinkNotes;
   const backlinks = computeBlockBacklinks(notes)[blockId] ?? [];
+  const contents = await loadNotesContent(
+    backlinks.map((backlink) => backlink.id)
+  );
 
   // Update the block refs in the current editor to be paragraphs
   const updatedNodes = [];
@@ -30,7 +36,9 @@ const deleteBlockBacklinks = async (editor: Editor, blockId: string) => {
   const updateData: Pick<Note, 'id' | 'content'>[] = [];
   backlinks: for (const backlink of backlinks) {
     const noteEditor = createEditor();
-    noteEditor.children = notes[backlink.id].content;
+    const content = contents.get(backlink.id);
+    if (!content) continue;
+    noteEditor.children = content;
 
     for (const match of backlink.matches) {
       // Replace each block reference with a paragraph
