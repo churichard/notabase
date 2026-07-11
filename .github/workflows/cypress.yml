@@ -20,7 +20,11 @@ jobs:
       - uses: supabase/setup-cli@v1.1.4
         with:
           version: latest
-      - run: supabase start
+      - name: Start Supabase from the test schema
+        run: |
+          mv supabase/migrations /tmp/notabase-migrations
+          trap 'mv /tmp/notabase-migrations supabase/migrations' EXIT
+          supabase start
       - run: supabase status -o env --override-name api.url=NEXT_PUBLIC_SUPABASE_URL --override-name auth.anon_key=NEXT_PUBLIC_SUPABASE_KEY --override-name auth.service_role_key=SUPABASE_SERVICE_KEY | tee .env.local .env.test
 
       - name: Cypress run

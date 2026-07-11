@@ -1,9 +1,9 @@
-create extension if not exists citext with schema extensions;
+create extension if not exists citext with schema public;
 
 create table if not exists public.note_backlink_index (
   note_id uuid primary key references public.notes(id) on delete cascade,
   user_id uuid not null references auth.users(id) on delete cascade,
-  title extensions.citext not null,
+  title public.citext not null,
   content jsonb not null default '[]'::jsonb,
   updated_at timestamptz not null default now()
 );
