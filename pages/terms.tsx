@@ -345,18 +345,18 @@ export default function Terms() {
         </p>
 
         <p>
-          <b>Plausible Analytics</b>
+          <b>PostHog</b>
         </p>
 
         <p>
-          Plausible Analytics is a web analytics service. You can visit their
-          Privacy Policy page here:{' '}
+          PostHog is a product analytics service. You can visit their Privacy
+          Policy page here:{' '}
           <a
-            href="https://plausible.io/privacy"
+            href="https://posthog.com/privacy"
             target="_blank"
             rel="noopener noreferrer"
           >
-            https://plausible.io/privacy
+            https://posthog.com/privacy
           </a>
         </p>
 

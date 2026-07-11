@@ -3,6 +3,7 @@ import { useCallback, useState } from 'react';
 import Link from 'next/link';
 import { toast } from 'react-toastify';
 import { useAuth } from 'utils/useAuth';
+import { capturePostHogEvent } from 'utils/posthog';
 
 type Props = {
   signup?: boolean;
@@ -42,11 +43,7 @@ export default function AuthForm(props: Props) {
           },
           body: JSON.stringify({ email }),
         });
-        try {
-          window.plausible('Signup');
-        } catch (e) {
-          /* Do nothing */
-        }
+        capturePostHogEvent('Signup');
         setShowEmailConfirmationMessage(true);
       }
 
