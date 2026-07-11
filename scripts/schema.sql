@@ -210,3 +210,6 @@ CREATE TRIGGER refresh_note_backlink_index
   FOR EACH ROW EXECUTE FUNCTION public.refresh_note_backlink_index();
 
 GRANT SELECT ON public.note_backlink_index TO authenticated;
+
+GRANT ALL ON public.notes, public.users, public.subscriptions TO authenticated;
+GRANT SELECT ON public.notes, public.users TO anon;
