@@ -3,6 +3,8 @@ import { ElementType } from 'types/slate';
 import { Note } from 'types/supabase';
 import { store } from 'lib/store';
 import updateNote from 'lib/api/updateNote';
+import loadNotesContent from 'lib/api/loadNotesContent';
+import loadBacklinkIndex from 'lib/api/loadBacklinkIndex';
 import { getActiveOrTempEditor } from 'lib/activeEditorsStore';
 import { computeLinkedBacklinks } from './useBacklinks';
 
@@ -11,18 +13,23 @@ import { computeLinkedBacklinks } from './useBacklinks';
  * current note title has changed.
  */
 const updateBacklinks = async (newTitle: string, noteId: string) => {
-  const notes = store.getState().notes;
-  const backlinks = computeLinkedBacklinks(notes, noteId);
+  await loadBacklinkIndex();
+  const backlinkNotes = store.getState().backlinkNotes;
+  const backlinks = computeLinkedBacklinks(backlinkNotes, noteId);
+  const backlinkIds = backlinks.map((backlink) => backlink.id);
+  if (backlinkIds.length === 0) return;
+  const contents = await loadNotesContent(backlinkIds);
   const updateData: Pick<Note, 'id' | 'content'>[] = [];
 
   for (const backlink of backlinks) {
-    const note = notes[backlink.id];
+    const note = backlinkNotes[backlink.id];
+    const content = contents.get(backlink.id);
 
-    if (!note) {
+    if (!note || !content) {
       continue;
     }
 
-    const editor = getActiveOrTempEditor(backlink.id, note.content);
+    const editor = getActiveOrTempEditor(backlink.id, content);
 
     Transforms.setNodes(
       editor,

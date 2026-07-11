@@ -58,7 +58,7 @@ export default function BacklinksPopover(props: BacklinksPopoverProps) {
       prevSavedElementText.current !== currentElementText
     ) {
       const handler = setTimeout(() => {
-        updateBlockBacklinks(blockBacklinks, currentElementText);
+        updateBlockBacklinks(element.id, blockBacklinks, currentElementText);
         prevSavedElementText.current = currentElementText;
       }, UPDATE_BLOCK_BACKLINKS_DEBOUNCE_MS);
 
@@ -66,7 +66,7 @@ export default function BacklinksPopover(props: BacklinksPopoverProps) {
         clearTimeout(handler);
       };
     }
-  }, [numOfMatches, currentElementText, blockBacklinks]);
+  }, [numOfMatches, currentElementText, blockBacklinks, element.id]);
 
   return numOfMatches > 0 ? (
     <Popover as={Fragment}>

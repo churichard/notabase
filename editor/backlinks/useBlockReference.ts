@@ -1,12 +1,11 @@
-import { useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { createEditor, Editor, Element, Path } from 'slate';
 import type { Notes } from 'lib/store';
 import { useStore } from 'lib/store';
-import useDebounce from 'utils/useDebounce';
 import { Note } from 'types/supabase';
+import loadBacklinkIndex from 'lib/api/loadBacklinkIndex';
+import useIsPublish from 'utils/useIsPublish';
 import { isReferenceableBlockElement } from '../checks';
-
-const DEBOUNCE_MS = 500;
 
 export type BlockReference = {
   noteId: string;
@@ -15,11 +14,18 @@ export type BlockReference = {
 };
 
 export default function useBlockReference(blockId: string) {
-  const [notes] = useDebounce(
-    useStore((state) => state.notes),
-    DEBOUNCE_MS
+  const isPublish = useIsPublish();
+  const notes = useStore((state) =>
+    isPublish ? state.notes : state.backlinkNotes
+  );
+  const isBacklinkIndexLoaded = useStore(
+    (state) => state.isBacklinkIndexLoaded
   );
   const cachedPath = useRef<{ noteId: string; path: Path } | null>(null);
+
+  useEffect(() => {
+    if (!isPublish) loadBacklinkIndex();
+  }, [isPublish]);
 
   /**
    * Searches the notes array for the specific block reference and returns it.
@@ -46,7 +52,10 @@ export default function useBlockReference(blockId: string) {
     return blockRef;
   }, [notes, blockId]);
 
-  return blockReference;
+  return {
+    blockReference,
+    isLoading: !isPublish && !isBacklinkIndexLoaded,
+  };
 }
 
 /**

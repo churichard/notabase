@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import {
   createEditor,
   Editor,
@@ -13,6 +13,7 @@ import type { Notes } from 'lib/store';
 import { useStore } from 'lib/store';
 import useDebounce from 'utils/useDebounce';
 import { caseInsensitiveStringEqual } from 'utils/string';
+import loadBacklinkIndex from 'lib/api/loadBacklinkIndex';
 
 const DEBOUNCE_MS = 1000;
 
@@ -36,8 +37,11 @@ export type Backlink = {
 };
 
 export default function useBacklinks(noteId: string) {
+  useEffect(() => {
+    loadBacklinkIndex();
+  }, []);
   const [notes] = useDebounce(
-    useStore((state) => state.notes),
+    useStore((state) => state.backlinkNotes),
     DEBOUNCE_MS
   );
 

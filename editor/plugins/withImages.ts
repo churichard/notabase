@@ -52,13 +52,18 @@ export const uploadAndInsertImage = async (
   file: File,
   path?: Path
 ) => {
+  const signedUrl = await uploadImage(file);
+  if (signedUrl) insertImage(editor, signedUrl, path);
+};
+
+export const uploadImage = async (file: File): Promise<string | null> => {
   const {
     data: { session },
   } = await supabase.auth.getSession();
   const user = session?.user;
 
   if (!user) {
-    return;
+    return null;
   }
 
   // Enforce upload limits
@@ -70,7 +75,7 @@ export const uploadAndInsertImage = async (
     toast.error(
       'Your image is over the 5 MB limit. Upgrade to the Pro plan for 20 MB file uploads.'
     );
-    return;
+    return null;
   } else if (
     (planId === PlanId.Pro || planId === PlanId.Catalyst) &&
     file.size > PRO_UPLOAD_LIMIT
@@ -78,7 +83,7 @@ export const uploadAndInsertImage = async (
     toast.error(
       'Your image is over the 20 MB limit. Please upload a smaller image.'
     );
-    return;
+    return null;
   }
 
   const uploadingToast = toast.info('Uploading image, please wait...', {
@@ -94,7 +99,7 @@ export const uploadAndInsertImage = async (
   if (uploadError) {
     toast.dismiss(uploadingToast);
     toast.error(uploadError.message);
-    return;
+    return null;
   }
 
   const expiresIn = 60 * 60 * 24 * 365 * 100; // 100 year expiry
@@ -105,7 +110,7 @@ export const uploadAndInsertImage = async (
 
   toast.dismiss(uploadingToast);
   if (signedUrl) {
-    insertImage(editor, signedUrl, path);
+    return signedUrl;
   } else if (signedUrlError) {
     toast.error(signedUrlError.message);
   } else {
@@ -113,6 +118,7 @@ export const uploadAndInsertImage = async (
       'There was a problem uploading your image. Please try again later.'
     );
   }
+  return null;
 };
 
 export default withImages;

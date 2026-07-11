@@ -3,13 +3,17 @@ import { createEditor, Editor, Element } from 'slate';
 import { Notes, useStore } from 'lib/store';
 import useDebounce from 'utils/useDebounce';
 import { BlockReference, ElementType } from 'types/slate';
+import loadBacklinkIndex from 'lib/api/loadBacklinkIndex';
 import { Backlink, BacklinkType } from './useBacklinks';
 
 const DEBOUNCE_MS = 1000;
 
 export default function useBlockBacklinks() {
+  useEffect(() => {
+    loadBacklinkIndex();
+  }, []);
   const [notes] = useDebounce(
-    useStore((state) => state.notes),
+    useStore((state) => state.backlinkNotes),
     DEBOUNCE_MS
   );
 

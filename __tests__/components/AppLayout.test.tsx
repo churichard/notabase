@@ -43,6 +43,10 @@ describe('AppLayout', () => {
 
     expect(screen.getByTestId('spinner')).toBeInTheDocument();
     expect(supabase.from).toHaveBeenCalledWith('notes');
+    expect(supabaseMock.select).toHaveBeenCalledWith(
+      'id, user_id, title, created_at, updated_at, visibility'
+    );
+    expect(supabaseMock.select).not.toHaveBeenCalledWith('*');
 
     expect(await screen.findByText('Test')).toBeInTheDocument();
   });

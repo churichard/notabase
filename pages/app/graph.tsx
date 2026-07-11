@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import Head from 'next/head';
 import { createEditor, Editor, Element, Node } from 'slate';
 import type { NoteLink } from 'types/slate';
@@ -8,10 +8,14 @@ import ForceGraph from 'components/ForceGraph';
 import { useStore } from 'lib/store';
 import ErrorBoundary from 'components/ErrorBoundary';
 import OpenSidebarButton from 'components/sidebar/OpenSidebarButton';
+import loadBacklinkIndex from 'lib/api/loadBacklinkIndex';
 
 export default function Graph() {
-  const notes = useStore((state) => state.notes);
+  const notes = useStore((state) => state.backlinkNotes);
   const isSidebarOpen = useStore((state) => state.isSidebarOpen);
+  useEffect(() => {
+    loadBacklinkIndex();
+  }, []);
 
   // Compute graph data
   const graphData: GraphData = useMemo(() => {
