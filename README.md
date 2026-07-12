@@ -35,9 +35,10 @@ If you need help getting started with Notabase, check out our [Help Center](http
 
 ## Sponsors
 
-Special thanks to the following people for their support:
+Special thanks to the following companies for their support:
 
-- [@Jaydon-chai](https://github.com/Jaydon-chai)
+- [Fluxmail](https://fluxmail.ai?ref=notabase.io)
+- [ExploreJobs.ai](https://explorejobs.ai?ref=notabase.io)
 
 Sponsors make it possible for me to continue developing Notabase. Your support is greatly appreciated!
 
