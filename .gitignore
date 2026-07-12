@@ -37,7 +37,8 @@ yarn-error.log*
 .vercel
 
 # next-pwa
-public/fallback-development.js
+public/fallback-*.js
+public/worker-*.js
 public/sw.js
 public/sw.js.map
 public/workbox-*.js

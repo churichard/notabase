@@ -35,7 +35,7 @@ function Title(props: Props) {
         className={`title cursor-text border-none p-0 text-3xl font-semibold leading-tight focus:outline-none md:text-4xl ${className}`}
         data-testid="note-title"
         role="textbox"
-        placeholder="Untitled"
+        data-placeholder="Untitled"
         onKeyDown={(event) => {
           // Disallow newlines in the title field
           if (event.key === 'Enter') {
@@ -54,8 +54,8 @@ function Title(props: Props) {
         spellCheck
       />
       <style jsx>{`
-        .title[placeholder]:empty:before {
-          content: attr(placeholder);
+        .title[data-placeholder]:empty:before {
+          content: attr(data-placeholder);
           color: #d1d5db;
         }
       `}</style>

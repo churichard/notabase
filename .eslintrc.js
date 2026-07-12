@@ -1,4 +1,5 @@
 module.exports = {
+  ignorePatterns: ['next-env.d.ts'],
   env: {
     browser: true,
     es2021: true,
@@ -50,6 +51,9 @@ module.exports = {
     ],
   },
   settings: {
+    react: {
+      version: 'detect',
+    },
     'import/resolver': {
       typescript: {},
     },

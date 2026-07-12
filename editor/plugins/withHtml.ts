@@ -47,19 +47,17 @@ const TEXT_TAGS: Record<
   MARK: () => ({ [Mark.Highlight]: true }),
 };
 
-export const deserialize = (el: HTMLElement): Node[] => {
+type DeserializedNode = Array<Node | string> | string | null;
+
+export const deserialize = (el: HTMLElement): DeserializedNode => {
   if (el.nodeType === 3) {
     // Keep the text content if there is actually content, or if it doesn't include \n
     // This will preserve whitespace around inlines and strip out extraneous newlines
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     return el.textContent &&
       (!el.textContent.includes('\n') || el.textContent.trim())
       ? el.textContent
       : null;
   } else if (el.nodeType !== 1 || el.nodeName === 'BR') {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     return null;
   }
 
@@ -76,7 +74,7 @@ export const deserialize = (el: HTMLElement): Node[] => {
 
   let children = Array.from(parent.childNodes as NodeListOf<HTMLElement>)
     .map(deserialize)
-    .filter(Boolean)
+    .filter((child): child is Exclude<DeserializedNode, null> => child !== null)
     .flat();
 
   if (children.length === 0) {
@@ -135,7 +133,7 @@ const withHtml = (editor: Editor) => {
           );
         return;
       }
-      const fragment = deserialize(parsed.body);
+      const fragment = deserialize(parsed.body) as Descendant[];
       Transforms.insertFragment(editor, fragment);
       return;
     }
