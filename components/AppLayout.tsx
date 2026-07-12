@@ -3,7 +3,6 @@ import type { ReactNode } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import { toast } from 'react-toastify';
-import type { User } from '@supabase/supabase-js';
 import classNames from 'classnames';
 import colors from 'tailwindcss/colors';
 import { useStore, store, NoteTreeItem, Notes, SidebarTab } from 'lib/store';
@@ -34,6 +33,8 @@ export default function AppLayout(props: Props) {
   const { user, isLoaded } = useAuth();
   const router = useRouter();
   const [isPageLoaded, setIsPageLoaded] = useState(false);
+  const [isStoreLoaded, setIsStoreLoaded] = useState(false);
+  const [areBillingDetailsLoaded, setAreBillingDetailsLoaded] = useState(false);
 
   const setIsSidebarOpen = useStore((state) => state.setIsSidebarOpen);
   const setIsPageStackingOn = useStore((state) => state.setIsPageStackingOn);
@@ -45,6 +46,7 @@ export default function AppLayout(props: Props) {
         name: `notabase-storage-${user.id}`,
       });
       await store.persist.rehydrate();
+      setIsStoreLoaded(true);
 
       // If the user is mobile, change the initial values of isSidebarOpen and isPageStackingOn to better suit mobile devices
       // TODO: ideally this change would be temporary so that we don't override the user's existing values
@@ -157,38 +159,54 @@ export default function AppLayout(props: Props) {
 
   const setBillingDetails = useStore((state) => state.setBillingDetails);
   const initBillingDetails = useCallback(
-    async (user: User) => {
-      const { data } = await supabase
-        .from('subscriptions')
-        .select(
-          'plan_id, subscription_status, frequency, current_period_end, cancel_at_period_end'
-        )
-        .eq('user_id', user.id)
-        .maybeSingle();
+    async (userId: string) => {
+      try {
+        const { data } = await supabase
+          .from('subscriptions')
+          .select(
+            'plan_id, subscription_status, frequency, current_period_end, cancel_at_period_end'
+          )
+          .eq('user_id', userId)
+          .maybeSingle();
 
-      if (data) {
-        const currentPeriodEndDate = new Date(data.current_period_end);
-        const isSubscriptionActiveAndNotEnded =
-          data.subscription_status === SubscriptionStatus.Active &&
-          Date.now() < currentPeriodEndDate.getTime();
+        if (data) {
+          const currentPeriodEndDate = new Date(data.current_period_end);
+          const isSubscriptionActiveAndNotEnded =
+            data.subscription_status === SubscriptionStatus.Active &&
+            Date.now() < currentPeriodEndDate.getTime();
 
-        setBillingDetails({
-          planId: isSubscriptionActiveAndNotEnded ? data.plan_id : PlanId.Basic,
-          frequency: data.frequency,
-          currentPeriodEnd: currentPeriodEndDate,
-          cancelAtPeriodEnd: data.cancel_at_period_end,
-        });
+          setBillingDetails({
+            planId: isSubscriptionActiveAndNotEnded
+              ? data.plan_id
+              : PlanId.Basic,
+            frequency: data.frequency,
+            currentPeriodEnd: currentPeriodEndDate,
+            cancelAtPeriodEnd: data.cancel_at_period_end,
+          });
+        } else {
+          setBillingDetails({ planId: PlanId.Basic });
+        }
+      } catch {
+        setBillingDetails({ planId: PlanId.Basic });
+      } finally {
+        setAreBillingDetailsLoaded(true);
       }
     },
     [setBillingDetails]
   );
 
+  // Key this effect on the user id rather than the user object: auth events
+  // like token refreshes produce a new user object for the same user, and
+  // resetting the loading state for those would unmount the app to a spinner
+  const userId = user?.id;
   useEffect(() => {
-    if (!user) {
+    if (!userId || !isStoreLoaded) {
+      setAreBillingDetailsLoaded(false);
       return;
     }
-    initBillingDetails(user);
-  }, [initBillingDetails, user]);
+    setAreBillingDetailsLoaded(false);
+    initBillingDetails(userId);
+  }, [initBillingDetails, isStoreLoaded, userId]);
 
   const [isFindOrCreateModalOpen, setIsFindOrCreateModalOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -345,7 +363,7 @@ export default function AppLayout(props: Props) {
     </Head>
   );
 
-  if (!isPageLoaded) {
+  if (!isPageLoaded || !areBillingDetailsLoaded) {
     return (
       <>
         {head}

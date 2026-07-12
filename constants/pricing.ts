@@ -54,7 +54,7 @@ export type Plan<Prices extends PlanPrices> = {
   features: readonly PlanFeature[];
 };
 
-export const MAX_NUM_OF_BASIC_NOTES = 100;
+export const MAX_NUM_OF_BASIC_NOTES = 10;
 
 const BASIC_FEATURES: PlanFeature[] = [
   { name: Feature.NumOfNotes, amount: MAX_NUM_OF_BASIC_NOTES },
