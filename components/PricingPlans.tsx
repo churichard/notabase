@@ -10,7 +10,6 @@ import PricingPlan, { BulletPoint } from './PricingPlan';
 import Toggle from './Toggle';
 
 const BASIC_BULLET_POINTS: (string | BulletPoint)[] = [
-  'Try it out for free',
   'Easy-to-use and powerful editor',
   'Graph view',
   'Import/export your notes at any time',
@@ -34,6 +33,8 @@ type Props = {
 export default function PricingPlans(props: Props) {
   const { buttons } = props;
   const [showAnnual, setShowAnnual] = useState(true);
+  const proAnnualPrice =
+    PRICING_PLANS[PlanId.Pro].prices[BillingFrequency.Annual].amount / 100;
 
   const getBillingPeriodPrice = useCallback(
     (planId: PlanId, showAnnual: boolean) => {
@@ -46,7 +47,11 @@ export default function PricingPlans(props: Props) {
       } else {
         price = plan.prices[BillingFrequency.OneTime];
       }
-      return +(price.amount / 100).toFixed(2);
+      const amount =
+        showAnnual && isSubscription(plan.prices)
+          ? price.amount / 12
+          : price.amount;
+      return +(amount / 100).toFixed(2);
     },
     []
   );
@@ -74,7 +79,7 @@ export default function PricingPlans(props: Props) {
           className="mx-auto w-full lg:w-full"
           name={PRICING_PLANS[PlanId.Basic].name}
           price={getBillingPeriodPrice(PlanId.Basic, showAnnual)}
-          period={showAnnual ? '/ yr' : '/ mo'}
+          period="/ mo"
           bulletPoints={BASIC_BULLET_POINTS}
           button={buttons?.(showAnnual)[0]}
         />
@@ -82,7 +87,10 @@ export default function PricingPlans(props: Props) {
           className="mx-auto w-full lg:w-full"
           name={PRICING_PLANS[PlanId.Pro].name}
           price={getBillingPeriodPrice(PlanId.Pro, showAnnual)}
-          period={showAnnual ? '/ yr' : '/ mo'}
+          period="/ mo"
+          billingNote={
+            showAnnual ? `Billed annually at $${proAnnualPrice}` : undefined
+          }
           bulletPoints={PRO_BULLET_POINTS}
           button={buttons?.(showAnnual)[1]}
         />

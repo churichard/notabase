@@ -12,6 +12,7 @@ type Props = {
   name: string;
   price: number;
   period: string;
+  billingNote?: string;
   bulletPoints: (string | BulletPoint)[];
   discount?: string;
   button?: ReactNode;
@@ -19,8 +20,16 @@ type Props = {
 };
 
 const PricingPlan = (props: Props) => {
-  const { name, price, period, discount, bulletPoints, button, className } =
-    props;
+  const {
+    name,
+    price,
+    period,
+    billingNote,
+    discount,
+    bulletPoints,
+    button,
+    className,
+  } = props;
 
   const pricingPlanClassName = classNames(
     'flex flex-col rounded-lg border overflow-hidden shadow-md',
@@ -47,9 +56,16 @@ const PricingPlan = (props: Props) => {
               {period}
             </span>
           </div>
+          {billingNote ? (
+            <p className="mt-2 text-sm text-gray-500">{billingNote}</p>
+          ) : null}
         </div>
       </div>
-      <div className="flex flex-1 flex-col p-6 sm:p-10 sm:pt-6">
+      <div
+        className={classNames('flex flex-1 flex-col p-6 sm:p-10 sm:pt-6', {
+          '-mt-7': billingNote,
+        })}
+      >
         <ul className="flex-1 space-y-4">
           {bulletPoints.map((bulletPoint, index) => {
             const { text, included } =
