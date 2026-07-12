@@ -42,11 +42,11 @@ function PublishNote(props: Props) {
               {noteExists ? (
                 <>
                   <PublishTitle
-                    className="px-8 pt-8 pb-1 md:px-12 md:pt-12"
+                    className="px-8 pb-1 pt-8 md:px-12 md:pt-12"
                     noteId={noteId}
                   />
                   <PublishEditor
-                    className="flex-1 px-8 pt-2 pb-8 md:px-12 md:pb-12"
+                    className="flex-1 px-8 pb-8 pt-2 md:px-12 md:pb-12"
                     noteId={noteId}
                     highlightedPath={highlightedPath}
                   />

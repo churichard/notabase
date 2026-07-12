@@ -22,7 +22,7 @@ export default function Toggle(props: Props) {
             }`}
           ></span>
           <span
-            className={`focus-within:shadow-outline absolute inset-y-0 left-0 mt-1 ml-1 block h-4 w-4 transform rounded-full bg-white shadow transition-transform duration-300 ease-in-out ${
+            className={`focus-within:shadow-outline absolute inset-y-0 left-0 ml-1 mt-1 block h-4 w-4 transform rounded-full bg-white shadow transition-transform duration-300 ease-in-out ${
               isChecked ? 'translate-x-full' : null
             }`}
           >

@@ -83,7 +83,7 @@ export default function Graph() {
       </Head>
       <ErrorBoundary>
         {!isSidebarOpen ? (
-          <OpenSidebarButton className="absolute top-0 left-0 z-10 mx-4 my-1" />
+          <OpenSidebarButton className="absolute left-0 top-0 z-10 mx-4 my-1" />
         ) : null}
         <ForceGraph data={graphData} className="flex-1" />
       </ErrorBoundary>

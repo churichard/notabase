@@ -25,7 +25,7 @@ export default function MobileMenu(props: Props) {
   return (
     <div ref={mobileMenuRef} className={mobileMenuClassNames}>
       <div className="rounded-lg bg-white shadow-lg">
-        <div className="space-y-6 px-6 pt-6 pb-4">
+        <div className="space-y-6 px-6 pb-4 pt-6">
           <div className="flex items-center justify-between">
             <LogoWithText />
             <button
@@ -37,7 +37,7 @@ export default function MobileMenu(props: Props) {
             </button>
           </div>
         </div>
-        <div className="space-y-4 px-6 pt-0 pb-6">
+        <div className="space-y-4 px-6 pb-6 pt-0">
           <span className="flex w-full rounded-md shadow-sm">
             <Link
               href="/signup"
