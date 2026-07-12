@@ -6,16 +6,16 @@ import {
   PlanId,
   PRICING_PLANS,
 } from 'constants/pricing';
-import PricingPlan from './PricingPlan';
+import PricingPlan, { BulletPoint } from './PricingPlan';
 import Toggle from './Toggle';
 
-const BASIC_BULLET_POINTS = [
+const BASIC_BULLET_POINTS: (string | BulletPoint)[] = [
   'Try it out for free',
   'Easy-to-use and powerful editor',
   'Graph view',
   'Import/export your notes at any time',
   `${MAX_NUM_OF_BASIC_NOTES} notes`,
-  '5 MB image uploads',
+  { text: 'No image uploads', included: false },
   'Community support',
 ];
 

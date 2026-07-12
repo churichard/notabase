@@ -149,6 +149,7 @@ export default function useImport() {
       const upsertData: NoteInsert[] = [];
       const noteLinkUpsertData: NoteInsert[] = [];
       const noteTitleToIdCache: Record<string, string | undefined> = {};
+      let numOfStrippedImages = 0;
       for (const file of inputElement.files) {
         const fileName = file.name.replace(/\.[^/.]+$/, ''); // Remove file extension
         if (!fileName) {
@@ -167,7 +168,9 @@ export default function useImport() {
           fixNoteLinks(result as Descendant[], noteTitleToIdCache);
         let slateContent;
         try {
-          slateContent = await normalizeInlineImages(parsedContent);
+          const normalized = await normalizeInlineImages(parsedContent);
+          slateContent = normalized.content;
+          numOfStrippedImages += normalized.numOfStrippedImages;
         } catch (error) {
           toast.dismiss(importingToast);
           toast.error(
@@ -223,6 +226,12 @@ export default function useImport() {
         );
       } else {
         toast.error('No notes were imported.');
+      }
+
+      if (numOfStrippedImages > 0) {
+        toast.warn(
+          'Embedded images were removed. Image uploads are only available on the Pro plan.'
+        );
       }
     };
 

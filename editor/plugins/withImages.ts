@@ -67,19 +67,16 @@ export const uploadImage = async (file: File): Promise<string | null> => {
   }
 
   // Enforce upload limits
-  const BASIC_UPLOAD_LIMIT = 5 * 1024 * 1024; // 5 MB
   const PRO_UPLOAD_LIMIT = 20 * 1024 * 1024; // 20 MB
   const planId = store.getState().billingDetails.planId;
 
-  if (planId === PlanId.Basic && file.size > BASIC_UPLOAD_LIMIT) {
+  if (planId === PlanId.Basic) {
     toast.error(
-      'Your image is over the 5 MB limit. Upgrade to the Pro plan for 20 MB file uploads.'
+      'Image uploads are only available on the Pro plan. Upgrade to upload images.'
     );
+    store.getState().setIsUpgradeModalOpen(true);
     return null;
-  } else if (
-    (planId === PlanId.Pro || planId === PlanId.Catalyst) &&
-    file.size > PRO_UPLOAD_LIMIT
-  ) {
+  } else if (file.size > PRO_UPLOAD_LIMIT) {
     toast.error(
       'Your image is over the 20 MB limit. Please upload a smaller image.'
     );

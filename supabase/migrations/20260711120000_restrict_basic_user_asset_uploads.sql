@@ -1,11 +1,3 @@
--- Create storage bucket
-
-insert into storage.buckets (id, name)
-values ('user-assets', 'user-assets');
-
-
--- Add row-level-security policy for storage
-
 create or replace function public.can_upload_user_asset()
 returns boolean
 language sql
@@ -27,11 +19,15 @@ revoke all on function public.can_upload_user_asset() from public;
 grant execute on function public.can_upload_user_asset() to authenticated;
 
 drop policy if exists "Access to user's file uploads" on storage.objects;
+
 create policy "Access to user's file uploads"
 on storage.objects for all
-using ((bucket_id='user-assets'::text) AND ((auth.uid())::text=(storage.foldername(name))[1]))
+using (
+  bucket_id = 'user-assets'
+  and (auth.uid())::text = (storage.foldername(name))[1]
+)
 with check (
-  (bucket_id='user-assets'::text)
-  AND ((auth.uid())::text=(storage.foldername(name))[1])
-  AND public.can_upload_user_asset()
+  bucket_id = 'user-assets'
+  and (auth.uid())::text = (storage.foldername(name))[1]
+  and public.can_upload_user_asset()
 );

@@ -118,7 +118,16 @@ const withHtml = (editor: Editor) => {
       if (parsed.querySelector('img[src^="data:image/"]')) {
         const fragment = deserialize(parsed.body) as Descendant[];
         normalizeInlineImages(fragment)
-          .then((normalized) => Transforms.insertFragment(editor, normalized))
+          .then(({ content, numOfStrippedImages }) => {
+            if (numOfStrippedImages > 0) {
+              toast.warn(
+                'Embedded images were removed. Image uploads are only available on the Pro plan.'
+              );
+            }
+            if (content.length > 0) {
+              Transforms.insertFragment(editor, content);
+            }
+          })
           .catch(() =>
             toast.error(
               'The pasted image could not be uploaded. Please try again.'

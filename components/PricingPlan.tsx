@@ -1,13 +1,18 @@
 import { ReactNode } from 'react';
 import Link from 'next/link';
 import classNames from 'classnames';
-import { IconCheck } from '@tabler/icons';
+import { IconCheck, IconX } from '@tabler/icons';
+
+export type BulletPoint = {
+  text: string;
+  included: boolean;
+};
 
 type Props = {
   name: string;
   price: number;
   period: string;
-  bulletPoints: string[];
+  bulletPoints: (string | BulletPoint)[];
   discount?: string;
   button?: ReactNode;
   className?: string;
@@ -46,14 +51,24 @@ const PricingPlan = (props: Props) => {
       </div>
       <div className="flex flex-1 flex-col p-6 sm:p-10 sm:pt-6">
         <ul className="flex-1 space-y-4">
-          {bulletPoints.map((bulletPoint, index) => (
-            <li key={index} className="flex items-start">
-              <IconCheck className="flex-shrink-0 text-green-500" />
-              <p className="ml-3 leading-6 text-gray-700 dark:text-gray-200">
-                {bulletPoint}
-              </p>
-            </li>
-          ))}
+          {bulletPoints.map((bulletPoint, index) => {
+            const { text, included } =
+              typeof bulletPoint === 'string'
+                ? { text: bulletPoint, included: true }
+                : bulletPoint;
+            return (
+              <li key={index} className="flex items-start">
+                {included ? (
+                  <IconCheck className="flex-shrink-0 text-green-500" />
+                ) : (
+                  <IconX className="flex-shrink-0 text-red-500" />
+                )}
+                <p className="ml-3 leading-6 text-gray-700 dark:text-gray-200">
+                  {text}
+                </p>
+              </li>
+            );
+          })}
         </ul>
         <div className="mt-6">
           {button ?? (

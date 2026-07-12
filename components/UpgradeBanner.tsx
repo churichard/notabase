@@ -12,7 +12,7 @@ export default function UpgradeBanner() {
   const showUpgradeBanner = useMemo(
     () =>
       billingDetails.planId === PlanId.Basic &&
-      numOfNotes >= MAX_NUM_OF_BASIC_NOTES - 10,
+      numOfNotes >= MAX_NUM_OF_BASIC_NOTES - 2,
     [billingDetails, numOfNotes]
   );
 
