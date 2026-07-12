@@ -84,7 +84,7 @@ function Sidebar(props: Props) {
             />
           ) : null}
           <animated.div
-            className="fixed top-0 bottom-0 left-0 z-20 w-64 shadow-popover md:static md:z-0 md:shadow-none"
+            className="fixed bottom-0 left-0 top-0 z-20 w-64 shadow-popover md:static md:z-0 md:shadow-none"
             style={{
               transform: styles.transform,
               display: styles.dspl.to((displ) =>

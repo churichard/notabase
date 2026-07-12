@@ -50,7 +50,7 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <div className="pt-16 pb-8 md:pt-32 md:pb-16">
+          <div className="pb-8 pt-16 md:pb-16 md:pt-32">
             <div className="container flex flex-col items-center px-6 md:flex-row md:space-x-8">
               <div className="flex-1">
                 <h2 className="text-3xl font-semibold md:text-4xl">
@@ -79,7 +79,7 @@ export default function Home() {
                     quality={100}
                   />
                 </div>
-                <div className="absolute left-0 right-0 top-10 bottom-10 -z-10 w-full -rotate-3 transform rounded-md bg-primary-50 shadow-sm" />
+                <div className="absolute bottom-10 left-0 right-0 top-10 -z-10 w-full -rotate-3 transform rounded-md bg-primary-50 shadow-sm" />
               </div>
             </div>
           </div>
@@ -113,7 +113,7 @@ export default function Home() {
                     quality={100}
                   />
                 </div>
-                <div className="absolute left-0 right-0 top-14 bottom-14 -z-10 mx-auto rotate-3 transform rounded-md bg-yellow-50 shadow-sm lg:w-3/4" />
+                <div className="absolute bottom-14 left-0 right-0 top-14 -z-10 mx-auto rotate-3 transform rounded-md bg-yellow-50 shadow-sm lg:w-3/4" />
               </div>
             </div>
           </div>
@@ -147,7 +147,7 @@ export default function Home() {
                     quality={100}
                   />
                 </div>
-                <div className="absolute left-0 right-0 top-10 bottom-10 -z-10 w-full -rotate-3 transform rounded-md bg-blue-50 shadow-sm" />
+                <div className="absolute bottom-10 left-0 right-0 top-10 -z-10 w-full -rotate-3 transform rounded-md bg-blue-50 shadow-sm" />
               </div>
             </div>
           </div>
@@ -327,7 +327,7 @@ export default function Home() {
             </div>
           </div>
           <div className="container my-8 bg-gradient-to-r from-yellow-50 via-green-50 to-blue-50 shadow-md sm:rounded-md">
-            <div className="px-8 py-12 md:flex md:items-center md:justify-between md:space-x-6 lg:py-16 lg:px-16">
+            <div className="px-8 py-12 md:flex md:items-center md:justify-between md:space-x-6 lg:px-16 lg:py-16">
               <div>
                 <p className="text-2xl font-medium text-primary-900 lg:text-3xl">
                   Think more clearly. Be more productive.

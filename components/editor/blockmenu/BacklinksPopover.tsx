@@ -74,7 +74,7 @@ export default function BacklinksPopover(props: BacklinksPopoverProps) {
         <>
           <Popover.Button
             ref={referenceElementRef}
-            className="absolute top-0.5 -right-8 flex h-6 w-6 select-none items-center justify-center rounded text-sm font-medium text-primary-700 hover:bg-gray-100 focus:outline-none active:bg-gray-200 dark:text-primary-400 dark:hover:bg-gray-800 dark:active:bg-gray-700"
+            className="absolute -right-8 top-0.5 flex h-6 w-6 select-none items-center justify-center rounded text-sm font-medium text-primary-700 hover:bg-gray-100 focus:outline-none active:bg-gray-200 dark:text-primary-400 dark:hover:bg-gray-800 dark:active:bg-gray-700"
             contentEditable={false}
           >
             {numOfMatches}

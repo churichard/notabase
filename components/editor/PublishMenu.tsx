@@ -77,7 +77,7 @@ export default function PublishMenu() {
             className={buttonClassName}
             data-testid="publish-menu-button"
           >
-            <span className="flex items-center py-1 px-2">{publishButton}</span>
+            <span className="flex items-center px-2 py-1">{publishButton}</span>
           </Menu.Button>
           {open && (
             <Portal>

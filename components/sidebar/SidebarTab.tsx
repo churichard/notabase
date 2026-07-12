@@ -16,7 +16,7 @@ const SidebarTab = (
   return (
     <button
       ref={forwardedRef}
-      className={`flex flex-1 justify-center rounded-t py-1.5 px-6 hover:bg-gray-100 active:bg-gray-200 dark:border-gray-700 dark:hover:bg-gray-700 dark:active:bg-gray-600 ${
+      className={`flex flex-1 justify-center rounded-t px-6 py-1.5 hover:bg-gray-100 active:bg-gray-200 dark:border-gray-700 dark:hover:bg-gray-700 dark:active:bg-gray-600 ${
         isActive ? 'border-t bg-gray-50 dark:bg-gray-800' : 'border-b'
       } ${className}`}
       onClick={setActive}

@@ -179,7 +179,7 @@ export default function AddLinkPopover(props: Props) {
     <EditorPopover
       selection={addLinkPopoverState.selection}
       placement="bottom"
-      className="flex w-96 flex-col pt-4 pb-2"
+      className="flex w-96 flex-col pb-2 pt-4"
       onClose={hidePopover}
     >
       <input

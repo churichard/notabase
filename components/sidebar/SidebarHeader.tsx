@@ -48,7 +48,7 @@ export default function Header(props: Props) {
           </Tooltip>
         </Menu.Button>
         <Menu.Items className="absolute left-6 top-full z-20 w-56 overflow-hidden rounded bg-white shadow-popover focus:outline-none dark:bg-gray-800">
-          <p className="overflow-hidden overflow-ellipsis px-4 pt-2 pb-1 text-xs text-gray-600 dark:text-gray-400">
+          <p className="overflow-hidden overflow-ellipsis px-4 pb-1 pt-2 text-xs text-gray-600 dark:text-gray-400">
             {user?.email}
           </p>
           <DropdownItem
