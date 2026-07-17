@@ -19,7 +19,21 @@ CREATE TYPE visibility AS ENUM ('private', 'public');
 
 -- public.notes definition
 
-DROP TABLE IF EXISTS public.note_backlink_index;
+DO $$
+BEGIN
+  IF to_regclass('public.note_backlink_index') IS NOT NULL THEN
+    IF (
+      SELECT relkind = 'v'
+      FROM pg_class
+      WHERE oid = 'public.note_backlink_index'::regclass
+    ) THEN
+      DROP VIEW public.note_backlink_index;
+    ELSE
+      DROP TABLE public.note_backlink_index;
+    END IF;
+  END IF;
+END;
+$$;
 DROP TABLE IF EXISTS public.notes;
 CREATE TABLE public.notes (
   "content" jsonb NOT NULL DEFAULT (('[ { "id": "'::text || extensions.uuid_generate_v4()) || '", "type": "paragraph", "children": [{ "text": "" }] } ]'::text)::jsonb,
@@ -151,63 +165,19 @@ create trigger on_public_user_created
   for each row execute function create_onboarding_notes();
 
 
--- backlink index
+-- backlink data
 
-CREATE TABLE public.note_backlink_index (
-  note_id uuid PRIMARY KEY REFERENCES public.notes(id) ON DELETE CASCADE,
-  user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  title citext NOT NULL,
-  content jsonb NOT NULL DEFAULT '[]'::jsonb,
-  updated_at timestamptz NOT NULL DEFAULT now()
-);
-
-ALTER TABLE public.note_backlink_index ENABLE ROW LEVEL SECURITY;
-
-CREATE POLICY "Users can read their own backlink index"
-  ON public.note_backlink_index FOR SELECT
-  USING (auth.uid() = user_id);
-
-CREATE OR REPLACE FUNCTION public.backlink_safe_json(value jsonb)
-RETURNS jsonb
-LANGUAGE sql
-IMMUTABLE
-SET search_path = public
-AS $$
-  SELECT regexp_replace(
-    value::text,
-    '"data:image/[a-z0-9.+-]+;base64,[^\"]*"',
-    '""',
-    'gi'
-  )::jsonb;
-$$;
-
-CREATE OR REPLACE FUNCTION public.refresh_note_backlink_index()
-RETURNS trigger
-LANGUAGE plpgsql
-SECURITY DEFINER
-SET search_path = public
-AS $$
-BEGIN
-  INSERT INTO public.note_backlink_index (note_id, user_id, title, content, updated_at)
-  VALUES (
-    new.id,
-    new.user_id,
-    new.title,
-    public.backlink_safe_json(new.content),
-    new.updated_at
-  )
-  ON CONFLICT (note_id) DO UPDATE SET
-    user_id = excluded.user_id,
-    title = excluded.title,
-    content = excluded.content,
-    updated_at = excluded.updated_at;
-  RETURN new;
-END;
-$$;
-
-CREATE TRIGGER refresh_note_backlink_index
-  AFTER INSERT OR UPDATE OF title, content ON public.notes
-  FOR EACH ROW EXECUTE FUNCTION public.refresh_note_backlink_index();
+CREATE VIEW public.note_backlink_index
+WITH (security_invoker = true, security_barrier = true)
+AS
+SELECT
+  id AS note_id,
+  user_id,
+  title,
+  content,
+  updated_at
+FROM public.notes
+WHERE user_id = (SELECT auth.uid());
 
 GRANT SELECT ON public.note_backlink_index TO authenticated;
 

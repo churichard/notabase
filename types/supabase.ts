@@ -53,18 +53,6 @@ export interface Database {
         };
         Relationships: [];
       };
-      note_backlink_index: {
-        Row: {
-          content: Descendant[];
-          note_id: string;
-          title: string;
-          updated_at: string;
-          user_id: string;
-        };
-        Insert: never;
-        Update: never;
-        Relationships: [];
-      };
       subscriptions: {
         Row: {
           cancel_at_period_end: boolean;
@@ -139,7 +127,16 @@ export interface Database {
       };
     };
     Views: {
-      [_ in never]: never;
+      note_backlink_index: {
+        Row: {
+          content: Descendant[];
+          note_id: string;
+          title: string;
+          updated_at: string;
+          user_id: string;
+        };
+        Relationships: [];
+      };
     };
     Functions: {
       notes_with_inline_images: {
