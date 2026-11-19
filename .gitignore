@@ -56,3 +56,6 @@ tsconfig.tsbuildinfo
 
 # eslint
 .eslintcache
+
+# VibeRaven race output
+.viberaven/

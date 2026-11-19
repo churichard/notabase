@@ -16,7 +16,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test": "jest",
+    "test": "jest && npm run test:race",
     "test:watch": "jest --watch",
     "cy:open": "cypress open",
     "cy:run": "cypress run",
@@ -26,7 +26,8 @@
     "prettier:write": "prettier --write .",
     "db:seed": "node ./scripts/seed.js",
     "analyze": "env ANALYZE=true next build",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "test:race": "npx -y viberaven@1.10.0 race . --spec race/webhook.race.json --migrations race"
   },
   "dependencies": {
     "@dnd-kit/core": "^4.0.3",

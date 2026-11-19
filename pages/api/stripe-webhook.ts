@@ -129,6 +129,9 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
         frequency: getFrequencyByPriceId(priceId),
         current_period_end: new Date(currentPeriodEnd).toISOString(),
         cancel_at_period_end: cancelAtPeriodEnd,
+        // Stripe can deliver events late or out of order. The subscriptions trigger
+        // (20261119000000) skips an update whose event.created is older than the stored one.
+        stripe_event_created: event.created,
       })
       .eq('stripe_subscription_id', subscription.id);
   } else if (event.type === 'customer.subscription.deleted') {
@@ -142,6 +145,7 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
         subscription_status: isSubscriptionActive
           ? SubscriptionStatus.Active
           : SubscriptionStatus.Inactive,
+        stripe_event_created: event.created,
       })
       .eq('stripe_subscription_id', subscription.id);
   }

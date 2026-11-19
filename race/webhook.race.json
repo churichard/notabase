@@ -1,0 +1,21 @@
+{
+  "rule": "An older customer.subscription.updated (active) must not overwrite the later customer.subscription.deleted (inactive)",
+  "setup": "INSERT INTO subscriptions(stripe_subscription_id,subscription_status,stripe_event_created) VALUES ('sub_1','inactive',1000)",
+  "invariant": "SELECT subscription_status <> 'active' FROM subscriptions WHERE stripe_subscription_id='sub_1'",
+  "isolation": [
+    "read committed"
+  ],
+  "notes": "SQL transliteration of the webhook handler; covers bounded SQL orders only, not HTTP or Stripe.",
+  "requests": [
+    {
+      "statements": [
+        "UPDATE subscriptions SET subscription_status='active',stripe_event_created=2000 WHERE stripe_subscription_id='sub_1'"
+      ]
+    },
+    {
+      "statements": [
+        "UPDATE subscriptions SET subscription_status='inactive',stripe_event_created=3000 WHERE stripe_subscription_id='sub_1'"
+      ]
+    }
+  ]
+}
